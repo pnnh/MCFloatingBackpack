@@ -1,0 +1,19 @@
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_ccad84166dd289::t_b12d756d9c83ee 28,58-70,87-93,98-100,106-108,119-121,126,137-138,141-142,145-148,151-152,155-156,158-165,170-172,181-183,192-194
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "7a358ef7284a785337ee270b1ba5b76f8f4b6150",
+  "prompts": {},
+  "sessions": {
+    "s_ccad84166dd289": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "16380393-15fc-441d-bffb-4166200f8ffe",
+        "model": "default"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
