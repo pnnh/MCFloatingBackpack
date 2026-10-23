@@ -1,0 +1,56 @@
+.specify/feature.json
+  s_ccad84166dd289::t_afd79bee4a57b9 1
+specs/003-cross-gui-drag/plan.md
+  s_ccad84166dd289::t_afd79bee4a57b9 2,4-6,8-10,16-18,26-29,36-39
+  s_ccad84166dd289::t_8c05e0219dc5f4 1,3,7,11-15,19-25,30-35,40
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackMenuBridge.java
+  s_ccad84166dd289::t_70a515dcf8716b 1-45
+specs/003-cross-gui-drag/spec.md
+  s_ccad84166dd289::t_486187e7b2b9dd 1-87
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_ccad84166dd289::t_13cd5fbee166f6 36-39,49-51,54
+specs/003-cross-gui-drag/checklists/requirements.md
+  s_ccad84166dd289::t_be648d9894156f 1-34
+specs/003-cross-gui-drag/data-model.md
+  s_ccad84166dd289::t_a0d2cbc32d6bcf 1-21
+specs/003-cross-gui-drag/research.md
+  s_ccad84166dd289::t_9db055c9f4c280 1-23
+specs/003-cross-gui-drag/contracts/cross-gui-cursor.md
+  s_ccad84166dd289::t_90e006ed487806 1-25
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_ccad84166dd289::t_634a82a5a5d86e 88
+  s_ccad84166dd289::t_6d8057bfa3be48 29-30,43,50,56,58-59,62,70-76
+  s_ccad84166dd289::t_efb39708df1e1e 100-101
+  s_ccad84166dd289::t_216d21ea4c2aa2 77-78
+  s_ccad84166dd289::t_2ff24195cf4f95 102
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_ccad84166dd289::t_56a19e1cdc350b 11,19,57,59-63
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_ccad84166dd289::t_0a7d5bdc0acb7b 7,16,24
+  s_ccad84166dd289::t_84bea280a564ef 73-78
+  s_ccad84166dd289::t_f9c38647752da6 72
+src/main/java/pnnh/mcfloatingbackpack/network/MergePanelCursorPayload.java
+  s_ccad84166dd289::t_57973e20e83132 1-50
+specs/003-cross-gui-drag/tasks.md
+  s_ccad84166dd289::t_ce5cd68c8c6fe0 1-33
+specs/003-cross-gui-drag/DELIVERY.md
+  s_ccad84166dd289::t_7ae40036ae2ff0 1-18
+specs/003-cross-gui-drag/quickstart.md
+  s_ccad84166dd289::t_e48a06b3b44837 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6181a64f0bbfaeff1986c6f2a57cbbfe84e23a1b",
+  "prompts": {},
+  "sessions": {
+    "s_ccad84166dd289": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "16380393-15fc-441d-bffb-4166200f8ffe",
+        "model": "default"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
