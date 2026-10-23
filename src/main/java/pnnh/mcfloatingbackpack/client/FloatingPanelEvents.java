@@ -4,6 +4,7 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
@@ -19,6 +21,7 @@ import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.network.MergePanelCursorPayload;
 
 /**
  * Client overlay: render, toggle, and mouse routing for the floating panel.
@@ -64,6 +67,13 @@ public final class FloatingPanelEvents {
         state.clampToScreen(
                 minecraft.getWindow().getGuiScaledWidth(),
                 minecraft.getWindow().getGuiScaledHeight());
+    }
+
+    @SubscribeEvent
+    public static void onScreenOpening(ScreenEvent.Opening event) {
+        if (event.getNewScreen() instanceof AbstractContainerScreen && Minecraft.getInstance().player != null) {
+            PacketDistributor.sendToServer(new MergePanelCursorPayload());
+        }
     }
 
     @SubscribeEvent

@@ -8,6 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -15,6 +16,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackAttachments;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 
 public record BackpackClickPayload(int slotIndex, boolean shiftDown, boolean screenOpen, boolean panelOpen)
         implements CustomPacketPayload {
@@ -52,8 +54,13 @@ public record BackpackClickPayload(int slotIndex, boolean shiftDown, boolean scr
             }
 
             BackpackInventory inventory = serverPlayer.getData(BackpackAttachments.BACKPACK.get());
+            AbstractContainerMenu menu = serverPlayer.containerMenu;
 
-            if (payload.shiftDown() && !payload.screenOpen()) {
+            if (payload.screenOpen() && menu != null) {
+                // Unified cursor with open inventory/chest (M3).
+                BackpackMenuBridge.clickWithMenuCarried(inventory, menu, payload.slotIndex());
+                menu.broadcastChanges();
+            } else if (payload.shiftDown()) {
                 ItemStack hand = serverPlayer.getMainHandItem().copy();
                 ItemStack slot = inventory.getStackInSlot(payload.slotIndex()).copy();
                 inventory.setStackInSlot(payload.slotIndex(), hand);

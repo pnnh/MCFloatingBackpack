@@ -26,6 +26,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SLOT = 0xFF8B8B8B;
     private static final int COLOR_SLOT_LIGHT = 0xFF373737;
     private static final int COLOR_SLOT_DARK = 0xFFFFFFFF;
+    /** Same white translucent hover used by vanilla container slots. */
+    private static final int COLOR_SLOT_HOVER = 0x80FFFFFF;
 
     private FloatingPanelRenderer() {
     }
@@ -38,27 +40,40 @@ public final class FloatingPanelRenderer {
         int y = state.getPosY();
         int w = state.getWidth();
         int h = state.getHeight();
+        int hovered = PanelSlots.indexAt(state, mouseX, mouseY);
 
         graphics.pose().pushPose();
         graphics.pose().translate(0.0F, 0.0F, OVERLAY_Z);
         RenderSystem.disableDepthTest();
 
         drawVanillaPanel(graphics, x, y, w, h);
-        drawSlotsWithItems(graphics, state);
+        drawSlotsWithItems(graphics, state, hovered);
 
         Minecraft minecraft = Minecraft.getInstance();
         Component title = Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".title");
         graphics.drawString(minecraft.font, title, x + 8, y + 6, COLOR_TITLE_TEXT, false);
 
-        ItemStack cursor = ClientBackpackView.get().getCursor();
+        ItemStack cursor = cursorStack(minecraft);
         if (!cursor.isEmpty()) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0.0F, 0.0F, 32.0F);
             graphics.renderItem(cursor, mouseX - 8, mouseY - 8);
             graphics.renderItemDecorations(minecraft.font, cursor, mouseX - 8, mouseY - 8);
+            graphics.pose().popPose();
         }
 
         graphics.flush();
         RenderSystem.enableDepthTest();
         graphics.pose().popPose();
+    }
+
+    private static ItemStack cursorStack(Minecraft minecraft) {
+        if (minecraft.player != null
+                && minecraft.screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+                && minecraft.player.containerMenu != null) {
+            return minecraft.player.containerMenu.getCarried();
+        }
+        return ClientBackpackView.get().getCursor();
     }
 
     private static void drawVanillaPanel(GuiGraphics graphics, int x, int y, int w, int h) {
@@ -70,7 +85,7 @@ public final class FloatingPanelRenderer {
         graphics.fill(x + w - 1, y, x + w, y + h, COLOR_EDGE_DARK);
     }
 
-    private static void drawSlotsWithItems(GuiGraphics graphics, FloatingPanelState state) {
+    private static void drawSlotsWithItems(GuiGraphics graphics, FloatingPanelState state, int hoveredSlot) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientBackpackView view = ClientBackpackView.get();
         for (int i = 0; i < PanelSlots.SLOT_COUNT; i++) {
@@ -81,6 +96,9 @@ public final class FloatingPanelRenderer {
             if (!stack.isEmpty()) {
                 graphics.renderItem(stack, sx + 1, sy + 1);
                 graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
+            }
+            if (i == hoveredSlot) {
+                graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_SLOT_HOVER);
             }
         }
     }

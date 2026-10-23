@@ -33,6 +33,10 @@ public final class BackpackNetwork {
                 BackpackClickPayload.TYPE,
                 BackpackClickPayload.STREAM_CODEC,
                 BackpackClickPayload::handleServer);
+        registrar.playToServer(
+                MergePanelCursorPayload.TYPE,
+                MergePanelCursorPayload.STREAM_CODEC,
+                MergePanelCursorPayload::handleServer);
     }
 
     public static void sendFullSync(ServerPlayer player) {
@@ -42,11 +46,11 @@ public final class BackpackNetwork {
 
     public static void sendSlotUpdate(ServerPlayer player, int slotIndex) {
         BackpackInventory inventory = player.getData(BackpackAttachments.BACKPACK.get());
+        ItemStack slotStack = slotIndex >= 0 && slotIndex < BackpackInventory.SIZE
+                ? inventory.getStackInSlot(slotIndex).copy()
+                : ItemStack.EMPTY;
         PacketDistributor.sendToPlayer(
                 player,
-                new BackpackSlotUpdatePayload(
-                        slotIndex,
-                        inventory.getStackInSlot(slotIndex).copy(),
-                        inventory.getCursor().copy()));
+                new BackpackSlotUpdatePayload(slotIndex, slotStack, inventory.getCursor().copy()));
     }
 }
