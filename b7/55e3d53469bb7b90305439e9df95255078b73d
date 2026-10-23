@@ -1,0 +1,152 @@
+.claude/skills/speckit-analyze/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-262
+specs/001-floating-panel/DELIVERY.md
+  s_ccad84166dd289::t_21af7e16d71a2e 1-14
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_ccad84166dd289::t_3658723fe9d616 11
+  s_ccad84166dd289::t_cadde029368ca4 1-10,12-83,97-171
+  s_ccad84166dd289::t_db9022bdca72fc 84-96
+src/test/java/pnnh/mcfloatingbackpack/ModIdTest.java
+  s_ccad84166dd289::t_1eb36feece6c7b 1-14
+gradlew.bat
+  s_ccad84166dd289::t_3e080bd6656b31 1-94
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_ccad84166dd289::t_e9b4bc711c3cd4 1-77
+specs/001-floating-panel/checklists/requirements.md
+  s_ccad84166dd289::t_43de80c6770628 1-35
+src/main/java/pnnh/mcfloatingbackpack/client/ClientSetup.java
+  s_ccad84166dd289::t_1f1a2f9b5bcfbb 1-19,21-22
+  s_ccad84166dd289::t_5ac2c632d27674 20
+specs/001-floating-panel/data-model.md
+  s_ccad84166dd289::t_9b916992f288bd 1-47
+.claude/skills/speckit-constitution/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-171
+settings.gradle
+  s_ccad84166dd289::t_9f648d3860b563 1-11
+.specify/memory/constitution.md
+  s_ccad84166dd289::t_242d6170b7dd83 1-99
+.claude/skills/speckit-plan/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-169
+gradle/wrapper/gradle-wrapper.properties
+  s_ccad84166dd289::t_3e080bd6656b31 1-7
+src/main/templates/META-INF/neoforge.mods.toml
+  s_ccad84166dd289::t_779cee5efa5610 1-35
+.specify/workflows/speckit/workflow.yml
+  s_ccad84166dd289::t_9a12687eabfc17 1-78
+.specify/scripts/bash/check-prerequisites.sh
+  s_ccad84166dd289::t_9a12687eabfc17 1-195
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_ccad84166dd289::t_c7b049eef7d21b 14-15,22-32,34-39,56-57,61,63,66-99
+  s_ccad84166dd289::t_4f8ca47071f865 1-2,5-13,16-18,33,40-51,58-60,100-101
+  s_ccad84166dd289::t_8dfb9f8711d425 3-4,19-21,52-55,62,64-65
+.claude/skills/speckit-clarify/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-294
+.specify/scripts/bash/setup-tasks.sh
+  s_ccad84166dd289::t_9a12687eabfc17 1-91
+specs/001-floating-panel/spec.md
+  s_ccad84166dd289::t_787f3598c0f6d6 1-107
+.claude/skills/speckit-specify/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-348
+.specify/templates/spec-template.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-131
+.specify/templates/plan-template.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-113
+.claude/skills/speckit-taskstoissues/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-112
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelState.java
+  s_ccad84166dd289::t_9f9c39a26cfb88 1-4,6-115
+  s_ccad84166dd289::t_4af3903224b981 5
+.gitignore
+  s_ccad84166dd289::t_e2ae35837e1f4a 1-45
+  s_ccad84166dd289::t_b143730b85ea99 46-50
+.specify/templates/checklist-template.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-40
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_ccad84166dd289::t_d277258b095a45 1-28
+src/main/resources/mcfloatingbackpack.mixins.json
+  s_ccad84166dd289::t_5e053d9b65f94a 1-11
+src/main/resources/META-INF/accesstransformer.cfg
+  s_ccad84166dd289::t_c9b486abbc5a4d 1-2
+docs/MCFloatingBackpack.md
+  s_ccad84166dd289::t_adb7562620ac5e 1-189
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingBackpackKeys.java
+  s_ccad84166dd289::t_328635711f82f2 1-2,5-15,18-25,27-35
+  s_ccad84166dd289::t_982f749a154c9a 3-4,16-17,26
+build.gradle
+  s_ccad84166dd289::t_a2ac5c1bd99a60 1-146
+specs/001-floating-panel/tasks.md
+  s_ccad84166dd289::t_8bbf61da553c4f 27-28,38-42,56-60,74-77,91-94,104-106
+  s_ccad84166dd289::t_ae1ad9638928ad 1-26,29-37,43-55,61-73,78-90,95-103,107-201
+.specify/integration.json
+  s_ccad84166dd289::t_9a12687eabfc17 1-15
+.specify/feature.json
+  s_ccad84166dd289::t_04329d9a5d9efb 1
+gradle.properties
+  s_ccad84166dd289::t_9e0509d1a340fb 1-30
+.specify/integrations/claude.manifest.json
+  s_ccad84166dd289::t_9a12687eabfc17 1-17
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_ccad84166dd289::t_e6873f884c7ba0 1-2,5
+  s_ccad84166dd289::t_2651e365d56089 3-4
+gradlew
+  s_ccad84166dd289::t_3e080bd6656b31 1-251
+.specify/scripts/bash/create-new-feature.sh
+  s_ccad84166dd289::t_9a12687eabfc17 1-392
+.specify/templates/tasks-template.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-252
+.claude/skills/speckit-tasks/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-217
+.claude/skills/speckit-implement/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-226
+specs/001-floating-panel/plan.md
+  s_ccad84166dd289::t_be3817930fc408 1,3,5,9,13,15,17,19,21,23,25,27,29,35-41,43-44,50-59,65-78,81,85
+  s_ccad84166dd289::t_1386ed3ec4e3fe 2,4,6-8,10-12,14,16,18,20,22,24,26,28,30-34,42,45-49,60-64,79-80,82-84
+specs/001-floating-panel/research.md
+  s_ccad84166dd289::t_5cbf74356bc378 1-43
+specs/001-floating-panel/contracts/floating-panel.md
+  s_ccad84166dd289::t_4dd454005dba11 1-46
+.specify/scripts/bash/setup-plan.sh
+  s_ccad84166dd289::t_9a12687eabfc17 1-83
+.specify/init-options.json
+  s_ccad84166dd289::t_9a12687eabfc17 1-9
+.specify/integrations/speckit.manifest.json
+  s_ccad84166dd289::t_9a12687eabfc17 1-17
+.gitattributes
+  s_ccad84166dd289::t_f8664f1380b83f 1-13
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelConfig.java
+  s_ccad84166dd289::t_7b9442ffc73d69 1-73
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_ccad84166dd289::t_e258f92526479e 3-4
+  s_ccad84166dd289::t_cab7ad8966fbb1 1-2,5
+specs/001-floating-panel/quickstart.md
+  s_ccad84166dd289::t_16f4511e97cc12 1-23,25-29,34,40-42
+  s_ccad84166dd289::t_8b9eb504c7a7d7 24,30-33,35-39,43
+.claude/skills/speckit-converge/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-279
+.specify/scripts/bash/common.sh
+  s_ccad84166dd289::t_9a12687eabfc17 1-704
+.specify/workflows/workflow-registry.json
+  s_ccad84166dd289::t_9a12687eabfc17 1-13
+.specify/templates/constitution-template.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-50
+.claude/skills/speckit-checklist/SKILL.md
+  s_ccad84166dd289::t_9a12687eabfc17 1-376
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelClampTest.java
+  s_ccad84166dd289::t_e053ca05fd3f74 1-55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b755e3d53469bb7b90305439e9df95255078b73d",
+  "prompts": {},
+  "sessions": {
+    "s_ccad84166dd289": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "16380393-15fc-441d-bffb-4166200f8ffe",
+        "model": "default"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
