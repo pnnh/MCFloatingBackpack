@@ -6,11 +6,11 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 
 /**
@@ -75,7 +75,7 @@ public final class FloatingPanelInput {
         boolean shift = Screen.hasShiftDown()
                 || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)
                 || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
-        boolean screenOpen = minecraft.screen instanceof AbstractContainerScreen;
+        boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
         PacketDistributor.sendToServer(
                 new BackpackClickPayload(slotIndex, shift, screenOpen, true));
     }

@@ -57,7 +57,7 @@ public record BackpackClickPayload(int slotIndex, boolean shiftDown, boolean scr
             AbstractContainerMenu menu = serverPlayer.containerMenu;
 
             if (payload.screenOpen() && menu != null) {
-                // Unified cursor with open inventory/chest (M3).
+                // Unified cursor with open inventory/chest/backpack GUIs (M3/M4).
                 BackpackMenuBridge.clickWithMenuCarried(inventory, menu, payload.slotIndex());
                 menu.broadcastChanges();
             } else if (payload.shiftDown()) {

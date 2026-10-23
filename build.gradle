@@ -92,10 +92,13 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
-    // Optional popular backpack mods for later compatibility testing (dev runtime only).
-    // Uncomment when ready to exercise cross-GUI item drag against those UIs.
-    // localRuntime "maven.modrinth:sophisticated-backpacks:<version>"
-    // localRuntime "maven.modrinth:travelersbackpack:<version>"
+    // Optional popular backpack mods for M4 compatibility testing (dev runtime only).
+    // Enable with: ./gradlew runClient -PcompatRuntime
+    if (findProperty('compatRuntime') != null) {
+        localRuntime "curse.maven:sophisticated-core-618298:9083874"
+        localRuntime "curse.maven:sophisticated-backpacks-422301:9154769"
+        localRuntime "curse.maven:travelers-backpack-321117:6429473"
+    }
 }
 
 tasks.named("test") {

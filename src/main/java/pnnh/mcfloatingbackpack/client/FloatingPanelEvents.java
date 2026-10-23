@@ -4,7 +4,6 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -16,6 +15,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
@@ -71,7 +71,8 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onScreenOpening(ScreenEvent.Opening event) {
-        if (event.getNewScreen() instanceof AbstractContainerScreen && Minecraft.getInstance().player != null) {
+        if (ContainerScreenCompat.isOpenContainerScreen(event.getNewScreen())
+                && Minecraft.getInstance().player != null) {
             PacketDistributor.sendToServer(new MergePanelCursorPayload());
         }
     }

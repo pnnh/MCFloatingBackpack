@@ -10,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 
 /**
  * Floating panel chrome in vanilla inventory gray, with synced item stacks.
@@ -69,7 +70,7 @@ public final class FloatingPanelRenderer {
 
     private static ItemStack cursorStack(Minecraft minecraft) {
         if (minecraft.player != null
-                && minecraft.screen instanceof net.minecraft.client.gui.screens.inventory.AbstractContainerScreen
+                && ContainerScreenCompat.isOpenContainerScreen(minecraft.screen)
                 && minecraft.player.containerMenu != null) {
             return minecraft.player.containerMenu.getCarried();
         }

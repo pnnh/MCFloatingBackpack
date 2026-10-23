@@ -28,6 +28,28 @@ and other container GUIs so items can be moved between them.
     ordering="NONE"
     side="BOTH"
 
+# Soft-compatible via AbstractContainerScreen; never required to load this mod.
+[[dependencies.${mod_id}]]
+    modId="sophisticatedcore"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="sophisticatedbackpacks"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="travelersbackpack"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"
 
