@@ -2,13 +2,19 @@ package pnnh.mcfloatingbackpack.client.panel;
 
 import org.lwjgl.glfw.GLFW;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
+
+import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 
 /**
- * Hit-testing and drag handling for the floating panel. Consumes clicks on the
- * panel so they do not fall through to a container screen underneath.
+ * Hit-testing, panel drag, and slot clicks for the floating backpack.
  */
 @OnlyIn(Dist.CLIENT)
 public final class FloatingPanelInput {
@@ -29,6 +35,11 @@ public final class FloatingPanelInput {
                 state.beginDrag((int) mouseX, (int) mouseY);
                 return true;
             }
+            int slot = PanelSlots.indexAt(state, mouseX, mouseY);
+            if (slot >= 0) {
+                sendClick(slot);
+                return true;
+            }
             if (state.hitsBody(mouseX, mouseY) || state.contains(mouseX, mouseY)) {
                 return true;
             }
@@ -47,9 +58,6 @@ public final class FloatingPanelInput {
         return false;
     }
 
-    /**
-     * @return true if the drag event should be consumed
-     */
     public static boolean onMouseDragged(double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
         if (!state.isVisible() || !state.isDragging()) {
@@ -59,11 +67,17 @@ public final class FloatingPanelInput {
         return true;
     }
 
-    public static void finishDragIfNeeded() {
-        FloatingPanelState state = FloatingPanelState.get();
-        if (state.isDragging()) {
-            finishDrag(state);
+    private static void sendClick(int slotIndex) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null) {
+            return;
         }
+        boolean shift = Screen.hasShiftDown()
+                || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)
+                || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
+        boolean screenOpen = minecraft.screen instanceof AbstractContainerScreen;
+        PacketDistributor.sendToServer(
+                new BackpackClickPayload(slotIndex, shift, screenOpen, true));
     }
 
     private static void finishDrag(FloatingPanelState state) {

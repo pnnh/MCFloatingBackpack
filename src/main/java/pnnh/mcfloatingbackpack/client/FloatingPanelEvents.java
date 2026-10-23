@@ -14,6 +14,7 @@ import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
@@ -54,6 +55,7 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onLoggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
         ensureConfigLoaded();
+        ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
         state.endDrag();
@@ -71,13 +73,21 @@ public final class FloatingPanelEvents {
             return;
         }
         ensureConfigLoaded();
-        FloatingPanelRenderer.render(event.getGuiGraphics(), FloatingPanelState.get());
+        FloatingPanelRenderer.render(
+                event.getGuiGraphics(),
+                FloatingPanelState.get(),
+                (int) guiMouseX(minecraft),
+                (int) guiMouseY(minecraft));
     }
 
     @SubscribeEvent
     public static void onScreenRender(ScreenEvent.Render.Post event) {
         ensureConfigLoaded();
-        FloatingPanelRenderer.render(event.getGuiGraphics(), FloatingPanelState.get());
+        FloatingPanelRenderer.render(
+                event.getGuiGraphics(),
+                FloatingPanelState.get(),
+                event.getMouseX(),
+                event.getMouseY());
     }
 
     @SubscribeEvent
