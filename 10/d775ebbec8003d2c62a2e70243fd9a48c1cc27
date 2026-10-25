@@ -1,0 +1,111 @@
+.specify/feature.json
+  s_8afe4597dabcc6::t_2a22288b475468 2
+docs/plan/005-gameplay-item-tiers.md
+  s_8afe4597dabcc6::t_7e53ea371e0990 11-13,298
+specs/006-tiered-backpacks/DELIVERY.md
+  s_8afe4597dabcc6::t_af2ecb3ce0a752 1-23
+specs/006-tiered-backpacks/checklists/requirements.md
+  s_8afe4597dabcc6::t_de8054f8125dc6 1-36
+specs/006-tiered-backpacks/contracts/tiered-backpack.md
+  s_8afe4597dabcc6::t_f9ca2dae86bd6d 1-72
+specs/006-tiered-backpacks/data-model.md
+  s_8afe4597dabcc6::t_8740199fa10060 1-58
+specs/006-tiered-backpacks/plan.md
+  s_8afe4597dabcc6::t_f48bd32e2ec52b 1-96
+specs/006-tiered-backpacks/quickstart.md
+  s_8afe4597dabcc6::t_d89065af2a66c6 1-49
+specs/006-tiered-backpacks/research.md
+  s_8afe4597dabcc6::t_2cd6ad7d1e9af2 1-54
+specs/006-tiered-backpacks/spec.md
+  s_8afe4597dabcc6::t_e91d45913acf50 1-144
+specs/006-tiered-backpacks/tasks.md
+  s_8afe4597dabcc6::t_5513b9563c2bac 1-154
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_8afe4597dabcc6::t_23924a867263fc 13,30
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_8afe4597dabcc6::t_faa020d5bb11bf 181-187,192,198-204,250-279
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_8afe4597dabcc6::t_b920aa4f8c0112 9,17-18,29-36,61-63,65-71,73-76,87,90-91
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_8afe4597dabcc6::t_8fa4eb6f6f77c6 39-47,64-68,78,81-89
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_8afe4597dabcc6::t_3c7664ad1a58e8 32-34,43-46,59,99-102,126-141
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelState.java
+  s_8afe4597dabcc6::t_f93c2e4f289bd6 9,13-14,26-30,47-48,81-84,87,104-131,157-221
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelSlots.java
+  s_8afe4597dabcc6::t_4beb4268fafe1a 4,12-15,20-27,29,32-34,43,47-52,54-58,67-139
+src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java
+  s_8afe4597dabcc6::t_903505442233a5 20,42,45,48-49,51-75,121,127,133,139
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackContents.java
+  s_8afe4597dabcc6::t_bc6d847406477f 17,33,39-40,43,45-57,59,64,68-71,73
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_8afe4597dabcc6::t_c202a5fece2af7 9-11,13,16,18,21-29,43-45,50-52,56-57,61-63,65,70-71,74-81,85,87,89-91
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackUpgrade.java
+  s_8afe4597dabcc6::t_87c7f13366708b 1-22
+src/main/java/pnnh/mcfloatingbackpack/inventory/recipe/BackpackUpgradeRecipe.java
+  s_8afe4597dabcc6::t_c37260989c1ce1 1-104
+src/main/java/pnnh/mcfloatingbackpack/inventory/recipe/ModRecipes.java
+  s_8afe4597dabcc6::t_fd2b1275414517 1-35
+src/main/java/pnnh/mcfloatingbackpack/item/BackpackTier.java
+  s_8afe4597dabcc6::t_00d39f134f044f 1-46
+src/main/java/pnnh/mcfloatingbackpack/item/FloatingBackpackItem.java
+  s_8afe4597dabcc6::t_b1b62d67e5e814 3,6,8,13,19-20,22-31,34-38,41,48-59,67
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_8afe4597dabcc6::t_b7513f7a1bd505 24-32,41-43,50-68
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_8afe4597dabcc6::t_d18884c9caae41 63,83-86
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackFullSyncPayload.java
+  s_8afe4597dabcc6::t_4ca92eaaa2e47c 32,39-40
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_8afe4597dabcc6::t_952020c468d46f 23,73
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackSessionPayload.java
+  s_8afe4597dabcc6::t_2548bebbc156f4 39,51-52,73
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_8afe4597dabcc6::t_28d9d1a6b48872 6-9
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_8afe4597dabcc6::t_c15175b25601d6 6-9
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack.json
+  s_8afe4597dabcc6::t_342519fd1f5bfc 1-6
+src/main/resources/assets/mcfloatingbackpack/models/item/floating_backpack.json
+  s_8afe4597dabcc6::t_4d476511bed410 1-102
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack.json
+  s_8afe4597dabcc6::t_60401f6a50d7d0 1-6
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack.json
+  s_8afe4597dabcc6::t_e9464f82acb5cd 1-6
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json
+  s_8afe4597dabcc6::t_7b0aa5732f50bc 2,4
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack.json
+  s_8afe4597dabcc6::t_f2b536a112fff2 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/upgrade_diamond_floating_backpack.json
+  s_8afe4597dabcc6::t_91f3cbf6ae814a 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/upgrade_gold_floating_backpack.json
+  s_8afe4597dabcc6::t_54b80d64a3f6ff 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/upgrade_iron_floating_backpack.json
+  s_8afe4597dabcc6::t_87ec5452217469 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/upgrade_netherite_floating_backpack.json
+  s_8afe4597dabcc6::t_28f70c18849459 1-6
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelLayoutTest.java
+  s_8afe4597dabcc6::t_22dcf713876fcd 1-59
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackRefTest.java
+  s_8afe4597dabcc6::t_75c86faa9033f1 7-8,24-26
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackUpgradeTest.java
+  s_8afe4597dabcc6::t_76e9f4b5de5a3a 1-26
+src/test/java/pnnh/mcfloatingbackpack/item/BackpackTierTest.java
+  s_8afe4597dabcc6::t_28838af72c8ea5 1-35
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "10d775ebbec8003d2c62a2e70243fd9a48c1cc27",
+  "prompts": {},
+  "sessions": {
+    "s_8afe4597dabcc6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "664fc5a7-e094-48d0-9989-a02de1264fd2",
+        "model": "unknown"
+      },
+      "human_author": "pnnh <linyangz@outlook.com>"
+    }
+  }
+}
