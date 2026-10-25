@@ -21,8 +21,16 @@ sourceSets.main.resources {
 repositories {
     mavenCentral()
     maven {
+        name = "NeoForged"
+        url = "https://maven.neoforged.net/releases"
+    }
+    maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
+    }
+    maven {
+        name = "BlameJared"
+        url = "https://maven.blamejared.com"
     }
     maven {
         name = "CurseMaven"
@@ -98,6 +106,12 @@ dependencies {
         localRuntime "curse.maven:sophisticated-core-618298:9083874"
         localRuntime "curse.maven:sophisticated-backpacks-422301:9154769"
         localRuntime "curse.maven:travelers-backpack-321117:6429473"
+    }
+
+    // JEI for creative/debug item browsing in runClient only (not a published dependency).
+    // Disable with: ./gradlew runClient -PnoJei
+    if (findProperty('noJei') == null) {
+        localRuntime "mezz.jei:jei-1.21.1-neoforge:19.25.0.325"
     }
 }
 

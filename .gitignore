@@ -48,3 +48,10 @@ thirdpart/
 net/
 .tmp-extract/
 .tmp-src/
+
+### Local SSL / vendor workarounds (machine-specific) ###
+.m2-local/
+.gradle-truststore.jks
+.gradle-dist/
+gradle/wrapper/*.zip
+.tmp-*/

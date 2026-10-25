@@ -50,6 +50,14 @@ and other container GUIs so items can be moved between them.
     ordering="NONE"
     side="BOTH"
 
+# Discovery-only: never required. Dev runClient may include JEI via localRuntime.
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="CLIENT"
+
 [[accessTransformers]]
 file="META-INF/accesstransformer.cfg"
 

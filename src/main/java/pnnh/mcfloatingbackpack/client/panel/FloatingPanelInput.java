@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 
 /**
@@ -72,12 +73,31 @@ public final class FloatingPanelInput {
         if (minecraft.player == null) {
             return;
         }
+        BackpackRef ref = ClientBackpackView.get().getActiveRef();
+        if (ref == null) {
+            ref = BackpackRef.resolve(minecraft.player);
+        }
+        if (ref == null) {
+            stateClose();
+            return;
+        }
         boolean shift = Screen.hasShiftDown()
                 || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)
                 || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
         PacketDistributor.sendToServer(
-                new BackpackClickPayload(slotIndex, shift, screenOpen, true));
+                new BackpackClickPayload(
+                        slotIndex,
+                        shift,
+                        screenOpen,
+                        true,
+                        ref.source().ordinal(),
+                        ref.invIndex()));
+    }
+
+    private static void stateClose() {
+        FloatingPanelState.get().setVisible(false);
+        ClientBackpackView.get().clear();
     }
 
     private static void finishDrag(FloatingPanelState state) {

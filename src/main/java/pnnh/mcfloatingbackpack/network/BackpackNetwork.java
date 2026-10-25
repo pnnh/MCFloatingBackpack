@@ -8,8 +8,8 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.inventory.BackpackAttachments;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 
 public final class BackpackNetwork {
     private BackpackNetwork() {
@@ -20,7 +20,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("1");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("2");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -29,6 +29,10 @@ public final class BackpackNetwork {
                 BackpackSlotUpdatePayload.TYPE,
                 BackpackSlotUpdatePayload.STREAM_CODEC,
                 BackpackSlotUpdatePayload::handleClient);
+        registrar.playToClient(
+                BackpackSessionPayload.TYPE,
+                BackpackSessionPayload.STREAM_CODEC,
+                BackpackSessionPayload::handleClient);
         registrar.playToServer(
                 BackpackClickPayload.TYPE,
                 BackpackClickPayload.STREAM_CODEC,
@@ -37,15 +41,35 @@ public final class BackpackNetwork {
                 MergePanelCursorPayload.TYPE,
                 MergePanelCursorPayload.STREAM_CODEC,
                 MergePanelCursorPayload::handleServer);
+        registrar.playToServer(
+                BackpackOpenRequestPayload.TYPE,
+                BackpackOpenRequestPayload.STREAM_CODEC,
+                BackpackOpenRequestPayload::handleServer);
     }
 
-    public static void sendFullSync(ServerPlayer player) {
-        BackpackInventory inventory = player.getData(BackpackAttachments.BACKPACK.get());
-        PacketDistributor.sendToPlayer(player, BackpackFullSyncPayload.from(inventory));
+    public static void sendSession(ServerPlayer player, boolean open, BackpackRef ref) {
+        if (!open || ref == null || !ref.stillValid(player)) {
+            PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
+            return;
+        }
+        BackpackInventory inventory = ref.loadInventory(player);
+        PacketDistributor.sendToPlayer(player, BackpackSessionPayload.open(ref, inventory));
     }
 
-    public static void sendSlotUpdate(ServerPlayer player, int slotIndex) {
-        BackpackInventory inventory = player.getData(BackpackAttachments.BACKPACK.get());
+    public static void sendFullSync(ServerPlayer player, BackpackRef ref) {
+        if (ref == null || !ref.stillValid(player)) {
+            return;
+        }
+        BackpackInventory inventory = ref.loadInventory(player);
+        PacketDistributor.sendToPlayer(player, BackpackFullSyncPayload.from(ref, inventory));
+    }
+
+    public static void sendSlotUpdate(ServerPlayer player, BackpackRef ref, int slotIndex) {
+        if (ref == null || !ref.stillValid(player)) {
+            PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
+            return;
+        }
+        BackpackInventory inventory = ref.loadInventory(player);
         ItemStack slotStack = slotIndex >= 0 && slotIndex < BackpackInventory.SIZE
                 ? inventory.getStackInSlot(slotIndex).copy()
                 : ItemStack.EMPTY;

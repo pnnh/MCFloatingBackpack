@@ -5,6 +5,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.client.render.BackpackRenderEvents;
 
 /**
  * Client-only wiring for the floating backpack overlay and hotkeys.
@@ -17,6 +18,7 @@ public final class ClientSetup {
     public static void register(IEventBus modEventBus) {
         MCFloatingBackpack.LOGGER.info("MCFloatingBackpack client setup");
         modEventBus.addListener(FloatingBackpackKeys::registerKeys);
+        BackpackRenderEvents.register(modEventBus);
         FloatingPanelEvents.init();
     }
 }

@@ -1,0 +1,50 @@
+package pnnh.mcfloatingbackpack.item;
+
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
+
+import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.inventory.BackpackContents;
+import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
+
+public final class ModItems {
+    public static final DeferredRegister.Items ITEMS =
+            DeferredRegister.createItems(MCFloatingBackpack.MOD_ID);
+
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_TABS =
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MCFloatingBackpack.MOD_ID);
+
+    public static final DeferredHolder<Item, FloatingBackpackItem> LEATHER_FLOATING_BACKPACK =
+            ITEMS.register(
+                    "leather_floating_backpack",
+                    () -> new FloatingBackpackItem(FloatingBackpackItem.baseProperties()));
+
+    public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
+            CREATIVE_TABS.register(
+                    "main",
+                    () -> CreativeModeTab.builder()
+                            .title(Component.translatable("itemGroup." + MCFloatingBackpack.MOD_ID))
+                            .icon(() -> new ItemStack(LEATHER_FLOATING_BACKPACK.get()))
+                            .displayItems((params, output) -> {
+                                ItemStack stack = new ItemStack(LEATHER_FLOATING_BACKPACK.get());
+                                stack.set(
+                                        ModDataComponents.BACKPACK_CONTENTS.get(),
+                                        BackpackContents.empty());
+                                output.accept(stack);
+                            })
+                            .build());
+
+    private ModItems() {
+    }
+
+    public static void register(IEventBus modEventBus) {
+        ITEMS.register(modEventBus);
+        CREATIVE_TABS.register(modEventBus);
+    }
+}

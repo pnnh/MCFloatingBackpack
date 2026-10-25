@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "L": { "item": "minecraft:leather" },
+    "C": { "item": "minecraft:chest" },
+    "S": { "item": "minecraft:string" }
+  },
+  "pattern": [
+    "LSL",
+    "LCL",
+    "LLL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:leather_floating_backpack"
+  }
+}

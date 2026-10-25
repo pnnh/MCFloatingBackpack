@@ -1,5 +1,8 @@
 {
   "key.categories.mcfloatingbackpack": "MCFloatingBackpack",
   "key.mcfloatingbackpack.toggle": "Toggle floating backpack",
-  "panel.mcfloatingbackpack.title": "Floating Backpack"
+  "panel.mcfloatingbackpack.title": "Floating Backpack",
+  "item.mcfloatingbackpack.leather_floating_backpack": "Leather Floating Backpack",
+  "itemGroup.mcfloatingbackpack": "MCFloatingBackpack",
+  "message.mcfloatingbackpack.need_backpack": "You need a floating backpack"
 }

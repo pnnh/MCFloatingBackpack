@@ -1,5 +1,8 @@
 {
-  "key.categories.mcfloatingbackpack": "MCFloatingBackpack",
+  "key.categories.mcfloatingbackpack": "浮动背包",
   "key.mcfloatingbackpack.toggle": "开关浮动背包",
-  "panel.mcfloatingbackpack.title": "浮动背包"
+  "panel.mcfloatingbackpack.title": "浮动背包",
+  "item.mcfloatingbackpack.leather_floating_backpack": "皮革浮动背包",
+  "itemGroup.mcfloatingbackpack": "浮动背包",
+  "message.mcfloatingbackpack.need_backpack": "你需要一只浮动背包"
 }

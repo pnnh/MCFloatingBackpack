@@ -5,8 +5,8 @@ package pnnh.mcfloatingbackpack.client.panel;
  * Kept free of Dist annotations so clamp logic can be unit-tested without NeoForge.
  */
 public final class FloatingPanelState {
-    public static final int DEFAULT_WIDTH = 176;
-    public static final int DEFAULT_HEIGHT = 96;
+    public static final int DEFAULT_WIDTH = PanelSlots.panelWidth();
+    public static final int DEFAULT_HEIGHT = PanelSlots.panelHeight();
     public static final int DRAG_BAR_HEIGHT = 14;
     public static final int DEFAULT_POS_X = 20;
     public static final int DEFAULT_POS_Y = 20;

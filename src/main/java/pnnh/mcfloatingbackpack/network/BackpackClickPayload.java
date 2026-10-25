@@ -13,12 +13,19 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.inventory.BackpackAttachments;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
-public record BackpackClickPayload(int slotIndex, boolean shiftDown, boolean screenOpen, boolean panelOpen)
+public record BackpackClickPayload(
+        int slotIndex,
+        boolean shiftDown,
+        boolean screenOpen,
+        boolean panelOpen,
+        int sourceOrdinal,
+        int invIndex)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackClickPayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -34,6 +41,10 @@ public record BackpackClickPayload(int slotIndex, boolean shiftDown, boolean scr
                     BackpackClickPayload::screenOpen,
                     ByteBufCodecs.BOOL,
                     BackpackClickPayload::panelOpen,
+                    ByteBufCodecs.VAR_INT,
+                    BackpackClickPayload::sourceOrdinal,
+                    ByteBufCodecs.VAR_INT,
+                    BackpackClickPayload::invIndex,
                     BackpackClickPayload::new);
 
     @Override
@@ -53,24 +64,54 @@ public record BackpackClickPayload(int slotIndex, boolean shiftDown, boolean scr
                 return;
             }
 
-            BackpackInventory inventory = serverPlayer.getData(BackpackAttachments.BACKPACK.get());
+            BackpackRef claimed = decodeRef(payload.sourceOrdinal(), payload.invIndex());
+            BackpackRef resolved = BackpackRef.resolve(serverPlayer);
+            if (resolved == null || !resolved.stillValid(serverPlayer)) {
+                BackpackNetwork.sendSession(serverPlayer, false, null);
+                return;
+            }
+            // Prefer live resolve; claimed must still be a backpack at that location if used.
+            BackpackRef ref = resolved;
+            if (claimed != null
+                    && claimed.stillValid(serverPlayer)
+                    && claimed.source() == resolved.source()
+                    && claimed.invIndex() == resolved.invIndex()) {
+                ref = claimed;
+            }
+
+            BackpackInventory inventory = ref.loadInventory(serverPlayer);
             AbstractContainerMenu menu = serverPlayer.containerMenu;
 
             if (payload.screenOpen() && menu != null) {
-                // Unified cursor with open inventory/chest/backpack GUIs (M3/M4).
                 BackpackMenuBridge.clickWithMenuCarried(inventory, menu, payload.slotIndex());
                 menu.broadcastChanges();
             } else if (payload.shiftDown()) {
-                ItemStack hand = serverPlayer.getMainHandItem().copy();
+                // Do not swap the backpack item itself out of the main hand into a slot.
+                ItemStack hand = serverPlayer.getMainHandItem();
+                if (FloatingBackpackItem.isBackpack(hand)) {
+                    ref.saveInventory(serverPlayer, inventory);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, payload.slotIndex());
+                    return;
+                }
+                ItemStack handCopy = hand.copy();
                 ItemStack slot = inventory.getStackInSlot(payload.slotIndex()).copy();
-                inventory.setStackInSlot(payload.slotIndex(), hand);
+                inventory.setStackInSlot(payload.slotIndex(), handCopy);
                 serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, slot);
                 serverPlayer.getInventory().setChanged();
             } else {
                 BackpackClickLogic.applyTo(inventory, payload.slotIndex());
             }
 
-            BackpackNetwork.sendSlotUpdate(serverPlayer, payload.slotIndex());
+            ref.saveInventory(serverPlayer, inventory);
+            BackpackNetwork.sendSlotUpdate(serverPlayer, ref, payload.slotIndex());
         });
+    }
+
+    private static BackpackRef decodeRef(int sourceOrdinal, int invIndex) {
+        BackpackRef.Source[] sources = BackpackRef.Source.values();
+        if (sourceOrdinal < 0 || sourceOrdinal >= sources.length) {
+            return null;
+        }
+        return new BackpackRef(sources[sourceOrdinal], invIndex);
     }
 }

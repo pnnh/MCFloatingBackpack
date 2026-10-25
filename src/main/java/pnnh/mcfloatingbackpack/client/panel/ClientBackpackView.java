@@ -6,10 +6,10 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 
 /**
  * Client mirror of the server backpack. Updated only by network payloads.
- * Not Dist-only so payload classes can reference it safely on a dedicated server classpath.
  */
 public final class ClientBackpackView {
     private static final ClientBackpackView INSTANCE = new ClientBackpackView();
@@ -17,6 +17,7 @@ public final class ClientBackpackView {
     private final NonNullList<ItemStack> slots =
             NonNullList.withSize(BackpackInventory.SIZE, ItemStack.EMPTY);
     private ItemStack cursor = ItemStack.EMPTY;
+    private BackpackRef activeRef;
 
     private ClientBackpackView() {
     }
@@ -34,6 +35,18 @@ public final class ClientBackpackView {
 
     public ItemStack getCursor() {
         return cursor;
+    }
+
+    public BackpackRef getActiveRef() {
+        return activeRef;
+    }
+
+    public void setActiveRef(BackpackRef activeRef) {
+        this.activeRef = activeRef;
+    }
+
+    public void clearActiveRef() {
+        this.activeRef = null;
     }
 
     public void applyFull(List<ItemStack> synced, ItemStack syncedCursor) {
@@ -56,5 +69,6 @@ public final class ClientBackpackView {
             slots.set(i, ItemStack.EMPTY);
         }
         cursor = ItemStack.EMPTY;
+        activeRef = null;
     }
 }

@@ -10,9 +10,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.inventory.BackpackAttachments;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 
 /**
  * Client notifies that a container screen opened; server merges leftover panel cursor
@@ -41,10 +41,15 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
             if (menu == null) {
                 return;
             }
-            BackpackInventory inventory = serverPlayer.getData(BackpackAttachments.BACKPACK.get());
+            BackpackRef ref = BackpackRef.resolve(serverPlayer);
+            if (ref == null || !ref.stillValid(serverPlayer)) {
+                return;
+            }
+            BackpackInventory inventory = ref.loadInventory(serverPlayer);
             BackpackMenuBridge.mergePanelCursorIntoCarried(inventory, menu);
+            ref.saveInventory(serverPlayer, inventory);
             menu.broadcastChanges();
-            BackpackNetwork.sendSlotUpdate(serverPlayer, -1);
+            BackpackNetwork.sendSlotUpdate(serverPlayer, ref, -1);
         });
     }
 }

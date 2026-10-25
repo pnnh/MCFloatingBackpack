@@ -14,26 +14,37 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 
-public record BackpackFullSyncPayload(List<ItemStack> slots, ItemStack cursor) implements CustomPacketPayload {
+public record BackpackFullSyncPayload(
+        int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor)
+        implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackFullSyncPayload> TYPE =
             new CustomPacketPayload.Type<>(
                     ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, "full_sync"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BackpackFullSyncPayload> STREAM_CODEC =
             StreamCodec.composite(
+                    ByteBufCodecs.VAR_INT,
+                    BackpackFullSyncPayload::sourceOrdinal,
+                    ByteBufCodecs.VAR_INT,
+                    BackpackFullSyncPayload::invIndex,
                     ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.SIZE)),
                     BackpackFullSyncPayload::slots,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackFullSyncPayload::cursor,
                     BackpackFullSyncPayload::new);
 
-    public static BackpackFullSyncPayload from(BackpackInventory inventory) {
+    public static BackpackFullSyncPayload from(BackpackRef ref, BackpackInventory inventory) {
         List<ItemStack> slots = new ArrayList<>(BackpackInventory.SIZE);
         for (int i = 0; i < BackpackInventory.SIZE; i++) {
             slots.add(inventory.getStackInSlot(i).copy());
         }
-        return new BackpackFullSyncPayload(slots, inventory.getCursor().copy());
+        return new BackpackFullSyncPayload(
+                ref.source().ordinal(),
+                ref.invIndex(),
+                slots,
+                inventory.getCursor().copy());
     }
 
     @Override
@@ -42,6 +53,14 @@ public record BackpackFullSyncPayload(List<ItemStack> slots, ItemStack cursor) i
     }
 
     public static void handleClient(BackpackFullSyncPayload payload, IPayloadContext context) {
-        context.enqueueWork(() -> ClientBackpackView.get().applyFull(payload.slots(), payload.cursor()));
+        context.enqueueWork(() -> {
+            ClientBackpackView.get().applyFull(payload.slots(), payload.cursor());
+            BackpackRef.Source[] sources = BackpackRef.Source.values();
+            int ord = payload.sourceOrdinal();
+            BackpackRef.Source source =
+                    ord >= 0 && ord < sources.length ? sources[ord] : BackpackRef.Source.MAIN_HAND;
+            ClientBackpackView.get()
+                    .setActiveRef(new BackpackRef(source, payload.invIndex()));
+        });
     }
 }
