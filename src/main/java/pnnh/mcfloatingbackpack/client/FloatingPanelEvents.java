@@ -177,19 +177,31 @@ public final class FloatingPanelEvents {
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
         hideIfDisallowed(minecraft);
-
         FloatingPanelState state = FloatingPanelState.get();
+        if (state.isVisible()) {
+            state.setTotalRows(ClientBackpackView.get().rows());
+            state.layout(minecraft.getWindow().getGuiScaledHeight());
+            state.clampToScreen(
+                    minecraft.getWindow().getGuiScaledWidth(),
+                    minecraft.getWindow().getGuiScaledHeight());
+        }
         if (state.isVisible() && minecraft.screen == null) {
             syncMouseToPanelVisibility();
         }
 
-        if (!state.isVisible() || !state.isDragging()) {
+        if (!state.isVisible() || (!state.isDragging() && !state.isScrolling())) {
             return;
         }
         if (!allowsPanel(minecraft.screen)) {
             return;
         }
-        state.updateDrag((int) guiMouseX(minecraft), (int) guiMouseY(minecraft));
+        int mouseX = (int) guiMouseX(minecraft);
+        int mouseY = (int) guiMouseY(minecraft);
+        if (state.isDragging()) {
+            state.updateDrag(mouseX, mouseY);
+        } else if (state.isScrolling()) {
+            state.updateScrollDrag(mouseY);
+        }
     }
 
     @SubscribeEvent
@@ -233,6 +245,36 @@ public final class FloatingPanelEvents {
             return;
         }
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.open(ref));
+    }
+
+    @SubscribeEvent
+    public static void onWorldMouseScroll(InputEvent.MouseScrollingEvent event) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft == null || minecraft.screen != null) {
+            return;
+        }
+        if (scrollPanel(event.getScrollDeltaY(), guiMouseX(minecraft), guiMouseY(minecraft))) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onScreenMouseScroll(ScreenEvent.MouseScrolled.Pre event) {
+        if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
+            return;
+        }
+        if (scrollPanel(event.getScrollDeltaY(), event.getMouseX(), event.getMouseY())) {
+            event.setCanceled(true);
+        }
+    }
+
+    private static boolean scrollPanel(double scrollDeltaY, double mouseX, double mouseY) {
+        FloatingPanelState state = FloatingPanelState.get();
+        if (!state.isVisible() || scrollDeltaY == 0 || !state.contains(mouseX, mouseY)) {
+            return false;
+        }
+        state.scrollBy(scrollDeltaY > 0 ? -1 : 1);
+        return true;
     }
 
     @SubscribeEvent

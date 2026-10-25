@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Immutable snapshot stored on a floating-backpack ItemStack as a data component.
+ * List length is the tier capacity (at most {@link BackpackInventory#MAX_SIZE}).
  */
 public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
     public static final Codec<BackpackContents> CODEC = RecordCodecBuilder.create(instance -> instance
@@ -29,37 +30,46 @@ public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BackpackContents> STREAM_CODEC =
             StreamCodec.composite(
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.SIZE)),
+                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_SIZE)),
                     BackpackContents::items,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackContents::cursor,
                     BackpackContents::normalize);
 
-    public static BackpackContents empty() {
-        return new BackpackContents(
-                NonNullList.withSize(BackpackInventory.SIZE, ItemStack.EMPTY), ItemStack.EMPTY);
+    public static BackpackContents empty(int capacity) {
+        return fit(List.of(), ItemStack.EMPTY, capacity);
     }
 
+    /** Copies stacks and clamps the list to {@link BackpackInventory#MAX_SIZE} without padding. */
     public static BackpackContents normalize(List<ItemStack> items, ItemStack cursor) {
-        NonNullList<ItemStack> slots = NonNullList.withSize(BackpackInventory.SIZE, ItemStack.EMPTY);
+        int size = items == null ? 0 : Math.min(items.size(), BackpackInventory.MAX_SIZE);
+        NonNullList<ItemStack> slots = NonNullList.create();
+        for (int i = 0; i < size; i++) {
+            ItemStack stack = items.get(i);
+            slots.add(stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+        }
+        ItemStack cursorCopy = cursor == null || cursor.isEmpty() ? ItemStack.EMPTY : cursor.copy();
+        return new BackpackContents(slots, cursorCopy);
+    }
+
+    public static BackpackContents fit(List<ItemStack> items, ItemStack cursor, int capacity) {
+        int size = Math.max(0, Math.min(BackpackInventory.MAX_SIZE, capacity));
+        NonNullList<ItemStack> slots = NonNullList.withSize(size, ItemStack.EMPTY);
         if (items != null) {
-            for (int i = 0; i < Math.min(items.size(), BackpackInventory.SIZE); i++) {
+            for (int i = 0; i < Math.min(items.size(), size); i++) {
                 ItemStack stack = items.get(i);
                 slots.set(i, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
             }
         }
-        ItemStack cursorCopy =
-                cursor == null || cursor.isEmpty() ? ItemStack.EMPTY : cursor.copy();
+        ItemStack cursorCopy = cursor == null || cursor.isEmpty() ? ItemStack.EMPTY : cursor.copy();
         return new BackpackContents(slots, cursorCopy);
     }
 
+    public BackpackContents fit(int capacity) {
+        return fit(items, cursor, capacity);
+    }
+
     public BackpackContents copy() {
-        List<ItemStack> copied = new ArrayList<>(BackpackInventory.SIZE);
-        for (int i = 0; i < BackpackInventory.SIZE; i++) {
-            ItemStack stack = i < items.size() ? items.get(i) : ItemStack.EMPTY;
-            copied.add(stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
-        }
-        return new BackpackContents(
-                copied, cursor == null || cursor.isEmpty() ? ItemStack.EMPTY : cursor.copy());
+        return normalize(items, cursor);
     }
 }

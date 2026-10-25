@@ -1,0 +1,6 @@
+{
+  "type": "mcfloatingbackpack:backpack_upgrade",
+  "base": { "item": "mcfloatingbackpack:leather_floating_backpack" },
+  "addition": { "item": "minecraft:iron_block" },
+  "result": { "id": "mcfloatingbackpack:iron_floating_backpack", "count": 1 }
+}

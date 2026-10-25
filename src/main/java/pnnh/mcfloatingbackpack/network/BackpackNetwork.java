@@ -20,7 +20,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("2");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("3");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -70,7 +70,7 @@ public final class BackpackNetwork {
             return;
         }
         BackpackInventory inventory = ref.loadInventory(player);
-        ItemStack slotStack = slotIndex >= 0 && slotIndex < BackpackInventory.SIZE
+        ItemStack slotStack = slotIndex >= 0 && slotIndex < inventory.size()
                 ? inventory.getStackInSlot(slotIndex).copy()
                 : ItemStack.EMPTY;
         PacketDistributor.sendToPlayer(

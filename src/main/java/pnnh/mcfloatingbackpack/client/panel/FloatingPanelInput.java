@@ -36,6 +36,15 @@ public final class FloatingPanelInput {
                 state.beginDrag((int) mouseX, (int) mouseY);
                 return true;
             }
+            if (PanelSlots.hitsScrollbar(state, mouseX, mouseY)) {
+                if (PanelSlots.hitsScrollThumb(state, mouseX, mouseY)) {
+                    state.beginScrollDrag((int) mouseY);
+                } else {
+                    state.setScrollRow(PanelSlots.scrollRowAt(state, mouseY));
+                    state.beginScrollDrag((int) mouseY);
+                }
+                return true;
+            }
             int slot = PanelSlots.indexAt(state, mouseX, mouseY);
             if (slot >= 0) {
                 sendClick(slot);
@@ -52,6 +61,11 @@ public final class FloatingPanelInput {
             return true;
         }
 
+        if (action == GLFW.GLFW_RELEASE && state.isScrolling()) {
+            state.endScrollDrag();
+            return true;
+        }
+
         if (action == GLFW.GLFW_RELEASE && state.contains(mouseX, mouseY)) {
             return true;
         }
@@ -61,11 +75,18 @@ public final class FloatingPanelInput {
 
     public static boolean onMouseDragged(double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
-        if (!state.isVisible() || !state.isDragging()) {
+        if (!state.isVisible()) {
             return false;
         }
-        state.updateDrag((int) mouseX, (int) mouseY);
-        return true;
+        if (state.isDragging()) {
+            state.updateDrag((int) mouseX, (int) mouseY);
+            return true;
+        }
+        if (state.isScrolling()) {
+            state.updateScrollDrag((int) mouseY);
+            return true;
+        }
+        return false;
     }
 
     private static void sendClick(int slotIndex) {

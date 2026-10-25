@@ -5,8 +5,8 @@ import java.util.List;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
-import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.item.BackpackTier;
 
 /**
  * Client mirror of the server backpack. Updated only by network payloads.
@@ -14,8 +14,8 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 public final class ClientBackpackView {
     private static final ClientBackpackView INSTANCE = new ClientBackpackView();
 
-    private final NonNullList<ItemStack> slots =
-            NonNullList.withSize(BackpackInventory.SIZE, ItemStack.EMPTY);
+    private NonNullList<ItemStack> slots =
+            NonNullList.withSize(BackpackTier.LEATHER.capacity(), ItemStack.EMPTY);
     private ItemStack cursor = ItemStack.EMPTY;
     private BackpackRef activeRef;
 
@@ -24,6 +24,14 @@ public final class ClientBackpackView {
 
     public static ClientBackpackView get() {
         return INSTANCE;
+    }
+
+    public int slotCount() {
+        return slots.size();
+    }
+
+    public int rows() {
+        return Math.max(1, slots.size() / PanelSlots.COLS);
     }
 
     public ItemStack getStackInSlot(int index) {
@@ -50,11 +58,22 @@ public final class ClientBackpackView {
     }
 
     public void applyFull(List<ItemStack> synced, ItemStack syncedCursor) {
-        for (int i = 0; i < slots.size(); i++) {
-            ItemStack stack = i < synced.size() ? synced.get(i) : ItemStack.EMPTY;
-            slots.set(i, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+        int count = synced == null ? 0 : synced.size();
+        if (count <= 0) {
+            count = BackpackTier.LEATHER.capacity();
         }
+        boolean sizeChanged = count != slots.size();
+        NonNullList<ItemStack> next = NonNullList.withSize(count, ItemStack.EMPTY);
+        for (int i = 0; i < count; i++) {
+            ItemStack stack = synced != null && i < synced.size() ? synced.get(i) : ItemStack.EMPTY;
+            next.set(i, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+        }
+        slots = next;
         cursor = syncedCursor == null || syncedCursor.isEmpty() ? ItemStack.EMPTY : syncedCursor.copy();
+        if (sizeChanged) {
+            FloatingPanelState.get().setScrollRow(0);
+        }
+        FloatingPanelState.get().setTotalRows(rows());
     }
 
     public void applySlotUpdate(int slotIndex, ItemStack stack, ItemStack syncedCursor) {
@@ -65,10 +84,10 @@ public final class ClientBackpackView {
     }
 
     public void clear() {
-        for (int i = 0; i < slots.size(); i++) {
-            slots.set(i, ItemStack.EMPTY);
-        }
+        slots = NonNullList.withSize(BackpackTier.LEATHER.capacity(), ItemStack.EMPTY);
         cursor = ItemStack.EMPTY;
         activeRef = null;
+        FloatingPanelState.get().setScrollRow(0);
+        FloatingPanelState.get().setTotalRows(BackpackTier.LEATHER.rows());
     }
 }

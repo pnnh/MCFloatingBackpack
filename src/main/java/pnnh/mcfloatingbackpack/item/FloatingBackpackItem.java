@@ -1,34 +1,60 @@
 package pnnh.mcfloatingbackpack.item;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterials;
+import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.ClientBackpackActions;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 
 /**
- * Leather floating backpack: chest-equippable, opens overlay via use / hotkey.
+ * Chest-slot backpack. Sneak-use equips it; a normal use toggles the overlay.
+ * Not an {@code ArmorItem}, so the body does not render a vanilla chestplate.
  */
-public class FloatingBackpackItem extends ArmorItem {
-    public FloatingBackpackItem(Properties properties) {
-        super(ArmorMaterials.LEATHER, Type.CHESTPLATE, properties);
+public class FloatingBackpackItem extends Item implements Equipable {
+    private final BackpackTier tier;
+
+    public FloatingBackpackItem(BackpackTier tier, Properties properties) {
+        super(properties);
+        this.tier = tier;
     }
 
-    public static Properties baseProperties() {
+    public BackpackTier tier() {
+        return tier;
+    }
+
+    public ResourceLocation texture() {
+        return ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, tier.texturePath());
+    }
+
+    public static Properties baseProperties(BackpackTier tier) {
         return new Properties()
                 .stacksTo(1)
-                .component(ModDataComponents.BACKPACK_CONTENTS.get(), BackpackContents.empty());
+                .component(ModDataComponents.BACKPACK_CONTENTS.get(), BackpackContents.empty(tier.capacity()));
     }
 
     public static boolean isBackpack(ItemStack stack) {
         return !stack.isEmpty() && stack.getItem() instanceof FloatingBackpackItem;
+    }
+
+    public static BackpackTier tierOf(ItemStack stack) {
+        if (stack.getItem() instanceof FloatingBackpackItem item) {
+            return item.tier();
+        }
+        return null;
+    }
+
+    @Override
+    public EquipmentSlot getEquipmentSlot() {
+        return EquipmentSlot.CHEST;
     }
 
     @Override
@@ -37,10 +63,8 @@ public class FloatingBackpackItem extends ArmorItem {
         if (hand != InteractionHand.MAIN_HAND || !isBackpack(stack)) {
             return InteractionResultHolder.pass(stack);
         }
-        // Prefer equip-on-use vanilla armor behavior when sneaking? Spec: right-click toggles panel.
-        // Shift-right-click keeps vanilla armor equip.
         if (player.isShiftKeyDown()) {
-            return super.use(level, player, hand);
+            return swapWithEquipmentSlot(this, level, player, hand);
         }
         if (level.isClientSide) {
             ClientBackpackActions.toggleFromUse();

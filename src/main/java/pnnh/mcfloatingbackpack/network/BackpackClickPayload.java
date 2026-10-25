@@ -60,7 +60,7 @@ public record BackpackClickPayload(
             }
             if (!payload.panelOpen()
                     || payload.slotIndex() < 0
-                    || payload.slotIndex() >= BackpackInventory.SIZE) {
+                    || payload.slotIndex() >= BackpackInventory.MAX_SIZE) {
                 return;
             }
 
@@ -80,6 +80,10 @@ public record BackpackClickPayload(
             }
 
             BackpackInventory inventory = ref.loadInventory(serverPlayer);
+            if (payload.slotIndex() >= inventory.size()) {
+                BackpackNetwork.sendSession(serverPlayer, false, null);
+                return;
+            }
             AbstractContainerMenu menu = serverPlayer.containerMenu;
 
             if (payload.screenOpen() && menu != null) {

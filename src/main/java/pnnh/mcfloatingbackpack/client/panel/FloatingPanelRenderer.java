@@ -29,6 +29,9 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SLOT_DARK = 0xFFFFFFFF;
     /** Same white translucent hover used by vanilla container slots. */
     private static final int COLOR_SLOT_HOVER = 0x80FFFFFF;
+    private static final int COLOR_SCROLL_TRACK = 0xFF373737;
+    private static final int COLOR_SCROLL_THUMB = 0xFF8B8B8B;
+    private static final int COLOR_SCROLL_THUMB_EDGE = 0xFFC6C6C6;
 
     private FloatingPanelRenderer() {
     }
@@ -37,6 +40,10 @@ public final class FloatingPanelRenderer {
         if (!state.isVisible()) {
             return;
         }
+        Minecraft minecraft = Minecraft.getInstance();
+        state.setTotalRows(ClientBackpackView.get().rows());
+        state.layout(minecraft.getWindow().getGuiScaledHeight());
+
         int x = state.getPosX();
         int y = state.getPosY();
         int w = state.getWidth();
@@ -49,8 +56,8 @@ public final class FloatingPanelRenderer {
 
         drawVanillaPanel(graphics, x, y, w, h);
         drawSlotsWithItems(graphics, state, hovered);
+        drawScrollbar(graphics, state);
 
-        Minecraft minecraft = Minecraft.getInstance();
         Component title = Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".title");
         graphics.drawString(minecraft.font, title, x + 8, y + 6, COLOR_TITLE_TEXT, false);
 
@@ -89,7 +96,10 @@ public final class FloatingPanelRenderer {
     private static void drawSlotsWithItems(GuiGraphics graphics, FloatingPanelState state, int hoveredSlot) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientBackpackView view = ClientBackpackView.get();
-        for (int i = 0; i < PanelSlots.SLOT_COUNT; i++) {
+        for (int i = 0; i < view.slotCount(); i++) {
+            if (!PanelSlots.isRowVisible(state, i)) {
+                continue;
+            }
             int sx = PanelSlots.slotX(state, i);
             int sy = PanelSlots.slotY(state, i);
             drawSlotWell(graphics, sx, sy);
@@ -112,5 +122,21 @@ public final class FloatingPanelRenderer {
         graphics.fill(x, y, x + 1, y2, COLOR_SLOT_LIGHT);
         graphics.fill(x, y2 - 1, x2, y2, COLOR_SLOT_DARK);
         graphics.fill(x2 - 1, y, x2, y2, COLOR_SLOT_DARK);
+    }
+
+    private static void drawScrollbar(GuiGraphics graphics, FloatingPanelState state) {
+        if (!state.needsScrollbar()) {
+            return;
+        }
+        int trackX = PanelSlots.scrollbarTrackX(state);
+        int trackY = PanelSlots.scrollbarTrackY(state);
+        int trackH = PanelSlots.scrollbarTrackHeight(state);
+        int thumbY = PanelSlots.scrollbarThumbY(state);
+        int thumbH = PanelSlots.scrollbarThumbHeight(state);
+        int trackX2 = trackX + PanelSlots.SCROLLBAR_WIDTH;
+        graphics.fill(trackX, trackY, trackX2, trackY + trackH, COLOR_SCROLL_TRACK);
+        graphics.fill(trackX, thumbY, trackX2, thumbY + thumbH, COLOR_SCROLL_THUMB);
+        graphics.fill(trackX, thumbY, trackX2, thumbY + 1, COLOR_SCROLL_THUMB_EDGE);
+        graphics.fill(trackX, thumbY, trackX + 1, thumbY + thumbH, COLOR_SCROLL_THUMB_EDGE);
     }
 }

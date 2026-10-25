@@ -11,21 +11,16 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
-import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
- * Placeholder brown box on the player's back when a floating backpack is in the chest slot.
+ * Backpack body, flap, and straps on a player wearing one in the chest slot.
  */
 public class BackpackBackLayer
         extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(
-            MCFloatingBackpack.MOD_ID, "textures/entity/backpack_back.png");
-
     public BackpackBackLayer(
             RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> parent) {
         super(parent);
@@ -44,18 +39,40 @@ public class BackpackBackLayer
             float netHeadYaw,
             float headPitch) {
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (!FloatingBackpackItem.isBackpack(chest)) {
+        if (!(chest.getItem() instanceof FloatingBackpackItem backpack)) {
             return;
         }
+        VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(backpack.texture()));
         poseStack.pushPose();
         getParentModel().body.translateAndRotate(poseStack);
-        poseStack.translate(0.0F, 0.15F, 0.28F);
+        // Body local +Z points out of the chest. 180° X keeps the mesh upright;
+        // negative Z sits the pack on the back instead of the face.
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-        poseStack.scale(0.55F, 0.65F, 0.28F);
-        VertexConsumer consumer = buffer.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-        // Simple unit cube via six faces using model box would need a ModelPart;
-        // draw a flat-ish quad stack as a filled box using item-like shading.
-        renderBox(poseStack, consumer, packedLight);
+        // Strap side (lower Z than the body) faces a camera behind the player.
+        // The flap stays toward the spine.
+        float y = -0.45F;
+        float z = -0.32F;
+        drawPart(poseStack, consumer, packedLight, 0.0F, y, z, 0.55F, 0.62F, 0.28F);
+        drawPart(poseStack, consumer, packedLight, 0.0F, y - 0.33F, z + 0.10F, 0.50F, 0.22F, 0.08F);
+        drawPart(poseStack, consumer, packedLight, -0.22F, y - 0.20F, z - 0.12F, 0.10F, 0.55F, 0.10F);
+        drawPart(poseStack, consumer, packedLight, 0.22F, y - 0.20F, z - 0.12F, 0.10F, 0.55F, 0.10F);
+        poseStack.popPose();
+    }
+
+    private static void drawPart(
+            PoseStack poseStack,
+            VertexConsumer consumer,
+            int light,
+            float x,
+            float y,
+            float z,
+            float scaleX,
+            float scaleY,
+            float scaleZ) {
+        poseStack.pushPose();
+        poseStack.translate(x, y, z);
+        poseStack.scale(scaleX, scaleY, scaleZ);
+        renderBox(poseStack, consumer, light);
         poseStack.popPose();
     }
 
@@ -101,25 +118,25 @@ public class BackpackBackLayer
             float ny,
             float nz) {
         consumer.addVertex(pose, x1, y1, z1)
-                .setColor(180, 120, 70, 255)
+                .setColor(255, 255, 255, 255)
                 .setUv(0.0F, 1.0F)
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
         consumer.addVertex(pose, x2, y2, z2)
-                .setColor(180, 120, 70, 255)
+                .setColor(255, 255, 255, 255)
                 .setUv(1.0F, 1.0F)
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
         consumer.addVertex(pose, x3, y3, z3)
-                .setColor(180, 120, 70, 255)
+                .setColor(255, 255, 255, 255)
                 .setUv(1.0F, 0.0F)
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(light)
                 .setNormal(pose, nx, ny, nz);
         consumer.addVertex(pose, x4, y4, z4)
-                .setColor(180, 120, 70, 255)
+                .setColor(255, 255, 255, 255)
                 .setUv(0.0F, 0.0F)
                 .setOverlay(OverlayTexture.NO_OVERLAY)
                 .setLight(light)

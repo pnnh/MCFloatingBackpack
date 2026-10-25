@@ -36,7 +36,7 @@ public record BackpackSessionPayload(
                     BackpackSessionPayload::sourceOrdinal,
                     ByteBufCodecs.VAR_INT,
                     BackpackSessionPayload::invIndex,
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.SIZE)),
+                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_SIZE)),
                     BackpackSessionPayload::slots,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackSessionPayload::cursor,
@@ -48,8 +48,8 @@ public record BackpackSessionPayload(
     }
 
     public static BackpackSessionPayload open(BackpackRef ref, BackpackInventory inventory) {
-        List<ItemStack> slots = new ArrayList<>(BackpackInventory.SIZE);
-        for (int i = 0; i < BackpackInventory.SIZE; i++) {
+        List<ItemStack> slots = new ArrayList<>(inventory.size());
+        for (int i = 0; i < inventory.size(); i++) {
             slots.add(inventory.getStackInSlot(i).copy());
         }
         return new BackpackSessionPayload(
@@ -70,6 +70,7 @@ public record BackpackSessionPayload(
             FloatingPanelState state = FloatingPanelState.get();
             if (!payload.open()) {
                 state.setVisible(false);
+                state.setScrollRow(0);
                 ClientBackpackView.get().clear();
                 ClientBackpackView.get().clearActiveRef();
                 FloatingPanelEvents.syncMouseToPanelVisibility();

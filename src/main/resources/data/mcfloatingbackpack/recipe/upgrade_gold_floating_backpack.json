@@ -1,0 +1,6 @@
+{
+  "type": "mcfloatingbackpack:backpack_upgrade",
+  "base": { "item": "mcfloatingbackpack:iron_floating_backpack" },
+  "addition": { "item": "minecraft:gold_block" },
+  "result": { "id": "mcfloatingbackpack:gold_floating_backpack", "count": 1 }
+}

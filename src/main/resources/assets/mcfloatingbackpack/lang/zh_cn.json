@@ -3,6 +3,10 @@
   "key.mcfloatingbackpack.toggle": "开关浮动背包",
   "panel.mcfloatingbackpack.title": "浮动背包",
   "item.mcfloatingbackpack.leather_floating_backpack": "皮革浮动背包",
+  "item.mcfloatingbackpack.iron_floating_backpack": "铁浮动背包",
+  "item.mcfloatingbackpack.gold_floating_backpack": "金浮动背包",
+  "item.mcfloatingbackpack.diamond_floating_backpack": "钻石浮动背包",
+  "item.mcfloatingbackpack.netherite_floating_backpack": "下界合金浮动背包",
   "itemGroup.mcfloatingbackpack": "浮动背包",
   "message.mcfloatingbackpack.need_backpack": "你需要一只浮动背包"
 }

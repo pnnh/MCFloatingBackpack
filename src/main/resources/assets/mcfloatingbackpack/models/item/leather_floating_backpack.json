@@ -1,6 +1,6 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "mcfloatingbackpack:item/floating_backpack",
   "textures": {
-    "layer0": "mcfloatingbackpack:item/leather_floating_backpack"
+    "backpack": "mcfloatingbackpack:item/leather_floating_backpack"
   }
 }

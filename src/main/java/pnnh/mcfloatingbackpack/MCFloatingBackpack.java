@@ -10,6 +10,7 @@ import net.neoforged.fml.loading.FMLEnvironment;
 
 import pnnh.mcfloatingbackpack.client.ClientSetup;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
+import pnnh.mcfloatingbackpack.inventory.recipe.ModRecipes;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.network.BackpackNetwork;
 
@@ -26,6 +27,7 @@ public class MCFloatingBackpack {
         LOGGER.info("MCFloatingBackpack loading");
         ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
+        ModRecipes.register(modEventBus);
         BackpackNetwork.register(modEventBus);
         if (FMLEnvironment.dist.isClient()) {
             ClientSetup.register(modEventBus);

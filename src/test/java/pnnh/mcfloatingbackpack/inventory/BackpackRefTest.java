@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
 
+import pnnh.mcfloatingbackpack.item.BackpackTier;
+
 /**
  * Pure tests that avoid method signatures referencing Minecraft types
  * (Player / ItemStack are not on the plain JUnit classpath).
@@ -19,8 +21,9 @@ class BackpackRefTest {
     @Test
     void inventorySizeIsThirtySix() {
         // Compile-time constant — does not load Minecraft ItemStack types.
-        assertEquals(36, BackpackInventory.SIZE);
-        assertEquals(4, BackpackInventory.SIZE / 9);
+        assertEquals(36, BackpackTier.LEATHER.capacity());
+        assertEquals(108, BackpackTier.NETHERITE.capacity());
+        assertEquals(4, BackpackTier.LEATHER.rows());
     }
 
     @Test

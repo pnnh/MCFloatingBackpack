@@ -29,15 +29,15 @@ public record BackpackFullSyncPayload(
                     BackpackFullSyncPayload::sourceOrdinal,
                     ByteBufCodecs.VAR_INT,
                     BackpackFullSyncPayload::invIndex,
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.SIZE)),
+                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_SIZE)),
                     BackpackFullSyncPayload::slots,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackFullSyncPayload::cursor,
                     BackpackFullSyncPayload::new);
 
     public static BackpackFullSyncPayload from(BackpackRef ref, BackpackInventory inventory) {
-        List<ItemStack> slots = new ArrayList<>(BackpackInventory.SIZE);
-        for (int i = 0; i < BackpackInventory.SIZE; i++) {
+        List<ItemStack> slots = new ArrayList<>(inventory.size());
+        for (int i = 0; i < inventory.size(); i++) {
             slots.add(inventory.getStackInSlot(i).copy());
         }
         return new BackpackFullSyncPayload(

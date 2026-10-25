@@ -1,0 +1,6 @@
+{
+  "type": "mcfloatingbackpack:backpack_upgrade",
+  "base": { "item": "mcfloatingbackpack:diamond_floating_backpack" },
+  "addition": { "item": "minecraft:netherite_ingot" },
+  "result": { "id": "mcfloatingbackpack:netherite_floating_backpack", "count": 1 }
+}

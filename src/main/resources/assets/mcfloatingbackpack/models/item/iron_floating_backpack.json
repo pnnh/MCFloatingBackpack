@@ -1,0 +1,6 @@
+{
+  "parent": "mcfloatingbackpack:item/floating_backpack",
+  "textures": {
+    "backpack": "mcfloatingbackpack:item/iron_floating_backpack"
+  }
+}
