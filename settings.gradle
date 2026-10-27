@@ -1,11 +1,10 @@
 pluginManagement {
     repositories {
+        maven { url = uri("${rootDir}/.m2-local") }
+        maven { url = uri("https://maven.neoforged.net/releases") }
+        mavenCentral()
         gradlePluginPortal()
     }
-}
-
-plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '1.0.0'
 }
 
 rootProject.name = 'mcfloatingbackpack'
