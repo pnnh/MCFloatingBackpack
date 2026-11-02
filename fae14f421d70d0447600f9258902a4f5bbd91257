@@ -1,0 +1,101 @@
+.gitignore
+  s_8afe4597dabcc6::t_fe6a32a7cb1b39 51-57
+.specify/feature.json
+  s_8afe4597dabcc6::t_ca75b9fbc9f625 1-3
+build.gradle
+  s_8afe4597dabcc6::t_eee588370d11e9 23-26,31-34,110-115
+docs/plan/005-gameplay-item-tiers.md
+  s_8afe4597dabcc6::t_d90ee810695ecb 1-335
+docs/plan/README.md
+  s_8afe4597dabcc6::t_7a8c1b719003f1 1-19
+specs/005-item-backpack/DELIVERY.md
+  s_8afe4597dabcc6::t_9e6bfd4f21e2da 1-32
+specs/005-item-backpack/checklists/requirements.md
+  s_8afe4597dabcc6::t_8cb23dd9af840a 1-35
+specs/005-item-backpack/contracts/item-backpack.md
+  s_8afe4597dabcc6::t_8bf13be34df091 1-72
+specs/005-item-backpack/data-model.md
+  s_8afe4597dabcc6::t_5af6874e0b9cee 1-72
+specs/005-item-backpack/plan.md
+  s_8afe4597dabcc6::t_06d1094051b15c 1-92
+specs/005-item-backpack/quickstart.md
+  s_8afe4597dabcc6::t_9f96530680a765 1-52
+specs/005-item-backpack/research.md
+  s_8afe4597dabcc6::t_bfb835bf70dfbe 1-54
+specs/005-item-backpack/spec.md
+  s_8afe4597dabcc6::t_e68623e67c9076 1-150
+specs/005-item-backpack/tasks.md
+  s_8afe4597dabcc6::t_e5c6cea49e319b 1-110
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_8afe4597dabcc6::t_d5ac736ef9d11c 12-13,27-28
+src/main/java/pnnh/mcfloatingbackpack/client/ClientBackpackActions.java
+  s_8afe4597dabcc6::t_005ae13f402348 1,3,5-7,9-13,16-23,25,28-30,32
+src/main/java/pnnh/mcfloatingbackpack/client/ClientSetup.java
+  s_8afe4597dabcc6::t_6307b2a826cc05 8,21
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_8afe4597dabcc6::t_330812a36679df 7-9,16,26-28,32,45-68,85-96,100-101,122-132,136,139-140,157-175,179,182-185,189,210,223-249
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_8afe4597dabcc6::t_f1a5f7bc22897e 9,20,40-51,72
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_8afe4597dabcc6::t_2ccf89d66552ee 14,76-83,89-100
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelState.java
+  s_8afe4597dabcc6::t_e0f3ac651f7477 8-9
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelSlots.java
+  s_8afe4597dabcc6::t_b5a58682ceebae 3-4,6,9,12,15,20-27,38
+src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java
+  s_8afe4597dabcc6::t_94a5141630a8d4 1-128
+src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackRenderEvents.java
+  s_8afe4597dabcc6::t_5a0a0db0b13614 1-27
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackContents.java
+  s_8afe4597dabcc6::t_76b2a34211a687 1-65
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_8afe4597dabcc6::t_af7ebf4c8605bc 3-5,10-11,13-14,39-48,50-51,54-57,59-73,75
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackRef.java
+  s_8afe4597dabcc6::t_7b47ae9f0c5162 1-96
+src/main/java/pnnh/mcfloatingbackpack/inventory/ModDataComponents.java
+  s_8afe4597dabcc6::t_73f5e4d85c8d18 3-6,13-15,17-22,24,28
+src/main/java/pnnh/mcfloatingbackpack/item/FloatingBackpackItem.java
+  s_8afe4597dabcc6::t_b09a5be50ba565 1-50
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_8afe4597dabcc6::t_456fb707acb4fb 1-50
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_8afe4597dabcc6::t_440746c3bfd8c0 19-20,22-28,44-47,67-82,89-96,98,105-106,109-116
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackFullSyncPayload.java
+  s_8afe4597dabcc6::t_0fbf4b429dbba3 17,19-21,28-31,38,43-47,56-64
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_8afe4597dabcc6::t_f221a7406533ac 12,23,32-35,44-56,59-64,67-72
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackOpenRequestPayload.java
+  s_8afe4597dabcc6::t_1a3b182fbc2896 1-74
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackSessionPayload.java
+  s_8afe4597dabcc6::t_a7aa0d3964c468 1-89
+src/main/java/pnnh/mcfloatingbackpack/network/MergePanelCursorPayload.java
+  s_8afe4597dabcc6::t_f60037d249d9b1 15,44-48,50,52
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_8afe4597dabcc6::t_b463b65c242487 4-7
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_8afe4597dabcc6::t_248fdb652298e1 2,4-7
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json
+  s_8afe4597dabcc6::t_aaa913a19ab947 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/leather_floating_backpack.json
+  s_8afe4597dabcc6::t_7ccc178c6856f9 1-18
+src/main/templates/META-INF/neoforge.mods.toml
+  s_8afe4597dabcc6::t_38a38a983e1055 53-60
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackRefTest.java
+  s_8afe4597dabcc6::t_057ae6dd68cb58 1-34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fae14f421d70d0447600f9258902a4f5bbd91257",
+  "prompts": {},
+  "sessions": {
+    "s_8afe4597dabcc6": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "664fc5a7-e094-48d0-9989-a02de1264fd2",
+        "model": "unknown"
+      },
+      "human_author": "pnnh <linyangz@outlook.com>"
+    }
+  }
+}
