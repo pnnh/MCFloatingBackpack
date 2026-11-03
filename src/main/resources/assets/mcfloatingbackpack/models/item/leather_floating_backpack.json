@@ -2,6 +2,7 @@
   "loader": "neoforge:obj",
   "model": "mcfloatingbackpack:models/item/leather_backpack.obj",
   "flip_v": true,
+  "emissive_ambient": false,
   "textures": {
     "particle": "mcfloatingbackpack:item/leather_floating_backpack",
     "base": "mcfloatingbackpack:item/leather_floating_backpack"
