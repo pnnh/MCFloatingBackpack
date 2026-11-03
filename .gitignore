@@ -53,6 +53,7 @@ net/
 design/**/__pycache__/
 design/**/*.pyc
 design/**/.venv/
+design/**/*.blend1
 
 ### Local SSL / vendor workarounds (machine-specific) ###
 .m2-local/

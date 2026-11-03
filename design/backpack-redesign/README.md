@@ -69,6 +69,10 @@
 | `leather_prototype_preview_back.png` | 背面 3/4 视角预览——重点看这张：实心棕色面板铺满了整个轮廓，原来那个洞已经不存在了 |
 | `ludoai_concept_1~4.png` | 用 ludo.ai 生成的 4 张风格参考图（voxel art，等距视角），**不是精确展开贴图**，只是给你看这个工具生成"我的世界风格但不是纯方块"背包的能力，评估这个方向是否符合你想要的调性 |
 | `leather_prototype_base.json` / `leather_prototype_base_texture.png` | **基础款**变体：不含 `pouch_left`/`pouch_right`/`pouch_back` 三个可拆卸小包，对应"基础皮革背包默认不显示这三个包"的设计；和上面的完整款出自同一个脚本的 `build(include_pouches=False)` |
+| `build_isolated_blend.py` | 无头（headless）Blender 脚本，在全新空白场景里独立搭建完整款+基础款、打光、渲染、另存为 `backpack_prototype.blend`；支持 `SKIP_ELEMENTS=`、`NO_SHADOWS=1`、`OUT_PREFIX=` 几个环境变量，就是靠这个脚本排查出"浅灰竖条是阴影"的 |
+| `backpack_prototype.blend` | 独立的 Blender 文件（**走 Git LFS**，见仓库根目录 `.gitattributes`），只包含这两只背包 + 一盏太阳光 + 一盏补光 + 两个相机，不含你自己场景的任何内容，双击就能在 Blender 里打开查看，不依赖你当前是否开着 Blender |
+| `isolated_front.png` / `isolated_back.png` | 独立空场景、默认光照（保留阴影）下的正面/背面渲染 |
+| `isolated_noshadow_front.png` / `isolated_noshadow_back.png` | 同上但关掉了灯光阴影投射，用来对照验证"浅灰竖条"确实是阴影 |
 
 ## 三个小包的可拆卸设计（为后续"升级组件"玩法铺路）
 
@@ -102,14 +106,42 @@ Blender 自己的材质着色渲染确认：
 这个 collection 还留在你的 Blender 里，你可以自己转一转、凑近看细节；不需要的话直接在 Outliner 里删掉
 `FloatingBackpack_Prototype` 这个 collection 就行，不会影响你原来的场景。
 
+## 排查"浅灰竖条"：独立 Blender 文件 + 二分法，最终发现是阴影
+
+你反馈说这条竖条正反面都挺明显，不像是我之前猜的"场景里其它物体干扰"。为了彻底排除"你 Blender 场景
+里原有 ~80 个物体"的干扰，新写了 `build_isolated_blend.py`，用**全新的、完全空白的场景**（不依赖你
+当前打开的 Blender、也不读取你场景里任何已有数据）独立搭建背包、打光、渲染，并存成一个独立的
+`backpack_prototype.blend` 文件。跑法（在普通终端里，不是在你正打开的 Blender 里）：
+
+```bash
+/Applications/Blender.app/Contents/MacOS/Blender --background --factory-startup --python build_isolated_blend.py
+```
+
+结果：**空场景里这条竖条照样出现**，说明确实是我们自己的东西导致的，之前"可能是场景里其它物体"的猜测是错的，在这里先纠正。
+
+接下来用二分法（脚本支持 `SKIP_ELEMENTS=xxx,yyy` 环境变量临时排除某些箱体，一项项排查）定位：依次尝试
+"只留两三个箱体"的组合，发现必须同时具备 `flap` + `body_top` + `body_mid` + `strap_right` 这四个箱体
+才会复现——缺任何一个都不会出现。这个"必须凑齐好几个互相搭叠的箱体才会出现"的特征，和"UV 采样到空白
+区域"或"真正的几何镂空"这类问题的特征对不上（那类问题通常只需要缺陷箱体自己存在就会复现，和别的箱体
+在不在没关系），反而很像**阴影**——翻盖（`flap`）比它下面的 `body_top` 更往外、更往前凸出一截，刚好
+会在光照下在肩带和主体的夹角处投下阴影。
+
+直接验证：把脚本里太阳光和补光的阴影投射关掉（`light.use_shadow = False`）重新渲染全部箱体——**竖条
+完全消失**。确认了：这是我自己随手搭的单盏太阳光 + 一盏补光在 Blender 里投射出的阴影，灰蓝色恰好是世
+界背景色在阴影区域里透出来的颜色，跟我们的模型、UV、贴图都没有关系，也不会在 Minecraft 游戏里出现
+（原版物品/背包模型不会给自己的箱体之间投这种实时阴影）。`isolated_front.png`/`isolated_back.png`（默
+认光照，阴影保留，方便你对照）和 `isolated_noshadow_front.png`/`isolated_noshadow_back.png`（关掉阴
+影后）这两组渲染图都留着，可以直接对比。
+
 ## 已知局限 / 待确认
 
 - `leather_prototype_texture.png` 这版已经有颗粒感、缝线描边、铆钉、扣具高光、多色调搭配，比最早的纯色块丰富了不少，但还是程序生成的，不是手绘质感。
 - 目前只做了皮革一档；其余四档（铁/金/钻石/下界合金）需要等这版箱体和配色方向都定稿后，再分别在 `TIER_PALETTES` 里加一条、重新跑一次贴图生成（箱体形状五档共用，和现在 006 已有的架构一致）——具体效果好不好还没实测过，见上面"关于后续分档配色"那段的说明。
-- **这次在 Blender 里对比"隐藏小包前后效果"时，正面渲染图右侧肩带附近一直有一条浅灰/近白色的竖条，排查了很久**：先后尝试把扣具、左右肩带、左右侧袋依次隐藏，这条竖条完全没有变化，说明它不属于我们建的任何一个箱体；也打印过主体三段和翻盖每个面实际分配到的 UV 坐标，都在合理范围内，不是 UV 越界采样到空白贴图区域。最可能的解释是你 Blender 场景里原本就有的某个物体/灯光（你这个场景本来就有 ~80 个和背包无关的既有物体）恰好落在取景范围内，和我们的背包模型、贴图都无关——不是这次设计改动引入的问题，但也没有100%排除所有可能性，如果你自己在 Blender 里看到类似的东西，可以帮忙确认一下是不是场景里其它物体露出来了。
+- ~~正面渲染图肩带附近的浅灰竖条~~ **已查明：是阴影，不是模型/贴图缺陷，已确认不是你场景里其它物体干扰。** 排查过程见下面单独一节。
 
 ## 怎么本地预览（不改代码的前提下）
 
 - 本机 Blender 现在就能看——按上面说的，`FloatingBackpack_Prototype` collection 已经在你当前场景里了。
+- 更推荐直接打开 `backpack_prototype.blend`：这是一个完全独立、只包含这两只背包+灯光+相机的 Blender 文件，不依赖你当前场景里的任何东西，双击直接用 Blender 打开即可。**该文件走 Git LFS 跟踪**（仓库根目录 `.gitattributes` 里已经加了 `*.blend`/`*.blend1` 规则），克隆仓库时需要先装好 `git-lfs` 并执行过 `git lfs install`，否则拉到的会是 LFS 指针文件而不是真正的二进制内容。
 - 或者用免费工具 [Blockbench](https://www.blockbench.net) 打开 `leather_prototype.json`，把 `leather_prototype_texture.png` 当贴图贴上去，交互旋转查看。
 - 如果你想直接在游戏里看效果，告诉我一声，我可以帮你做一次"临时替换"（比如先备份原文件，跑完 `runClient` 看完再还原），但目前按你的要求先不动正式代码。
