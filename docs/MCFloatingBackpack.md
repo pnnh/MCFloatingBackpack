@@ -125,7 +125,7 @@
 5. **M4 — 精妙 / 旅行者等热门背包兼容**  
    二者主界面均继承 `AbstractContainerScreen`，走 M3 菜单 carried 通路；软检测 + 可选 `./gradlew runClientCompat` / `runServerCompat`（等价于 `-PcompatRuntime`）联调。流体罐/假槽/升级页不保证。详见 `specs/004-backpack-compat/`。
 6. **M5 — 打磨**  
-   配置项、键位冲突、JEI 共存、多语言、性能与联机测试。面板可拖拽缩放行列（独立调整，3 格下限，列数变化时按虚拟总行数重新排布，仅纵向滚动条）、标题栏关闭按钮、标题栏按背包等级动态命名，详见 `specs/007-floating-window-chrome/`。标题栏改为背包等级图标（悬停显示名称提示，窄面板下不再溢出）；可选的 JEI 兼容：通过 `IGlobalGuiHandler` 让 JEI 避让浮动面板区域，并修正与 JEI 自身提示框的渲染顺序冲突，仅在玩家安装 JEI 时生效，详见 `specs/008-panel-title-icon-and-jei-safe-zone/`。皮革背包已换成重新建模的外观（阶梯收腰轮廓、多色调贴图，含背带/卡扣细节），模型与贴图设计过程见 `design/backpack-redesign/`；铁/金/钻石/下界合金四档暂时保留原有几何与贴图，待后续分档配色设计完成后再替换。
+   配置项、键位冲突、JEI 共存、多语言、性能与联机测试。面板可拖拽缩放行列（独立调整，3 格下限，列数变化时按虚拟总行数重新排布，仅纵向滚动条）、标题栏关闭按钮、标题栏按背包等级动态命名，详见 `specs/007-floating-window-chrome/`。标题栏改为背包等级图标（悬停显示名称提示，窄面板下不再溢出）；可选的 JEI 兼容：通过 `IGlobalGuiHandler` 让 JEI 避让浮动面板区域，并修正与 JEI 自身提示框的渲染顺序冲突，仅在玩家安装 JEI 时生效，详见 `specs/008-panel-title-icon-and-jei-safe-zone/`。五档背包（皮革/铁/金/钻石/下界合金）均已换成重新建模的外观（阶梯收腰轮廓、多色调贴图，含背带/卡扣细节），几何体五档共用、仅配色不同，模型与贴图设计过程见 `design/backpack-redesign/`。可拆卸小包（左/右/后）的几何体已预备好，但尚未接入实际"升级组件"玩法逻辑，目前所有档位都按不含小包的基础款渲染。
 
 ## 7. 技术栈与工程约定
 

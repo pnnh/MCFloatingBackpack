@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generates a redesigned leather-tier floating-backpack item model + matching texture.
+"""Generates redesigned floating-backpack item models + matching textures for all 5 tiers.
 
 Fixes the reported "see-through" hole: the original body box only went from z=7 to z=12,
 while the shoulder straps extend out to z=5.6, leaving an uncovered gap behind/between the
@@ -9,9 +9,12 @@ The body tapers (wider at the bottom, narrower at the top) across 3 stacked segm
 one constant-width box, and carries 3 accessory pouches (left/right/back) that are meant to
 become separately-installable upgrade modules later, like Traveler's Backpack's tank/crafting
 upgrades -- base tier ships with none of them. Writes both a "full" (all pouches) and a "_base"
-(no pouches) variant so both ends of that range can be checked.
+(no pouches) variant per tier so both ends of that range can be checked.
 
-Not wired into the mod yet -- this only writes files under design/backpack-redesign/ for review.
+Every tier shares the exact same geometry (ELEMENTS); only the 5-color palette changes, driven
+by TIER_PALETTES. Only writes files under design/backpack-redesign/ for review -- applying a
+tier's output to the actual mod resources (models/item, textures/item) is a separate, deliberate
+step done by hand after eyeballing the render.
 """
 
 import json
@@ -36,14 +39,13 @@ def shade(color, delta):
 
 # --- Per-tier palette -------------------------------------------------------------
 # A flat brown-on-brown reskin was the original complaint: real backpacks (and the
-# Sophisticated/Traveler's references) mix a leather body with a visibly different hardware
-# material (gray straps/buckle plates) plus a small accent color, not one hue throughout. Every
-# other tier (iron/gold/diamond/netherite) is meant to add its own entry here and otherwise
-# reuse everything below unchanged -- that's the point of keying colors off this dict instead of
-# hardcoding them per element. The accent intentionally follows Minecraft's own established
-# material-color associations (netherite's purple-red trim, diamond's cyan, gold's yellow,
-# iron's pale steel) so later tiers have an obvious, non-arbitrary choice instead of needing to
-# invent a new color language from scratch.
+# Sophisticated/Traveler's references) mix a body material with a visibly different hardware
+# material plus a small accent color, not one hue throughout. Each tier below follows Minecraft's
+# own established material-color associations -- iron's pale steel, gold's warm yellow, diamond's
+# cyan, netherite's dark purple-red glint -- both for the hardware (the tier's "armor plating") and
+# the accent studs, while the body/flap/strap tones shift from warm leather-brown up through cooler,
+# richer canvas tones as the tier gets more advanced. Geometry (ELEMENTS, below) is identical across
+# every tier; only these 5 colors change.
 TIER_PALETTES = {
     "leather": {
         "body": (120, 78, 42, 255),  # main panel base color
@@ -54,149 +56,192 @@ TIER_PALETTES = {
         # (darker/more "pewter" than a first pass -- too pale read as near-white under light)
         "accent": (196, 150, 54, 255),  # tier accent stud: brass, fitting the humble base tier
     },
+    "iron": {
+        "body": (120, 128, 138, 255),  # sturdy pale slate-blue canvas, reinforced look
+        "flap": (100, 108, 118, 255),
+        "strap": (54, 58, 66, 255),  # dark charcoal straps
+        "hardware": (176, 180, 186, 255),  # bright iron-silver plating -- lighter than leather's
+        # hardware since on this tier the hardware IS the tier's whole point, it should pop
+        "accent": (214, 226, 232, 255),  # pale icy steel accent (iron tool/armor color)
+    },
+    "gold": {
+        "body": (132, 108, 46, 255),  # warm old-gold canvas, richer than leather's plain brown
+        "flap": (112, 90, 36, 255),
+        "strap": (70, 54, 20, 255),
+        "hardware": (198, 160, 60, 255),  # gilded brass-gold hardware
+        "accent": (255, 214, 64, 255),  # bright saturated gold-yellow accent
+    },
+    "diamond": {
+        "body": (58, 92, 102, 255),  # cool teal-blue-gray canvas
+        "flap": (46, 78, 88, 255),
+        "strap": (28, 46, 54, 255),
+        "hardware": (170, 190, 196, 255),  # pale platinum-blue hardware
+        "accent": (84, 222, 224, 255),  # bright cyan accent (diamond's signature color)
+    },
+    "netherite": {
+        "body": (54, 50, 56, 255),  # near-black charcoal-purple canvas
+        "flap": (42, 38, 44, 255),
+        "strap": (26, 24, 28, 255),
+        "hardware": (90, 86, 94, 255),  # dark gunmetal hardware
+        "accent": (152, 58, 86, 255),  # deep purple-red accent (netherite glint)
+    },
 }
-PALETTE = TIER_PALETTES["leather"]
 
-BODY_BASE = PALETTE["body"]
-BODY_LIGHT = shade(BODY_BASE, 36)
-BODY_DARK = shade(BODY_BASE, -36)
-BODY_SIDE = shade(BODY_BASE, -18)
+TIER_ORDER = ["leather", "iron", "gold", "diamond", "netherite"]
 
-FLAP_BASE = PALETTE["flap"]
-FLAP_LIGHT = shade(FLAP_BASE, 36)
-FLAP_DARK = shade(FLAP_BASE, -36)
-FLAP_SIDE = shade(FLAP_BASE, -18)
-
-STRAP_BASE = PALETTE["strap"]
-STRAP_LIGHT = shade(STRAP_BASE, 30)
-STRAP_DARK = shade(STRAP_BASE, -30)
-STRAP_SIDE = shade(STRAP_BASE, -15)
-
-# Pouches read as a visibly different accessory piece (not a clone of the body) by sitting a
-# notch lighter than the body base, same hue family.
-POUCH_BASE = shade(BODY_BASE, 18)
-POUCH_LIGHT = shade(POUCH_BASE, 36)
-POUCH_DARK = shade(POUCH_BASE, -36)
-POUCH_SIDE = shade(POUCH_BASE, -18)
-
-HARDWARE = PALETTE["hardware"]
-HARDWARE_DARK = shade(HARDWARE, -46)
-HARDWARE_LIGHT = shade(HARDWARE, 46)
-
-ACCENT = PALETTE["accent"]
-ACCENT_DARK = shade(ACCENT, -44)
-
-# Elements: (name, from[x,y,z], to[x,y,z], face_color_overrides)
-# Coordinates are in the usual 0-16 Minecraft item-model unit space.
-#
-# The body is 3 stacked segments, each a bit narrower than the one below it (a "stepped taper"),
-# instead of one constant-width box. A single uniform-width box reads as a cabinet/drawer, not a
-# soft-sided bag -- real backpacks (and the concept_1 reference) are wider at the bottom where
-# the main storage bulges and narrower at the top near the straps/flap. Minecraft cuboids can't
-# curve, so a 2-step taper (3 segments) is the standard blocky-pixel-art way to fake that profile;
-# it's what reads as "transitional" at this scale without needing a dozen micro-steps.
-ELEMENTS = [
-    {
-        # X taper steepened (was 2.6-13.4, width 10.8): bottom is now noticeably wider.
-        # Z (depth) also tapers a little now too, per feedback -- shallower at the top, fullest
-        # at the bottom -- but far less dramatically than the X taper.
-        "name": "body_bottom",
-        "from": [2.2, 1, 5.8],
-        "to": [13.8, 5, 12.4],
-        "colors": {"up": BODY_LIGHT, "down": BODY_DARK, "ns": BODY_BASE, "ew": BODY_SIDE},
-    },
-    {
-        "name": "body_mid",
-        "from": [3.2, 5, 5.8],
-        "to": [12.8, 9, 12],
-        "colors": {"up": BODY_LIGHT, "down": BODY_DARK, "ns": BODY_BASE, "ew": BODY_SIDE},
-    },
-    {
-        # X taper steepened (was 3.6-12.4, width 8.8): top is now noticeably narrower.
-        "name": "body_top",
-        "from": [4, 9, 5.8],
-        "to": [12, 12, 11.6],
-        "colors": {"up": BODY_LIGHT, "down": BODY_DARK, "ns": BODY_BASE, "ew": BODY_SIDE},
-    },
-    {
-        # Slight overhang past body_top's now-narrower top, like a lid lip. Uses the dedicated
-        # FLAP_* tone (not BODY_*) -- a visibly different panel color, like Sophisticated/
-        # Traveler's using a distinct shade for the lid.
-        "name": "flap",
-        "from": [3.7, 12, 5.8],
-        "to": [12.3, 13.2, 12],
-        "colors": {"up": FLAP_LIGHT, "down": FLAP_DARK, "ns": FLAP_BASE, "ew": FLAP_SIDE},
-    },
-    {
-        # Standoff restored: the hole-fix deepened the body to z=5.8, which also (as a side
-        # effect) nearly erased the straps' old ~1.4-unit standoff past the body's near face
-        # (they only poked out ~0.2 after that fix) -- that's why they read as glued flat.
-        # Closing the hole and giving the straps depth are independent concerns: the body's own
-        # z=5.8 backing still covers the full silhouette no matter how far forward the straps
-        # extend, so pushing the straps' near face out to z=4.8 is safe and restores the relief.
-        "name": "strap_left",
-        "from": [3.8, 4, 4.8],
-        "to": [5.4, 13, 7.2],
-        "colors": {"up": STRAP_LIGHT, "down": STRAP_DARK, "ns": STRAP_BASE, "ew": STRAP_SIDE},
-        "share_uv_with": None,
-    },
-    {
-        "name": "strap_right",
-        "from": [10.6, 4, 4.8],
-        "to": [12.2, 13, 7.2],
-        "colors": {"up": STRAP_LIGHT, "down": STRAP_DARK, "ns": STRAP_BASE, "ew": STRAP_SIDE},
-        "share_uv_with": "strap_left",  # mirrors strap_left; same size, reuse its UV rects
-    },
-    {
-        "name": "buckle",
-        "from": [7, 5.5, 6.4],
-        "to": [9, 7.5, 7.2],
-        "colors": {"up": HARDWARE_LIGHT, "down": HARDWARE_DARK, "ns": HARDWARE, "ew": HARDWARE_DARK},
-    },
-    {
-        # Renamed from "pocket" to "pouch_back": this is one of the 3 detachable accessory
-        # pouches (see DETACHABLE below), not a permanently-molded part of the body. Re-anchored
-        # to body_bottom's new (wider, deeper) front face. "Front" here is the face that ends up
-        # visible to other players when the backpack is worn -- what the user calls 后边 (back).
-        "name": "pouch_back",
-        "from": [4, 1.5, 12.4],
-        "to": [12, 4.8, 13.4],
-        "colors": {"up": POUCH_LIGHT, "down": POUCH_DARK, "ns": POUCH_BASE, "ew": POUCH_SIDE},
-        "detachable": True,
-    },
-    {
-        # Side pouches (concept_1 feedback): small bumps on both sides for extra silhouette
-        # interest, anchored to body_bottom now that it's the wide segment. Straps stay exactly
-        # as they were -- straight vertical bars -- per the concept_2 feedback that concept_1's
-        # own straps read as crooked/unwearable. Re-anchored to body_bottom's new wider edge.
-        "name": "pouch_right",
-        "from": [13.6, 2, 7.5],
-        "to": [15.1, 5, 11.2],
-        "colors": {"up": POUCH_LIGHT, "down": POUCH_DARK, "ns": POUCH_BASE, "ew": POUCH_SIDE},
-        "share_uv_with": None,
-        "detachable": True,
-    },
-    {
-        "name": "pouch_left",
-        "from": [0.9, 2, 7.5],
-        "to": [2.4, 5, 11.2],
-        "colors": {"up": POUCH_LIGHT, "down": POUCH_DARK, "ns": POUCH_BASE, "ew": POUCH_SIDE},
-        "share_uv_with": "pouch_right",  # mirrors pouch_right; same size, reuse its UV rects
-        "detachable": True,
-    },
-]
-
-# The 3 accessory pouches (left/right/back) are meant to become separately installable upgrade
-# modules later (like Traveler's Backpack tanks/crafting upgrades) -- the base leather tier would
-# ship with none of them, and higher tiers/crafted upgrades would add them one at a time, both
-# visually and functionally. At this (art/model) stage that only means: keep each pouch as its
-# own self-contained element that can be dropped from ELEMENTS without leaving a gap or an
-# unfinished-looking patch on the body underneath. Actually wiring up "is this upgrade installed"
-# as a real game mechanic (items, data components, conditional rendering in Java) is a separate
-# feature, not part of this art prototype.
-DETACHABLE = {el["name"] for el in ELEMENTS if el.get("detachable")}
+# The following globals (PALETTE, BODY_BASE, ..., ELEMENTS, DETACHABLE) are (re)populated by
+# configure_palette() for whichever tier is currently being built. build() and the paint_*/apply_*
+# helpers below read them as module globals rather than taking them as parameters -- this file
+# generates one tier at a time, sequentially, so that's safe and keeps every helper's signature
+# the same as when this script only handled the leather tier.
+PALETTE = None
+BODY_BASE = BODY_LIGHT = BODY_DARK = BODY_SIDE = None
+FLAP_BASE = FLAP_LIGHT = FLAP_DARK = FLAP_SIDE = None
+STRAP_BASE = STRAP_LIGHT = STRAP_DARK = STRAP_SIDE = None
+POUCH_BASE = POUCH_LIGHT = POUCH_DARK = POUCH_SIDE = None
+HARDWARE = HARDWARE_DARK = HARDWARE_LIGHT = None
+ACCENT = ACCENT_DARK = None
+ELEMENTS = None
+DETACHABLE = None
 
 FACE_ORDER = ["north", "south", "east", "west", "up", "down"]
+
+
+def configure_palette(tier):
+    """(Re)derive every shade + the ELEMENTS list from TIER_PALETTES[tier]. Geometry (the from/to
+    coordinates) never changes between tiers -- only which derived color each element's faces use.
+    """
+    global PALETTE, BODY_BASE, BODY_LIGHT, BODY_DARK, BODY_SIDE
+    global FLAP_BASE, FLAP_LIGHT, FLAP_DARK, FLAP_SIDE
+    global STRAP_BASE, STRAP_LIGHT, STRAP_DARK, STRAP_SIDE
+    global POUCH_BASE, POUCH_LIGHT, POUCH_DARK, POUCH_SIDE
+    global HARDWARE, HARDWARE_DARK, HARDWARE_LIGHT, ACCENT, ACCENT_DARK
+    global ELEMENTS, DETACHABLE
+
+    PALETTE = TIER_PALETTES[tier]
+
+    BODY_BASE = PALETTE["body"]
+    BODY_LIGHT = shade(BODY_BASE, 36)
+    BODY_DARK = shade(BODY_BASE, -36)
+    BODY_SIDE = shade(BODY_BASE, -18)
+
+    FLAP_BASE = PALETTE["flap"]
+    FLAP_LIGHT = shade(FLAP_BASE, 36)
+    FLAP_DARK = shade(FLAP_BASE, -36)
+    FLAP_SIDE = shade(FLAP_BASE, -18)
+
+    STRAP_BASE = PALETTE["strap"]
+    STRAP_LIGHT = shade(STRAP_BASE, 30)
+    STRAP_DARK = shade(STRAP_BASE, -30)
+    STRAP_SIDE = shade(STRAP_BASE, -15)
+
+    # Pouches read as a visibly different accessory piece (not a clone of the body) by sitting a
+    # notch lighter than the body base, same hue family.
+    POUCH_BASE = shade(BODY_BASE, 18)
+    POUCH_LIGHT = shade(POUCH_BASE, 36)
+    POUCH_DARK = shade(POUCH_BASE, -36)
+    POUCH_SIDE = shade(POUCH_BASE, -18)
+
+    HARDWARE = PALETTE["hardware"]
+    HARDWARE_DARK = shade(HARDWARE, -46)
+    HARDWARE_LIGHT = shade(HARDWARE, 46)
+
+    ACCENT = PALETTE["accent"]
+    ACCENT_DARK = shade(ACCENT, -44)
+
+    # Elements: (name, from[x,y,z], to[x,y,z], face_color_overrides)
+    # Coordinates are in the usual 0-16 Minecraft item-model unit space.
+    #
+    # The body is 3 stacked segments, each a bit narrower than the one below it (a "stepped
+    # taper"), instead of one constant-width box. A single uniform-width box reads as a
+    # cabinet/drawer, not a soft-sided bag -- real backpacks are wider at the bottom where the
+    # main storage bulges and narrower at the top near the straps/flap. Minecraft cuboids can't
+    # curve, so a 2-step taper (3 segments) is the standard blocky-pixel-art way to fake that
+    # profile.
+    ELEMENTS = [
+        {
+            "name": "body_bottom",
+            "from": [2.2, 1, 5.8],
+            "to": [13.8, 5, 12.4],
+            "colors": {"up": BODY_LIGHT, "down": BODY_DARK, "ns": BODY_BASE, "ew": BODY_SIDE},
+        },
+        {
+            "name": "body_mid",
+            "from": [3.2, 5, 5.8],
+            "to": [12.8, 9, 12],
+            "colors": {"up": BODY_LIGHT, "down": BODY_DARK, "ns": BODY_BASE, "ew": BODY_SIDE},
+        },
+        {
+            "name": "body_top",
+            "from": [4, 9, 5.8],
+            "to": [12, 12, 11.6],
+            "colors": {"up": BODY_LIGHT, "down": BODY_DARK, "ns": BODY_BASE, "ew": BODY_SIDE},
+        },
+        {
+            # Slight overhang past body_top's narrower top, like a lid lip. Uses the dedicated
+            # FLAP_* tone (not BODY_*) -- a visibly different panel color.
+            "name": "flap",
+            "from": [3.7, 12, 5.8],
+            "to": [12.3, 13.2, 12],
+            "colors": {"up": FLAP_LIGHT, "down": FLAP_DARK, "ns": FLAP_BASE, "ew": FLAP_SIDE},
+        },
+        {
+            "name": "strap_left",
+            "from": [3.8, 4, 4.8],
+            "to": [5.4, 13, 7.2],
+            "colors": {"up": STRAP_LIGHT, "down": STRAP_DARK, "ns": STRAP_BASE, "ew": STRAP_SIDE},
+            "share_uv_with": None,
+        },
+        {
+            "name": "strap_right",
+            "from": [10.6, 4, 4.8],
+            "to": [12.2, 13, 7.2],
+            "colors": {"up": STRAP_LIGHT, "down": STRAP_DARK, "ns": STRAP_BASE, "ew": STRAP_SIDE},
+            "share_uv_with": "strap_left",  # mirrors strap_left; same size, reuse its UV rects
+        },
+        {
+            "name": "buckle",
+            "from": [7, 5.5, 6.4],
+            "to": [9, 7.5, 7.2],
+            "colors": {"up": HARDWARE_LIGHT, "down": HARDWARE_DARK, "ns": HARDWARE, "ew": HARDWARE_DARK},
+        },
+        {
+            # One of the 3 detachable accessory pouches (see DETACHABLE below). "Front" here is
+            # the face that ends up visible to other players when the backpack is worn -- what
+            # the user calls 后边 (back).
+            "name": "pouch_back",
+            "from": [4, 1.5, 12.4],
+            "to": [12, 4.8, 13.4],
+            "colors": {"up": POUCH_LIGHT, "down": POUCH_DARK, "ns": POUCH_BASE, "ew": POUCH_SIDE},
+            "detachable": True,
+        },
+        {
+            "name": "pouch_right",
+            "from": [13.6, 2, 7.5],
+            "to": [15.1, 5, 11.2],
+            "colors": {"up": POUCH_LIGHT, "down": POUCH_DARK, "ns": POUCH_BASE, "ew": POUCH_SIDE},
+            "share_uv_with": None,
+            "detachable": True,
+        },
+        {
+            "name": "pouch_left",
+            "from": [0.9, 2, 7.5],
+            "to": [2.4, 5, 11.2],
+            "colors": {"up": POUCH_LIGHT, "down": POUCH_DARK, "ns": POUCH_BASE, "ew": POUCH_SIDE},
+            "share_uv_with": "pouch_right",  # mirrors pouch_right; same size, reuse its UV rects
+            "detachable": True,
+        },
+    ]
+
+    # The 3 accessory pouches (left/right/back) are meant to become separately installable
+    # upgrade modules later (like Traveler's Backpack tanks/crafting upgrades) -- the base tier
+    # of each metal would ship with none of them, and crafted upgrades would add them one at a
+    # time, both visually and functionally. At this (art/model) stage that only means: keep each
+    # pouch as its own self-contained element that can be dropped from ELEMENTS without leaving a
+    # gap. Actually wiring up "is this upgrade installed" as a real game mechanic (items, data
+    # components, conditional rendering in Java) is a separate feature, not part of this art
+    # prototype.
+    DETACHABLE = {el["name"] for el in ELEMENTS if el.get("detachable")}
 
 
 def size_of(el):
@@ -257,7 +302,7 @@ class ShelfPacker:
 
 
 def paint_leather_face(img, rect, base_color, rng):
-    """Mottled leather: a few soft blotches (real leather's uneven tanning/grain) plus fine
+    """Mottled material look: a few soft blotches (uneven tanning/weave/plating grain) plus fine
     per-pixel grain plus a 1px ambient-occlusion darkening right at the face's own edges.
     Flat-filling a rect reads as plastic; this is what makes it read as a material.
     """
@@ -268,7 +313,7 @@ def paint_leather_face(img, rect, base_color, rng):
         cx = rng.uniform(x0, x1)
         cy = rng.uniform(y0, y1)
         radius = rng.uniform(max(2.0, min(w, h) * 0.25), max(3.0, min(w, h) * 0.55))
-        intensity = rng.randint(-16, 8)  # leather blotches read mostly as darker tanning marks
+        intensity = rng.randint(-16, 8)  # blotches read mostly as darker marks
         blotches.append((cx, cy, radius, intensity))
     for px in range(x0, x1):
         for py in range(y0, y1):
@@ -357,7 +402,7 @@ def apply_trim_band(draw, rect, edge, height):
 
 def apply_accent_studs(img, rect):
     """Two small tier-accent studs flanking roughly where the buckle sits, the one deliberately
-    saturated color note against all the muted leather/hardware tones -- this is what the
+    saturated color note against all the muted body/hardware tones -- this is what the
     Sophisticated/Traveler's references use their colored gems/rivets for.
     """
     x0, y0, x1, y1 = rect
@@ -372,7 +417,7 @@ def apply_accent_studs(img, rect):
         img.putpixel((cx + 1, cy + 1), ACCENT_DARK)
 
 
-def build(include_pouches=True, suffix=""):
+def build(tier, include_pouches=True, suffix=""):
     elements = [
         el for el in ELEMENTS if include_pouches or el["name"] not in DETACHABLE
     ]
@@ -436,9 +481,9 @@ def build(include_pouches=True, suffix=""):
         lighter = tuple(min(255, c + 36) if i < 3 else c for i, c in enumerate(color))
         if label.startswith("buckle"):
             paint_buckle_face(img, (x0, y0, x1, y1), color)
-            # A crisp 1px dark outline separates the buckle from the surrounding leather -- without
-            # it, the metal gradient alone tends to blend into the leather's own mottling at a
-            # glance instead of reading as a distinct piece of hardware.
+            # A crisp 1px dark outline separates the buckle from the surrounding body material --
+            # without it, the metal gradient alone tends to blend into the body's own mottling at
+            # a glance instead of reading as a distinct piece of hardware.
             draw.rectangle([x0, y0, x1 - 1, y1 - 1], outline=HARDWARE_DARK, width=1)
             continue
         paint_leather_face(img, (x0, y0, x1, y1), color, rng)
@@ -456,16 +501,16 @@ def build(include_pouches=True, suffix=""):
                 draw.rectangle([cx, cy, cx + 1, cy + 1], fill=HARDWARE_DARK)
                 img.putpixel((cx, cy), HARDWARE)
         # A few scuffed/worn highlight flecks on the big front panels, mostly near the edges
-        # where real leather actually wears first.
+        # where real material actually wears first.
         if label in big_panel_labels:
             apply_scuffs(img, (x0, y0, x1, y1), rng, lighter)
-        # Gray hardware trim band at the body_bottom/body_mid seam (see trim_pairs above).
+        # Hardware trim band at the body_bottom/body_mid seam (see trim_pairs above).
         if label in trim_pairs:
             apply_trim_band(draw, (x0, y0, x1, y1), trim_pairs[label], height=2)
         # Two accent studs flanking the buckle, only on the panel the buckle actually sits on.
         if label in ("body_mid.north", "body_mid.south"):
             apply_accent_studs(img, (x0, y0, x1, y1))
-    img.save(OUT_DIR / f"leather_prototype{suffix}_texture.png")
+    img.save(OUT_DIR / f"{tier}_prototype{suffix}_texture.png")
 
     # --- Debug UV-layout preview (upscaled, labeled) so it's easy to sanity-check by eye ---
     preview_scale = 6
@@ -477,14 +522,14 @@ def build(include_pouches=True, suffix=""):
         box = [x0 * preview_scale, y0 * preview_scale, x1 * preview_scale - 1, y1 * preview_scale - 1]
         pdraw.rectangle(box, fill=color, outline=(255, 255, 255, 255))
         pdraw.text((box[0] + 2, box[1] + 2), label, fill=(255, 255, 255, 255))
-    preview.save(OUT_DIR / f"leather_prototype{suffix}_uv_debug.png")
+    preview.save(OUT_DIR / f"{tier}_prototype{suffix}_uv_debug.png")
 
     # --- Emit the item model JSON ---
     model = {
         "texture_size": [CANVAS_WIDTH, canvas_height],
         "textures": {
-            "backpack": f"mcfloatingbackpack:item/leather_floating_backpack_prototype{suffix}",
-            "particle": f"mcfloatingbackpack:item/leather_floating_backpack_prototype{suffix}",
+            "backpack": f"mcfloatingbackpack:item/{tier}_floating_backpack_prototype{suffix}",
+            "particle": f"mcfloatingbackpack:item/{tier}_floating_backpack_prototype{suffix}",
         },
         "elements": [],
     }
@@ -514,15 +559,18 @@ def build(include_pouches=True, suffix=""):
         "fixed": {"rotation": [0, 180, 0], "scale": [1.1, 1.1, 1.1]},
     }
 
-    (OUT_DIR / f"leather_prototype{suffix}.json").write_text(json.dumps(model, indent=2) + "\n")
-    print(f"[{suffix or 'full'}] texture canvas: {CANVAS_WIDTH}x{canvas_height}, {len(elements)} elements")
+    (OUT_DIR / f"{tier}_prototype{suffix}.json").write_text(json.dumps(model, indent=2) + "\n")
+    print(f"[{tier}/{suffix or 'full'}] texture canvas: {CANVAS_WIDTH}x{canvas_height}, {len(elements)} elements")
 
 
 if __name__ == "__main__":
-    # Full variant: all 3 detachable pouches present (what a fully-upgraded backpack would show).
-    build(include_pouches=True, suffix="")
-    # Base variant: no pouches at all -- confirms the body/flap/straps/buckle alone still look
-    # like a finished item, since that's what tier 1 (and an un-upgraded higher tier) would
-    # render. The actual "which pouches are installed" game logic is a separate feature; this is
-    # just the art-side sanity check that both ends of that range look correct.
-    build(include_pouches=False, suffix="_base")
+    for tier in TIER_ORDER:
+        configure_palette(tier)
+        # Full variant: all 3 detachable pouches present (what a fully-upgraded backpack would
+        # show).
+        build(tier, include_pouches=True, suffix="")
+        # Base variant: no pouches at all -- confirms the body/flap/straps/buckle alone still
+        # look like a finished item, since that's what an un-upgraded tier would render. The
+        # actual "which pouches are installed" game logic is a separate feature; this is just the
+        # art-side sanity check that both ends of that range look correct.
+        build(tier, include_pouches=False, suffix="_base")

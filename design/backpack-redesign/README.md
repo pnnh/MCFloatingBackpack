@@ -2,13 +2,14 @@
 
 皮革（基础款）一档的原型，对应你截图里反映的问题。
 
-> **已应用到正式代码**：`leather_prototype_base.json`（无小包的基础款）+ `leather_prototype_base_texture.png`
-> 已经替换成了 `src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json`
-> 和 `textures/item/leather_floating_backpack.png`，皮革背包在游戏里现在用的就是这次重新设计的模型。
-> 因为铁/金/钻石/下界合金四档的配色设计还没做（见下面"配色从单一棕色改成多色调搭配"一节），这四档
-> 暂时还是原来共享的 `floating_backpack.json` 几何体，没有被这次改动影响。可拆卸的三个小包（完整款
-> `leather_prototype.json`）本次**没有**应用——那对应的是尚未实现的"升级组件"玩法，目前基础款里这三
-> 个小包本就不存在，和现状一致。
+> **已应用到正式代码（五档全部）**：每档的 `{tier}_prototype_base.json`（无小包的基础款）+
+> `{tier}_prototype_base_texture.png` 都已经替换成了
+> `src/main/resources/assets/mcfloatingbackpack/models/item/{tier}_floating_backpack.json` 和
+> `textures/item/{tier}_floating_backpack.png`（`{tier}` = leather/iron/gold/diamond/netherite）。
+> 五档现在各自是独立的模型文件（不再共享原来的 `floating_backpack.json`），几何体完全相同，只有配色
+> 不同。原来的共享父模型 `floating_backpack.json` 本身没有删，只是不再被任何一档引用。可拆卸的三个
+> 小包（每档的完整款 `{tier}_prototype.json`）**没有**应用——那对应的是尚未实现的"升级组件"玩法，目
+> 前每一档基础款里这三个小包本就不存在，和现状一致。
 >
 > 这个目录原来叫 `temp/`，现在改名成 `design/` 并且加进了 Git 里跟踪（之前是被 `.gitignore` 整个排除
 > 的）——因为要持续跟踪设计相关的内容，不再是一次性临时产物。脚本生成的 `__pycache__/`（Python 编译
@@ -54,20 +55,27 @@
 - **新增一个高饱和度点缀色**（`ACCENT_*`，皮革档用黄铜色）：在扣具两侧各点了一个小装饰扣，参考的是精
   妙背包那种彩色宝石/铆钉点缀的做法，但做成了黄铜色小方块而不是复制它们的宝石造型。
 
-**关于后续分档配色**：`TIER_PALETTES` 这个字典现在是唯一的颜色入口，皮革档是 `TIER_PALETTES["leather"]`
-这一份；body/flap/strap/pouch/hardware/accent 这几支色系全部由 `shade()` 从这 5 个基础色推导出来，不
-是每个面单独写死颜色。以后出铁/金/钻石/下界合金档，理论上只需要在 `TIER_PALETTES` 里加一条新记录（比
-如 `accent` 换成对应颜色：铁→淡钢灰、金→亮金、钻石→青色、下界合金→紫红色，这是直接照搬 Minecraft 自
-己这几种材质已有的颜色印象，不是我随便定的），`hardware`/`body`/`flap`/`strap` 这几个也可以按档位适当
-调整饱和度/明暗，但不需要重写任何绘制逻辑——这一点还没有实际验证过（目前只实现了皮革一档），下一步
-真要套其他四档配色时，如果 `shade()` 推导出来的某些中间色阶在视觉上不够好看，可能还需要手动微调，不
-能保证纯换一个 `TIER_PALETTES` 条目就一定完美，这点先如实说明。
+**分档配色现已全部完成**：`TIER_PALETTES` 字典现在有 5 条记录（leather/iron/gold/diamond/netherite），
+每档只是 body/flap/strap/hardware/accent 这 5 个基础色不同，绘制逻辑（`configure_palette()` 推导出的
+`shade()` 色阶 + 原来那套贴图细节处理）完全复用，没有另外写任何按档位分支的代码。配色思路：
+
+- **皮革**：暖棕色皮革主体 + 冷灰色硬件 + 黄铜点缀（已有，未改）。
+- **铁**：冷色调淡钢灰/蓝灰帆布主体 + 更亮的铁银色硬件（这档硬件本身就是卖点，所以比皮革档的硬件更
+  显眼）+ 苍白钢蓝点缀。
+- **金**：暖色调老金/橄榄棕主体 + 鎏金黄铜硬件 + 高饱和度亮金黄点缀。
+- **钻石**：冷色调青蓝灰主体 + 铂金/浅蓝灰硬件 + 高饱和度青色点缀（钻石的标志色）。
+- **下界合金**：近黑的炭灰紫主体 + 暗铁灰硬件 + 深紫红点缀（呼应下界合金本身的"幽光"配色）。
+
+配色选取沿用 Minecraft 自己这几种材质已经建立的颜色印象（铁=淡钢灰、金=亮金、钻石=青色、下界合金=
+紫红色），不是随便定的。五档一起用 Blender 无头渲染对比过（见 `tier_gallery_front.png` /
+`tier_gallery_back.png`，脚本是 `render_tier_gallery.py`），视觉上区分度足够，`shade()` 推导出的中间
+色阶没有出现"看起来不像材质"的问题，所以没有再做任何手动微调。
 
 ## 文件说明
 
 | 文件 | 内容 |
 |---|---|
-| `generate_leather_prototype.py` | 生成模型 JSON + 贴图的脚本，箱体尺寸、配色、材质细节（斑驳/缝线/磨损/扣具）都在这里改，改完重新跑一次脚本就会重新生成下面几个文件 |
+| `generate_leather_prototype.py` | 生成模型 JSON + 贴图的脚本（文件名是历史遗留，现在其实生成全部 5 档）：箱体尺寸（`ELEMENTS`，5 档共用同一套）、配色（`TIER_PALETTES`，每档一条记录）、材质细节（斑驳/缝线/磨损/扣具）都在这里改，改完重新跑一次脚本会把 `leather_`/`iron_`/`gold_`/`diamond_`/`netherite_` 五套文件全部重新生成一遍 |
 | `leather_prototype_texture_zoom.png` | 贴图放大 4 倍的最近邻缩放版本，方便不开 Blockbench/Blender 也能直接肉眼看清像素级细节 |
 | `leather_prototype.json` | 新的 Blockbench 风格物品模型（和游戏里真实用的格式完全一样，字段结构照抄了现有 `floating_backpack.json` 的 display 变换） |
 | `leather_prototype_texture.png` | 脚本按 UV 自动生成的贴图（128×152）：按背包等级配色 + 颗粒噪点 + 缝线描边 + 四角铆钉 + 扣具高光，程序生成、不是手绘，但已经不是纯色块了 |
@@ -77,6 +85,9 @@
 | `leather_prototype_preview_back.png` | 背面 3/4 视角预览——重点看这张：实心棕色面板铺满了整个轮廓，原来那个洞已经不存在了 |
 | `ludoai_concept_1~4.png` | 用 ludo.ai 生成的 4 张风格参考图（voxel art，等距视角），**不是精确展开贴图**，只是给你看这个工具生成"我的世界风格但不是纯方块"背包的能力，评估这个方向是否符合你想要的调性 |
 | `leather_prototype_base.json` / `leather_prototype_base_texture.png` | **基础款**变体：不含 `pouch_left`/`pouch_right`/`pouch_back` 三个可拆卸小包，对应"基础皮革背包默认不显示这三个包"的设计；和上面的完整款出自同一个脚本的 `build(include_pouches=False)` |
+| `{iron,gold,diamond,netherite}_prototype.json` / `_base.json` / `_texture.png` / `_base_texture.png` | 另外四档，和上面皮革档的同名文件是同一套结构（完整款/基础款各一个模型+一张贴图），几何体和皮革档完全一样，只有配色不同（见上面"配色从单一棕色改成多色调搭配"一节） |
+| `render_tier_gallery.py` | 无头 Blender 脚本，把 5 档的基础款并排摆在同一个空场景里渲染对比图，用来在应用到正式代码之前先肉眼确认 5 档配色区分度够不够 |
+| `tier_gallery_front.png` / `tier_gallery_back.png` | 上面脚本渲染出的 5 档并排对比图（正面/背面） |
 | `build_isolated_blend.py` | 无头（headless）Blender 脚本，在全新空白场景里独立搭建完整款+基础款、打光、渲染、另存为 `backpack_prototype.blend`；支持 `SKIP_ELEMENTS=`、`NO_SHADOWS=1`、`OUT_PREFIX=` 几个环境变量，就是靠这个脚本排查出"浅灰竖条是阴影"的 |
 | `backpack_prototype.blend` | 独立的 Blender 文件（**走 Git LFS**，见仓库根目录 `.gitattributes`），只包含这两只背包 + 一盏太阳光 + 一盏补光 + 两个相机，不含你自己场景的任何内容，双击就能在 Blender 里打开查看，不依赖你当前是否开着 Blender |
 | `isolated_front.png` / `isolated_back.png` | 独立空场景、默认光照（保留阴影）下的正面/背面渲染 |
@@ -144,7 +155,7 @@ Blender 自己的材质着色渲染确认：
 ## 已知局限 / 待确认
 
 - `leather_prototype_texture.png` 这版已经有颗粒感、缝线描边、铆钉、扣具高光、多色调搭配，比最早的纯色块丰富了不少，但还是程序生成的，不是手绘质感。
-- 目前只做了皮革一档；其余四档（铁/金/钻石/下界合金）需要等这版箱体和配色方向都定稿后，再分别在 `TIER_PALETTES` 里加一条、重新跑一次贴图生成（箱体形状五档共用，和现在 006 已有的架构一致）——具体效果好不好还没实测过，见上面"关于后续分档配色"那段的说明。
+- 五档（皮革/铁/金/钻石/下界合金）的几何体和贴图都已经做完并应用到了正式代码，各档的基础款（无小包）都在 `./gradlew runClient` 里无报错加载。贴图仍然是程序生成的，不是手绘质感，细节丰富度不如专业像素美术。
 - ~~正面渲染图肩带附近的浅灰竖条~~ **已查明：是阴影，不是模型/贴图缺陷，已确认不是你场景里其它物体干扰。** 排查过程见下面单独一节。
 
 ## 怎么本地预览（不改代码的前提下）
@@ -152,4 +163,4 @@ Blender 自己的材质着色渲染确认：
 - 本机 Blender 现在就能看——按上面说的，`FloatingBackpack_Prototype` collection 已经在你当前场景里了。
 - 更推荐直接打开 `backpack_prototype.blend`：这是一个完全独立、只包含这两只背包+灯光+相机的 Blender 文件，不依赖你当前场景里的任何东西，双击直接用 Blender 打开即可。**该文件走 Git LFS 跟踪**（仓库根目录 `.gitattributes` 里已经加了 `*.blend`/`*.blend1` 规则），克隆仓库时需要先装好 `git-lfs` 并执行过 `git lfs install`，否则拉到的会是 LFS 指针文件而不是真正的二进制内容。
 - 或者用免费工具 [Blockbench](https://www.blockbench.net) 打开 `leather_prototype.json`，把 `leather_prototype_texture.png` 当贴图贴上去，交互旋转查看。
-- 如果你想直接在游戏里看效果，告诉我一声，我可以帮你做一次"临时替换"（比如先备份原文件，跑完 `runClient` 看完再还原），但目前按你的要求先不动正式代码。
+- **游戏里直接看效果**：五档模型/贴图已经应用到正式代码了，`./gradlew runClient` 启动后做一个任意等级的浮动背包拿在手上/穿戴上就能看到实际效果，不需要再"临时替换"。

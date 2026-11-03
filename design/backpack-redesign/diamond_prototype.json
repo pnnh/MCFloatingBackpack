@@ -1,0 +1,813 @@
+{
+  "texture_size": [
+    128,
+    152
+  ],
+  "textures": {
+    "backpack": "mcfloatingbackpack:item/diamond_floating_backpack_prototype",
+    "particle": "mcfloatingbackpack:item/diamond_floating_backpack_prototype"
+  },
+  "elements": [
+    {
+      "name": "body_bottom",
+      "from": [
+        2.2,
+        1,
+        5.8
+      ],
+      "to": [
+        13.8,
+        5,
+        12.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            86,
+            46,
+            102
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            46,
+            86,
+            92,
+            102
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            98,
+            61,
+            124,
+            77
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            92,
+            86,
+            118,
+            102
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            32,
+            0,
+            78,
+            26
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            78,
+            0,
+            124,
+            26
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "body_mid",
+      "from": [
+        3.2,
+        5,
+        5.8
+      ],
+      "to": [
+        12.8,
+        9,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            102,
+            38,
+            118
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            38,
+            102,
+            76,
+            118
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            76,
+            102,
+            101,
+            118
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            101,
+            102,
+            126,
+            118
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            0,
+            36,
+            38,
+            61
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            38,
+            36,
+            76,
+            61
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "body_top",
+      "from": [
+        4,
+        9,
+        5.8
+      ],
+      "to": [
+        12,
+        12,
+        11.6
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            64,
+            118,
+            96,
+            130
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            96,
+            118,
+            128,
+            130
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            0,
+            131,
+            23,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            23,
+            131,
+            46,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            34,
+            61,
+            66,
+            84
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            66,
+            61,
+            98,
+            84
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "flap",
+      "from": [
+        3.7,
+        12,
+        5.8
+      ],
+      "to": [
+        12.3,
+        13.2,
+        12
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            143,
+            34,
+            148
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            34,
+            143,
+            68,
+            148
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            68,
+            143,
+            93,
+            148
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            93,
+            143,
+            118,
+            148
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            76,
+            36,
+            110,
+            61
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            0,
+            61,
+            34,
+            86
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "strap_left",
+      "from": [
+        3.8,
+        4,
+        4.8
+      ],
+      "to": [
+        5.4,
+        13,
+        7.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            12,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            12,
+            0,
+            22,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            22,
+            0,
+            32,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            82,
+            131,
+            88,
+            141
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            88,
+            131,
+            94,
+            141
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "strap_right",
+      "from": [
+        10.6,
+        4,
+        4.8
+      ],
+      "to": [
+        12.2,
+        13,
+        7.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            0,
+            6,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            6,
+            0,
+            12,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            12,
+            0,
+            22,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            22,
+            0,
+            32,
+            36
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            82,
+            131,
+            88,
+            141
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            88,
+            131,
+            94,
+            141
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "buckle",
+      "from": [
+        7,
+        5.5,
+        6.4
+      ],
+      "to": [
+        9,
+        7.5,
+        7.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            94,
+            131,
+            102,
+            139
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            102,
+            131,
+            110,
+            139
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            124,
+            61,
+            127,
+            69
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            124,
+            86,
+            127,
+            94
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            110,
+            131,
+            118,
+            134
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            118,
+            131,
+            126,
+            134
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "pouch_back",
+      "from": [
+        4,
+        1.5,
+        12.4
+      ],
+      "to": [
+        12,
+        4.8,
+        13.4
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            0,
+            118,
+            32,
+            131
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            32,
+            118,
+            64,
+            131
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            124,
+            0,
+            128,
+            13
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            122,
+            36,
+            126,
+            49
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            0,
+            148,
+            32,
+            152
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            32,
+            148,
+            64,
+            152
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "pouch_right",
+      "from": [
+        13.6,
+        2,
+        7.5
+      ],
+      "to": [
+        15.1,
+        5,
+        11.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            118,
+            86,
+            124,
+            98
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            46,
+            131,
+            52,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            52,
+            131,
+            67,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            67,
+            131,
+            82,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            110,
+            36,
+            116,
+            51
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            116,
+            36,
+            122,
+            51
+          ],
+          "texture": "#backpack"
+        }
+      }
+    },
+    {
+      "name": "pouch_left",
+      "from": [
+        0.9,
+        2,
+        7.5
+      ],
+      "to": [
+        2.4,
+        5,
+        11.2
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            118,
+            86,
+            124,
+            98
+          ],
+          "texture": "#backpack"
+        },
+        "south": {
+          "uv": [
+            46,
+            131,
+            52,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "east": {
+          "uv": [
+            52,
+            131,
+            67,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "west": {
+          "uv": [
+            67,
+            131,
+            82,
+            143
+          ],
+          "texture": "#backpack"
+        },
+        "up": {
+          "uv": [
+            110,
+            36,
+            116,
+            51
+          ],
+          "texture": "#backpack"
+        },
+        "down": {
+          "uv": [
+            116,
+            36,
+            122,
+            51
+          ],
+          "texture": "#backpack"
+        }
+      }
+    }
+  ],
+  "display": {
+    "thirdperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        1
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        0
+      ],
+      "translation": [
+        0,
+        2.5,
+        1
+      ],
+      "scale": [
+        0.55,
+        0.55,
+        0.55
+      ]
+    },
+    "firstperson_righthand": {
+      "rotation": [
+        0,
+        90,
+        25
+      ],
+      "translation": [
+        1.5,
+        3.5,
+        0
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [
+        0,
+        90,
+        -25
+      ],
+      "translation": [
+        1.5,
+        3.5,
+        0
+      ],
+      "scale": [
+        0.7,
+        0.7,
+        0.7
+      ]
+    },
+    "ground": {
+      "translation": [
+        0,
+        2,
+        0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "gui": {
+      "rotation": [
+        30,
+        225,
+        0
+      ],
+      "translation": [
+        0,
+        1,
+        0
+      ],
+      "scale": [
+        0.95,
+        0.95,
+        0.95
+      ]
+    },
+    "fixed": {
+      "rotation": [
+        0,
+        180,
+        0
+      ],
+      "scale": [
+        1.1,
+        1.1,
+        1.1
+      ]
+    }
+  }
+}
