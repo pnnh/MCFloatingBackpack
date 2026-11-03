@@ -1,0 +1,140 @@
+specs/007-floating-window-chrome/quickstart.md
+  s_e4f0fbd798a6d8::t_8ca382d0e088df 23
+  s_e4f0fbd798a6d8::t_71ff2288920ff2 9
+  s_e4f0fbd798a6d8::t_4b66e66b4ca051 1-8,10-22,24-33
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_787aa750f8b021 126
+  s_e4f0fbd798a6d8::t_3ece7a67af58a1 128
+specs/007-floating-window-chrome/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_a05ef7e37103c7 37-38
+  s_e4f0fbd798a6d8::t_353575d9000ced 35-36
+  s_e4f0fbd798a6d8::t_5783a3245aa72d 1-34
+specs/007-floating-window-chrome/data-model.md
+  s_e4f0fbd798a6d8::t_c203a2edcb0c3b 51-57
+  s_e4f0fbd798a6d8::t_3ebe6cce69279d 22,26
+  s_e4f0fbd798a6d8::t_82461d639c5052 58-59
+  s_e4f0fbd798a6d8::t_5308d2d94c3926 32-35
+  s_e4f0fbd798a6d8::t_dd0f204da8379b 1-21,23-25,27-31,36-50
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelLayoutTest.java
+  s_e4f0fbd798a6d8::t_c0deeb21d52c23 31,43-48,50-52,54-56
+  s_e4f0fbd798a6d8::t_a1f8052cb03605 13-15,24-25,32,49,53,57,62,72,80-171
+  s_e4f0fbd798a6d8::t_6c1535467cedca 58
+specs/007-floating-window-chrome/tasks.md
+  s_e4f0fbd798a6d8::t_35d9586323e7f8 38-39,43-49
+  s_e4f0fbd798a6d8::t_792d110caba552 1-37,40-42,50-62,67-79,81-83,86-92,96-153
+  s_e4f0fbd798a6d8::t_81a2f5b7af6d38 80,84-85
+  s_e4f0fbd798a6d8::t_08c7239bf19925 63-66
+  s_e4f0fbd798a6d8::t_32c968638967ad 93-95
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelSlots.java
+  s_e4f0fbd798a6d8::t_6a5708558c51ba 46,51,56,62
+  s_e4f0fbd798a6d8::t_9bea1abe1fc269 20-24,31-33
+  s_e4f0fbd798a6d8::t_e7eafaeaf8986d 34-35
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackClickLogicTest.java
+  s_e4f0fbd798a6d8::t_c061eb0c9b5478 60-102,104-111,116-119,123-126,130-136,144
+src/main/java/pnnh/mcfloatingbackpack/item/BackpackTier.java
+  s_e4f0fbd798a6d8::t_fd2bb870167aad 46-55
+build.gradle
+  s_e4f0fbd798a6d8::t_c1bf0ab4498475 113-115
+  s_e4f0fbd798a6d8::t_c29b4f8541258b 120-121,123
+  s_e4f0fbd798a6d8::t_bc87874994e66e 99-105,111-112,127-137
+  s_e4f0fbd798a6d8::t_75fa525cc6868f 138
+specs/004-backpack-compat/quickstart.md
+  s_e4f0fbd798a6d8::t_f9b4ff0aa95321 15-17,23
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_e4f0fbd798a6d8::t_18148d0a9e6d4f 84-92
+  s_e4f0fbd798a6d8::t_d5b1a68f962675 36-38
+  s_e4f0fbd798a6d8::t_3ceede1fda2ef9 173,178-181
+  s_e4f0fbd798a6d8::t_3ab49c41c06172 49,64-65,67
+  s_e4f0fbd798a6d8::t_bc425790375079 157-172,174-177,182-183
+  s_e4f0fbd798a6d8::t_76116660068345 14
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_e4f0fbd798a6d8::t_da4ba164c52e73 103-104
+  s_e4f0fbd798a6d8::t_5c2a3518a0dabe 34-35,37-61
+  s_e4f0fbd798a6d8::t_3ad570f52417e3 24
+  s_e4f0fbd798a6d8::t_b7ee8a53f63348 120
+specs/007-floating-window-chrome/plan.md
+  s_e4f0fbd798a6d8::t_0bdc7b4b7d2a24 2,4,6-8,10-12,14,16,18,20,22,24,26,28,30-34,42,45-49,51-57,60-62,80-81,83-85
+  s_e4f0fbd798a6d8::t_8ad51c1cfbbebe 9
+  s_e4f0fbd798a6d8::t_44093a6ea30c9c 25
+  s_e4f0fbd798a6d8::t_fc9761e064ee9d 67-69
+  s_e4f0fbd798a6d8::t_8e8e682480d218 79
+  s_e4f0fbd798a6d8::t_d3e6e0a2e4f92c 1,3,5,13,15,17,19,21,23,27,29,35-41,43-44,50,58-59,63-66,70-78,82,86
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_e4f0fbd798a6d8::t_9b4de7fd9b649e 119,140
+  s_e4f0fbd798a6d8::t_01b28a6338d7ee 31-32,47-50,54,68
+  s_e4f0fbd798a6d8::t_a4db85da51aa74 160-164
+  s_e4f0fbd798a6d8::t_424e21e167ef89 37-46,64-67,87-91,112-115
+  s_e4f0fbd798a6d8::t_514422343df13e 13
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelState.java
+  s_e4f0fbd798a6d8::t_50e8d1bb68decf 67
+  s_e4f0fbd798a6d8::t_986cdee775fac7 15-20,34,38-49
+  s_e4f0fbd798a6d8::t_414ccd088b43e0 179-212,225-241,346
+  s_e4f0fbd798a6d8::t_125298fc48076c 153
+  s_e4f0fbd798a6d8::t_9195f202832e58 105-129
+  s_e4f0fbd798a6d8::t_b64d89114ad269 288-297,299,301-321,324,340-345
+  s_e4f0fbd798a6d8::t_f8c3100458e733 133
+  s_e4f0fbd798a6d8::t_64c8d509cc01ce 242
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackClickLogic.java
+  s_e4f0fbd798a6d8::t_9a50c3bf04409c 9-12,23-39,44-47,51-57,61-70,79-80,87-89,94-95,99-100
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_e4f0fbd798a6d8::t_30c9ca54430e03 4
+  s_e4f0fbd798a6d8::t_185ca47e991cef 185-186,194,196,208-209,213-218,220-230,232-233,235-239,241-242
+  s_e4f0fbd798a6d8::t_2577e34e03100d 86-87
+  s_e4f0fbd798a6d8::t_711a113115347d 219,231,234,240
+  s_e4f0fbd798a6d8::t_a1767d37ec4747 243-244
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackMenuBridge.java
+  s_e4f0fbd798a6d8::t_671e3581aab575 29,34,36,40-41
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_950cdc88ee07fa 2
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelSlotsResizeTest.java
+  s_e4f0fbd798a6d8::t_a3c9928f1807d7 1-53,55-88
+  s_e4f0fbd798a6d8::t_d8fdeb7edd2aac 54
+src/test/java/pnnh/mcfloatingbackpack/item/BackpackTierTest.java
+  s_e4f0fbd798a6d8::t_bcfcf5060285b4 35-50
+specs/007-floating-window-chrome/research.md
+  s_e4f0fbd798a6d8::t_aca2f6559ac67e 19,21,23,25-26,28-30
+  s_e4f0fbd798a6d8::t_f12f6e6fdcb66f 52
+  s_e4f0fbd798a6d8::t_338d44085d8831 1-18,20,22,24,27,31-51,53
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelConfig.java
+  s_e4f0fbd798a6d8::t_454da27b1b3e88 24-25
+  s_e4f0fbd798a6d8::t_e645c3b5930ed2 45-54
+  s_e4f0fbd798a6d8::t_63bd5ae757ad6c 67-70
+specs/007-floating-window-chrome/spec.md
+  s_e4f0fbd798a6d8::t_f8d0687e8057b1 17-18
+  s_e4f0fbd798a6d8::t_7c8d8388c2e86c 40
+  s_e4f0fbd798a6d8::t_50f1a60111504f 91
+  s_e4f0fbd798a6d8::t_0ebcd0a7520b03 77-78
+  s_e4f0fbd798a6d8::t_f5a735d1f38e7f 1,11,13,15-16,20,23,25,27,29,31,33,37-39,41,45,49,56,60,79,82,88-90,92,94-96,100,107-109,111-112,120
+  s_e4f0fbd798a6d8::t_5938150f37af33 2-10,12,14,19,21,24,26,28,30,32,34-36,42-44,46-48,50-55,57-59,61-76,80-81,83-87,93,97-99,102-106,113-118
+  s_e4f0fbd798a6d8::t_fa487992fceeaf 22
+  s_e4f0fbd798a6d8::t_343016fca99460 101
+  s_e4f0fbd798a6d8::t_3b55392b2c7991 110
+  s_e4f0fbd798a6d8::t_d7159ea6cad3d6 119
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_e4f0fbd798a6d8::t_4dd2b1bba49e73 96
+  s_e4f0fbd798a6d8::t_913bea1222b967 33-36,38-39
+specs/004-backpack-compat/research.md
+  s_e4f0fbd798a6d8::t_01a36617f7df6d 19
+AGENTS.md
+  s_e4f0fbd798a6d8::t_749ed0d9272f2a 1
+CLAUDE.md
+  s_e4f0fbd798a6d8::t_7e6db16c461293 1
+gradle/wrapper/gradle-wrapper.properties
+  s_e4f0fbd798a6d8::t_b16b2d5a633e3b 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "1eddef7d5aa339a45f4bb4675ba1ecd488151217",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
