@@ -107,6 +107,13 @@ dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
+    // 008: compile-time-only JEI API access for the optional @JeiPlugin in compat/jei/. Not
+    // bundled into the published jar and not a runtime dependency — unlike the localRuntime JEI
+    // jar below (which is the actual mod, gated behind -PnoJei for dev item browsing), this is
+    // unconditional because the plugin class needs mezz.jei.api.* types to compile at all. When
+    // JEI itself isn't present at runtime, the annotated class is simply never discovered/loaded.
+    compileOnly "mezz.jei:jei-1.21.1-common-api:19.70.0.469"
+
     // Optional popular backpack mods for M4 compatibility testing (dev runtime only).
     // Enable with: ./gradlew runClientCompat / runServerCompat (or -PcompatRuntime).
     if (compatRequested) {

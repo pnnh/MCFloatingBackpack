@@ -12,6 +12,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
+import pnnh.mcfloatingbackpack.item.ModItems;
 
 /**
  * Floating panel chrome in vanilla inventory gray, with synced item stacks.
@@ -24,7 +25,6 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_EDGE_LIGHT = 0xFFFFFFFF;
     private static final int COLOR_EDGE_DARK = 0xFF555555;
     private static final int COLOR_OUTLINE = 0xFF000000;
-    private static final int COLOR_TITLE_TEXT = 0xFF404040;
     private static final int COLOR_SLOT = 0xFF8B8B8B;
     private static final int COLOR_SLOT_LIGHT = 0xFF373737;
     private static final int COLOR_SLOT_DARK = 0xFFFFFFFF;
@@ -44,6 +44,11 @@ public final class FloatingPanelRenderer {
         if (!state.isVisible()) {
             return;
         }
+        // 008: flush any content queued-but-not-yet-flushed earlier this frame (e.g. JEI's own
+        // tooltip, drawn in the same pass as its ingredient grid) before we draw anything, so the
+        // panel paints consistently on top of it instead of landing between its background and
+        // text. See research.md Decision 4 for why this is the suspected root cause.
+        graphics.flush();
         Minecraft minecraft = Minecraft.getInstance();
         state.setTotalRows(ClientBackpackView.get().rows());
         state.layout(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
@@ -63,9 +68,7 @@ public final class FloatingPanelRenderer {
         drawScrollbar(graphics, state);
         drawCloseButton(graphics, state);
         drawResizeHandle(graphics, state);
-
-        Component title = titleFor(ClientBackpackView.get().slotCount());
-        graphics.drawString(minecraft.font, title, x + 8, y + 6, COLOR_TITLE_TEXT, false);
+        drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
 
         ItemStack cursor = cursorStack(minecraft);
         if (!cursor.isEmpty()) {
@@ -88,6 +91,26 @@ public final class FloatingPanelRenderer {
             return Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".title");
         }
         return Component.translatable("item." + MCFloatingBackpack.MOD_ID + "." + tier.id());
+    }
+
+    /**
+     * Fixed-size backpack-tier icon in place of the (possibly overflowing) title text; hovering
+     * it shows the name as a tooltip instead. Geometry must match
+     * {@link FloatingPanelState#hitsTitleIcon}.
+     */
+    private static void drawTitleIcon(
+            GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
+        BackpackTier tier = BackpackTier.byCapacity(ClientBackpackView.get().slotCount());
+        if (tier == null) {
+            return;
+        }
+        ItemStack icon = ModItems.stackFor(tier);
+        int iconX = state.getPosX() + 4;
+        int iconY = state.getPosY() + 1;
+        graphics.renderItem(icon, iconX, iconY);
+        if (state.hitsTitleIcon(mouseX, mouseY)) {
+            graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().slotCount()), mouseX, mouseY);
+        }
     }
 
     private static ItemStack cursorStack(Minecraft minecraft) {

@@ -18,6 +18,8 @@ public final class FloatingPanelState {
     public static final int RESIZE_HANDLE_SIZE = 8;
     /** Pixel hit-box square near the top-right of the drag bar used to close the panel. */
     public static final int CLOSE_BUTTON_SIZE = 10;
+    /** Pixel hit-box square at the top-left of the drag bar showing the backpack-tier icon. */
+    public static final int TITLE_ICON_SIZE = 12;
 
     private static final FloatingPanelState INSTANCE = new FloatingPanelState();
 
@@ -237,6 +239,15 @@ public final class FloatingPanelState {
         int x1 = x2 - CLOSE_BUTTON_SIZE;
         int y1 = posY + 2;
         int y2 = y1 + CLOSE_BUTTON_SIZE;
+        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
+    }
+
+    /** Fixed-size backpack-tier icon at the top-left of the drag bar. */
+    public boolean hitsTitleIcon(double mouseX, double mouseY) {
+        int x1 = posX + 4;
+        int x2 = x1 + TITLE_ICON_SIZE;
+        int y1 = posY + 1;
+        int y2 = y1 + TITLE_ICON_SIZE;
         return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
