@@ -1,0 +1,25 @@
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_backpack.obj
+  s_e4f0fbd798a6d8::t_815e17b5964d7e 20753-20756,58278-58281,78725-78727
+design/demo/tools/netherite_bottom_cap.py
+  s_e4f0fbd798a6d8::t_48e639fbfc2708 1-29
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_ed9392fa52d990 248-265
+design/demo/obj_export/netherite_backpack.obj
+  s_e4f0fbd798a6d8::t_17256924dc7c4b 2-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "66140a8f07966ff03761c8ee0afeefbd8492dfd6",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
