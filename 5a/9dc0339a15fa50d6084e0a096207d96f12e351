@@ -1,0 +1,39 @@
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_backpack.obj
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-75493
+design/demo/obj_export/diamond_backpack.mtl
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-12
+design/demo/obj_export/netherite_backpack.mtl
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-12
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_backpack.obj
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-78716
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_backpack.mtl
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-12
+design/demo/obj_export/diamond_backpack.obj
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-3
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack.json
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 2-5,7-8,12-14,17-19,22-24,27-29,32-33,36-38,41-42
+design/demo/obj_export/netherite_backpack.obj
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-3
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_backpack.mtl
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 1-12
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack.json
+  s_e4f0fbd798a6d8::t_d1b47dbbe5ecc9 2-5,7-8,12-14,17-19,22-24,27-29,32-33,36-38,41-42
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_093d5e73fcf42c 226-247
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5a9dc0339a15fa50d6084e0a096207d96f12e351",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
