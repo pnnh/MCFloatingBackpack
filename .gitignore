@@ -49,6 +49,11 @@ net/
 .tmp-extract/
 .tmp-src/
 
+### Design drafts (specs/*/design-adjacent; tracked, but not their Python build artifacts) ###
+design/**/__pycache__/
+design/**/*.pyc
+design/**/.venv/
+
 ### Local SSL / vendor workarounds (machine-specific) ###
 .m2-local/
 .gradle-truststore.jks
