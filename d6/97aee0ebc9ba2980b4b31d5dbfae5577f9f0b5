@@ -1,0 +1,41 @@
+design/demo/obj_export/gold_backpack.obj
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-3
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_backpack.mtl
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-12
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_backpack.obj
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-66024
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_backpack.mtl
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-12
+design/demo/obj_export/iron_backpack.obj
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-3
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack.json
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 2-5,7-8
+  s_e4f0fbd798a6d8::t_332d81036b8afa 12-14,17-19,22-24,27-29,32-33,36-38,41-42
+design/demo/obj_export/iron_backpack.mtl
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-12
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack.json
+  s_e4f0fbd798a6d8::t_332d81036b8afa 12-14,17-19,22-24,27-29,32-33,36-38,41-42
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 2-5,7-8
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_0dadc53a56d917 201-225
+design/demo/obj_export/gold_backpack.mtl
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-12
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_backpack.obj
+  s_e4f0fbd798a6d8::t_e8d3d43a33c3dc 1-64922
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d697aee0ebc9ba2980b4b31d5dbfae5577f9f0b5",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
