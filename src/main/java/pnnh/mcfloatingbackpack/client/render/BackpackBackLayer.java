@@ -62,12 +62,14 @@ public class BackpackBackLayer
         // orientation. After the 180° X flip, a more negative Z moves the pack AWAY from the body
         // (it maps to +Z of the body bone = out of the back). The strapless OBJ-based leather
         // model has nothing visually holding it on, so its near face is placed flush with the
-        // torso's back surface (body half-depth 0.125): pack spans z' in [-0.170, 0.1585] after
-        // the FIXED display scale (1.1) times this layer's scale (0.55), so z = -0.28 puts the
-        // near face at ~0.12.
+        // torso's back surface (body half-depth 0.125). Net scale S = FIXED display scale (1.1)
+        // times this layer's scale (0.68) = 0.748; the pack spans z' in [-0.281*S, 0.262*S], so
+        // z = -(0.12 + 0.262*S) = -0.316 puts the near face at ~0.12. Re-derive z whenever the
+        // scale changes. Y raised slightly (-0.45 -> -0.42) so the taller pack still sits
+        // within the torso's height.
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-        poseStack.translate(0.0F, -0.45F, -0.28F);
-        poseStack.scale(0.55F, 0.55F, 0.55F);
+        poseStack.translate(0.0F, -0.42F, -0.316F);
+        poseStack.scale(0.68F, 0.68F, 0.68F);
         Minecraft.getInstance()
                 .getItemRenderer()
                 .renderStatic(
