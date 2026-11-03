@@ -22,13 +22,14 @@ import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
  *
  * <p>Renders the item's own baked model (the same one the GUI icon and held-in-hand views use)
  * via {@link ItemRenderer#renderStatic}, instead of approximating its shape with hand-drawn boxes
- * (the previous approach here): the real model's "fixed" display entry already has an identity
- * rotation (see generate_leather_prototype.py) so its front/buckle side faces the same way as
- * every other view, and {@code ItemRenderer.render()} already recenters any baked model by
- * {@code -0.5} on each axis, so it lines up with this layer's existing position/scale constants
- * without any extra bookkeeping. This keeps the back view in sync with whatever the model
- * actually is -- stepped-taper body, straps, flap, buckle, and eventually the detachable pouches
- * -- with no geometry duplicated here to go stale.
+ * (the previous approach here). Each tier's model defines its own "fixed" display entry so its
+ * recognizable front faces the same way as its GUI icon and held-in-hand views (see each model's
+ * JSON under models/item/); this class is model-agnostic and doesn't know or care whether a given
+ * tier is the cuboid-element style or an imported mesh (loader: neoforge:obj). {@code
+ * ItemRenderer.render()} already recenters any baked model by {@code -0.5} on each axis, so this
+ * layer's translate/scale constants apply uniformly regardless of which kind of model a tier
+ * uses. This keeps the back view in sync with whatever each tier's model actually is, with no
+ * geometry duplicated here to go stale.
  */
 public class BackpackBackLayer
         extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
@@ -56,10 +57,14 @@ public class BackpackBackLayer
         poseStack.pushPose();
         getParentModel().body.translateAndRotate(poseStack);
         // Body local +Z points out of the chest. 180° X keeps the mesh upright and puts the
-        // model's own front (the strap/buckle side, "north" -- see the "fixed" display entry)
-        // toward a camera behind the player, matching the GUI icon and held-in-hand orientation.
+        // model's own front (whichever local face its own "fixed" display entry turns toward the
+        // camera) toward a camera behind the player, matching the GUI icon and held-in-hand
+        // orientation. Z nudged closer to the body (-0.32 -> -0.40) for the strapless OBJ-based
+        // leather model specifically, so it sits snug against the back with no visible gap
+        // instead of looking like it could slide off -- there's nothing modeled to visually
+        // "hold" it on.
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-        poseStack.translate(0.0F, -0.45F, -0.32F);
+        poseStack.translate(0.0F, -0.45F, -0.40F);
         poseStack.scale(0.55F, 0.55F, 0.55F);
         Minecraft.getInstance()
                 .getItemRenderer()
