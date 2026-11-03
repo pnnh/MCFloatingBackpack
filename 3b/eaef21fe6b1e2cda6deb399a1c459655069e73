@@ -1,0 +1,21 @@
+design/backpack-redesign/README.md
+  s_e4f0fbd798a6d8::t_6ad9e25104a665 215-233,238
+src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java
+  s_e4f0fbd798a6d8::t_66c164861ce766 6,10,15,21,23-31,53,58-60,62-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3beaef21fe6b1e2cda6deb399a1c459655069e73",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
