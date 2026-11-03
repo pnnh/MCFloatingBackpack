@@ -11,6 +11,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
+import pnnh.mcfloatingbackpack.item.BackpackTier;
 
 /**
  * Floating panel chrome in vanilla inventory gray, with synced item stacks.
@@ -32,6 +33,9 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SCROLL_TRACK = 0xFF373737;
     private static final int COLOR_SCROLL_THUMB = 0xFF8B8B8B;
     private static final int COLOR_SCROLL_THUMB_EDGE = 0xFFC6C6C6;
+    private static final int COLOR_CLOSE_BUTTON = 0xFFB33A3A;
+    private static final int COLOR_CLOSE_GLYPH = 0xFFFFFFFF;
+    private static final int COLOR_RESIZE_GRIP = 0xFF555555;
 
     private FloatingPanelRenderer() {
     }
@@ -42,7 +46,7 @@ public final class FloatingPanelRenderer {
         }
         Minecraft minecraft = Minecraft.getInstance();
         state.setTotalRows(ClientBackpackView.get().rows());
-        state.layout(minecraft.getWindow().getGuiScaledHeight());
+        state.layout(minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
 
         int x = state.getPosX();
         int y = state.getPosY();
@@ -57,8 +61,10 @@ public final class FloatingPanelRenderer {
         drawVanillaPanel(graphics, x, y, w, h);
         drawSlotsWithItems(graphics, state, hovered);
         drawScrollbar(graphics, state);
+        drawCloseButton(graphics, state);
+        drawResizeHandle(graphics, state);
 
-        Component title = Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".title");
+        Component title = titleFor(ClientBackpackView.get().slotCount());
         graphics.drawString(minecraft.font, title, x + 8, y + 6, COLOR_TITLE_TEXT, false);
 
         ItemStack cursor = cursorStack(minecraft);
@@ -73,6 +79,15 @@ public final class FloatingPanelRenderer {
         graphics.flush();
         RenderSystem.enableDepthTest();
         graphics.pose().popPose();
+    }
+
+    /** Falls back to the generic panel title if the slot count doesn't match a known tier. */
+    private static Component titleFor(int slotCount) {
+        BackpackTier tier = BackpackTier.byCapacity(slotCount);
+        if (tier == null) {
+            return Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".title");
+        }
+        return Component.translatable("item." + MCFloatingBackpack.MOD_ID + "." + tier.id());
     }
 
     private static ItemStack cursorStack(Minecraft minecraft) {
@@ -138,5 +153,32 @@ public final class FloatingPanelRenderer {
         graphics.fill(trackX, thumbY, trackX2, thumbY + thumbH, COLOR_SCROLL_THUMB);
         graphics.fill(trackX, thumbY, trackX2, thumbY + 1, COLOR_SCROLL_THUMB_EDGE);
         graphics.fill(trackX, thumbY, trackX + 1, thumbY + thumbH, COLOR_SCROLL_THUMB_EDGE);
+    }
+
+    /** Geometry must match {@link FloatingPanelState#hitsCloseButton}. */
+    private static void drawCloseButton(GuiGraphics graphics, FloatingPanelState state) {
+        Minecraft minecraft = Minecraft.getInstance();
+        int size = FloatingPanelState.CLOSE_BUTTON_SIZE;
+        int x2 = state.getPosX() + state.getWidth() - 3;
+        int x1 = x2 - size;
+        int y1 = state.getPosY() + 2;
+        int y2 = y1 + size;
+        graphics.fill(x1, y1, x2, y2, COLOR_CLOSE_BUTTON);
+        Component glyph = Component.literal("x");
+        int textX = x1 + (size - minecraft.font.width(glyph)) / 2;
+        int textY = y1 + (size - minecraft.font.lineHeight) / 2;
+        graphics.drawString(minecraft.font, glyph, textX, textY, COLOR_CLOSE_GLYPH, false);
+    }
+
+    /** Geometry anchored at the same corner as {@link FloatingPanelState#hitsResizeHandle}. */
+    private static void drawResizeHandle(GuiGraphics graphics, FloatingPanelState state) {
+        int x2 = state.getPosX() + state.getWidth();
+        int y2 = state.getPosY() + state.getHeight();
+        for (int i = 0; i < 3; i++) {
+            int offset = (i + 1) * 3;
+            int px = x2 - offset;
+            int py = y2 - offset;
+            graphics.fill(px, py, px + 2, py + 2, COLOR_RESIZE_GRIP);
+        }
     }
 }

@@ -30,8 +30,13 @@ public final class ClientBackpackView {
         return slots.size();
     }
 
+    /**
+     * Virtual row count after reflowing the backpack's real slots across the player's current
+     * column setting (007): {@code ceil(capacity / visibleCols)}, not a fixed 9-wide division.
+     */
     public int rows() {
-        return Math.max(1, slots.size() / PanelSlots.COLS);
+        int cols = Math.max(1, FloatingPanelState.get().getVisibleCols());
+        return Math.max(1, (slots.size() + cols - 1) / cols);
     }
 
     public ItemStack getStackInSlot(int index) {
@@ -88,6 +93,6 @@ public final class ClientBackpackView {
         cursor = ItemStack.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
-        FloatingPanelState.get().setTotalRows(BackpackTier.LEATHER.rows());
+        FloatingPanelState.get().setTotalRows(rows());
     }
 }

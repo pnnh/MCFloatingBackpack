@@ -1,6 +1,7 @@
 package pnnh.mcfloatingbackpack.client;
 
 import org.lwjgl.glfw.GLFW;
+import org.lwjgl.system.MemoryUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -82,7 +83,8 @@ public final class FloatingPanelEvents {
         configLoaded = true;
     }
 
-    private static void closePanel() {
+    /** Also called by {@code FloatingPanelInput} when the panel's own close button is clicked. */
+    public static void closePanel() {
         FloatingPanelState state = FloatingPanelState.get();
         if (!state.isVisible() && ClientBackpackView.get().getActiveRef() == null) {
             return;
@@ -180,7 +182,8 @@ public final class FloatingPanelEvents {
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
             state.setTotalRows(ClientBackpackView.get().rows());
-            state.layout(minecraft.getWindow().getGuiScaledHeight());
+            state.layout(
+                    minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
             state.clampToScreen(
                     minecraft.getWindow().getGuiScaledWidth(),
                     minecraft.getWindow().getGuiScaledHeight());
@@ -188,8 +191,9 @@ public final class FloatingPanelEvents {
         if (state.isVisible() && minecraft.screen == null) {
             syncMouseToPanelVisibility();
         }
+        updateResizeCursor(minecraft, state, guiMouseX(minecraft), guiMouseY(minecraft));
 
-        if (!state.isVisible() || (!state.isDragging() && !state.isScrolling())) {
+        if (!state.isVisible() || (!state.isDragging() && !state.isScrolling() && !state.isResizing())) {
             return;
         }
         if (!allowsPanel(minecraft.screen)) {
@@ -201,7 +205,41 @@ public final class FloatingPanelEvents {
             state.updateDrag(mouseX, mouseY);
         } else if (state.isScrolling()) {
             state.updateScrollDrag(mouseY);
+        } else if (state.isResizing()) {
+            state.updateResize(mouseX, mouseY);
         }
+    }
+
+    /**
+     * Swaps in the diagonal-resize system cursor while hovering (or dragging) the resize handle.
+     * {@code glfwCreateStandardCursor} can return {@code NULL} on platforms that don't ship that
+     * shape (observed on macOS); when it does, the default arrow cursor is left alone and the
+     * resize drag itself still works, it just won't get the visual hint.
+     */
+    private static long resizeCursorHandle = MemoryUtil.NULL;
+    private static boolean resizeCursorActive;
+
+    private static void updateResizeCursor(
+            Minecraft minecraft, FloatingPanelState state, double mouseX, double mouseY) {
+        boolean shouldShow =
+                state.isVisible() && (state.isResizing() || state.hitsResizeHandle(mouseX, mouseY));
+        if (shouldShow == resizeCursorActive) {
+            return;
+        }
+        long window = minecraft.getWindow().getWindow();
+        if (shouldShow) {
+            if (resizeCursorHandle == MemoryUtil.NULL) {
+                resizeCursorHandle = GLFW.glfwCreateStandardCursor(GLFW.GLFW_RESIZE_NWSE_CURSOR);
+            }
+            if (resizeCursorHandle == MemoryUtil.NULL) {
+                // Unsupported on this platform; nothing to apply, nothing to restore later.
+                return;
+            }
+            GLFW.glfwSetCursor(window, resizeCursorHandle);
+        } else {
+            GLFW.glfwSetCursor(window, MemoryUtil.NULL);
+        }
+        resizeCursorActive = shouldShow;
     }
 
     @SubscribeEvent

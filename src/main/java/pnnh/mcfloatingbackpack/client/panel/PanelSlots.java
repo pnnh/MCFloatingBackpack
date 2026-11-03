@@ -17,12 +17,20 @@ public final class PanelSlots {
     private PanelSlots() {
     }
 
-    public static int panelWidth(boolean scrollbar) {
-        int width = PAD_X * 2 + COLS * SLOT_SIZE;
+    /**
+     * @param cols current display column count (007: player-adjustable, 3..{@link #COLS})
+     */
+    public static int panelWidth(int cols, boolean scrollbar) {
+        int width = PAD_X * 2 + cols * SLOT_SIZE;
         if (scrollbar) {
             width += SCROLLBAR_GAP + SCROLLBAR_WIDTH;
         }
         return width;
+    }
+
+    /** Fixed-9-column width, used only for the pre-layout default size. */
+    public static int panelWidth(boolean scrollbar) {
+        return panelWidth(COLS, scrollbar);
     }
 
     public static int panelWidth() {
@@ -35,23 +43,23 @@ public final class PanelSlots {
     }
 
     public static int slotX(FloatingPanelState state, int index) {
-        int col = index % COLS;
+        int col = index % state.getVisibleCols();
         return state.getPosX() + PAD_X + col * SLOT_SIZE;
     }
 
     public static int slotY(FloatingPanelState state, int index) {
-        int row = index / COLS - state.getScrollRow();
+        int row = index / state.getVisibleCols() - state.getScrollRow();
         return state.getPosY() + PAD_TOP + row * SLOT_SIZE;
     }
 
     public static boolean isRowVisible(FloatingPanelState state, int index) {
-        int row = index / COLS;
+        int row = index / state.getVisibleCols();
         return row >= state.getScrollRow() && row < state.getScrollRow() + state.getVisibleRows();
     }
 
     /** @return global slot index, or -1 if the point is not inside a visible slot */
     public static int indexAt(FloatingPanelState state, double mouseX, double mouseY) {
-        int total = state.getTotalRows() * COLS;
+        int total = state.getTotalRows() * state.getVisibleCols();
         for (int i = 0; i < total; i++) {
             if (!isRowVisible(state, i)) {
                 continue;

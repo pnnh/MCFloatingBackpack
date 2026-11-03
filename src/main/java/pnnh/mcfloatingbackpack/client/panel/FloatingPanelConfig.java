@@ -21,6 +21,8 @@ public final class FloatingPanelConfig {
     private static final String FILE_NAME = MCFloatingBackpack.MOD_ID + "-panel.properties";
     private static final String KEY_X = "posX";
     private static final String KEY_Y = "posY";
+    private static final String KEY_VISIBLE_ROWS = "visibleRows";
+    private static final String KEY_VISIBLE_COLS = "visibleCols";
 
     private FloatingPanelConfig() {
     }
@@ -40,6 +42,16 @@ public final class FloatingPanelConfig {
             int x = parseInt(properties.getProperty(KEY_X), state.getPosX());
             int y = parseInt(properties.getProperty(KEY_Y), state.getPosY());
             state.setPos(x, y);
+            // Only present once the player has actually resized the panel at least once; an
+            // older config file (or one that's never had a resize) must keep the auto-fit default
+            // instead of locking in whatever size happens to be in the fields right now.
+            String rowsRaw = properties.getProperty(KEY_VISIBLE_ROWS);
+            String colsRaw = properties.getProperty(KEY_VISIBLE_COLS);
+            if (rowsRaw != null || colsRaw != null) {
+                int rows = parseInt(rowsRaw, state.getVisibleRows());
+                int cols = parseInt(colsRaw, state.getVisibleCols());
+                state.setSizePreference(rows, cols);
+            }
         } catch (IOException exception) {
             MCFloatingBackpack.LOGGER.warn("Could not load floating panel layout from {}", path, exception);
         }
@@ -52,6 +64,10 @@ public final class FloatingPanelConfig {
             Properties properties = new Properties();
             properties.setProperty(KEY_X, Integer.toString(state.getPosX()));
             properties.setProperty(KEY_Y, Integer.toString(state.getPosY()));
+            if (state.isSizePreferenceSet()) {
+                properties.setProperty(KEY_VISIBLE_ROWS, Integer.toString(state.getVisibleRows()));
+                properties.setProperty(KEY_VISIBLE_COLS, Integer.toString(state.getVisibleCols()));
+            }
             try (Writer writer = Files.newBufferedWriter(path)) {
                 properties.store(writer, "MCFloatingBackpack panel layout");
             }

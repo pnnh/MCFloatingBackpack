@@ -26,18 +26,19 @@ public final class BackpackMenuBridge {
     }
 
     /**
-     * Left-click a backpack slot using the menu carried stack as the cursor.
+     * Left/right-click a backpack slot using the menu carried stack as the cursor.
      *
      * @return the carried stack after the click
      */
     public static ItemStack clickWithMenuCarried(
-            BackpackInventory backpack, AbstractContainerMenu menu, int slotIndex) {
+            BackpackInventory backpack, AbstractContainerMenu menu, int slotIndex, boolean rightClick) {
         mergePanelCursorIntoCarried(backpack, menu);
-        ItemStack newCarried = BackpackClickLogic.leftClick(
+        ItemStack newCarried = BackpackClickLogic.click(
                 backpack::getStackInSlot,
                 (stack, index) -> backpack.setStackInSlot(index, stack),
                 menu.getCarried(),
-                slotIndex);
+                slotIndex,
+                rightClick);
         menu.setCarried(newCarried);
         backpack.setCursor(ItemStack.EMPTY);
         return newCarried;

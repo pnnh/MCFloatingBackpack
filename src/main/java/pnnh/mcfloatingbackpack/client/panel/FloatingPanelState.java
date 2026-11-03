@@ -12,6 +12,12 @@ public final class FloatingPanelState {
     public static final int DEFAULT_POS_Y = 20;
     /** Leave room for hearts / hunger / XP / hotbar under the panel. */
     public static final int BOTTOM_HUD_MARGIN = 40;
+    /** Lower bound for both player-adjustable dimensions (007). */
+    public static final int MIN_VISIBLE_CELLS = 3;
+    /** Pixel hit-box square at the bottom-right corner used to drag-resize the panel. */
+    public static final int RESIZE_HANDLE_SIZE = 8;
+    /** Pixel hit-box square near the top-right of the drag bar used to close the panel. */
+    public static final int CLOSE_BUTTON_SIZE = 10;
 
     private static final FloatingPanelState INSTANCE = new FloatingPanelState();
 
@@ -25,9 +31,22 @@ public final class FloatingPanelState {
     private int dragOffsetY;
     private int totalRows = 4;
     private int visibleRows = 4;
+    private int visibleCols = PanelSlots.COLS;
     private int scrollRow;
     private boolean scrolling;
     private int scrollGrabOffsetY;
+    /**
+     * True once the player has explicitly resized the panel (by dragging the handle, or by
+     * loading a previously-saved size). While false, {@link #layout(int, int)} keeps the old
+     * "auto-fit to available space" behavior instead of respecting {@link #visibleRows}/
+     * {@link #visibleCols} as a sticky preference.
+     */
+    private boolean sizePreferenceSet;
+    private boolean resizing;
+    private int resizeGrabOffsetX;
+    private int resizeGrabOffsetY;
+    private int resizeStartCols;
+    private int resizeStartRows;
 
     private FloatingPanelState() {
     }
@@ -45,6 +64,7 @@ public final class FloatingPanelState {
         if (!visible) {
             dragging = false;
             scrolling = false;
+            resizing = false;
             scrollRow = 0;
         }
     }
@@ -82,9 +102,35 @@ public final class FloatingPanelState {
         return scrolling;
     }
 
+    public boolean isResizing() {
+        return resizing;
+    }
+
+    public int getVisibleCols() {
+        return visibleCols;
+    }
+
+    public boolean isSizePreferenceSet() {
+        return sizePreferenceSet;
+    }
+
+    /** Clears any saved/dragged size preference, reverting to auto-fit on the next layout(). */
+    public void clearSizePreference() {
+        sizePreferenceSet = false;
+    }
+
+    /** Used when loading a persisted size from {@code FloatingPanelConfig}. */
+    public void setSizePreference(int visibleRows, int visibleCols) {
+        this.visibleRows = Math.max(MIN_VISIBLE_CELLS, visibleRows);
+        this.visibleCols = Math.max(MIN_VISIBLE_CELLS, visibleCols);
+        this.sizePreferenceSet = true;
+        clampScroll();
+    }
+
     public void beginDrag(int mouseX, int mouseY) {
         dragging = true;
         scrolling = false;
+        resizing = false;
         dragOffsetX = mouseX - posX;
         dragOffsetY = mouseY - posY;
     }
@@ -104,6 +150,7 @@ public final class FloatingPanelState {
     public void beginScrollDrag(int mouseY) {
         scrolling = true;
         dragging = false;
+        resizing = false;
         scrollGrabOffsetY = mouseY - PanelSlots.scrollbarThumbY(this);
     }
 
@@ -129,6 +176,40 @@ public final class FloatingPanelState {
         scrolling = false;
     }
 
+    /**
+     * Starts a drag-resize gesture. The resulting row/column count is recorded relative to this
+     * grab point ({@link #updateResize}), not accumulated per mouse-move event, so the gesture
+     * doesn't drift from integer rounding.
+     */
+    public void beginResize(int mouseX, int mouseY) {
+        resizing = true;
+        dragging = false;
+        scrolling = false;
+        sizePreferenceSet = true;
+        resizeGrabOffsetX = mouseX;
+        resizeGrabOffsetY = mouseY;
+        resizeStartCols = visibleCols;
+        resizeStartRows = visibleRows;
+    }
+
+    public void updateResize(int mouseX, int mouseY) {
+        if (!resizing) {
+            return;
+        }
+        int deltaCols = Math.floorDiv(
+                (mouseX - resizeGrabOffsetX) + PanelSlots.SLOT_SIZE / 2, PanelSlots.SLOT_SIZE);
+        int deltaRows = Math.floorDiv(
+                (mouseY - resizeGrabOffsetY) + PanelSlots.SLOT_SIZE / 2, PanelSlots.SLOT_SIZE);
+        visibleCols = clamp(resizeStartCols + deltaCols, MIN_VISIBLE_CELLS, PanelSlots.COLS);
+        visibleRows = clamp(
+                resizeStartRows + deltaRows, MIN_VISIBLE_CELLS, Math.max(MIN_VISIBLE_CELLS, totalRows));
+        clampScroll();
+    }
+
+    public void endResize() {
+        resizing = false;
+    }
+
     public boolean contains(double mouseX, double mouseY) {
         return mouseX >= posX && mouseX < posX + width && mouseY >= posY && mouseY < posY + height;
     }
@@ -139,6 +220,24 @@ public final class FloatingPanelState {
 
     public boolean hitsBody(double mouseX, double mouseY) {
         return contains(mouseX, mouseY) && !hitsDragBar(mouseX, mouseY);
+    }
+
+    /** Fixed-size grip at the panel's bottom-right corner; drag it to resize. */
+    public boolean hitsResizeHandle(double mouseX, double mouseY) {
+        int x2 = posX + width;
+        int x1 = x2 - RESIZE_HANDLE_SIZE;
+        int y2 = posY + height;
+        int y1 = y2 - RESIZE_HANDLE_SIZE;
+        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
+    }
+
+    /** Fixed-size close control near the top-right of the drag bar. */
+    public boolean hitsCloseButton(double mouseX, double mouseY) {
+        int x2 = posX + width - 3;
+        int x1 = x2 - CLOSE_BUTTON_SIZE;
+        int y1 = posY + 2;
+        int y2 = y1 + CLOSE_BUTTON_SIZE;
+        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
     /**
@@ -186,24 +285,43 @@ public final class FloatingPanelState {
     }
 
     /**
-     * Fits visible rows to the screen under the current panel top, leaving HUD margin at the
-     * bottom. Widens the chrome when a scrollbar is required.
+     * Before the player ever resizes the panel (and before any saved size is loaded), sizes it to
+     * its content (one row per backpack row, {@link PanelSlots#COLS} columns) and only shrinks it
+     * when the screen can't fit that many cells — the same budget-then-clamp approach used by
+     * Traveler's Backpack and Sophisticated Backpacks. The cell count MUST NOT depend on where the
+     * panel is currently dragged to, or it visibly grows/shrinks while dragging instead of staying
+     * a stable size for a given screen and backpack tier.
+     *
+     * <p>Once the player drags the resize handle (or a saved size is loaded), {@link #visibleRows}/
+     * {@link #visibleCols} become a sticky preference instead: this method only clamps them back
+     * into range if the current screen can no longer fit the preferred size.
      */
-    public void layout(int screenHeight) {
+    public void layout(int screenWidth, int screenHeight) {
         int bottomLimit = Math.max(PanelSlots.panelHeight(1), screenHeight - BOTTOM_HUD_MARGIN);
-        int available = bottomLimit - posY - PanelSlots.PAD_TOP - PanelSlots.PAD_BOTTOM;
-        if (available < PanelSlots.SLOT_SIZE) {
-            int maxFit = Math.max(1, (bottomLimit - PanelSlots.PAD_TOP - PanelSlots.PAD_BOTTOM)
-                    / PanelSlots.SLOT_SIZE);
-            int targetRows = Math.min(totalRows, maxFit);
-            int needed = PanelSlots.panelHeight(targetRows);
-            posY = Math.max(0, bottomLimit - needed);
-            available = bottomLimit - posY - PanelSlots.PAD_TOP - PanelSlots.PAD_BOTTOM;
+        int availableHeight = bottomLimit - PanelSlots.PAD_TOP - PanelSlots.PAD_BOTTOM;
+        int fitRows = Math.max(1, availableHeight / PanelSlots.SLOT_SIZE);
+
+        // Always budget for the vertical scrollbar's width so columns never make the panel wider
+        // than the screen the moment it needs one.
+        int availableWidth = Math.max(
+                PanelSlots.SLOT_SIZE,
+                screenWidth - PanelSlots.PAD_X * 2 - PanelSlots.SCROLLBAR_GAP - PanelSlots.SCROLLBAR_WIDTH);
+        int fitCols = Math.max(1, availableWidth / PanelSlots.SLOT_SIZE);
+
+        // The MIN_VISIBLE_CELLS floor wins even on a screen too small to naturally fit it; only
+        // the position gets squeezed (via clampToScreen / the posY fix-up below), not the size.
+        int rowsUpper = Math.max(MIN_VISIBLE_CELLS, Math.min(totalRows, fitRows));
+        int colsUpper = Math.max(MIN_VISIBLE_CELLS, Math.min(PanelSlots.COLS, fitCols));
+
+        if (sizePreferenceSet) {
+            visibleRows = clamp(visibleRows, MIN_VISIBLE_CELLS, rowsUpper);
+            visibleCols = clamp(visibleCols, MIN_VISIBLE_CELLS, colsUpper);
+        } else {
+            visibleRows = rowsUpper;
+            visibleCols = colsUpper;
         }
-        int fit = Math.max(1, available / PanelSlots.SLOT_SIZE);
-        visibleRows = Math.min(totalRows, fit);
         clampScroll();
-        width = PanelSlots.panelWidth(needsScrollbar());
+        width = PanelSlots.panelWidth(visibleCols, needsScrollbar());
         height = PanelSlots.panelHeight(visibleRows);
         if (posY + height > bottomLimit) {
             posY = Math.max(0, bottomLimit - height);
@@ -218,5 +336,12 @@ public final class FloatingPanelState {
         if (scrollRow < 0) {
             scrollRow = 0;
         }
+    }
+
+    private static int clamp(int value, int min, int max) {
+        if (max < min) {
+            return min;
+        }
+        return Math.min(Math.max(value, min), max);
     }
 }

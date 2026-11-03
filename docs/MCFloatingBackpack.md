@@ -123,9 +123,9 @@
 4. **M3 — 与原版物品栏 / 箱子互拖**  
    有打开容器时的跨库存转移与 carried 行为。
 5. **M4 — 精妙 / 旅行者等热门背包兼容**  
-   二者主界面均继承 `AbstractContainerScreen`，走 M3 菜单 carried 通路；软检测 + 可选 `-PcompatRuntime` 联调。流体罐/假槽/升级页不保证。详见 `specs/004-backpack-compat/`。
+   二者主界面均继承 `AbstractContainerScreen`，走 M3 菜单 carried 通路；软检测 + 可选 `./gradlew runClientCompat` / `runServerCompat`（等价于 `-PcompatRuntime`）联调。流体罐/假槽/升级页不保证。详见 `specs/004-backpack-compat/`。
 6. **M5 — 打磨**  
-   配置项、键位冲突、JEI 共存、多语言、性能与联机测试。
+   配置项、键位冲突、JEI 共存、多语言、性能与联机测试。面板可拖拽缩放行列（独立调整，3 格下限，列数变化时按虚拟总行数重新排布，仅纵向滚动条）、标题栏关闭按钮、标题栏按背包等级动态命名，详见 `specs/007-floating-window-chrome/`。
 
 ## 7. 技术栈与工程约定
 

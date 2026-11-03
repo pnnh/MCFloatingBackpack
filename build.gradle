@@ -96,23 +96,44 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
+// Dependency resolution happens at configuration time, before any task runs, so "did the user
+// ask for a *Compat task" has to be read from the requested task names here rather than from
+// task execution. This lets `runClientCompat` / `runServerCompat` behave exactly like
+// `runClient` / `runServer -PcompatRuntime` without needing a nested Gradle invocation.
+def compatRequested = findProperty('compatRuntime') != null
+        || gradle.startParameter.taskNames.any { it.toLowerCase().endsWith('compat') }
+
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
     // Optional popular backpack mods for M4 compatibility testing (dev runtime only).
-    // Enable with: ./gradlew runClient -PcompatRuntime
-    if (findProperty('compatRuntime') != null) {
-        localRuntime "curse.maven:sophisticated-core-618298:9083874"
-        localRuntime "curse.maven:sophisticated-backpacks-422301:9154769"
-        localRuntime "curse.maven:travelers-backpack-321117:6429473"
+    // Enable with: ./gradlew runClientCompat / runServerCompat (or -PcompatRuntime).
+    if (compatRequested) {
+        localRuntime "curse.maven:sophisticated-core-618298:9385313"
+        localRuntime "curse.maven:sophisticated-backpacks-422301:9385446"
+        localRuntime "curse.maven:travelers-backpack-321117:9297032"
     }
 
     // JEI for creative/debug item browsing in runClient only (not a published dependency).
     // Disable with: ./gradlew runClient -PnoJei
+    // Must stay >= 19.32.0.359: that's the minimum sophisticated-core (M4 compatRuntime, above)
+    // declares support for; older JEI makes runClientCompat/runServerCompat fail to load mods.
     if (findProperty('noJei') == null) {
-        localRuntime "mezz.jei:jei-1.21.1-neoforge:19.25.0.325"
+        localRuntime "mezz.jei:jei-1.21.1-neoforge:19.70.0.469"
     }
+}
+
+tasks.register('runClientCompat') {
+    group = 'run'
+    description = "Runs the client with Sophisticated Backpacks + Traveler's Backpack loaded, for M4 compat testing."
+    dependsOn tasks.named('runClient')
+}
+
+tasks.register('runServerCompat') {
+    group = 'run'
+    description = "Runs the dedicated server with Sophisticated Backpacks + Traveler's Backpack loaded, for M4 compat testing."
+    dependsOn tasks.named('runServer')
 }
 
 tasks.named("test") {

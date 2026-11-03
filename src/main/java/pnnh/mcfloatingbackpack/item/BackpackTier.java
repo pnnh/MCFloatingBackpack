@@ -43,4 +43,14 @@ public enum BackpackTier {
         BackpackTier[] values = values();
         return next < values.length ? values[next] : null;
     }
+
+    /** @return the tier whose capacity exactly matches, or {@code null} if none does. */
+    public static BackpackTier byCapacity(int capacity) {
+        for (BackpackTier tier : values()) {
+            if (tier.capacity() == capacity) {
+                return tier;
+            }
+        }
+        return null;
+    }
 }

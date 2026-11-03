@@ -16,7 +16,7 @@
 
 ## Decision 3: Optional localRuntime behind Gradle property
 
-**Decision**: `./gradlew runClient -PcompatRuntime` pulls CurseMaven jars (core + backpacks + travelers). Default builds stay lean.
+**Decision**: `./gradlew runClientCompat` / `runServerCompat` (equivalent to `runClient` / `runServer -PcompatRuntime`) pull CurseMaven jars (core + backpacks + travelers). Default builds stay lean.
 
 **Rationale**: Avoids CI/network failures and keeps publish classpath clean.
 

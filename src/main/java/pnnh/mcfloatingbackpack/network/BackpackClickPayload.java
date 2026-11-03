@@ -1,7 +1,6 @@
 package pnnh.mcfloatingbackpack.network;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -22,6 +21,7 @@ import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 public record BackpackClickPayload(
         int slotIndex,
         boolean shiftDown,
+        boolean rightClick,
         boolean screenOpen,
         boolean panelOpen,
         int sourceOrdinal,
@@ -31,21 +31,34 @@ public record BackpackClickPayload(
             new CustomPacketPayload.Type<>(
                     ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, "click"));
 
+    // StreamCodec.composite tops out at 6 fields; this record has 7, so the boolean flags are
+    // packed into a single byte instead of nesting another composite.
     public static final StreamCodec<RegistryFriendlyByteBuf, BackpackClickPayload> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT,
-                    BackpackClickPayload::slotIndex,
-                    ByteBufCodecs.BOOL,
-                    BackpackClickPayload::shiftDown,
-                    ByteBufCodecs.BOOL,
-                    BackpackClickPayload::screenOpen,
-                    ByteBufCodecs.BOOL,
-                    BackpackClickPayload::panelOpen,
-                    ByteBufCodecs.VAR_INT,
-                    BackpackClickPayload::sourceOrdinal,
-                    ByteBufCodecs.VAR_INT,
-                    BackpackClickPayload::invIndex,
-                    BackpackClickPayload::new);
+            StreamCodec.of(
+                    (buf, payload) -> {
+                        buf.writeVarInt(payload.slotIndex());
+                        int flags = (payload.shiftDown() ? 1 : 0)
+                                | (payload.rightClick() ? 2 : 0)
+                                | (payload.screenOpen() ? 4 : 0)
+                                | (payload.panelOpen() ? 8 : 0);
+                        buf.writeByte(flags);
+                        buf.writeVarInt(payload.sourceOrdinal());
+                        buf.writeVarInt(payload.invIndex());
+                    },
+                    buf -> {
+                        int slotIndex = buf.readVarInt();
+                        int flags = buf.readByte();
+                        int sourceOrdinal = buf.readVarInt();
+                        int invIndex = buf.readVarInt();
+                        return new BackpackClickPayload(
+                                slotIndex,
+                                (flags & 1) != 0,
+                                (flags & 2) != 0,
+                                (flags & 4) != 0,
+                                (flags & 8) != 0,
+                                sourceOrdinal,
+                                invIndex);
+                    });
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
@@ -87,7 +100,8 @@ public record BackpackClickPayload(
             AbstractContainerMenu menu = serverPlayer.containerMenu;
 
             if (payload.screenOpen() && menu != null) {
-                BackpackMenuBridge.clickWithMenuCarried(inventory, menu, payload.slotIndex());
+                BackpackMenuBridge.clickWithMenuCarried(
+                        inventory, menu, payload.slotIndex(), payload.rightClick());
                 menu.broadcastChanges();
             } else if (payload.shiftDown()) {
                 // Do not swap the backpack item itself out of the main hand into a slot.
@@ -103,7 +117,7 @@ public record BackpackClickPayload(
                 serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, slot);
                 serverPlayer.getInventory().setChanged();
             } else {
-                BackpackClickLogic.applyTo(inventory, payload.slotIndex());
+                BackpackClickLogic.applyTo(inventory, payload.slotIndex(), payload.rightClick());
             }
 
             ref.saveInventory(serverPlayer, inventory);

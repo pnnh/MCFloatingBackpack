@@ -10,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
@@ -27,16 +28,30 @@ public final class FloatingPanelInput {
      */
     public static boolean onMouseButton(int button, int action, double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
-        if (!state.isVisible() || button != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+        boolean isRight = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+        if (!state.isVisible() || (button != GLFW.GLFW_MOUSE_BUTTON_LEFT && !isRight)) {
             return false;
         }
 
         if (action == GLFW.GLFW_PRESS) {
-            if (state.hitsDragBar(mouseX, mouseY)) {
+            // Close button and resize handle sit on/inside the drag bar and body respectively, so
+            // they must be checked before those broader hit tests claim the press first.
+            if (!isRight && state.hitsCloseButton(mouseX, mouseY)) {
+                FloatingPanelEvents.closePanel();
+                return true;
+            }
+            if (!isRight && state.hitsResizeHandle(mouseX, mouseY)) {
+                state.beginResize((int) mouseX, (int) mouseY);
+                return true;
+            }
+            // Dragging the panel and the scrollbar stay left-button-only, but any press over the
+            // panel must still be consumed so it can't leak through to whatever real screen sits
+            // underneath the overlay.
+            if (!isRight && state.hitsDragBar(mouseX, mouseY)) {
                 state.beginDrag((int) mouseX, (int) mouseY);
                 return true;
             }
-            if (PanelSlots.hitsScrollbar(state, mouseX, mouseY)) {
+            if (!isRight && PanelSlots.hitsScrollbar(state, mouseX, mouseY)) {
                 if (PanelSlots.hitsScrollThumb(state, mouseX, mouseY)) {
                     state.beginScrollDrag((int) mouseY);
                 } else {
@@ -46,8 +61,11 @@ public final class FloatingPanelInput {
                 return true;
             }
             int slot = PanelSlots.indexAt(state, mouseX, mouseY);
-            if (slot >= 0) {
-                sendClick(slot);
+            // The last reflowed row can run past the backpack's real slot count once visibleCols
+            // no longer evenly divides its capacity; indexAt only knows the virtual grid, so the
+            // real bound has to be checked here before trusting the index.
+            if (slot >= 0 && slot < ClientBackpackView.get().slotCount()) {
+                sendClick(slot, isRight);
                 return true;
             }
             if (state.hitsBody(mouseX, mouseY) || state.contains(mouseX, mouseY)) {
@@ -63,6 +81,11 @@ public final class FloatingPanelInput {
 
         if (action == GLFW.GLFW_RELEASE && state.isScrolling()) {
             state.endScrollDrag();
+            return true;
+        }
+
+        if (action == GLFW.GLFW_RELEASE && state.isResizing()) {
+            finishResize(state);
             return true;
         }
 
@@ -86,10 +109,14 @@ public final class FloatingPanelInput {
             state.updateScrollDrag((int) mouseY);
             return true;
         }
+        if (state.isResizing()) {
+            state.updateResize((int) mouseX, (int) mouseY);
+            return true;
+        }
         return false;
     }
 
-    private static void sendClick(int slotIndex) {
+    private static void sendClick(int slotIndex, boolean rightClick) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
             return;
@@ -110,6 +137,7 @@ public final class FloatingPanelInput {
                 new BackpackClickPayload(
                         slotIndex,
                         shift,
+                        rightClick,
                         screenOpen,
                         true,
                         ref.source().ordinal(),
@@ -127,6 +155,11 @@ public final class FloatingPanelInput {
         state.clampToScreen(
                 minecraft.getWindow().getGuiScaledWidth(),
                 minecraft.getWindow().getGuiScaledHeight());
+        FloatingPanelConfig.saveFrom(state);
+    }
+
+    private static void finishResize(FloatingPanelState state) {
+        state.endResize();
         FloatingPanelConfig.saveFrom(state);
     }
 }

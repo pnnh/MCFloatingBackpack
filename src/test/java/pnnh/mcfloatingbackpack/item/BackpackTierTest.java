@@ -32,4 +32,20 @@ class BackpackTierTest {
         assertEquals(BackpackTier.NETHERITE, BackpackTier.DIAMOND.next());
         assertNull(BackpackTier.NETHERITE.next());
     }
+
+    @Test
+    void byCapacityFindsTheMatchingTier() {
+        assertEquals(BackpackTier.LEATHER, BackpackTier.byCapacity(36));
+        assertEquals(BackpackTier.IRON, BackpackTier.byCapacity(54));
+        assertEquals(BackpackTier.GOLD, BackpackTier.byCapacity(72));
+        assertEquals(BackpackTier.DIAMOND, BackpackTier.byCapacity(90));
+        assertEquals(BackpackTier.NETHERITE, BackpackTier.byCapacity(108));
+    }
+
+    @Test
+    void byCapacityReturnsNullForAnUnknownCapacity() {
+        assertNull(BackpackTier.byCapacity(0));
+        assertNull(BackpackTier.byCapacity(37));
+        assertNull(BackpackTier.byCapacity(-1));
+    }
 }
