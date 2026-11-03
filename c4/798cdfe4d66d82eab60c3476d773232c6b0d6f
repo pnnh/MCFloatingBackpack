@@ -1,0 +1,21 @@
+src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java
+  s_e4f0fbd798a6d8::t_25a2298df89f2f 65-69,71-72
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_d2456b8fc1870c 171-187
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c4798cdfe4d66d82eab60c3476d773232c6b0d6f",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
