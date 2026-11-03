@@ -59,12 +59,14 @@ public class BackpackBackLayer
         // Body local +Z points out of the chest. 180° X keeps the mesh upright and puts the
         // model's own front (whichever local face its own "fixed" display entry turns toward the
         // camera) toward a camera behind the player, matching the GUI icon and held-in-hand
-        // orientation. Z nudged closer to the body (-0.32 -> -0.40) for the strapless OBJ-based
-        // leather model specifically, so it sits snug against the back with no visible gap
-        // instead of looking like it could slide off -- there's nothing modeled to visually
-        // "hold" it on.
+        // orientation. After the 180° X flip, a more negative Z moves the pack AWAY from the body
+        // (it maps to +Z of the body bone = out of the back). The strapless OBJ-based leather
+        // model has nothing visually holding it on, so its near face is placed flush with the
+        // torso's back surface (body half-depth 0.125): pack spans z' in [-0.170, 0.1585] after
+        // the FIXED display scale (1.1) times this layer's scale (0.55), so z = -0.28 puts the
+        // near face at ~0.12.
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
-        poseStack.translate(0.0F, -0.45F, -0.40F);
+        poseStack.translate(0.0F, -0.45F, -0.28F);
         poseStack.scale(0.55F, 0.55F, 0.55F);
         Minecraft.getInstance()
                 .getItemRenderer()
