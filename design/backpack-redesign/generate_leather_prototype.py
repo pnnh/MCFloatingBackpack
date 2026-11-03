@@ -525,6 +525,15 @@ def build(tier, include_pouches=True, suffix=""):
     preview.save(OUT_DIR / f"{tier}_prototype{suffix}_uv_debug.png")
 
     # --- Emit the item model JSON ---
+    # IMPORTANT: Minecraft's actual model loader (verified by reading FaceBakery.fillVertex in
+    # the NeoForge sources: `sprite.getU(blockFaceUV.getU(vertexIndex) / 16.0F)`) ALWAYS divides
+    # "uv" by a hardcoded 16, and never reads "texture_size" anywhere in the block/model or
+    # texture packages -- "texture_size" is accepted as inert metadata (useful to Blockbench for
+    # letting you author/view UV in pixel units) but has zero effect on how the game samples the
+    # texture. "uv" values must therefore always be in the nominal 0-16 grid, scaled by the
+    # texture's actual pixel dimensions, never raw pixel coordinates -- emitting raw pixel
+    # coordinates (as an earlier version of this script did) makes UV go far outside 0-16, which
+    # wraps/repeats across the whole shared item atlas and renders as multicolored static noise.
     model = {
         "texture_size": [CANVAS_WIDTH, canvas_height],
         "textures": {
@@ -538,7 +547,13 @@ def build(tier, include_pouches=True, suffix=""):
         faces = {}
         for face in FACE_ORDER:
             x0, y0, x1, y1 = faces_uv[face]
-            faces[face] = {"uv": [x0, y0, x1, y1], "texture": "#backpack"}
+            uv = [
+                round(x0 * 16.0 / CANVAS_WIDTH, 4),
+                round(y0 * 16.0 / canvas_height, 4),
+                round(x1 * 16.0 / CANVAS_WIDTH, 4),
+                round(y1 * 16.0 / canvas_height, 4),
+            ]
+            faces[face] = {"uv": uv, "texture": "#backpack"}
         model["elements"].append(
             {
                 "name": el["name"],
