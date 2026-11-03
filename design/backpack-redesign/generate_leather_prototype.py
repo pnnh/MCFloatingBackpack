@@ -563,15 +563,32 @@ def build(tier, include_pouches=True, suffix=""):
             }
         )
 
-    # Reuse the shipped model's display transforms -- same rough bounding box, no need to retune.
+    # Display transforms, adapted from the shipped model's values (same rough bounding box).
+    #
+    # Y rotation flipped +180 on every entry (gui/thirdperson/firstperson/fixed) vs. the shipped
+    # values: the OLD model used the identical UV rect for its "north" and "south" faces (its
+    # front and back looked the same), so which way it faced never mattered. Our redesign gives
+    # north (strap/buckle side) and south (plain body + pouch_back side) genuinely different
+    # detail, and the inherited rotation happened to face south (no buckle visible) toward the
+    # camera in every context -- confirmed by inspecting the actual in-game GUI icon. Flipping Y
+    # by 180 everywhere makes north (the recognizable buckle/strap "front") face the camera.
+    #
+    # thirdperson/firstperson translation.y raised (2.5->4.5, 3.5->6.0): the shipped values were
+    # tuned for the old uniform-width body, which had no "narrow end" for the hand to read as a
+    # grip point. Our stepped taper has a visibly narrower top (body_top/flap, y 9-13.2) vs. a
+    # wider bottom (body_bottom, y 1-5); raising the translation shifts the whole model down
+    # relative to the hand so the narrow top ends up near the hand (read as "gripped by the top
+    # handle", like Traveler's/Sophisticated Backpacks) instead of the hand appearing to grab
+    # somewhere in the wide middle/bottom. This is an estimate from the geometry, not confirmed
+    # against an actual render -- re-check in-game and nudge further if it still looks off.
     model["display"] = {
-        "thirdperson_righthand": {"rotation": [0, 90, 0], "translation": [0, 2.5, 1], "scale": [0.55, 0.55, 0.55]},
-        "thirdperson_lefthand": {"rotation": [0, 90, 0], "translation": [0, 2.5, 1], "scale": [0.55, 0.55, 0.55]},
-        "firstperson_righthand": {"rotation": [0, 90, 25], "translation": [1.5, 3.5, 0], "scale": [0.7, 0.7, 0.7]},
-        "firstperson_lefthand": {"rotation": [0, 90, -25], "translation": [1.5, 3.5, 0], "scale": [0.7, 0.7, 0.7]},
+        "thirdperson_righthand": {"rotation": [0, 270, 0], "translation": [0, 4.5, 1], "scale": [0.55, 0.55, 0.55]},
+        "thirdperson_lefthand": {"rotation": [0, 270, 0], "translation": [0, 4.5, 1], "scale": [0.55, 0.55, 0.55]},
+        "firstperson_righthand": {"rotation": [0, 270, 25], "translation": [1.5, 6.0, 0], "scale": [0.7, 0.7, 0.7]},
+        "firstperson_lefthand": {"rotation": [0, 270, -25], "translation": [1.5, 6.0, 0], "scale": [0.7, 0.7, 0.7]},
         "ground": {"translation": [0, 2, 0], "scale": [0.5, 0.5, 0.5]},
-        "gui": {"rotation": [30, 225, 0], "translation": [0, 1, 0], "scale": [0.95, 0.95, 0.95]},
-        "fixed": {"rotation": [0, 180, 0], "scale": [1.1, 1.1, 1.1]},
+        "gui": {"rotation": [30, 45, 0], "translation": [0, 1, 0], "scale": [0.95, 0.95, 0.95]},
+        "fixed": {"rotation": [0, 0, 0], "scale": [1.1, 1.1, 1.1]},
     }
 
     (OUT_DIR / f"{tier}_prototype{suffix}.json").write_text(json.dumps(model, indent=2) + "\n")

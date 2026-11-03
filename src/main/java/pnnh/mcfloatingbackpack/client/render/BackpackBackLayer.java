@@ -71,8 +71,12 @@ public class BackpackBackLayer
         float z = -0.32F;
         drawPart(poseStack, consumer, packedLight, 0.0F, y, z, 0.55F, 0.62F, 0.28F, BODY_UV);
         drawPart(poseStack, consumer, packedLight, 0.0F, y - 0.33F, z + 0.10F, 0.50F, 0.22F, 0.08F, FLAP_UV);
-        drawPart(poseStack, consumer, packedLight, -0.22F, y - 0.20F, z - 0.12F, 0.10F, 0.55F, 0.10F, STRAP_UV);
-        drawPart(poseStack, consumer, packedLight, 0.22F, y - 0.20F, z - 0.12F, 0.10F, 0.55F, 0.10F, STRAP_UV);
+        // Straps centered on the body (not offset further down from it) and a bit taller than
+        // the body box, so they run its full height with a slight overlap past the top/bottom
+        // edges -- like shoulder straps -- instead of reading as two separate bars dangling
+        // below a disconnected body box.
+        drawPart(poseStack, consumer, packedLight, -0.22F, y, z - 0.12F, 0.10F, 0.70F, 0.10F, STRAP_UV);
+        drawPart(poseStack, consumer, packedLight, 0.22F, y, z - 0.12F, 0.10F, 0.70F, 0.10F, STRAP_UV);
         poseStack.popPose();
     }
 
