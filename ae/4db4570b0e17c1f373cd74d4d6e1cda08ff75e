@@ -1,0 +1,53 @@
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json
+  s_e4f0fbd798a6d8::t_b61e637495eb34 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/gold_prototype.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 706,711,723,728,740,745,757,762,786,803
+design/backpack-redesign/diamond_prototype.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 706,711,723,728,740,745,757,762,786,803
+design/backpack-redesign/iron_prototype.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 706,711,723,728,740,745,757,762,786,803
+design/backpack-redesign/gold_prototype_base.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/leather_prototype_base.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/iron_prototype_base.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 499,504,516,521,533,538,550,555,579,596
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack.json
+  s_e4f0fbd798a6d8::t_b61e637495eb34 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/diamond_prototype_base.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/netherite_prototype_base.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 499,504,516,521,533,538,550,555,579,596
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack.json
+  s_e4f0fbd798a6d8::t_b61e637495eb34 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/generate_leather_prototype.py
+  s_e4f0fbd798a6d8::t_324fb1762c0d6a 566-583,585-588,590-591
+design/backpack-redesign/netherite_prototype.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 706,711,723,728,740,745,757,762,786,803
+design/backpack-redesign/leather_prototype.json
+  s_e4f0fbd798a6d8::t_aa01041260972c 706,711,723,728,740,745,757,762,786,803
+src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java
+  s_e4f0fbd798a6d8::t_61ef55ddd366dc 74-79
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack.json
+  s_e4f0fbd798a6d8::t_b61e637495eb34 499,504,516,521,533,538,550,555,579,596
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack.json
+  s_e4f0fbd798a6d8::t_b61e637495eb34 499,504,516,521,533,538,550,555,579,596
+design/backpack-redesign/README.md
+  s_e4f0fbd798a6d8::t_f7db80a95529c6 190-214,219-220
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ae4db4570b0e17c1f373cd74d4d6e1cda08ff75e",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
