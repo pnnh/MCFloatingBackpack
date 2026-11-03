@@ -1,0 +1,21 @@
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json
+  s_e4f0fbd798a6d8::t_6fcea26478bced 5
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_1aed14fa95ef8a 188-200
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "00e1dff4188dbbec33c8a96f682f1e6c5e53fa73",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
