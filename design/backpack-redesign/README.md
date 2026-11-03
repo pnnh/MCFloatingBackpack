@@ -1,7 +1,15 @@
-# 背包重新建模 — 设计草稿（未应用到代码）
+# 背包重新建模 — 设计草稿
 
-皮革（基础款）一档的原型，对应你截图里反映的问题。还没有改动 `src/main/resources` 下的任何正式文件。
+皮革（基础款）一档的原型，对应你截图里反映的问题。
 
+> **已应用到正式代码**：`leather_prototype_base.json`（无小包的基础款）+ `leather_prototype_base_texture.png`
+> 已经替换成了 `src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json`
+> 和 `textures/item/leather_floating_backpack.png`，皮革背包在游戏里现在用的就是这次重新设计的模型。
+> 因为铁/金/钻石/下界合金四档的配色设计还没做（见下面"配色从单一棕色改成多色调搭配"一节），这四档
+> 暂时还是原来共享的 `floating_backpack.json` 几何体，没有被这次改动影响。可拆卸的三个小包（完整款
+> `leather_prototype.json`）本次**没有**应用——那对应的是尚未实现的"升级组件"玩法，目前基础款里这三
+> 个小包本就不存在，和现状一致。
+>
 > 这个目录原来叫 `temp/`，现在改名成 `design/` 并且加进了 Git 里跟踪（之前是被 `.gitignore` 整个排除
 > 的）——因为要持续跟踪设计相关的内容，不再是一次性临时产物。脚本生成的 `__pycache__/`（Python 编译
 > 缓存）之类的构建副产物仍然会被忽略，具体规则见仓库根目录的 `.gitignore`。
