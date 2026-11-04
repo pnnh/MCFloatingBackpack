@@ -1,0 +1,90 @@
+specs/014-panel-selection/DELIVERY.md
+  s_e4f0fbd798a6d8::t_0242e3c48d28b6 5,38-43
+  s_e4f0fbd798a6d8::t_c7b12dc757c6a1 1-4,6-37,44-59
+specs/008-panel-title-icon-and-jei-safe-zone/DELIVERY.md
+  s_e4f0fbd798a6d8::t_867c11a6883c1b 18-21
+specs/014-panel-selection/tasks.md
+  s_e4f0fbd798a6d8::t_0242e3c48d28b6 57-58,75-76,94-95,115
+  s_e4f0fbd798a6d8::t_6fbdbde481d1b7 1-20,23-29,32-42,47-52,59-69,77-87,96-106,114,116-122,125,127-189
+  s_e4f0fbd798a6d8::t_c7b12dc757c6a1 21-22,30-31,43-46,53-56,70-74,88-93,107-113,123-124,126
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_b9f6259493d92e 32,128
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_e4f0fbd798a6d8::t_1eee013333b9f0 24-32,61-63
+  s_e4f0fbd798a6d8::t_dda095ff9d5dd1 45-46,156,181-183,190-197
+  s_e4f0fbd798a6d8::t_8c8bbc7b0fdd32 198-199
+specs/014-panel-selection/quickstart.md
+  s_e4f0fbd798a6d8::t_c0bdac4b23a45d 1-42,44-47,49-64
+  s_e4f0fbd798a6d8::t_2794b30278b86c 43,48
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_e4f0fbd798a6d8::t_309b0613335606 21-25,28,45,111
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelDragInput.java
+  s_e4f0fbd798a6d8::t_309b0613335606 56,61-66
+specs/014-panel-selection/plan.md
+  s_e4f0fbd798a6d8::t_c0bdac4b23a45d 1,3,5,9,11-14,16-18,20-22,24,26,28,30,32,34,36,38-42,44,50-62,69-78,84-101,104,110
+  s_e4f0fbd798a6d8::t_f29bd0329841be 2,4,6-8,10,19,23,25,27,29,31,33,35,37,43,45-49,63-68,79-83,102-103,105-109
+  s_e4f0fbd798a6d8::t_2794b30278b86c 15
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelSelection.java
+  s_e4f0fbd798a6d8::t_aa6e33bc527601 1-87
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_19526c0ce8cbf8 2
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_e4f0fbd798a6d8::t_55258c36fc2bf5 28,199,397-405
+  s_e4f0fbd798a6d8::t_dda095ff9d5dd1 29,116,162,185,198
+  s_e4f0fbd798a6d8::t_adbb40cf275c2b 406-407
+specs/011-ctrl-quick-transfer/spec.md
+  s_e4f0fbd798a6d8::t_b9f6259493d92e 177
+src/test/java/pnnh/mcfloatingbackpack/client/panel/SelectionGestureTest.java
+  s_e4f0fbd798a6d8::t_1a9845bfe8db31 155-239
+  s_e4f0fbd798a6d8::t_1f902976b23d9a 1-154,240
+specs/014-panel-selection/spec.md
+  s_e4f0fbd798a6d8::t_19526c0ce8cbf8 1-6,8-120,122-137,139-161,163-195,197-198
+  s_e4f0fbd798a6d8::t_0242e3c48d28b6 7
+  s_e4f0fbd798a6d8::t_2794b30278b86c 121,138,162,196
+specs/014-panel-selection/contracts/panel-selection-gestures.md
+  s_e4f0fbd798a6d8::t_2794b30278b86c 15,19-20
+  s_e4f0fbd798a6d8::t_c0bdac4b23a45d 1-14,16-18,21-70
+specs/014-panel-selection/research.md
+  s_e4f0fbd798a6d8::t_2794b30278b86c 48,54,102
+  s_e4f0fbd798a6d8::t_c0bdac4b23a45d 1-47,49-53,55-101,103-104
+specs/014-panel-selection/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_19526c0ce8cbf8 1-36
+specs/013-panel-drag-split-gather/spec.md
+  s_e4f0fbd798a6d8::t_b9f6259493d92e 195
+specs/014-panel-selection/data-model.md
+  s_e4f0fbd798a6d8::t_c0bdac4b23a45d 1-58
+src/main/java/pnnh/mcfloatingbackpack/client/panel/SelectionGesture.java
+  s_e4f0fbd798a6d8::t_1a9845bfe8db31 7,22-24,85-112
+  s_e4f0fbd798a6d8::t_1f902976b23d9a 1-6,8-21,25-84,113-126
+specs/008-panel-title-icon-and-jei-safe-zone/research.md
+  s_e4f0fbd798a6d8::t_867c11a6883c1b 35-36
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_e4f0fbd798a6d8::t_dda095ff9d5dd1 100-104,129-130
+  s_e4f0fbd798a6d8::t_309b0613335606 188-189,194
+  s_e4f0fbd798a6d8::t_ad653cf07a2737 131-132
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelSelectionInput.java
+  s_e4f0fbd798a6d8::t_dda095ff9d5dd1 1-8,10,14-16,20-54,63-82,86-94,98-113,135,140-159
+  s_e4f0fbd798a6d8::t_55258c36fc2bf5 9,11-13,17-19,55-62,83-85,95-97,114-134,136-139
+specs/003-cross-gui-drag/spec.md
+  s_e4f0fbd798a6d8::t_b9f6259493d92e 64,87
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelSelectionTest.java
+  s_e4f0fbd798a6d8::t_aa6e33bc527601 1-127
+specs/012-ctrl-transfer-to-open-container/spec.md
+  s_e4f0fbd798a6d8::t_b9f6259493d92e 208
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c2beaf7af12018cfd43e62d7685ce78647ecd7de",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
