@@ -18,9 +18,14 @@ import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
+/**
+ * {@code swapHand} is the old {@code shiftDown} bit (014): the click asks to swap the slot with the main-hand
+ * item. The client now sets it from Alt, because Shift belongs to the panel selection. The wire format is
+ * unchanged.
+ */
 public record BackpackClickPayload(
         int slotIndex,
-        boolean shiftDown,
+        boolean swapHand,
         boolean rightClick,
         boolean screenOpen,
         boolean panelOpen,
@@ -37,7 +42,7 @@ public record BackpackClickPayload(
             StreamCodec.of(
                     (buf, payload) -> {
                         buf.writeVarInt(payload.slotIndex());
-                        int flags = (payload.shiftDown() ? 1 : 0)
+                        int flags = (payload.swapHand() ? 1 : 0)
                                 | (payload.rightClick() ? 2 : 0)
                                 | (payload.screenOpen() ? 4 : 0)
                                 | (payload.panelOpen() ? 8 : 0);
@@ -103,7 +108,7 @@ public record BackpackClickPayload(
                 BackpackMenuBridge.clickWithMenuCarried(
                         inventory, menu, payload.slotIndex(), payload.rightClick());
                 menu.broadcastChanges();
-            } else if (payload.shiftDown()) {
+            } else if (payload.swapHand()) {
                 // Do not swap the backpack item itself out of the main hand into a slot.
                 ItemStack hand = serverPlayer.getMainHandItem();
                 if (FloatingBackpackItem.isBackpack(hand)) {

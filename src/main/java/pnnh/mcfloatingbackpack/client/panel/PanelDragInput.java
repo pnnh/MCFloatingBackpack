@@ -53,11 +53,17 @@ public final class PanelDragInput {
      *     should send the ordinary click right away
      */
     public static boolean beginFromPanel(int slot, boolean right, double mouseX, double mouseY) {
+        Minecraft minecraft = Minecraft.getInstance();
         if (Screen.hasControlDown() || Screen.hasShiftDown()) {
             gesture.cancel();
             return false;
         }
-        Minecraft minecraft = Minecraft.getInstance();
+        // 014: with no container screen open Alt+click swaps with the main-hand item, which must stay an
+        // immediate click, so this gesture (which holds the click back until release) steps aside.
+        if (Screen.hasAltDown() && !ContainerScreenCompat.isOpenContainerScreen(minecraft.screen)) {
+            gesture.cancel();
+            return false;
+        }
         activeButton = right ? GLFW.GLFW_MOUSE_BUTTON_RIGHT : GLFW.GLFW_MOUSE_BUTTON_LEFT;
         activeScreen = minecraft.screen;
         ClientBackpackView view = ClientBackpackView.get();

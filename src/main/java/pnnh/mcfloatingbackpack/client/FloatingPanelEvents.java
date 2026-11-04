@@ -25,6 +25,8 @@ import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragInput;
+import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
+import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
@@ -111,6 +113,7 @@ public final class FloatingPanelEvents {
         ensureConfigLoaded();
         QuickTransferInput.reset();
         PanelDragInput.reset();
+        PanelSelectionInput.reset();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
@@ -156,6 +159,7 @@ public final class FloatingPanelEvents {
         // so it runs exactly once per frame.
         QuickTransferInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
         PanelDragInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
+        PanelSelectionInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
         ensureConfigLoaded();
         FloatingPanelRenderer.render(
                 event.getGuiGraphics(),
@@ -178,6 +182,7 @@ public final class FloatingPanelEvents {
         ensureConfigLoaded();
         QuickTransferInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
         PanelDragInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
+        PanelSelectionInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
         FloatingPanelRenderer.render(
                 event.getGuiGraphics(),
                 state,
@@ -190,6 +195,8 @@ public final class FloatingPanelEvents {
         Minecraft minecraft = Minecraft.getInstance();
         QuickTransferInput.stopIfInvalid(minecraft);
         PanelDragInput.stopIfInvalid(minecraft);
+        PanelSelectionInput.stopIfInvalid(minecraft);
+        syncSelectionContext();
         hideIfDisallowed(minecraft);
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
@@ -385,6 +392,17 @@ public final class FloatingPanelEvents {
         if (FloatingPanelInput.onMouseDragged(event.getMouseX(), event.getMouseY())) {
             event.setCanceled(true);
         }
+    }
+
+    /**
+     * 014: the selection is by slot index, so it must not outlive the backpack it was made in. One place
+     * covers every way the panel can go away (close button, ESC, screen change, a different backpack).
+     */
+    private static void syncSelectionContext() {
+        BackpackRef ref = ClientBackpackView.get().getActiveRef();
+        String refKey = ref == null ? null : ref.source().ordinal() + ":" + ref.invIndex();
+        PanelSelection.get().syncContext(
+                FloatingPanelState.get().isVisible(), refKey, ClientBackpackView.get().slotCount());
     }
 
     private static double guiMouseX(Minecraft minecraft) {

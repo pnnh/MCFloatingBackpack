@@ -2,8 +2,6 @@ package pnnh.mcfloatingbackpack.client.panel;
 
 import org.lwjgl.glfw.GLFW;
 
-import com.mojang.blaze3d.platform.InputConstants;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.neoforged.api.distmarker.Dist;
@@ -99,6 +97,11 @@ public final class FloatingPanelInput {
             // no longer evenly divides its capacity; indexAt only knows the virtual grid, so the
             // real bound has to be checked here before trusting the index.
             if (slot >= 0 && slot < ClientBackpackView.get().slotCount()) {
+                // 014: Shift selects slots, and any ordinary click clears the selection first. Runs before
+                // everything else so a Shift press never reaches the click paths below.
+                if (PanelSelectionInput.beginFromPanel(slot, isRight, mouseX, mouseY)) {
+                    return true;
+                }
                 // 011: Ctrl+left-click/drag moves stacks to the player's inventory. Works with any
                 // screen open (or none): the target is the real Inventory, not a third-party menu.
                 if (!isRight && QuickTransferInput.beginFromPanel(slot, mouseX, mouseY)) {
@@ -121,6 +124,10 @@ public final class FloatingPanelInput {
                 return true;
             }
             return false;
+        }
+
+        if (action == GLFW.GLFW_RELEASE && PanelSelectionInput.onRelease(button, mouseX, mouseY)) {
+            return true;
         }
 
         if (action == GLFW.GLFW_RELEASE && PanelDragInput.onRelease(button, mouseX, mouseY)) {
@@ -178,14 +185,13 @@ public final class FloatingPanelInput {
             stateClose();
             return;
         }
-        boolean shift = Screen.hasShiftDown()
-                || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)
-                || InputConstants.isKeyDown(minecraft.getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT);
+        // 014: Alt (Option on macOS) swaps with the main-hand item; Shift is the selection key.
+        boolean swapHand = Screen.hasAltDown();
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
         PacketDistributor.sendToServer(
                 new BackpackClickPayload(
                         slotIndex,
-                        shift,
+                        swapHand,
                         rightClick,
                         screenOpen,
                         true,

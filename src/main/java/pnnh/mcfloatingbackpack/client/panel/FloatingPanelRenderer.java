@@ -21,7 +21,15 @@ import pnnh.mcfloatingbackpack.item.ModItems;
  */
 @OnlyIn(Dist.CLIENT)
 public final class FloatingPanelRenderer {
-    private static final float OVERLAY_Z = 400.0F;
+    /**
+     * Base depth of the whole panel. A vanilla tooltip (and JEI's, which uses the same call) draws its
+     * background at z=400 and its text with a drop shadow, whose main layer sits 0.03 nearer (Font
+     * SHADOW_OFFSET). With the panel at exactly 400 the panel covers the tooltip background (equal depth
+     * passes) but not its text (nearer), which is the "background under the panel, text over it" tear.
+     * Anything the panel must paint over has to be strictly below this; the tooltip's own item images
+     * reach roughly 400 + 150 + a few.
+     */
+    private static final float OVERLAY_Z = 800.0F;
 
     private static final int COLOR_PANEL = 0xFFC6C6C6;
     private static final int COLOR_EDGE_LIGHT = 0xFFFFFFFF;
@@ -34,6 +42,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SLOT_HOVER = 0x80FFFFFF;
     /** Same translucent white vanilla paints over slots taking part in a drag. */
     private static final int COLOR_DRAG_SLOT = 0x80FFFFFF;
+    /** Border of a selected slot (014): golden, so it differs from the white hover and drag-preview fills. */
+    private static final int COLOR_SELECTED = 0xFFFFD34D;
     private static final int COLOR_SCROLL_TRACK = 0xFF373737;
     private static final int COLOR_SCROLL_THUMB = 0xFF8B8B8B;
     private static final int COLOR_SCROLL_THUMB_EDGE = 0xFFC6C6C6;
@@ -48,10 +58,9 @@ public final class FloatingPanelRenderer {
         if (!state.isVisible()) {
             return;
         }
-        // 008: flush any content queued-but-not-yet-flushed earlier this frame (e.g. JEI's own
-        // tooltip, drawn in the same pass as its ingredient grid) before we draw anything, so the
-        // panel paints consistently on top of it instead of landing between its background and
-        // text. See research.md Decision 4 for why this is the suspected root cause.
+        // Text queued earlier this frame (a tooltip's text stays in the shared buffer until something
+        // flushes it) is drawn now, before the panel, so the panel is painted after it. Whether the panel
+        // then covers it is decided by depth: see OVERLAY_Z.
         graphics.flush();
         Minecraft minecraft = Minecraft.getInstance();
         state.setTotalRows(ClientBackpackView.get().rows());
@@ -144,6 +153,7 @@ public final class FloatingPanelRenderer {
         Minecraft minecraft = Minecraft.getInstance();
         ClientBackpackView view = ClientBackpackView.get();
         Preview<ItemStack> preview = PanelDragInput.preview();
+        PanelSelection selection = PanelSelection.get();
         for (int i = 0; i < view.slotCount(); i++) {
             if (!PanelSlots.isRowVisible(state, i)) {
                 continue;
@@ -168,10 +178,23 @@ public final class FloatingPanelRenderer {
                 graphics.renderItem(stack, sx + 1, sy + 1);
                 graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
             }
+            if (selection.contains(i)) {
+                drawSelectionBorder(graphics, sx, sy);
+            }
             if (i == hoveredSlot) {
                 graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_SLOT_HOVER);
             }
         }
+    }
+
+    /** One pixel frame just inside the slot. */
+    private static void drawSelectionBorder(GuiGraphics graphics, int x, int y) {
+        int x2 = x + PanelSlots.SLOT_SIZE;
+        int y2 = y + PanelSlots.SLOT_SIZE;
+        graphics.fill(x, y, x2, y + 1, COLOR_SELECTED);
+        graphics.fill(x, y2 - 1, x2, y2, COLOR_SELECTED);
+        graphics.fill(x, y + 1, x + 1, y2 - 1, COLOR_SELECTED);
+        graphics.fill(x2 - 1, y + 1, x2, y2 - 1, COLOR_SELECTED);
     }
 
     private static void drawSlotWell(GuiGraphics graphics, int x, int y) {
