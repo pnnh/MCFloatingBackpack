@@ -1,0 +1,26 @@
+specs/010-backpack-texture-budget/tasks.md
+  s_e4f0fbd798a6d8::t_fc177437c352c3 1-165
+specs/010-backpack-texture-budget/plan.md
+  s_e4f0fbd798a6d8::t_5aac1548b94051 71-72,88-89
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f425c4ea6fcef2ad9905fb74c9d0585344fba073",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
