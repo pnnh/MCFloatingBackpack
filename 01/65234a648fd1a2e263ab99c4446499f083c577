@@ -1,0 +1,43 @@
+build.gradle
+  s_e4f0fbd798a6d8::t_54650371cbf5d9 105-107,128-134,150-152
+  s_e4f0fbd798a6d8::t_00ea0f1478eefa 153-155
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_b100f2a55d99fc 298-330
+specs/010-backpack-texture-budget/DELIVERY.md
+  s_e4f0fbd798a6d8::t_b100f2a55d99fc 19-28,37,39
+design/demo/tools/fetch_shaderpack.sh
+  s_e4f0fbd798a6d8::t_54650371cbf5d9 1-27
+  s_e4f0fbd798a6d8::t_732396b1686c14 28-41
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_backpack.obj
+  s_e4f0fbd798a6d8::t_f4fa7f904a4049 15793-15796,64930-64933
+  s_e4f0fbd798a6d8::t_99cde3d7ad31fb 28808-28809,64929
+specs/010-backpack-texture-budget/tasks.md
+  s_e4f0fbd798a6d8::t_b100f2a55d99fc 65,67
+design/demo/tools/patch_iron_slit.py
+  s_e4f0fbd798a6d8::t_99cde3d7ad31fb 4-16,23-24,32-34,42,44-56,58-66,70-72,74
+  s_e4f0fbd798a6d8::t_c8f70eef5b60bb 22
+  s_e4f0fbd798a6d8::t_ce51f84aa7db77 1-3,17-21,25-31,35-41,43,57,67-69,73,75-78
+design/demo/obj_export/iron_backpack.obj
+  s_e4f0fbd798a6d8::t_bbd64df5c6ac4c 2-3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "0165234a648fd1a2e263ab99c4446499f083c577",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
