@@ -1,0 +1,19 @@
+specs/010-backpack-texture-budget/DELIVERY.md
+  s_e4f0fbd798a6d8::t_78a3d7b3c12e8c 3,21
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "21c5421ccb963157f05121cc5b0a7bdf3b581816",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
