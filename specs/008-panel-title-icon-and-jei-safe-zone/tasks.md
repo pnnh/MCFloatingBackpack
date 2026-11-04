@@ -66,7 +66,7 @@ US1、US2 改动的文件完全不重叠（US1：`FloatingPanelState.java` 新�
 
 - [X] T007 [P] 更新 `docs/MCFloatingBackpack.md`，在相关段落补充标题图标化与 JEI 视觉冲突修复的说明
 - [X] T008 运行 `./gradlew test compileJava`，确认全部通过（10 个测试类、0 失败；另确认 `compileOnly` JEI 依赖只出现在 `compileClasspath`，不出现在默认 `runtimeClasspath`，`runClientCompat` 的 curse.maven/JEI 依赖解析不受影响）
-- [ ] T009 按 `specs/008-panel-title-icon-and-jei-safe-zone/quickstart.md` 的三部分清单，分别在 `./gradlew runClient` 与 `./gradlew runClientCompat` 下验证，把结果记录到 `specs/008-panel-title-icon-and-jei-safe-zone/DELIVERY.md` —— **需要真实客户端会话，无法由我代为执行，留给你验证**
+- [ ] T009（2026-11-04：第一部分标题图标、第二部分的排除区域/面板提示/004 回归已通过；撕裂修复场景与第三部分无 JEI 回归未验证，见 DELIVERY.md）按 `specs/008-panel-title-icon-and-jei-safe-zone/quickstart.md` 的三部分清单，分别在 `./gradlew runClient` 与 `./gradlew runClientCompat` 下验证，把结果记录到 `specs/008-panel-title-icon-and-jei-safe-zone/DELIVERY.md` —— **需要真实客户端会话，无法由我代为执行，留给你验证**
 
 ---
 

@@ -103,7 +103,7 @@
 
 - [x] T025 [P] Note M7 task list location in `docs/plan/005-gameplay-item-tiers.md` (pointer only; do not expand scope)
 - [x] T026 Run `./gradlew test` and `./gradlew compileJava`
-- [ ] T027 Execute `specs/006-tiered-backpacks/quickstart.md` in `runClient` and record the result in `specs/006-tiered-backpacks/DELIVERY.md`
+- [ ] T027（2026-11-04：格子/小窗口/外观/回归已通过；升级保留物品与负面用例、五人观察者未验证，见 DELIVERY.md）Execute `specs/006-tiered-backpacks/quickstart.md` in `runClient` and record the result in `specs/006-tiered-backpacks/DELIVERY.md`
 
 ---
 

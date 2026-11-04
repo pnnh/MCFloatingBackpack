@@ -92,7 +92,7 @@ US1/US2/US3 分别只新增/修改各自需要的字段与函数，没有新的�
 
 - [X] T017 [P] 更新 `docs/MCFloatingBackpack.md`，在 M5 打磨相关段落补充本阶段（缩放/关闭/标题）的说明
 - [X] T018 运行 `./gradlew test compileJava`，确认全部通过（9 个测试类、0 失败）
-- [ ] T019 按 `specs/007-floating-window-chrome/quickstart.md` 的 8 步清单在 `./gradlew runClient` 下逐项验证（含 macOS 光标回退），把结果记录到 `specs/007-floating-window-chrome/DELIVERY.md` — **需要真实客户端会话，无法由我代为执行，留给你验证**
+- [X] T019（2026-11-04 用户在 runClient 下 8 步全部通过，见 DELIVERY.md）按 `specs/007-floating-window-chrome/quickstart.md` 的 8 步清单在 `./gradlew runClient` 下逐项验证（含 macOS 光标回退），把结果记录到 `specs/007-floating-window-chrome/DELIVERY.md` — **需要真实客户端会话，无法由我代为执行，留给你验证**
 
 ---
 
