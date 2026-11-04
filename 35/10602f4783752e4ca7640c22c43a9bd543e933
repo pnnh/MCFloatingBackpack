@@ -1,0 +1,49 @@
+specs/001-floating-panel/DELIVERY.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 15-21
+specs/002-server-inventory/spec.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 3-4
+specs/009-sculpted-mesh-backpack-models/DELIVERY.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 27-32
+specs/002-server-inventory/plan.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 3-4
+specs/002-server-inventory/tasks.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 3-4
+specs/005-item-backpack/spec.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 107
+specs/009-sculpted-mesh-backpack-models/spec.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 128,130-131,133-134,142
+specs/002-server-inventory/DELIVERY.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 24-31
+specs/005-item-backpack/DELIVERY.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 6-7
+specs/004-backpack-compat/DELIVERY.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 20-26
+specs/010-backpack-texture-budget/spec.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 117-118
+specs/003-cross-gui-drag/DELIVERY.md
+  s_e4f0fbd798a6d8::t_93bf671a9e5d1c 24
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 19-23,25
+specs/002-server-inventory/data-model.md
+  s_e4f0fbd798a6d8::t_3c1fa4695a0c8b 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3510602f4783752e4ca7640c22c43a9bd543e933",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
