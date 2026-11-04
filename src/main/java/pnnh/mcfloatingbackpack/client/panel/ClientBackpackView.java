@@ -127,7 +127,7 @@ public final class ClientBackpackView {
         if (sizeChanged) {
             FloatingPanelState.get().setScrollRow(0);
         }
-        reportToolCounts();
+        reportCounts();
         FloatingPanelState.get().setTotalRows(rows());
     }
 
@@ -145,12 +145,16 @@ public final class ClientBackpackView {
         cursor = ItemStack.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
-        reportToolCounts();
+        reportCounts();
         FloatingPanelState.get().setTotalRows(rows());
     }
 
-    /** The panel state clamps each tool area's scrolling against its slot count; a changed count resets that area. */
-    private void reportToolCounts() {
+    /**
+     * The panel state clamps each tool area's scrolling against its slot count (a changed count resets that
+     * area) and decides which panel sizes are valid from all the counts (017).
+     */
+    private void reportCounts() {
+        FloatingPanelState.get().setMainCount(slots.size());
         for (PanelArea area : PanelArea.values()) {
             if (area.isTool()) {
                 FloatingPanelState.get().setToolCount(area, toolCount(area));

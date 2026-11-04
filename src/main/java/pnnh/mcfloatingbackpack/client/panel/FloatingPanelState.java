@@ -41,6 +41,8 @@ public final class FloatingPanelState {
     private final int[] toolScroll = new int[PanelArea.values().length];
     /** Slot counts of the three tool areas, as last reported by the client view; used only to clamp their scrolling. */
     private final int[] toolCount = new int[PanelArea.values().length];
+    /** Main slot count, as last reported by the client view; 0 until the first sync (017: used to decide which sizes are valid). */
+    private int mainCount;
     /**
      * True once the player has explicitly resized the panel (by dragging the handle, or by
      * loading a previously-saved size). While false, {@link #layout(int, int)} keeps the old
@@ -171,9 +173,19 @@ public final class FloatingPanelState {
                 (mouseX - resizeGrabOffsetX) + PanelSlots.SLOT_SIZE / 2, PanelSlots.SLOT_SIZE);
         int deltaRows = Math.floorDiv(
                 (mouseY - resizeGrabOffsetY) + PanelSlots.SLOT_SIZE / 2, PanelSlots.SLOT_SIZE);
-        visibleCols = clamp(resizeStartCols + deltaCols, MIN_VISIBLE_CELLS, PanelSlots.COLS);
-        visibleRows = clamp(
+        int targetCols = clamp(resizeStartCols + deltaCols, MIN_VISIBLE_CELLS, PanelSlots.COLS);
+        int targetRows = clamp(
                 resizeStartRows + deltaRows, MIN_VISIBLE_CELLS, Math.max(MIN_VISIBLE_CELLS, totalRows));
+        // 017: a target that would show a solid filler cell is ignored, not adjusted: the size stays at the last
+        // valid one until the drag reaches a valid target again. Columns and rows are judged on their own, and
+        // the rows against the columns that were just adopted (the row limit depends on them).
+        PanelShape.Counts counts = counts();
+        if (PanelShape.isValidCols(counts, targetCols)) {
+            visibleCols = targetCols;
+        }
+        if (PanelShape.isValidRows(counts, visibleCols, targetRows)) {
+            visibleRows = targetRows;
+        }
         clampScroll();
     }
 
@@ -274,6 +286,20 @@ public final class FloatingPanelState {
         clampScroll();
     }
 
+    /** Tells the state how many main slots the backpack has (017); only the valid panel sizes depend on it. */
+    public void setMainCount(int count) {
+        mainCount = Math.max(0, count);
+    }
+
+    /** The slot counts of the four areas as last reported; the input to {@link PanelShape}. */
+    public PanelShape.Counts counts() {
+        return new PanelShape.Counts(
+                mainCount,
+                toolCount[PanelArea.LEFT.ordinal()],
+                toolCount[PanelArea.RIGHT.ordinal()],
+                toolCount[PanelArea.BOTTOM.ordinal()]);
+    }
+
     /**
      * Tells the state how many slots a tool area has so its scrolling can be clamped. A different count
      * means the content changed shape, so that area goes back to its start (FR-016).
@@ -322,6 +348,15 @@ public final class FloatingPanelState {
         } else {
             visibleRows = rowsUpper;
             visibleCols = colsUpper;
+        }
+        // 017: whatever size came out of the preference, the auto-fit or the screen limit is moved onto a size
+        // that shows no solid filler cell. Columns first: the row limit depends on them. Backpacks with no
+        // valid size at all (or counts not reported yet) are left as they were.
+        PanelShape.Counts counts = counts();
+        if (PanelShape.restricted(counts)) {
+            visibleCols = PanelShape.snapCols(counts, visibleCols);
+            int rowCap = PanelShape.maxRows(counts, visibleCols);
+            visibleRows = clamp(visibleRows, MIN_VISIBLE_CELLS, Math.max(MIN_VISIBLE_CELLS, Math.min(rowsUpper, rowCap)));
         }
         clampScroll();
         width = PanelSlots.panelWidth(visibleCols);

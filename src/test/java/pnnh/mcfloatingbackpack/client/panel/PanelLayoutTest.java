@@ -4,8 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
 
 class PanelLayoutTest {
     private FloatingPanelState state;
@@ -22,6 +25,46 @@ class PanelLayoutTest {
         state.endDrag();
         state.endResize();
         state.clearSizePreference();
+        resetCounts();
+    }
+
+    /** The state is a singleton shared with other tests: leave it unrestricted (no counts reported). */
+    @AfterEach
+    void tearDown() {
+        resetCounts();
+    }
+
+    private void resetCounts() {
+        state.setMainCount(0);
+        for (PanelArea area : new PanelArea[] {PanelArea.LEFT, PanelArea.RIGHT, PanelArea.BOTTOM}) {
+            state.setToolCount(area, 0);
+        }
+    }
+
+    /** An iron backpack (017): 54 main slots, 6 + 6 in the side columns, 11 in the bottom row; laid out at 9 x 6. */
+    private void useIron() {
+        state.setMainCount(54);
+        state.setToolCount(PanelArea.LEFT, 6);
+        state.setToolCount(PanelArea.RIGHT, 6);
+        state.setToolCount(PanelArea.BOTTOM, 11);
+        state.setTotalRows(6);
+        state.layout(WIDE_SCREEN, 400);
+        state.setTotalRows(12); // the real view reports 54 / cols rows; keep it out of the way of the row limit
+    }
+
+    private void useLeather() {
+        state.setMainCount(36);
+        state.setToolCount(PanelArea.LEFT, 4);
+        state.setToolCount(PanelArea.RIGHT, 4);
+        state.setToolCount(PanelArea.BOTTOM, 11);
+        state.setTotalRows(4);
+        state.layout(WIDE_SCREEN, 400);
+        state.setTotalRows(12);
+    }
+
+    private void drag(int dCols, int dRows) {
+        state.beginResize(0, 0);
+        state.updateResize(dCols * PanelSlots.SLOT_SIZE, dRows * PanelSlots.SLOT_SIZE);
     }
 
     @Test
@@ -212,5 +255,183 @@ class PanelLayoutTest {
         state.clearSizePreference();
         state.layout(exact - 1, 1000);
         assertEquals(8, state.getVisibleCols());
+    }
+
+    // ---- 017: only sizes without filler cells ----
+
+    @Test
+    void dragTargetsWithAnInvalidColumnCountAreIgnored() {
+        useIron();
+        assertEquals(9, state.getVisibleCols());
+        assertEquals(6, state.getVisibleRows());
+
+        state.beginResize(0, 0);
+        state.updateResize(-1 * PanelSlots.SLOT_SIZE, 0); // 8 columns: 54 / 8 leaves a half row
+        assertEquals(9, state.getVisibleCols());
+        state.updateResize(-2 * PanelSlots.SLOT_SIZE, 0); // 7
+        assertEquals(9, state.getVisibleCols());
+        state.updateResize(-3 * PanelSlots.SLOT_SIZE, 0); // 6: valid
+        assertEquals(6, state.getVisibleCols());
+        state.updateResize(-4 * PanelSlots.SLOT_SIZE, 0); // 5: not valid, stays at the last valid size
+        assertEquals(6, state.getVisibleCols());
+        state.updateResize(-5 * PanelSlots.SLOT_SIZE, 0); // 4
+        assertEquals(6, state.getVisibleCols());
+        state.updateResize(-6 * PanelSlots.SLOT_SIZE, 0); // 3: valid
+        assertEquals(3, state.getVisibleCols());
+        state.updateResize(-3 * PanelSlots.SLOT_SIZE, 0); // back to 6
+        assertEquals(6, state.getVisibleCols());
+    }
+
+    @Test
+    void dragTargetsWithTooManyRowsAreIgnored() {
+        useIron();
+        state.beginResize(0, 0);
+        state.updateResize(0, 1 * PanelSlots.SLOT_SIZE); // 7 rows: the side columns only hold 6 slots
+        assertEquals(6, state.getVisibleRows());
+        state.updateResize(0, 5 * PanelSlots.SLOT_SIZE);
+        assertEquals(6, state.getVisibleRows());
+        state.updateResize(0, -2 * PanelSlots.SLOT_SIZE); // 4 rows: valid
+        assertEquals(4, state.getVisibleRows());
+        state.updateResize(0, 0); // back to 6
+        assertEquals(6, state.getVisibleRows());
+    }
+
+    @Test
+    void columnsAndRowsAreJudgedSeparately() {
+        useIron();
+        drag(-1, -1); // 8 columns (invalid) and 5 rows (valid)
+        assertEquals(9, state.getVisibleCols());
+        assertEquals(5, state.getVisibleRows());
+    }
+
+    @Test
+    void theRowLimitFollowsTheSideColumnsEvenWhenTheMainAreaHasMoreRows() {
+        useLeather(); // 36 slots, 4 in the side columns
+        drag(-6, 3); // 3 columns would be 12 rows tall, but the side columns hold only 4
+        assertEquals(3, state.getVisibleCols());
+        assertEquals(4, state.getVisibleRows());
+    }
+
+    @Test
+    void theSmallestSizeIsStillThreeByThree() {
+        useIron();
+        drag(-50, -50);
+        state.endResize();
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(3, state.getVisibleCols());
+        assertEquals(3, state.getVisibleRows());
+        assertEquals(PanelSlots.panelWidth(3), state.getWidth());
+        assertEquals(PanelSlots.panelHeight(3), state.getHeight());
+    }
+
+    @Test
+    void withoutReportedCountsEverySizeStillWorks() {
+        // Before the first sync nothing is restricted (and the old tests above rely on that).
+        state.setTotalRows(12);
+        state.layout(WIDE_SCREEN, 400);
+        drag(-2, 0); // 7 columns
+        assertEquals(7, state.getVisibleCols());
+    }
+
+    private void report(int main, int sides, int bottom) {
+        state.setMainCount(main);
+        state.setToolCount(PanelArea.LEFT, sides);
+        state.setToolCount(PanelArea.RIGHT, sides);
+        state.setToolCount(PanelArea.BOTTOM, bottom);
+    }
+
+    @Test
+    void aSavedSizeThatWouldShowFillerCellsIsMovedToAValidOne() {
+        report(54, 6, 11);
+        state.setTotalRows(12);
+        state.setSizePreference(8, 7); // rows, cols: what an older config file may hold
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(6, state.getVisibleCols());
+        assertEquals(6, state.getVisibleRows());
+        assertTrue(PanelShape.isValid(state.counts(), state.getVisibleCols(), state.getVisibleRows()));
+    }
+
+    @Test
+    void autoFitTakesTheLargestValidSizeThatFitsTheScreen() {
+        report(54, 6, 11);
+        state.setTotalRows(6);
+        // Width for exactly 8 main columns (+ 2 side columns): 8 is not valid for 54 slots, 6 is.
+        state.layout(2 * PanelSlots.PAD_X + 10 * PanelSlots.SLOT_SIZE, 1000);
+        assertEquals(6, state.getVisibleCols());
+        assertEquals(6, state.getVisibleRows());
+        state.clearSizePreference();
+        state.layout(WIDE_SCREEN, 1000);
+        assertEquals(9, state.getVisibleCols());
+        assertEquals(6, state.getVisibleRows());
+    }
+
+    @Test
+    void aTinyScreenStillGetsTheThreeByThreeMainArea() {
+        report(54, 6, 11);
+        state.setTotalRows(6);
+        state.layout(50, 50);
+        assertEquals(3, state.getVisibleCols());
+        assertEquals(3, state.getVisibleRows());
+    }
+
+    @Test
+    void switchingToAnotherBackpackMovesTheSizeToAValidOneForIt() {
+        report(54, 6, 11);
+        state.setTotalRows(12);
+        state.setSizePreference(6, 6);
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(6, state.getVisibleCols());
+        assertEquals(6, state.getVisibleRows());
+
+        report(90, 10, 11); // diamond: 6 columns x 6 rows is valid there too
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(6, state.getVisibleCols());
+        assertEquals(6, state.getVisibleRows());
+
+        report(36, 4, 11); // leather: the side columns only hold 4 slots
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(6, state.getVisibleCols());
+        assertEquals(4, state.getVisibleRows());
+    }
+
+    @Test
+    void anUpgradeThatChangesTheCountsMovesAnInvalidSizeToAValidOne() {
+        report(36, 4, 11);
+        state.setTotalRows(12);
+        state.setSizePreference(4, 4); // 4 columns divide 36
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(4, state.getVisibleCols());
+
+        report(54, 6, 11); // iron: 54 / 4 leaves a half row
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(3, state.getVisibleCols());
+        assertEquals(4, state.getVisibleRows());
+    }
+
+    @Test
+    void layoutIsIdempotentOnAValidSize() {
+        report(72, 8, 11);
+        state.setTotalRows(12);
+        state.setSizePreference(5, 8);
+        state.layout(WIDE_SCREEN, 400);
+        int cols = state.getVisibleCols();
+        int rows = state.getVisibleRows();
+        assertEquals(8, cols);
+        assertEquals(5, rows);
+        for (int i = 0; i < 5; i++) {
+            state.layout(WIDE_SCREEN, 400);
+        }
+        assertEquals(cols, state.getVisibleCols());
+        assertEquals(rows, state.getVisibleRows());
+    }
+
+    @Test
+    void withoutValidShapesAPreferenceIsKeptAsIs() {
+        report(37, 5, 11); // 37 slots: no column count divides them, nothing is restricted
+        state.setTotalRows(12);
+        state.setSizePreference(8, 7);
+        state.layout(WIDE_SCREEN, 400);
+        assertEquals(7, state.getVisibleCols());
+        assertEquals(8, state.getVisibleRows());
     }
 }

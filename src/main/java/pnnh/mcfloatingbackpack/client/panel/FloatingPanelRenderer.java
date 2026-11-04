@@ -41,8 +41,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SLOT_LEFT = 0xFFB5D3EE;
     private static final int COLOR_SLOT_RIGHT = 0xFFBFE5B5;
     private static final int COLOR_SLOT_BOTTOM = 0xFFF0DDA0;
-    /** Scroll arrow (016): dark body, light outline, 4 pixels deep (the outline adds one); tune here after looking at it in game. */
-    private static final int ARROW_SIZE = 4;
+    /** Scroll arrow (016, shrunk in 017): dark body 3 deep, light outline 4 deep (at most 7 wide); its tip touches the area's edge. Tune here after looking at it in game. */
+    private static final int ARROW_SIZE = 3;
     private static final int COLOR_ARROW = 0xFF3A3A3A;
     private static final int COLOR_ARROW_OUTLINE = 0xFFF2F2F2;
     private static final int COLOR_SLOT_LIGHT = 0xFF373737;
@@ -242,18 +242,18 @@ public final class FloatingPanelRenderer {
             if (area == PanelArea.BOTTOM) {
                 int cy = r.y() + r.h() / 2;
                 if (back) {
-                    drawArrow(graphics, r.x() + 1, cy, -1, 0);
+                    drawArrow(graphics, r.x(), cy, -1, 0);
                 }
                 if (forward) {
-                    drawArrow(graphics, r.x() + r.w() - 2, cy, 1, 0);
+                    drawArrow(graphics, r.x() + r.w() - 1, cy, 1, 0);
                 }
             } else {
                 int cx = r.x() + r.w() / 2;
                 if (back) {
-                    drawArrow(graphics, cx, r.y() + 1, 0, -1);
+                    drawArrow(graphics, cx, r.y(), 0, -1);
                 }
                 if (forward) {
-                    drawArrow(graphics, cx, r.y() + r.h() - 2, 0, 1);
+                    drawArrow(graphics, cx, r.y() + r.h() - 1, 0, 1);
                 }
             }
         }
@@ -261,7 +261,7 @@ public final class FloatingPanelRenderer {
 
     /**
      * A triangle with its tip at (tipX, tipY) pointing along (dx, dy): a light outline triangle with a dark one
-     * inside it, built from 1-pixel lines of width 1, 3, 5, 7 (outline 1..9) so it needs no texture.
+     * inside it, built from 1-pixel lines of width 1, 3, 5 (outline 1, 3, 5, 7) so it needs no texture.
      */
     private static void drawArrow(GuiGraphics graphics, int tipX, int tipY, int dx, int dy) {
         drawTriangle(graphics, tipX, tipY, dx, dy, ARROW_SIZE + 1, COLOR_ARROW_OUTLINE);
