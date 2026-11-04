@@ -1,0 +1,61 @@
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_4feec8dea75184 2
+specs/009-sculpted-mesh-backpack-models/research.md
+  s_e4f0fbd798a6d8::t_3b2c61b9fb80d5 1-124
+specs/009-sculpted-mesh-backpack-models/spec.md
+  s_e4f0fbd798a6d8::t_d12d5e414ce186 1-82,85-95,97-115,117-133,135-166,168-169
+  s_e4f0fbd798a6d8::t_96c9b37668b555 83-84,96,116,167
+  s_e4f0fbd798a6d8::t_b8941eb8b664bb 134
+specs/009-sculpted-mesh-backpack-models/quickstart.md
+  s_e4f0fbd798a6d8::t_785cde805377bc 1-66
+specs/009-sculpted-mesh-backpack-models/tasks.md
+  s_e4f0fbd798a6d8::t_8c2340ef6df249 1-23,25-75,77-90
+  s_e4f0fbd798a6d8::t_9a137700fb6899 24,76
+specs/009-sculpted-mesh-backpack-models/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_b8941eb8b664bb 1-35
+specs/006-tiered-backpacks/spec.md
+  s_e4f0fbd798a6d8::t_7838e37ddabff2 7,11-12,53-54,63-64,107-108,126,136-137
+specs/006-tiered-backpacks/contracts/tiered-backpack.md
+  s_e4f0fbd798a6d8::t_a9ebfa157c4385 65-66
+specs/009-sculpted-mesh-backpack-models/plan.md
+  s_e4f0fbd798a6d8::t_192f33fbf250b7 1-112
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_64c6e65ff6d04a 128
+design/backpack-redesign/README.md
+  s_e4f0fbd798a6d8::t_5bb70e4997fe14 5-7
+specs/006-tiered-backpacks/tasks.md
+  s_e4f0fbd798a6d8::t_a9ebfa157c4385 81-83
+specs/006-tiered-backpacks/quickstart.md
+  s_e4f0fbd798a6d8::t_c15ed487fd719f 37-38
+specs/006-tiered-backpacks/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_c15ed487fd719f 36
+specs/006-tiered-backpacks/DELIVERY.md
+  s_e4f0fbd798a6d8::t_c15ed487fd719f 13
+specs/006-tiered-backpacks/plan.md
+  s_e4f0fbd798a6d8::t_a9ebfa157c4385 78,81-84
+specs/006-tiered-backpacks/research.md
+  s_e4f0fbd798a6d8::t_a9ebfa157c4385 38-39
+docs/plan/005-gameplay-item-tiers.md
+  s_e4f0fbd798a6d8::t_5bb70e4997fe14 298,301
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "807975450f56c3134a60f2389bac6b33075e1117",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
