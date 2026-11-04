@@ -78,9 +78,9 @@
 **Independent Test**: 快捷栏五图标可分；手持能看出包；胸甲栏 F5 背部是对应配色的背包。贴图边长 ≥ 32。
 
 - [x] T019 [US3] Stop extending `ArmorItem`; equip the chest slot with the equippable component and no humanoid armor texture in `src/main/java/pnnh/mcfloatingbackpack/item/FloatingBackpackItem.java`
-- [x] T020 [P] [US3] Author five 32×32 item textures (leather brown, iron gray, gold trim, diamond cyan, netherite dark with purple edge) in `src/main/resources/assets/mcfloatingbackpack/textures/item/`
-- [x] T021 [P] [US3] Author shared backpack element model `src/main/resources/assets/mcfloatingbackpack/models/item/floating_backpack.json` plus one child model per tier that only swaps the texture
-- [x] T022 [US3] Draw the same body, flap, and straps from the tier texture in `src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java`, replacing the unit cube
+- [x] T020 [P] [US3] （**【009 修订】已被取代**：当前为五张 1024×1024 贴图 + 法线贴图）Author five 32×32 item textures (leather brown, iron gray, gold trim, diamond cyan, netherite dark with purple edge) in `src/main/resources/assets/mcfloatingbackpack/textures/item/`
+- [x] T021 [P] [US3] （**【009 修订】已被取代**：当前是五个独立的 neoforge:obj 模型，`floating_backpack.json` 已无引用）Author shared backpack element model `src/main/resources/assets/mcfloatingbackpack/models/item/floating_backpack.json` plus one child model per tier that only swaps the texture
+- [x] T022 [US3] （**【009 修订】已被取代**：当前直接渲染物品烘焙模型，无肩带）Draw the same body, flap, and straps from the tier texture in `src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java`, replacing the unit cube
 
 **Checkpoint**: 物品栏、手持、第三人称三者都不再是立方体。
 

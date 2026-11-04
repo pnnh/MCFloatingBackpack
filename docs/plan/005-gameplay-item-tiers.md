@@ -295,10 +295,10 @@ ItemStack（浮动背包物品）
 | 阶段 | 名称 | 交付 | 依赖 |
 |------|------|------|------|
 | **M6** | 道具化门禁 + 胸甲背负 + 开发 JEI | → **进行中**：`specs/005-item-backpack`（Attachment **丢弃**不迁移；胸甲栏替代初期 Curios） | 001～004 |
-| **M7** | 分级 | → **进行中**：[`specs/006-tiered-backpacks/`](../../specs/006-tiered-backpacks/tasks.md)（五档 + 锻造 + 外观） | M6 |
+| **M7** | 分级 | → 玩法已实现、人工验证未做完（006 T027）：[`specs/006-tiered-backpacks/`](../../specs/006-tiered-backpacks/tasks.md)（五档 + 锻造）；**外观部分已由 [`specs/009-sculpted-mesh-backpack-models/`](../../specs/009-sculpted-mesh-backpack-models/spec.md) 取代** | M6 |
 | **M8** | 侧栏 UI | 左工具槽 + 右升级槽位（**延后**） | M6 |
 | **M9** | 升级效果一期 | Magnet / Pickup / Void（**延后**） | M8 |
-| **M10** | 资源表现 | 精模与多皮肤（005 仅占位背模） | M7 |
+| **M10** | 资源表现 | 精模与多皮肤（005 仅占位背模）→ **精模已落地**：五档雕刻网格模型，见 [`specs/009-sculpted-mesh-backpack-models/`](../../specs/009-sculpted-mesh-backpack-models/spec.md)（含已知缺口：图集膨胀、网格开放边、无性能预算）；多皮肤仍未做 | M7 |
 | **M11** | Curios | Back 槽（**延后**；005 用胸甲栏） | M10 |
 | **M12** | OP 指令与打磨 | 按玩家/背包引用打开（**延后 D**）等 | M6+ |
 

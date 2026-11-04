@@ -2,7 +2,9 @@
 
 皮革（基础款）一档的原型，对应你截图里反映的问题。
 
-> **已应用到正式代码（五档全部）**：每档的 `{tier}_prototype_base.json`（无小包的基础款）+
+> **【2026-11-04 更新】本目录描述的立方体程序模型已被取代**：五档现在是 `design/demo/` 里的雕刻网格模型（`neoforge:obj` 加载器，无肩带），见 `specs/009-sculpted-mesh-backpack-models/`。下面"已应用到正式代码"的说法是当时（立方体模型）的状态，现在 `src/main/resources` 里的 `<tier>_floating_backpack.json` 已经是 OBJ 模型，`floating_backpack.json` 共用父模型已无任何引用。本目录保留为设计历史（脚本、渲染图、踩坑记录——例如 `texture_size` 在游戏里不生效、`uv` 必须是 0-16 网格），不再维护。
+>
+> **已应用到正式代码（五档全部，立方体时期的状态）**：每档的 `{tier}_prototype_base.json`（无小包的基础款）+
 > `{tier}_prototype_base_texture.png` 都已经替换成了
 > `src/main/resources/assets/mcfloatingbackpack/models/item/{tier}_floating_backpack.json` 和
 > `textures/item/{tier}_floating_backpack.png`（`{tier}` = leather/iron/gold/diamond/netherite）。

@@ -75,13 +75,13 @@ src/main/java/pnnh/mcfloatingbackpack/
 │   └── BackpackUpgradeRecipe.java     # 锻造台：空模板槽 + 1 个材料
 ├── network/                           # 列表上限 108；槽位按该背包容量校验；协议版本 3
 ├── client/panel/                      # 行数来自当前视图；超出屏幕则滚轮滚动
-└── client/render/BackpackBackLayer.java # 按等级贴图画包身/盖/肩带，不再画单位立方体
+└── client/render/BackpackBackLayer.java # 【009 修订】现在直接渲染物品烘焙模型（见 009）；006 当时是按等级贴图画包身/盖/肩带
 
 src/main/resources/
-├── assets/mcfloatingbackpack/models/item/floating_backpack.json
-├── assets/mcfloatingbackpack/models/item/<tier>_floating_backpack.json
-├── assets/mcfloatingbackpack/textures/item/<tier>_floating_backpack.png   # ≥32×32
-├── assets/mcfloatingbackpack/textures/entity/backpack_<tier>.png
+├── assets/mcfloatingbackpack/models/item/floating_backpack.json     # 【009 修订】已不再被引用，遗留文件
+├── assets/mcfloatingbackpack/models/item/<tier>_floating_backpack.json  # 【009 修订】现为独立 neoforge:obj 模型，另有 <tier>_backpack.obj/.mtl
+├── assets/mcfloatingbackpack/textures/item/<tier>_floating_backpack.png   # 【009 修订】现为 1024×1024（原计划 ≥32×32）
+├── assets/mcfloatingbackpack/textures/entity/backpack_<tier>.png     # 【009 修订】从未创建，背部不再使用独立贴图
 ├── data/mcfloatingbackpack/recipe/upgrade_*_floating_backpack.json
 └── assets/.../lang/en_us.json、zh_cn.json
 ```
