@@ -1,0 +1,44 @@
+.gitignore
+  s_e4f0fbd798a6d8::t_359ad41d07a0cb 64-66
+design/demo/tools/check_atlas_budget.sh
+  s_e4f0fbd798a6d8::t_cb02ae3f514ea3 15,57
+  s_e4f0fbd798a6d8::t_2d8e9815bf8ed5 41-46,62-63
+  s_e4f0fbd798a6d8::t_8d92419d22694f 1-14,16-40,47-56,58-61,64-71
+src/main/resources/assets/minecraft/atlases/blocks.json
+  s_e4f0fbd798a6d8::t_98a63471049ed9 1-11
+specs/010-backpack-texture-budget/tasks.md
+  s_e4f0fbd798a6d8::t_4b87c95532dc7f 23-25,33-34,46-50,62-64,81-84,97-100
+specs/010-backpack-texture-budget/DELIVERY.md
+  s_e4f0fbd798a6d8::t_7e2f383db788d9 1-41
+specs/010-backpack-texture-budget/contracts/texture-budget.md
+  s_e4f0fbd798a6d8::t_c1075ecf3f189b 40-41
+design/demo/tools/extract_textures.py
+  s_e4f0fbd798a6d8::t_372142d29797b7 1-60
+design/demo/tools/build_textures.py
+  s_e4f0fbd798a6d8::t_85baa50a9b21c4 1-90
+design/demo/tools/check_brightness.py
+  s_e4f0fbd798a6d8::t_e4622d413fd555 1-93
+design/demo/README.md
+  s_e4f0fbd798a6d8::t_c1075ecf3f189b 74,266-297
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c1233296c2fd9a81a02e1b1937819ea3d0e37a43",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
