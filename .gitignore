@@ -61,3 +61,6 @@ design/**/*.blend1
 .gradle-dist/
 gradle/wrapper/*.zip
 .tmp-*/
+
+### 贴图预算工作目录（2048 原图与中间产物，不入库）
+design/demo/work/

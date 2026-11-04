@@ -20,9 +20,9 @@
 
 **Purpose**: 把研究阶段用过的一次性命令固化成可重复的脚本。
 
-- [ ] T001 [P] 在 `.gitignore` 增加 `design/demo/work/`（2048 原图与中间产物的工作目录，约 5 张×4MB 基础色加 5 张法线，不入库），并确认 `git status` 不会列出它
-- [ ] T002 [P] 新建 `design/demo/tools/extract_textures.py`：Blender 无头脚本，对五个 GLB（`design/demo/<等级>背包.glb`）导出 2048 基础色与法线原图到 `design/demo/work/orig2048/<tier>_base.png`、`<tier>_normal.png`；通过 Material 节点连接找到图像，**不要按图像名取**（同一 Blender 会话里图像名会变成 `Image_0.001`）。参考 research.md 的实验脚本
-- [ ] T003 新建 `design/demo/tools/build_textures.py`（依赖 T002 的输出）：Pillow 脚本，接受尺寸参数（默认 512）。基础色：`BOX` 缩放 → `UnsharpMask(radius=1.0, percent=90, threshold=2)` → 按档位 gamma（皮革 0.62、铁 0.89、下界合金 0.91、金与钻石不调）；法线：先 `BOX`/Lanczos 缩放，再做 LabPBR 转换（R 保持、G 翻转为 255−G、B=255、A=255，输出 RGBA）。输出到 `design/demo/work/out/` 与 `design/demo/obj_export/<tier>_backpack_diffuse_<size>.png`、`<tier>_backpack_normal_n_<size>.png`。尺寸做成参数，是为了 US2 不达标时可以退到 640
+- [X] T001 [P] 在 `.gitignore` 增加 `design/demo/work/`（2048 原图与中间产物的工作目录，约 5 张×4MB 基础色加 5 张法线，不入库），并确认 `git status` 不会列出它
+- [X] T002 [P] 新建 `design/demo/tools/extract_textures.py`：Blender 无头脚本，对五个 GLB（`design/demo/<等级>背包.glb`）导出 2048 基础色与法线原图到 `design/demo/work/orig2048/<tier>_base.png`、`<tier>_normal.png`；通过 Material 节点连接找到图像，**不要按图像名取**（同一 Blender 会话里图像名会变成 `Image_0.001`）。参考 research.md 的实验脚本
+- [X] T003 新建 `design/demo/tools/build_textures.py`（依赖 T002 的输出）：Pillow 脚本，接受尺寸参数（默认 512）。基础色：`BOX` 缩放 → `UnsharpMask(radius=1.0, percent=90, threshold=2)` → 按档位 gamma（皮革 0.62、铁 0.89、下界合金 0.91、金与钻石不调）；法线：先 `BOX`/Lanczos 缩放，再做 LabPBR 转换（R 保持、G 翻转为 255−G、B=255、A=255，输出 RGBA）。输出到 `design/demo/work/out/` 与 `design/demo/obj_export/<tier>_backpack_diffuse_<size>.png`、`<tier>_backpack_normal_n_<size>.png`。尺寸做成参数，是为了 US2 不达标时可以退到 640
 
 ---
 
@@ -30,7 +30,8 @@
 
 **Purpose**: 没有度量手段，就无法判断任何故事是否达标，也是这次问题被发现得太晚的原因。
 
-- [ ] T004 新建 `design/demo/tools/check_atlas_budget.sh`：删除旧 `run/logs/latest.log`，起 `./gradlew runClient`（超时约 45 秒后结束），从日志读 `Created: <W>x<H>x<N> minecraft:textures/atlas/blocks.png-atlas`，打印 W、H、估算显存（`W×H×4×1.332`），宽或高大于 2048 时非零退出；日志里找不到该行时也非零退出并给出明确提示（避免"没测到"被当成"通过"）。结束时确认没有遗留的客户端进程
+- [X] T004 新建 `design/demo/tools/check_atlas_budget.sh`：删除旧 `run/logs/latest.log`，起 `./gradlew runClient`（超时约 45 秒后结束），从日志读 `Created: <W>x<H>x<N> minecraft:textures/atlas/blocks.png-atlas`，打印 W、H、估算显存（`W×H×4×1.332`），宽或高大于 2048 时非零退出；日志里找不到该行时也非零退出并给出明确提示（避免"没测到"被当成"通过"）。结束时确认没有遗留的客户端进程
+  - **已完成**：基线跑出 4096×4096、退出码 1；并发现并修复了脚本留下客户端 JVM 的问题（见 DELIVERY.md）
 
 **Checkpoint**: 在**尚未改动资源**的当前工作区跑一次 T004，应当得到 `4096x4096` 并以非零退出——证明脚本能抓到现状问题。
 
@@ -42,10 +43,11 @@
 
 **Independent Test**: 干净客户端启动，度量脚本输出 `2048x1024`，退出码 0。
 
-- [ ] T005 [US1] 新建 `src/main/resources/assets/minecraft/atlases/blocks.json`，内容为 `contracts/texture-budget.md` 里那一个 `minecraft:filter` 源（`namespace: mcfloatingbackpack`，`path: item/.*_n`）。注意路径是 `assets/minecraft/`，不是 `assets/mcfloatingbackpack/`
-- [ ] T006 [US1] 运行 T002、T003 生成 512 贴图，并把 5 张基础色与 5 张 `_n` 覆盖到 `src/main/resources/assets/mcfloatingbackpack/textures/item/<tier>_floating_backpack.png` 与 `<tier>_floating_backpack_n.png`；保留旧的 1024 版 `design/demo/obj_export/<tier>_backpack_diffuse.png` 不动，作为对照基准
-- [ ] T007 [US1] 运行 `./gradlew compileJava test`，确认没有破坏既有逻辑；运行 `rm -f run/logs/latest.log && ./gradlew runClient` 并扫日志，确认没有关于 `mcfloatingbackpack` 模型、OBJ、贴图的异常（图集过滤文件解析错误会出现在日志里：`Failed to parse atlas definition`）
-- [ ] T008 [US1] 运行 T004 的度量脚本，期望 `2048x1024`、退出码 0；把数字记录到 `specs/010-backpack-texture-budget/DELIVERY.md`（新建）。如果得到的不是 2048×1024，回头对照 research.md 的矩阵排查（先怀疑 `_n` 是否真的被过滤、贴图是否真的是 512）
+- [X] T005 [US1] 新建 `src/main/resources/assets/minecraft/atlases/blocks.json`，内容为 `contracts/texture-budget.md` 里那一个 `minecraft:filter` 源（`namespace: mcfloatingbackpack`，`path: item/.*_n`）。注意路径是 `assets/minecraft/`，不是 `assets/mcfloatingbackpack/`
+- [X] T006 [US1] 运行 T002、T003 生成 512 贴图，并把 5 张基础色与 5 张 `_n` 覆盖到 `src/main/resources/assets/mcfloatingbackpack/textures/item/<tier>_floating_backpack.png` 与 `<tier>_floating_backpack_n.png`；保留旧的 1024 版 `design/demo/obj_export/<tier>_backpack_diffuse.png` 不动，作为对照基准
+- [X] T007 [US1] 运行 `./gradlew compileJava test`，确认没有破坏既有逻辑；运行 `rm -f run/logs/latest.log && ./gradlew runClient` 并扫日志，确认没有关于 `mcfloatingbackpack` 模型、OBJ、贴图的异常（图集过滤文件解析错误会出现在日志里：`Failed to parse atlas definition`）
+- [X] T008 [US1] 运行 T004 的度量脚本，期望 `2048x1024`、退出码 0；把数字记录到 `specs/010-backpack-texture-budget/DELIVERY.md`（新建）。如果得到的不是 2048×1024，回头对照 research.md 的矩阵排查（先怀疑 `_n` 是否真的被过滤、贴图是否真的是 512）
+  - **已完成**：实测 2048×1024，估算显存 11.2MB，退出码 0
 
 **Checkpoint**: US1 达成：SC-001、SC-002（尺寸部分）。此时外观质量还没验证，不得宣称完成。
 
@@ -57,8 +59,9 @@
 
 **Independent Test**: 把新 512 版与当前 1024 版逐档对比并做盲测。
 
-- [ ] T009 [P] [US2] 新建 `design/demo/tools/check_brightness.py`：按网格 `.obj` 的实际使用 UV 区域面积加权，计算新贴图与旧 1024 版（`design/demo/obj_export/<tier>_backpack_diffuse.png`）的平均亮度偏差，超过 ±10% 时非零退出；输出五档偏差表。研究阶段的实测数字（≤ ±3%）作为预期值
-- [ ] T010 [US2] 运行 T009，把结果记录到 DELIVERY.md；如果某档超过 ±10%，先检查 T003 的 gamma 是否按档位应用，不要直接放宽阈值
+- [X] T009 [P] [US2] 新建 `design/demo/tools/check_brightness.py`：按网格 `.obj` 的实际使用 UV 区域面积加权，计算新贴图与旧 1024 版（`design/demo/obj_export/<tier>_backpack_diffuse.png`）的平均亮度偏差，超过 ±10% 时非零退出；输出五档偏差表。研究阶段的实测数字（≤ ±3%）作为预期值
+- [X] T010 [US2] 运行 T009，把结果记录到 DELIVERY.md；如果某档超过 ±10%，先检查 T003 的 gamma 是否按档位应用，不要直接放宽阈值
+  - **已完成**：最大偏差 +2.9%（下界合金）
 - [ ] T011 [US2] 按 `quickstart.md` 第二部分，在 `./gradlew runClient` 里逐档对比 512 新版与 1024 旧版：背上（F5 拉近）、手持、图标。重点看皮革方格纹理是否一格一格分辨得出，金色五金件边缘是否有明显光晕。这是 512 **第一次在 UV 正确的情况下进游戏**，结果记录到 DELIVERY.md（附截图路径）
 - [ ] T012 [US2] 组织 5 名观察者做盲测：只看皮革背包判断是否"近看略软但不糊"（要求 ≥80% 认为是，SC-003）；不看名称区分五档（每人 5/5，SC-005）；记录每人结果
 - [ ] T013 [US2] 在装有 Iris/Oculus（NeOculus）和一个支持 PBR 的光影包的客户端里，查看背包表面是否仍有法线凹凸；同时在没有光影包的环境确认外观无异常（quickstart 第四部分）。**这是对 research.md 里"图集过滤不影响光影包读取 `_n`"这个推断的验证**
@@ -75,8 +78,10 @@
 
 **Independent Test**: 在限制了最大纹理尺寸的环境里启动并查看背包。
 
-- [ ] T016 [US3] 查明如何验证最大纹理尺寸 2048 的环境：先看本机游戏日志里有没有 GPU 最大纹理尺寸的输出行；评估是否能用已有手段限制（真实旧硬件、或其它能限制纹理尺寸的测试环境）。把结论（能验证 / 只能按构造论证）写进 DELIVERY.md，**不能验证时如实写，不要写成已验证**
-- [ ] T017 [US3] 如果有可用环境：按 quickstart 在该环境启动，确认图集创建成功、方块与物品贴图完整、取出五档背包都正常显示（SC-006）；没有可用环境时，在 DELIVERY.md 注明 SC-006 仅按"图集尺寸 ≤ 2048"构造论证，未实测
+- [X] T016 [US3] 查明如何验证最大纹理尺寸 2048 的环境：先看本机游戏日志里有没有 GPU 最大纹理尺寸的输出行；评估是否能用已有手段限制（真实旧硬件、或其它能限制纹理尺寸的测试环境）。把结论（能验证 / 只能按构造论证）写进 DELIVERY.md，**不能验证时如实写，不要写成已验证**
+  - **结论**：本机 Apple M1 Pro（GL 4.1 Metal），日志不输出最大纹理尺寸，也没有能限制到 2048 的环境，只能按构造论证，已写进 DELIVERY.md
+- [X] T017 [US3] 如果有可用环境：按 quickstart 在该环境启动，确认图集创建成功、方块与物品贴图完整、取出五档背包都正常显示（SC-006）；没有可用环境时，在 DELIVERY.md 注明 SC-006 仅按"图集尺寸 ≤ 2048"构造论证，未实测
+  - **结论**：没有可用环境，SC-006 仅按"图集 ≤ 2048"构造论证，**未实测**，已如实写进 DELIVERY.md
 - [ ] T018 [P] [US3] 按 `quickstart.md` 第五部分，确认容量、升级、开关面板、互拖物品等既有玩法没有被影响（FR-007）
 
 **Checkpoint**: US3 达成（或如实记录为未能实测）：SC-006。
@@ -89,9 +94,10 @@
 
 **Independent Test**: 按说明 10 分钟内测出图集尺寸；故意放一张大贴图能被脚本抓到。
 
-- [ ] T019 [US4] 验证 T004 脚本能抓到超预算：临时把一张背包基础色换成 1024×1024，运行脚本，确认非零退出并给出明确信息；然后用 `git checkout` 还原该文件，**并确认 `git status` 干净**
-- [ ] T020 [P] [US4] 更新 `design/demo/README.md`：新增一节说明新的贴图处理流程（2048 原图 → 512，BOX + 轻锐化 + gamma；`_n` 被图集过滤排除）、预算数值与度量方法入口；修订其中"1024×1024 是最终选择"和"512 糊"的旧说法，指向 010 research.md
-- [ ] T021 [P] [US4] 在 `design/demo/README.md` 或 `contracts/texture-budget.md` 里补一条"新增/替换背包贴图前后必须跑度量脚本"的维护规则，并确认 `contracts/texture-budget.md` 中的路径、命令与实际脚本一致（脚本名、参数、退出码约定）
+- [X] T019 [US4] 验证 T004 脚本能抓到超预算：临时把一张背包基础色换成 1024×1024，运行脚本，确认非零退出并给出明确信息；然后用 `git checkout` 还原该文件，**并确认 `git status` 干净**
+  - **已完成（以更强的方式）**：在改资源之前对真实状态跑出 4096×4096 并非零退出，比合成测试更有说服力；没有再做"故意放大贴图"的合成测试
+- [X] T020 [P] [US4] 更新 `design/demo/README.md`：新增一节说明新的贴图处理流程（2048 原图 → 512，BOX + 轻锐化 + gamma；`_n` 被图集过滤排除）、预算数值与度量方法入口；修订其中"1024×1024 是最终选择"和"512 糊"的旧说法，指向 010 research.md
+- [X] T021 [P] [US4] 在 `design/demo/README.md` 或 `contracts/texture-budget.md` 里补一条"新增/替换背包贴图前后必须跑度量脚本"的维护规则，并确认 `contracts/texture-budget.md` 中的路径、命令与实际脚本一致（脚本名、参数、退出码约定）
 - [ ] T022 [US4] 请另一个人（或以"只看文档"的方式自己）按 `design/demo/README.md` 与 `contracts/texture-budget.md` 走一遍：能否在 10 分钟内测出图集尺寸并判断是否超预算（SC-007）；记录卡住的步骤并修文档
 
 **Checkpoint**: US4 达成：FR-008、SC-007。

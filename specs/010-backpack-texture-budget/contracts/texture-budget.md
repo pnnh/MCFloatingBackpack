@@ -37,7 +37,8 @@
 2. `rm -f run/logs/latest.log`，起 `./gradlew runClient`，等图集创建完成（日志里出现 `blocks.png-atlas` 那一行，约 20~30 秒）后关闭。
 3. 读 `Created: <W>x<H>x<N> minecraft:textures/atlas/blocks.png-atlas`。
 4. W、H 都 ≤ 2048 则通过。
-5. `design/demo/tools/check_atlas_budget.sh` 封装了以上步骤，超标时非零退出。
+5. `design/demo/tools/check_atlas_budget.sh` 封装了以上步骤。退出码：0 通过，1 超预算，2 没有测到（启动失败或超时）；预算可用环境变量 `BUDGET` 调整，等待时间用 `WAIT_SECONDS`。脚本结束时会按 `fml.modFolders=mcfloatingbackpack` 清理客户端进程（`timeout` 只会杀掉 gradle 外壳）。
+6. `design/demo/tools/check_brightness.py` 比较新旧基础色贴图按网格 UV 面积加权的平均亮度，偏差超过 ±10% 非零退出。
 
 ## 变更规则
 

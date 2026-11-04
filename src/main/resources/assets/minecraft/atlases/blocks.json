@@ -1,0 +1,11 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:filter",
+      "pattern": {
+        "namespace": "mcfloatingbackpack",
+        "path": "item/.*_n"
+      }
+    }
+  ]
+}
