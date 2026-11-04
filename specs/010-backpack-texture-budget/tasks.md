@@ -106,11 +106,11 @@
 
 ## Phase 7: Polish & 文档收尾
 
-- [ ] T023 [P] 更新 `specs/009-sculpted-mesh-backpack-models/spec.md` 的"已知限制 1"：写明已由 010 解决（图集尺寸与方案），或在 010 的 T008 未达标时如实保留；同步更新 009 `tasks.md` 的 F001
-- [ ] T024 [P] 更新 `docs/MCFloatingBackpack.md` M5 的外观段落：把"贴图每档 1024×1024"和"图集撑到 4096×4096"的说法改成实际结果
-- [ ] T025 [P] 在 010 `spec.md` 的 Status 里写明实现状态；把 plan.md 的"仍然未验证"清单逐条更新为已验证/仍未验证
-- [ ] T026 完成 `specs/010-backpack-texture-budget/DELIVERY.md`：记录 T008、T010、T011、T012、T013、T017 的结果，**包括没做到的和结论不确定的**
-- [ ] T027 运行 `./gradlew compileJava test` 做最后回归，并再跑一次度量脚本确认仍是 2048×1024
+- [X] T023 [P] 更新 `specs/009-sculpted-mesh-backpack-models/spec.md` 的"已知限制 1"：写明已由 010 解决（图集尺寸与方案），或在 010 的 T008 未达标时如实保留；同步更新 009 `tasks.md` 的 F001
+- [X] T024 [P] 更新 `docs/MCFloatingBackpack.md` M5 的外观段落：把"贴图每档 1024×1024"和"图集撑到 4096×4096"的说法改成实际结果
+- [X] T025 [P] 在 010 `spec.md` 的 Status 里写明实现状态；把 plan.md 的"仍然未验证"清单逐条更新为已验证/仍未验证
+- [ ] T026（DELIVERY.md 已记录 T008、T010、T017 与 T011/T013 的部分结果，随 T011 图标、T012、T013、T018、T022 补做后收尾）完成 `specs/010-backpack-texture-budget/DELIVERY.md`：记录 T008、T010、T011、T012、T013、T017 的结果，**包括没做到的和结论不确定的**
+- [X] T027（2026-11-04：`./gradlew compileJava test` 退出码 0；`check_atlas_budget.sh` 重跑 2048×1024、估算 11.2MB、退出码 0）运行 `./gradlew compileJava test` 做最后回归，并再跑一次度量脚本确认仍是 2048×1024
 
 ---
 

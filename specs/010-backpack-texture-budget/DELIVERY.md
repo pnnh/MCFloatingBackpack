@@ -1,6 +1,6 @@
 # Delivery: 010-backpack-texture-budget
 
-**状态**: 实现完成，**验证未完成**。图集尺寸和亮度已用脚本实测达标；清晰度、盲测、光影包、低端硬件、既有玩法回归都**还没有验证**，在这些做完之前不得标记为完成（宪法 V 条）。
+**状态**: 实现完成，**验证未完成**。（2026-11-04 收尾：文档同步 T023–T025 已做，T027 回归已重跑通过；T011 图标、T012、T013、T018、T022、T026 仍待。）图集尺寸和亮度已用脚本实测达标；清晰度、盲测、光影包、低端硬件、既有玩法回归都**还没有验证**，在这些做完之前不得标记为完成（宪法 V 条）。
 
 ## 已完成并实测
 
@@ -25,6 +25,12 @@
 
 - **开发期光影包（T013 的前提）**：`build.gradle` 增加 `runClientShader` / `-PshaderRuntime`（Iris 1.8.12 + Sodium 0.6.13，仅 dev 运行时），`design/demo/tools/fetch_shaderpack.sh` 下载 Complementary Reimagined 到 `run/shaderpacks/` 并写 `run/config/iris.properties`。实测：Iris 与光影包加载成功、管线创建成功、无着色器编译失败，图集仍为 2048×1024（Sodium/Iris 没有改变它）。**"背包表面有无法线凹凸"没有验证——命令行看不到画面，需要进游戏看。**
 - **铁背包手持漏光**：用户发现第一人称手持时铁背包有一条缝能透出背后的场景。这不属于 010 的贴图预算范围，是顺手修的 009 已知限制（开放边）的一处。经过三轮：第一轮补了一块板，上方的竖线消失但下方还漏草地；第二轮我凭推断补了别处，**用户确认完全没变化**；第三轮先用 `design/demo/tools/firstperson_holes.py` 按游戏的真实手持变换重建出与截图一致的画面，才定位到真正的缝（第一轮那条缝被斜着穿过，从板的下缘漏出），补了 5 块斜板，重建画面里标准视角和 6 组晃动的洞数全为 0。细节和不确定之处见 `design/demo/README.md` 第十轮。**第三轮已由用户在游戏里确认：问题已修复。**
+
+## 收尾回归（2026-11-04，T027）
+
+- `./gradlew compileJava test`：退出码 0。
+- `design/demo/tools/check_atlas_budget.sh` 重跑：图集 **2048×1024**（mip 4），估算显存 **11.2MB**，退出码 0，度量后无残留客户端进程。
+- 同步了过期文档：006（spec/quickstart/tasks/plan/research/checklist/contracts 里的【009 修订】从 1024 改为 512）、009（spec 已知限制 1 标为已由 010 解决，research Decision 6 与 plan/tasks 加【010 修订】）、005 spec（占位模型标注）、`docs/MCFloatingBackpack.md` M5。
 
 ## 过程中发现的问题
 

@@ -62,7 +62,7 @@
 
 ## 外观资源
 
-> **【009 修订】本表是 006 当时的契约，现状已不同。** 现在：没有共用父模型（`floating_backpack.json` 已无任何引用）；每个 `<tier>_floating_backpack.json` 是独立的 `neoforge:obj` 模型，指向 `<tier>_backpack.obj/.mtl`；贴图为 1024×1024，另有同名 `_n` 法线贴图；背部图层不使用任何贴图路径，直接渲染物品烘焙模型。当前资源契约见 [009 plan.md](../../009-sculpted-mesh-backpack-models/plan.md) 的"资源契约"一节。下表为 006 原文，仅供追溯。
+> **【009 修订】本表是 006 当时的契约，现状已不同。** 现在：没有共用父模型（`floating_backpack.json` 已无任何引用）；每个 `<tier>_floating_backpack.json` 是独立的 `neoforge:obj` 模型，指向 `<tier>_backpack.obj/.mtl`；贴图为 512×512（010 起），另有同名 `_n` 法线贴图；背部图层不使用任何贴图路径，直接渲染物品烘焙模型。当前资源契约见 [009 plan.md](../../009-sculpted-mesh-backpack-models/plan.md) 的"资源契约"一节。下表为 006 原文，仅供追溯。
 
 | 资源 | 要求 |
 | --- | --- |

@@ -80,7 +80,7 @@ src/main/resources/assets/mcfloatingbackpack/
 │   ├── <tier>_backpack.mtl             # 5 个：map_Kd #base
 │   └── floating_backpack.json          # 遗留：006 的共用父模型，已无任何引用
 └── textures/item/
-    ├── <tier>_floating_backpack.png    # 5 个：1024×1024 基础色（已按 gamma 调亮）
+    ├── <tier>_floating_backpack.png    # 5 个：基础色（已按 gamma 调亮）；【010 修订】现为 512×512（009 时 1024×1024）
     └── <tier>_floating_backpack_n.png  # 5 个：LabPBR 法线贴图
 
 design/
@@ -98,7 +98,7 @@ design/
 | `models/item/<tier>_floating_backpack.json` | 独立模型，不再继承共用父模型；必须带 `"flip_v": true`（缺了贴图错位）与 `"emissive_ambient": false`（缺了模型始终全亮）；`display` 使用 006 之前最早那套数值 |
 | `models/item/<tier>_backpack.obj` | 三角面；顶点整体落在 0..1 范围；各档背面（贴着人的一面）统一在 z=0.238；正面（扣具/口袋）朝 +Z |
 | `models/item/<tier>_backpack.mtl` | `map_Kd #base`，材质名 `Material_0` |
-| `textures/item/<tier>_floating_backpack.png` | 1024×1024，RGB；方向与 OBJ 的 V 坐标对应（需要 `flip_v`） |
+| `textures/item/<tier>_floating_backpack.png` | 512×512（010 起；009 时 1024×1024），RGB；方向与 OBJ 的 V 坐标对应（需要 `flip_v`） |
 | `textures/item/<tier>_floating_backpack_n.png` | 同名加 `_n`；R=X，G=Y（DirectX，已翻转），B=255，A=255 |
 
 **Structure Decision**: 单项目结构，不引入新模块。外观资源和设计素材分开存放：`src/main/resources` 只放随模组打包的最终产物，`design/` 放原始素材、脚本和过程记录，让以后重新生成时有据可查。

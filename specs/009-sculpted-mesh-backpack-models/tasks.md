@@ -22,7 +22,7 @@
 - [X] T001 [US1] 五个等级各自一个独立的 `neoforge:obj` 物品模型：`src/main/resources/assets/mcfloatingbackpack/models/item/<tier>_floating_backpack.json`、`<tier>_backpack.obj`、`<tier>_backpack.mtl`（`map_Kd #base`）。皮革 `825007b`；铁、金 `d697aee`；钻石、下界合金 `5a9dc03`
 - [X] T002 [US1] 修复贴图错位成黄色污渍：模型 JSON 加 `"flip_v": true`（research Decision 4）。`d46c212`
 - [X] T003 [US1] 修正图标/手持/背上的朝向：`display` 沿用 006 之前最早的原始旋转值（research Decision 11）。`825007b`
-- [X] T004 [US1] 每档一张 1024×1024 基础色贴图 `textures/item/<tier>_floating_backpack.png`（research Decision 6）。`7f28836`、`d697aee`、`5a9dc03`
+- [X] T004 [US1] 每档一张 1024×1024 基础色贴图 `textures/item/<tier>_floating_backpack.png`（research Decision 6；**010 起改为 512×512**）。`7f28836`、`d697aee`、`5a9dc03`
 - [X] T005 [US3] 关闭模型始终全亮：模型 JSON 加 `"emissive_ambient": false`；按平均亮度做 gamma 调亮（皮革 0.62、铁 0.89、下界合金 0.91、金与钻石不调）。`00e1dff`、`d697aee`、`5a9dc03`
 - [X] T006 [P] [US3] 每档随附 LabPBR 法线贴图 `textures/item/<tier>_floating_backpack_n.png`（G 翻转，B/A 填 255）；不做高光贴图（research Decision 7）。`7f28836`
 - [X] T007 [US2] 背部渲染改为 `ItemRenderer.renderStatic(FIXED)` 直接渲染物品烘焙模型，删除手搭立方体：`src/main/java/pnnh/mcfloatingbackpack/client/render/BackpackBackLayer.java`。`3beaef2`
@@ -65,7 +65,7 @@
 
 这些是 spec"已知限制"对应的后续工作，按建议优先级排列。本 feature 只负责如实记录，不在此实现（spec 范围边界已明确）。
 
-- [ ] F001 **共用方块图集膨胀**（已知限制 1，影响所有玩家，优先级最高）：评估把贴图降到 256/512、或单独图集，对比清晰度与显存；产出新的贴图预算。→ **已立项为 [010-backpack-texture-budget](../010-backpack-texture-budget/spec.md)**（图集上限 2048×2048，清晰度底线"近看略软但不糊"）
+- [X] F001 **共用方块图集膨胀**（已知限制 1，影响所有玩家，优先级最高）：评估把贴图降到 256/512、或单独图集，对比清晰度与显存；产出新的贴图预算。→ **已立项为 [010-backpack-texture-budget](../010-backpack-texture-budget/spec.md)，并已实现**：图集实测 2048×1024（上限 2048×2048），清晰度手持与背上已由用户确认（图标、五人盲测、光影下法线凹凸仍待确认，见 010 DELIVERY.md）
 - [ ] F002 **性能预算**（已知限制 3）：由 T024 的数据出发，决定每档面数上限；必要时手工重拓扑（自动减面会撕网格）
 - [ ] F003 **修补网格开放边**（已知限制 2）：金 325、钻石 169、铁 122、下界合金 114；先在游戏里确认哪些位置真的可见
 - [ ] F004 **逐档校准显示参数**（已知限制 5、7）：铁/金/钻石/下界合金的图标、手持 `display` 与亮度；下界合金正面朝向确认（可能需要把旋转换成 +90°）
