@@ -1,0 +1,40 @@
+specs/005-item-backpack/tasks.md
+  s_e4f0fbd798a6d8::t_9e365afb4539cf 91
+  s_e4f0fbd798a6d8::t_610cd49d5b3045 89-90
+  s_e4f0fbd798a6d8::t_dda138abe9f0bb 92
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_e4f0fbd798a6d8::t_9fece68e410941 23-24,28-32,37-58
+specs/005-item-backpack/DELIVERY.md
+  s_e4f0fbd798a6d8::t_86e0f597ec0ab5 41
+  s_e4f0fbd798a6d8::t_610cd49d5b3045 4,33-40,42-61
+  s_e4f0fbd798a6d8::t_dda138abe9f0bb 62
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ConsumedPressTracker.java
+  s_e4f0fbd798a6d8::t_9fece68e410941 1-31
+src/test/java/pnnh/mcfloatingbackpack/client/panel/ConsumedPressTrackerTest.java
+  s_e4f0fbd798a6d8::t_9fece68e410941 1-40
+src/main/java/pnnh/mcfloatingbackpack/client/ClientBackpackActions.java
+  s_e4f0fbd798a6d8::t_9fece68e410941 3,19-22
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_e4f0fbd798a6d8::t_9fece68e410941 321-325
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "08a9d373ac806b94c15fdbc883c07daec024d00e",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
