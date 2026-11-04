@@ -25,6 +25,11 @@ public final class FloatingPanelInput {
     private FloatingPanelInput() {
     }
 
+    /** A press taken outside {@link #onMouseButton} (quick transfer on a screen slot): swallow its release too. */
+    public static void markPressConsumed(int button) {
+        PRESSES.press(button);
+    }
+
     /** Call when a mouse event arrives while the panel is hidden: forget any presses it had swallowed. */
     public static void resetPressTracking() {
         PRESSES.clear();
@@ -94,6 +99,11 @@ public final class FloatingPanelInput {
             // no longer evenly divides its capacity; indexAt only knows the virtual grid, so the
             // real bound has to be checked here before trusting the index.
             if (slot >= 0 && slot < ClientBackpackView.get().slotCount()) {
+                // 011: Ctrl+left-click/drag moves stacks to the player's inventory. Works with any
+                // screen open (or none): the target is the real Inventory, not a third-party menu.
+                if (!isRight && QuickTransferInput.beginFromPanel(slot, mouseX, mouseY)) {
+                    return true;
+                }
                 sendClick(slot, isRight);
                 return true;
             }

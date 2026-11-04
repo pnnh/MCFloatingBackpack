@@ -24,6 +24,7 @@ import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.network.BackpackOpenRequestPayload;
@@ -107,6 +108,7 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onLoggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
         ensureConfigLoaded();
+        QuickTransferInput.reset();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
@@ -148,6 +150,9 @@ public final class FloatingPanelEvents {
         if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
             return;
         }
+        // 011: while a screen is open only this hook drives a Ctrl drag (onRenderGui returns early),
+        // so it runs exactly once per frame.
+        QuickTransferInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
         ensureConfigLoaded();
         FloatingPanelRenderer.render(
                 event.getGuiGraphics(),
@@ -168,6 +173,7 @@ public final class FloatingPanelEvents {
             return;
         }
         ensureConfigLoaded();
+        QuickTransferInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
         FloatingPanelRenderer.render(
                 event.getGuiGraphics(),
                 state,
@@ -178,6 +184,7 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
+        QuickTransferInput.stopIfInvalid(minecraft);
         hideIfDisallowed(minecraft);
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
@@ -341,6 +348,15 @@ public final class FloatingPanelEvents {
         }
         if (FloatingPanelInput.onMouseButton(
                 event.getButton(), GLFW.GLFW_PRESS, event.getMouseX(), event.getMouseY())) {
+            event.setCanceled(true);
+            return;
+        }
+        // 011: Ctrl+left-click on a player-inventory slot of a vanilla screen. Cancelling the press keeps
+        // vanilla from picking the stack up (it only looks at Shift, never Ctrl); the release is swallowed
+        // through the same tracker as other swallowed presses so no key state is left stuck.
+        if (QuickTransferInput.beginFromScreen(
+                event.getScreen(), event.getButton(), event.getMouseX(), event.getMouseY())) {
+            FloatingPanelInput.markPressConsumed(event.getButton());
             event.setCanceled(true);
         }
     }

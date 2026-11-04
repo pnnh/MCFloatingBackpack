@@ -20,7 +20,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("3");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("4");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -41,6 +41,10 @@ public final class BackpackNetwork {
                 MergePanelCursorPayload.TYPE,
                 MergePanelCursorPayload.STREAM_CODEC,
                 MergePanelCursorPayload::handleServer);
+        registrar.playToServer(
+                BackpackQuickTransferPayload.TYPE,
+                BackpackQuickTransferPayload.STREAM_CODEC,
+                BackpackQuickTransferPayload::handleServer);
         registrar.playToServer(
                 BackpackOpenRequestPayload.TYPE,
                 BackpackOpenRequestPayload.STREAM_CODEC,
