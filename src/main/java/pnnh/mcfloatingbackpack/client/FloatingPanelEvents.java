@@ -318,7 +318,11 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onWorldMouseButton(InputEvent.MouseButton.Pre event) {
         Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen != null || !FloatingPanelState.get().isVisible()) {
+        if (minecraft.screen != null) {
+            return;
+        }
+        if (!FloatingPanelState.get().isVisible()) {
+            FloatingPanelInput.resetPressTracking();
             return;
         }
         if (FloatingPanelInput.onMouseButton(

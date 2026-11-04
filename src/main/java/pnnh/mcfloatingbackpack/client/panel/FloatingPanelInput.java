@@ -20,13 +20,42 @@ import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
  */
 @OnlyIn(Dist.CLIENT)
 public final class FloatingPanelInput {
+    private static final ConsumedPressTracker PRESSES = new ConsumedPressTracker();
+
     private FloatingPanelInput() {
+    }
+
+    /** Call when a mouse event arrives while the panel is hidden: forget any presses it had swallowed. */
+    public static void resetPressTracking() {
+        PRESSES.clear();
     }
 
     /**
      * @return true if the event should be consumed (cancelled)
      */
     public static boolean onMouseButton(int button, int action, double mouseX, double mouseY) {
+        if (!FloatingPanelState.get().isVisible()) {
+            PRESSES.clear();
+            return false;
+        }
+        boolean consumed = dispatchMouseButton(button, action, mouseX, mouseY);
+        if (action == GLFW.GLFW_PRESS) {
+            if (consumed) {
+                PRESSES.press(button);
+            }
+            return consumed;
+        }
+        if (action == GLFW.GLFW_RELEASE) {
+            // A release is swallowed only if its press was (or it ends a drag/scroll/resize, which
+            // can only start from a swallowed press). Never because the cursor merely sits over the
+            // panel: the panel can open between press and release, and swallowing that release
+            // leaves the game thinking the button is still held.
+            return PRESSES.release(button) || consumed;
+        }
+        return consumed;
+    }
+
+    private static boolean dispatchMouseButton(int button, int action, double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
         boolean isRight = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
         if (!state.isVisible() || (button != GLFW.GLFW_MOUSE_BUTTON_LEFT && !isRight)) {
@@ -86,10 +115,6 @@ public final class FloatingPanelInput {
 
         if (action == GLFW.GLFW_RELEASE && state.isResizing()) {
             finishResize(state);
-            return true;
-        }
-
-        if (action == GLFW.GLFW_RELEASE && state.contains(mouseX, mouseY)) {
             return true;
         }
 
