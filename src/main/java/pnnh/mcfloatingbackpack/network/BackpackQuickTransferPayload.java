@@ -13,7 +13,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.ContainerMenuAccess;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
+import pnnh.mcfloatingbackpack.inventory.OpenContainerDelivery;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferLogic;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
@@ -87,7 +89,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                         holderOf(ref), ref.invIndex(), player.getInventory().selected);
                 inventoryToBackpack(player.getInventory(), backpack, payload.slots(), protectedIndex);
             } else {
-                backpackToInventory(player.getInventory(), backpack, payload.slots());
+                backpackOut(player, backpack, payload.slots());
             }
 
             ref.saveInventory(player, backpack);
@@ -132,6 +134,44 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                     backpack::getStackInSlot,
                     (s, i) -> backpack.setStackInSlot(i, s));
             inventory.setItem(index, rest);
+        }
+    }
+
+    /**
+     * Backpack slots -> out of the backpack (012). With a container open (a menu that has slots beyond
+     * the player's own inventory) each stack goes into that container by the menu's own shift-click
+     * rule; otherwise it goes to the player inventory as in 011. Whatever does not fit stays in the
+     * backpack.
+     */
+    static void backpackOut(ServerPlayer player, BackpackInventory backpack, int[] sources) {
+        if (!ContainerMenuAccess.hasOpenContainer(player)) {
+            backpackToInventory(player.getInventory(), backpack, sources);
+            return;
+        }
+        ContainerMenuAccess menu = new ContainerMenuAccess(player);
+        for (int index : sources) {
+            ItemStack stack = backpack.getStackInSlot(index);
+            if (stack.isEmpty()) {
+                continue;
+            }
+            OpenContainerDelivery.Result<ItemStack> result =
+                    OpenContainerDelivery.deliver(ItemStackTransferOps.INSTANCE, menu, stack);
+            backpack.setStackInSlot(index, result.leftover());
+            if (result.error() != null) {
+                MCFloatingBackpack.LOGGER.error(
+                        "Quick transfer into open container threw (menu {}, item {}); items in the temporary slot were taken back",
+                        menu.menu().getClass().getName(),
+                        stack.getItem(),
+                        result.error());
+            }
+            if (!result.conserved()) {
+                MCFloatingBackpack.LOGGER.error(
+                        "Quick transfer into open container changed the item total (menu {}, item {}, delivered {}, left over {})",
+                        menu.menu().getClass().getName(),
+                        stack.getItem(),
+                        stack.getCount(),
+                        result.leftover().getCount());
+            }
         }
     }
 

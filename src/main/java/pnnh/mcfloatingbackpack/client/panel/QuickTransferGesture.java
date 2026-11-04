@@ -6,24 +6,33 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * State of one Ctrl+click / Ctrl+drag (011). Knows nothing about Minecraft: slots are found through
- * an injected {@link Resolver}, so the rules can be unit-tested.
+ * State of one Ctrl+click / Ctrl+drag (011, extended by 012). Knows nothing about Minecraft: slots are
+ * found through an injected {@link Resolver}, so the rules can be unit-tested.
  *
  * <ul>
- *   <li>the side of the first slot fixes the direction for the whole drag;
- *   <li>a slot is reported at most once per drag;
+ *   <li>the first slot's group fixes the direction for the whole drag: INVENTORY and CONTAINER slots
+ *       both go <em>into the backpack</em>, PANEL slots go <em>out of it</em>;
+ *   <li>a slot is reported at most once per drag (slots of different sides are different slots even if
+ *       their indices are equal);
  *   <li>between two frames the mouse path is sampled every few pixels so a fast move does not skip slots.
  * </ul>
  */
 public final class QuickTransferGesture {
-    /** Where a slot lives. Items go INVENTORY -> backpack, or PANEL -> inventory. */
+    /**
+     * Where a slot lives. INVENTORY = the player's own inventory slots (index 0-35), CONTAINER = slots of the
+     * open container (index = menu slot index), PANEL = floating-panel slots (index = backpack slot).
+     */
     public enum Side {
         INVENTORY,
+        CONTAINER,
         PANEL
     }
 
     /** A slot under the cursor: its side, its index on that side, and whether it holds an item. */
     public record Hit(Side side, int index, boolean hasItem) {
+        private long key() {
+            return ((long) side.ordinal() << 32) | (index & 0xFFFFFFFFL);
+        }
     }
 
     @FunctionalInterface
@@ -37,7 +46,7 @@ public final class QuickTransferGesture {
 
     private boolean active;
     private Side side;
-    private final Set<Integer> visited = new HashSet<>();
+    private final Set<Long> visited = new HashSet<>();
     private double lastX;
     private double lastY;
 
@@ -45,28 +54,33 @@ public final class QuickTransferGesture {
         return active;
     }
 
+    /** The side of the slot the drag started on. */
     public Side side() {
         return side;
     }
 
+    private static boolean intoBackpack(Side s) {
+        return s != Side.PANEL;
+    }
+
     /** Starts a drag on {@code start}; returns the slots to transfer right now (the start slot, if it holds an item). */
-    public List<Integer> begin(Hit start, double x, double y) {
+    public List<Hit> begin(Hit start, double x, double y) {
         active = true;
         side = start.side();
         visited.clear();
-        visited.add(start.index());
+        visited.add(start.key());
         lastX = x;
         lastY = y;
-        List<Integer> out = new ArrayList<>();
+        List<Hit> out = new ArrayList<>();
         if (start.hasItem()) {
-            out.add(start.index());
+            out.add(start);
         }
         return out;
     }
 
-    /** Moves to (x, y); returns the slots newly passed over this step that hold an item. */
-    public List<Integer> advance(Resolver resolver, double x, double y) {
-        List<Integer> out = new ArrayList<>();
+    /** Moves to (x, y); returns the slots newly passed over this step that hold an item and belong to the drag's group. */
+    public List<Hit> advance(Resolver resolver, double x, double y) {
+        List<Hit> out = new ArrayList<>();
         if (!active) {
             return out;
         }
@@ -77,11 +91,11 @@ public final class QuickTransferGesture {
             double px = lastX + dx * k / steps;
             double py = lastY + dy * k / steps;
             Hit hit = resolver.resolve(px, py);
-            if (hit == null || hit.side() != side) {
+            if (hit == null || intoBackpack(hit.side()) != intoBackpack(side)) {
                 continue;
             }
-            if (visited.add(hit.index()) && hit.hasItem()) {
-                out.add(hit.index());
+            if (visited.add(hit.key()) && hit.hasItem()) {
+                out.add(hit);
             }
         }
         lastX = x;

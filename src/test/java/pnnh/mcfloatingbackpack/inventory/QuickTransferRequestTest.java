@@ -63,4 +63,21 @@ class QuickTransferRequestTest {
         assertEquals(null, Direction.fromByte((byte) 2));
         assertEquals(null, Direction.fromByte((byte) -1));
     }
+
+    @Test
+    void menuSlotRequestsAreBoundedAndDistinct() {
+        assertTrue(QuickTransferRequest.validateMenuSlots(new int[] {0}, 54));
+        assertTrue(QuickTransferRequest.validateMenuSlots(new int[] {53, 0, 7}, 54));
+        assertFalse(QuickTransferRequest.validateMenuSlots(null, 54));
+        assertFalse(QuickTransferRequest.validateMenuSlots(new int[0], 54));
+        assertFalse(QuickTransferRequest.validateMenuSlots(new int[] {54}, 54));
+        assertFalse(QuickTransferRequest.validateMenuSlots(new int[] {-1}, 54));
+        assertFalse(QuickTransferRequest.validateMenuSlots(new int[] {3, 3}, 54));
+        // more entries than the menu has slots can never be valid
+        assertFalse(QuickTransferRequest.validateMenuSlots(range(0, 9), 9));
+        assertTrue(QuickTransferRequest.validateMenuSlots(range(0, 8), 9));
+        // and never more than the protocol cap, even for a huge menu
+        assertFalse(QuickTransferRequest.validateMenuSlots(range(0, QuickTransferRequest.MAX_MENU_SLOTS), 1000));
+        assertTrue(QuickTransferRequest.validateMenuSlots(range(0, QuickTransferRequest.MAX_MENU_SLOTS - 1), 1000));
+    }
 }

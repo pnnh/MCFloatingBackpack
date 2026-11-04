@@ -12,10 +12,18 @@ public final class QuickTransferRequest {
     public static final int INVENTORY_SLOTS = 36;
     /** Largest backpack (netherite). */
     public static final int MAX_BACKPACK_SLOTS = 108;
+    /** Cap on menu-slot indices in one reverse (container -> backpack) request. */
+    public static final int MAX_MENU_SLOTS = 256;
 
     private QuickTransferRequest() {
     }
 
+    /**
+     * {@code TO_BACKPACK}: player-inventory slots -> backpack. {@code TO_INVENTORY}: <em>out of the
+     * backpack</em>; since 012 the server picks the destination: the container the player has open
+     * (by that menu's own shift-click rule), or the player inventory when none is open. The name and
+     * wire value are kept so the protocol does not change.
+     */
     public enum Direction {
         TO_BACKPACK,
         TO_INVENTORY;
@@ -56,6 +64,26 @@ public final class QuickTransferRequest {
         Set<Integer> seen = new HashSet<>();
         for (int slot : slots) {
             if (slot < 0 || slot >= bound || !seen.add(slot)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Reverse request: menu-slot indices, no duplicates, each in [0, menuSlotCount), and never more
+     * entries than the menu has slots or {@link #MAX_MENU_SLOTS}.
+     */
+    public static boolean validateMenuSlots(int[] slots, int menuSlotCount) {
+        if (slots == null || slots.length == 0 || menuSlotCount <= 0) {
+            return false;
+        }
+        if (slots.length > Math.min(menuSlotCount, MAX_MENU_SLOTS)) {
+            return false;
+        }
+        Set<Integer> seen = new HashSet<>();
+        for (int slot : slots) {
+            if (slot < 0 || slot >= menuSlotCount || !seen.add(slot)) {
                 return false;
             }
         }

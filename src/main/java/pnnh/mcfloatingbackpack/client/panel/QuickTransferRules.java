@@ -12,13 +12,12 @@ public final class QuickTransferRules {
     }
 
     /**
-     * The gesture only acts on vanilla container screens. Third-party screens (Sophisticated
-     * Backpacks, Traveler's Backpack, ...) also bind their player-inventory slots to the real
-     * {@code Inventory}, so slot checks alone cannot tell them apart; the package does. The creative
-     * inventory uses client-side fake slots whose numbering does not match the server.
+     * Any container screen, vanilla or a mod's (Sophisticated Backpacks, Traveler's Backpack: 012 needs
+     * their container slots as a source). The creative inventory uses client-side fake slots whose
+     * numbering does not match the server, so it is excluded.
      */
-    public static boolean isSupportedScreenClass(String className) {
-        return className != null && className.startsWith("net.minecraft.") && !className.equals(CREATIVE_SCREEN);
+    public static boolean isInterceptableScreenClass(String className) {
+        return className != null && !className.isEmpty() && !className.equals(CREATIVE_SCREEN);
     }
 
     /**
@@ -28,5 +27,14 @@ public final class QuickTransferRules {
      */
     public static boolean isTransferableInventorySlot(boolean sameInventory, int containerSlot, boolean active) {
         return sameInventory && active && containerSlot >= 0 && containerSlot < 36;
+    }
+
+    /**
+     * A slot of the opened container that can be a source for "into the backpack": visible, can be
+     * picked up, and can take its own item back (vanilla's {@code Slot.allowModification}). Output-style
+     * slots (crafting result, furnace output, anvil, trades) refuse every stack, so they are left to the game.
+     */
+    public static boolean isContainerSourceSlot(boolean sameInventory, boolean active, boolean mayPickup, boolean mayPlaceBack) {
+        return !sameInventory && active && mayPickup && mayPlaceBack;
     }
 }

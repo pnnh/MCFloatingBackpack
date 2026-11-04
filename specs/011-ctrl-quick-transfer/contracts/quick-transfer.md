@@ -6,7 +6,7 @@
 
 | 字段 | 类型 | 说明 |
 |---|---|---|
-| direction | byte | 0 = `TO_BACKPACK`，1 = `TO_INVENTORY` |
+| direction | byte | 0 = `TO_BACKPACK`，1 = `TO_INVENTORY`。**【012 修订】** `TO_INVENTORY` 现在的含义是"转出背包"：没有打开的容器时目标是玩家物品栏 0–35，有打开的容器时目标是该容器（按容器自己的 Shift+点击规则），由服务端决定；字段、线上取值和协议版本不变，见 `specs/012-ctrl-transfer-to-open-container/contracts/open-container-delivery.md` |
 | slots | VarInt 列表 | 来源下标，规则见 data-model；读取时数量超过 108 直接断开解码（防止恶意超大数组） |
 
 （实现时去掉了原先设想的 `sourceOrdinal`/`invIndex` 字段：服务端本来就以 `BackpackRef.resolve` 的实时结果为准，声明的来源只有在与实时结果一致时才被采用，等于没有信息量，所以不带。）
@@ -55,6 +55,8 @@
 ### 2.4 拖动
 
 见 data-model 的 `GestureState`。每帧至多一包（**界面打开时只由 `ScreenEvent.Render.Post` 驱动，HUD 下只由 `RenderGuiEvent.Post` 驱动**，与现有 `onRenderGui` 在界面打开时提前返回的做法一致，否则一帧会触发两次）；每个来源下标一次拖动只处理一次；方向固定为起点所在侧；结束条件 = Ctrl 松开 / 左键松开 / 面板隐藏 / 界面打开或关闭 / 光标拿起了物品。
+
+> **【012 修订】** §2.1 里"界面类型"一行（类名以 `net.minecraft.` 开头）与"外部容器自身槽位不参与"已被 012 取代：现在是任意容器界面（排除创造模式），容器自己的槽位也可作为转入背包的来源，走新的 `BackpackTakeFromContainerPayload`；Shift 按下时让路。网络协议版本现为 `"5"`。见 `specs/012-ctrl-transfer-to-open-container/contracts/open-container-delivery.md` §5～§7。
 
 ## 3. 不在契约内（本阶段不做）
 
