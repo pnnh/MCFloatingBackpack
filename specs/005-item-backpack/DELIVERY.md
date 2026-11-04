@@ -3,6 +3,8 @@
 **Date**: 2026-10-25  
 **Status**: A/C/E source complete. `./gradlew compileJava test` **BUILD SUCCESSFUL**. Manual `runClient`: T025 done, T024 partial (see 人工验证 section at the end — one bug found and fixed, awaiting re-test).
 
+> **[009 / 2026-11-04 revision]** The table below is the state at delivery (2026-10-25) and is partly outdated: chest equip is now `Equipable` (not an `ArmorItem`), the back layer renders the item's own sculpted-mesh model (no placeholder box; see specs/006 and 009), capacity is per tier (006), the panel is no longer a fixed 4×9 (006/007), and the dev JEI is `19.70.0.469` (see `build.gradle`).
+
 ## Implemented (A / C / E)
 
 | Area | Notes |

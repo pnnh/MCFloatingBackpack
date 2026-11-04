@@ -24,3 +24,9 @@
 - 已知限制 1（图集膨胀）：已由 010 解决。
 - 已知限制 7（亮度是估算值）：H2、L3 用户未报告偏差，按"未发现问题"记，仍没有逐档的数据。
 - 其余（性能预算、`_s`、LFS 策略）无变化。
+
+## 009 之后对铁背包与开发环境的改动（记录在 010 期间，此处补全）
+
+- **铁背包 OBJ 不再是"完整原始网格"**：`iron_backpack.obj` 末尾多了 10 块薄板（40 个三角形，正反各一层），补的是手持第一人称时能看到背后场景的缝。开放边数量没变（122），只是在缝里放了遮挡板。补丁脚本 `design/demo/tools/patch_iron_slit.py`，检查工具 `design/demo/tools/firstperson_holes.py`（按游戏真实的手持变换重建画面找洞），过程与踩坑见 `design/demo/README.md` 第十轮。重新导出铁背包时需要重新打补丁。
+- **开发期光影环境**：`./gradlew runClientShader`（Iris 1.8.12 + Sodium 0.6.13，仅开发运行时）与 `design/demo/tools/fetch_shaderpack.sh`；见 010 的 DELIVERY.md。
+- **清理遗留**（F008）：2026-11-04 删除了 `floating_backpack.json`、`textures/entity/backpack_back.png`、`FloatingBackpackItem.texture()`、`BackpackTier.texturePath()`；之后又删除了模板遗留的空 `mcfloatingbackpack.mixins.json`、空 `META-INF/accesstransformer.cfg`（及 `neoforge.mods.toml` 里对应的两段声明）和不再使用的语言键 `panel.mcfloatingbackpack.title`。`compileJava test` 通过，客户端启动无加载错误。

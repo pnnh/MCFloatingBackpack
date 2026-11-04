@@ -57,9 +57,3 @@ and other container GUIs so items can be moved between them.
     versionRange="[0,)"
     ordering="NONE"
     side="CLIENT"
-
-[[accessTransformers]]
-file="META-INF/accesstransformer.cfg"
-
-[[mixins]]
-    config="${mod_id}.mixins.json"

@@ -1,5 +1,7 @@
 # Tasks: 服务端库存与面板内取放
 
+> **【005 修订】** 这些任务描述的是 Attachment 版库存，已被 005 取代（见 `spec.md` 顶部说明）；任务保留作历史。
+
 **Input**: Design documents from `/specs/002-server-inventory/`
 
 **Prerequisites**: plan.md, spec.md, research.md, data-model.md, contracts/, quickstart.md

@@ -1,5 +1,7 @@
 # Implementation Plan: 服务端库存与面板内取放
 
+> **【005 修订（2026-11-04 对齐）】** 本文描述的"挂在玩家 Attachment 上、固定 27 格的全局库存"已被 005 取代：库存现在保存在**物品实例**的数据组件上（`BackpackContents`），`BackpackAttachments` 已删除，且不迁移旧数据；容量由等级决定（36/54/72/90/108，见 006）。服务端权威、网络同步、点击取放规则（FR-003～FR-005、FR-009）的意图仍然成立。下文为 002 当时的原文，仅供追溯。
+
 **Branch**: `002-server-inventory` | **Date**: 2026-10-23 | **Spec**: [spec.md](spec.md)
 
 **Input**: Feature specification from `/specs/002-server-inventory/spec.md`
