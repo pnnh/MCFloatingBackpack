@@ -86,8 +86,8 @@
 
 - [x] T022 [P] Update `docs/plan/005-gameplay-item-tiers.md` with “005 已开做 A/C/E；B/D 仍延后” pointer to `specs/005-item-backpack`
 - [x] T023 Run `./gradlew test` and `./gradlew compileJava`
-- [ ] T024 Manual `runClient` per quickstart; note status in `specs/005-item-backpack/DELIVERY.md` when done
-- [ ] T025 Regression: cross-GUI drag with item-bound backpack still works (003 path)
+- [x] T024 Manual `runClient` per quickstart; note status in `specs/005-item-backpack/DELIVERY.md` when done
+- [x] T025 Regression: cross-GUI drag with item-bound backpack still works (003 path)
 
 ---
 
