@@ -68,7 +68,8 @@ specs/010-backpack-texture-budget/
 │   └── texture-budget.md  # 资源契约：文件名、尺寸、图集过滤、预算数值
 ├── checklists/
 │   └── requirements.md
-└── tasks.md             # /speckit-tasks 生成（本命令不创建）
+├── tasks.md             # /speckit-tasks 生成
+└── DELIVERY.md          # 实现与验证阶段记录结果（实现时新建）
 ```
 
 ### Source Code (repository root)
@@ -84,7 +85,8 @@ src/main/resources/assets/
 design/demo/tools/
 ├── extract_textures.py        # 新增：Blender 无头脚本，从 GLB 取出 2048 基础色与法线原图
 ├── build_textures.py          # 新增：Pillow 脚本，生成最终 512 基础色与 _n
-└── check_atlas_budget.sh      # 新增：起客户端读 blocks 图集尺寸，与预算比较，超标则非零退出
+├── check_atlas_budget.sh      # 新增：起客户端读 blocks 图集尺寸，与预算比较，超标则非零退出
+└── check_brightness.py        # 新增：按网格 UV 面积加权比较新旧贴图亮度，偏差超过 ±10% 则非零退出
 
 design/demo/README.md          # 更新：纠正"法线不进图集"和"512 糊"的结论，记录新处理流程
 ```
