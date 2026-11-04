@@ -1,0 +1,60 @@
+specs/006-tiered-backpacks/spec.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 53,64,108,126,137
+specs/006-tiered-backpacks/tasks.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 81
+specs/006-tiered-backpacks/research.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 38
+specs/009-sculpted-mesh-backpack-models/spec.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 141,156
+specs/006-tiered-backpacks/contracts/tiered-backpack.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 65
+specs/006-tiered-backpacks/quickstart.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 38
+specs/010-backpack-texture-budget/spec.md
+  s_e4f0fbd798a6d8::t_1940e022b21f38 7
+specs/009-sculpted-mesh-backpack-models/plan.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 83,101
+specs/009-sculpted-mesh-backpack-models/tasks.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 25,68
+specs/009-sculpted-mesh-backpack-models/research.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 47-48,58
+specs/010-backpack-texture-budget/plan.md
+  s_e4f0fbd798a6d8::t_1940e022b21f38 17-19
+specs/010-backpack-texture-budget/DELIVERY.md
+  s_e4f0fbd798a6d8::t_1940e022b21f38 3,29-33
+  s_e4f0fbd798a6d8::t_7518bb5e73403b 34
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 128
+specs/010-backpack-texture-budget/tasks.md
+  s_e4f0fbd798a6d8::t_1940e022b21f38 109-113
+AGENTS.md
+  h_6465a203f88bd5 1-2,4-12
+  s_e4f0fbd798a6d8::t_ac087fe03d6068 3
+specs/006-tiered-backpacks/plan.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 83
+specs/005-item-backpack/spec.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 63,126
+specs/006-tiered-backpacks/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_e9f3641e5604a9 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ad8c3299dd256c7bfdeab314029ae0266e296d14",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
