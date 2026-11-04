@@ -1,6 +1,5 @@
 package pnnh.mcfloatingbackpack.item;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -10,7 +9,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
-import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.ClientBackpackActions;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
@@ -29,10 +27,6 @@ public class FloatingBackpackItem extends Item implements Equipable {
 
     public BackpackTier tier() {
         return tier;
-    }
-
-    public ResourceLocation texture() {
-        return ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, tier.texturePath());
     }
 
     public static Properties baseProperties(BackpackTier tier) {

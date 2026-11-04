@@ -33,11 +33,6 @@ public enum BackpackTier {
         return capacity / COLUMNS;
     }
 
-    /** Item texture path without the {@code assets/<mod>/} prefix. */
-    public String texturePath() {
-        return "textures/item/" + id + ".png";
-    }
-
     public BackpackTier next() {
         int next = ordinal() + 1;
         BackpackTier[] values = values();

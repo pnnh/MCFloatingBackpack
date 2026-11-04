@@ -78,7 +78,7 @@ src/main/java/pnnh/mcfloatingbackpack/
 └── client/render/BackpackBackLayer.java # 【009 修订】现在直接渲染物品烘焙模型（见 009）；006 当时是按等级贴图画包身/盖/肩带
 
 src/main/resources/
-├── assets/mcfloatingbackpack/models/item/floating_backpack.json     # 【009 修订】已不再被引用，遗留文件
+├── assets/mcfloatingbackpack/models/item/floating_backpack.json     # 【009 修订】已不再被引用；009 F008 已删除
 ├── assets/mcfloatingbackpack/models/item/<tier>_floating_backpack.json  # 【009 修订】现为独立 neoforge:obj 模型，另有 <tier>_backpack.obj/.mtl
 ├── assets/mcfloatingbackpack/textures/item/<tier>_floating_backpack.png   # 【009 修订】现为 512×512（010 起）（原计划 ≥32×32）
 ├── assets/mcfloatingbackpack/textures/entity/backpack_<tier>.png     # 【009 修订】从未创建，背部不再使用独立贴图

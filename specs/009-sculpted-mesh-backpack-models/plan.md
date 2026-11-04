@@ -78,7 +78,7 @@ src/main/resources/assets/mcfloatingbackpack/
 │   ├── <tier>_floating_backpack.json   # 5 个：loader=neoforge:obj，flip_v，emissive_ambient=false，textures.base，display
 │   ├── <tier>_backpack.obj             # 5 个：OBJ 几何（0..1 范围，背面统一落在 z=0.238）
 │   ├── <tier>_backpack.mtl             # 5 个：map_Kd #base
-│   └── floating_backpack.json          # 遗留：006 的共用父模型，已无任何引用
+│   └── （floating_backpack.json：006 的共用父模型，已无任何引用，F008 已删除）
 └── textures/item/
     ├── <tier>_floating_backpack.png    # 5 个：基础色（已按 gamma 调亮）；【010 修订】现为 512×512（009 时 1024×1024）
     └── <tier>_floating_backpack_n.png  # 5 个：LabPBR 法线贴图

@@ -72,7 +72,7 @@
 - [ ] F005 **钻石、金的背上位置偏差**（已知限制 4）：钻石翻盖导致的 0.05 方块间隔、金背包偏高
 - [ ] F006 **评估高光/粗糙度贴图**（已知限制 8）：金的 GLB 渲染出的金属质感可能有真数据，值得逐个核对 ORM 通道
 - [ ] F007 **`.glb` 与随包 `.obj` 的大文件策略**（已知限制 9）：`.glb` 是真二进制且未走 LFS；随包 `.obj` 每次重导出都让历史增长约 10MB
-- [ ] F008 **清理遗留文件**：`floating_backpack.json`（已无引用）、`textures/entity/backpack_back.png`（未被引用）、`FloatingBackpackItem.texture()` 与 `BackpackTier.texturePath()`（已无调用方）
+- [X] F008 **清理遗留文件**：`floating_backpack.json`（已无引用）、`textures/entity/backpack_back.png`（未被引用）、`FloatingBackpackItem.texture()` 与 `BackpackTier.texturePath()`（已无调用方）（2026-11-04 已做：删除 `floating_backpack.json`、`textures/entity/backpack_back.png`、`FloatingBackpackItem.texture()`、`BackpackTier.texturePath()`；`compileJava test` 通过，游戏内仍需确认物品/背上渲染正常）
 - [ ] F009 **可拆卸小包与升级组件玩法**：用户已明确延后（见 `docs/plan/005-gameplay-item-tiers.md` 的 M8/M9）；`docs/ideas/` 里有相关构想，该目录由用户手写维护，本 feature 不修改它，也不把其中内容当作已确定的需求
 
 ---
