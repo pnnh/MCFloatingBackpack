@@ -104,6 +104,16 @@ public final class FloatingPanelInput {
                 if (!isRight && QuickTransferInput.beginFromPanel(slot, mouseX, mouseY)) {
                     return true;
                 }
+                // 013: a second button pressed while a drag is under way does nothing (and is swallowed).
+                if (PanelDragInput.isActive()) {
+                    return true;
+                }
+                // 013: with an item on the cursor the click waits for the release, so dragging over
+                // several slots can distribute it; with an empty cursor the pickup happens at once and
+                // dragging on collects same-kind items.
+                if (PanelDragInput.beginFromPanel(slot, isRight, mouseX, mouseY)) {
+                    return true;
+                }
                 sendClick(slot, isRight);
                 return true;
             }
@@ -111,6 +121,10 @@ public final class FloatingPanelInput {
                 return true;
             }
             return false;
+        }
+
+        if (action == GLFW.GLFW_RELEASE && PanelDragInput.onRelease(button, mouseX, mouseY)) {
+            return true;
         }
 
         if (action == GLFW.GLFW_RELEASE && state.isDragging()) {
@@ -151,7 +165,7 @@ public final class FloatingPanelInput {
         return false;
     }
 
-    private static void sendClick(int slotIndex, boolean rightClick) {
+    static void sendClick(int slotIndex, boolean rightClick) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
             return;

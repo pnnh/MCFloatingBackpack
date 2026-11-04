@@ -24,6 +24,7 @@ import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.PanelDragInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
@@ -109,6 +110,7 @@ public final class FloatingPanelEvents {
     public static void onLoggingIn(ClientPlayerNetworkEvent.LoggingIn event) {
         ensureConfigLoaded();
         QuickTransferInput.reset();
+        PanelDragInput.reset();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
@@ -153,6 +155,7 @@ public final class FloatingPanelEvents {
         // 011: while a screen is open only this hook drives a Ctrl drag (onRenderGui returns early),
         // so it runs exactly once per frame.
         QuickTransferInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
+        PanelDragInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
         ensureConfigLoaded();
         FloatingPanelRenderer.render(
                 event.getGuiGraphics(),
@@ -174,6 +177,7 @@ public final class FloatingPanelEvents {
         }
         ensureConfigLoaded();
         QuickTransferInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
+        PanelDragInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
         FloatingPanelRenderer.render(
                 event.getGuiGraphics(),
                 state,
@@ -185,6 +189,7 @@ public final class FloatingPanelEvents {
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
         QuickTransferInput.stopIfInvalid(minecraft);
+        PanelDragInput.stopIfInvalid(minecraft);
         hideIfDisallowed(minecraft);
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {

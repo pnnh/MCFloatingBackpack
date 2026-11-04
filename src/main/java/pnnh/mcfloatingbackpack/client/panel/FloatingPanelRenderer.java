@@ -2,6 +2,7 @@ package pnnh.mcfloatingbackpack.client.panel;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -10,6 +11,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.ModItems;
@@ -30,6 +32,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SLOT_DARK = 0xFFFFFFFF;
     /** Same white translucent hover used by vanilla container slots. */
     private static final int COLOR_SLOT_HOVER = 0x80FFFFFF;
+    /** Same translucent white vanilla paints over slots taking part in a drag. */
+    private static final int COLOR_DRAG_SLOT = 0x80FFFFFF;
     private static final int COLOR_SCROLL_TRACK = 0xFF373737;
     private static final int COLOR_SCROLL_THUMB = 0xFF8B8B8B;
     private static final int COLOR_SCROLL_THUMB_EDGE = 0xFFC6C6C6;
@@ -72,10 +76,15 @@ public final class FloatingPanelRenderer {
 
         ItemStack cursor = cursorStack(minecraft);
         if (!cursor.isEmpty()) {
+            // 013: while a drag-distribute is previewed the cursor shows what would be left over.
+            Preview<ItemStack> preview = PanelDragInput.preview();
+            ItemStack shown = preview != null ? preview.cursorLeft() : cursor;
+            String text = preview != null && shown.isEmpty() ? ChatFormatting.YELLOW + "0" : null;
+            ItemStack drawn = shown.isEmpty() ? cursor : shown;
             graphics.pose().pushPose();
             graphics.pose().translate(0.0F, 0.0F, 32.0F);
-            graphics.renderItem(cursor, mouseX - 8, mouseY - 8);
-            graphics.renderItemDecorations(minecraft.font, cursor, mouseX - 8, mouseY - 8);
+            graphics.renderItem(drawn, mouseX - 8, mouseY - 8);
+            graphics.renderItemDecorations(minecraft.font, drawn, mouseX - 8, mouseY - 8, text);
             graphics.pose().popPose();
         }
 
@@ -113,7 +122,7 @@ public final class FloatingPanelRenderer {
         }
     }
 
-    private static ItemStack cursorStack(Minecraft minecraft) {
+    static ItemStack cursorStack(Minecraft minecraft) {
         if (minecraft.player != null
                 && ContainerScreenCompat.isOpenContainerScreen(minecraft.screen)
                 && minecraft.player.containerMenu != null) {
@@ -134,6 +143,7 @@ public final class FloatingPanelRenderer {
     private static void drawSlotsWithItems(GuiGraphics graphics, FloatingPanelState state, int hoveredSlot) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientBackpackView view = ClientBackpackView.get();
+        Preview<ItemStack> preview = PanelDragInput.preview();
         for (int i = 0; i < view.slotCount(); i++) {
             if (!PanelSlots.isRowVisible(state, i)) {
                 continue;
@@ -142,7 +152,19 @@ public final class FloatingPanelRenderer {
             int sy = PanelSlots.slotY(state, i);
             drawSlotWell(graphics, sx, sy);
             ItemStack stack = view.getStackInSlot(i);
-            if (!stack.isEmpty()) {
+            int previewIndex = preview != null ? preview.slots().indexOf(i) : -1;
+            if (previewIndex >= 0) {
+                // 013: the slot is part of the drag; show what it would hold after the release.
+                graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_DRAG_SLOT);
+                ItemStack planned = preview.stacks().get(previewIndex);
+                if (!planned.isEmpty()) {
+                    String text = preview.capped().get(previewIndex)
+                            ? ChatFormatting.YELLOW + String.valueOf(planned.getCount())
+                            : null;
+                    graphics.renderItem(planned, sx + 1, sy + 1);
+                    graphics.renderItemDecorations(minecraft.font, planned, sx + 1, sy + 1, text);
+                }
+            } else if (!stack.isEmpty()) {
                 graphics.renderItem(stack, sx + 1, sy + 1);
                 graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
             }
