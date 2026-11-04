@@ -1,0 +1,19 @@
+.specify/memory/constitution.md
+  s_e4f0fbd798a6d8::t_41df45f0e8b01f 3,5-13,15-19,71-96,106-116,128-132,148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d8914e265de39913e4144fe77296020849836719",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
