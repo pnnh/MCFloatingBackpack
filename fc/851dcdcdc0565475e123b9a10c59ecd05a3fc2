@@ -1,0 +1,32 @@
+specs/005-item-backpack/tasks.md
+  h_6465a203f88bd5 89-90
+docs/plan/manual-verification-checklist.md
+  s_e4f0fbd798a6d8::t_ab521697dbc078 1-171
+specs/009-sculpted-mesh-backpack-models/tasks.md
+  s_e4f0fbd798a6d8::t_53b65d6e92c01b 54,71
+specs/010-backpack-texture-budget/DELIVERY.md
+  s_e4f0fbd798a6d8::t_c0f323bd0661d1 21,43
+specs/010-backpack-texture-budget/tasks.md
+  s_e4f0fbd798a6d8::t_74d03734d2eb7f 65
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fc851dcdcdc0565475e123b9a10c59ecd05a3fc2",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
