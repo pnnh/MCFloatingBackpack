@@ -15,9 +15,10 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
 
 public record BackpackFullSyncPayload(
-        int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor)
+        int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor, ToolAreaContents tools)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackFullSyncPayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -33,6 +34,8 @@ public record BackpackFullSyncPayload(
                     BackpackFullSyncPayload::slots,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackFullSyncPayload::cursor,
+                    ToolAreaContents.STREAM_CODEC,
+                    BackpackFullSyncPayload::tools,
                     BackpackFullSyncPayload::new);
 
     public static BackpackFullSyncPayload from(BackpackRef ref, BackpackInventory inventory) {
@@ -44,7 +47,8 @@ public record BackpackFullSyncPayload(
                 ref.source().ordinal(),
                 ref.invIndex(),
                 slots,
-                inventory.getCursor().copy());
+                inventory.getCursor().copy(),
+                inventory.toolContents());
     }
 
     @Override
@@ -54,7 +58,7 @@ public record BackpackFullSyncPayload(
 
     public static void handleClient(BackpackFullSyncPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            ClientBackpackView.get().applyFull(payload.slots(), payload.cursor());
+            ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor());
             BackpackRef.Source[] sources = BackpackRef.Source.values();
             int ord = payload.sourceOrdinal();
             BackpackRef.Source source =

@@ -10,8 +10,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
 
-public record BackpackSlotUpdatePayload(int slotIndex, ItemStack stack, ItemStack cursor)
+public record BackpackSlotUpdatePayload(byte area, int slotIndex, ItemStack stack, ItemStack cursor)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackSlotUpdatePayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -19,6 +20,8 @@ public record BackpackSlotUpdatePayload(int slotIndex, ItemStack stack, ItemStac
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BackpackSlotUpdatePayload> STREAM_CODEC =
             StreamCodec.composite(
+                    ByteBufCodecs.BYTE,
+                    BackpackSlotUpdatePayload::area,
                     ByteBufCodecs.VAR_INT,
                     BackpackSlotUpdatePayload::slotIndex,
                     ItemStack.OPTIONAL_STREAM_CODEC,
@@ -33,8 +36,12 @@ public record BackpackSlotUpdatePayload(int slotIndex, ItemStack stack, ItemStac
     }
 
     public static void handleClient(BackpackSlotUpdatePayload payload, IPayloadContext context) {
-        context.enqueueWork(
-                () -> ClientBackpackView.get()
-                        .applySlotUpdate(payload.slotIndex(), payload.stack(), payload.cursor()));
+        context.enqueueWork(() -> {
+            PanelArea area = PanelArea.fromByte(payload.area());
+            if (area != null) {
+                ClientBackpackView.get()
+                        .applySlotUpdate(area, payload.slotIndex(), payload.stack(), payload.cursor());
+            }
+        });
     }
 }

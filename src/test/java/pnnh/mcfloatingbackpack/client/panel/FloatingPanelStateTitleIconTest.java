@@ -22,7 +22,6 @@ class FloatingPanelStateTitleIconTest {
         state.setPos(FloatingPanelState.DEFAULT_POS_X, FloatingPanelState.DEFAULT_POS_Y);
         state.setScrollRow(0);
         state.endDrag();
-        state.endScrollDrag();
         state.endResize();
         state.clearSizePreference();
         state.setTotalRows(4);

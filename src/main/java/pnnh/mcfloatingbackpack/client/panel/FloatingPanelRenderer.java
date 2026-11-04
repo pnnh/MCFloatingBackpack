@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.ModItems;
 
@@ -36,6 +37,14 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_EDGE_DARK = 0xFF555555;
     private static final int COLOR_OUTLINE = 0xFF000000;
     private static final int COLOR_SLOT = 0xFF8B8B8B;
+    /** Tool-area wells (016): three different light colours, all distinct from the main area's gray. */
+    private static final int COLOR_SLOT_LEFT = 0xFFB5D3EE;
+    private static final int COLOR_SLOT_RIGHT = 0xFFBFE5B5;
+    private static final int COLOR_SLOT_BOTTOM = 0xFFF0DDA0;
+    /** Scroll arrow (016): dark body, light outline, 4 pixels deep (the outline adds one); tune here after looking at it in game. */
+    private static final int ARROW_SIZE = 4;
+    private static final int COLOR_ARROW = 0xFF3A3A3A;
+    private static final int COLOR_ARROW_OUTLINE = 0xFFF2F2F2;
     private static final int COLOR_SLOT_LIGHT = 0xFF373737;
     private static final int COLOR_SLOT_DARK = 0xFFFFFFFF;
     /** Same white translucent hover used by vanilla container slots. */
@@ -44,9 +53,6 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_DRAG_SLOT = 0x80FFFFFF;
     /** Border of a selected slot (014): golden, so it differs from the white hover and drag-preview fills. */
     private static final int COLOR_SELECTED = 0xFFFFD34D;
-    private static final int COLOR_SCROLL_TRACK = 0xFF373737;
-    private static final int COLOR_SCROLL_THUMB = 0xFF8B8B8B;
-    private static final int COLOR_SCROLL_THUMB_EDGE = 0xFFC6C6C6;
     private static final int COLOR_CLOSE_BUTTON = 0xFFB33A3A;
     private static final int COLOR_CLOSE_GLYPH = 0xFFFFFFFF;
     private static final int COLOR_RESIZE_GRIP = 0xFF555555;
@@ -70,15 +76,14 @@ public final class FloatingPanelRenderer {
         int y = state.getPosY();
         int w = state.getWidth();
         int h = state.getHeight();
-        int hovered = PanelSlots.indexAt(state, mouseX, mouseY);
 
         graphics.pose().pushPose();
         graphics.pose().translate(0.0F, 0.0F, OVERLAY_Z);
         RenderSystem.disableDepthTest();
 
         drawVanillaPanel(graphics, x, y, w, h);
-        drawSlotsWithItems(graphics, state, hovered);
-        drawScrollbar(graphics, state);
+        drawSlotsWithItems(graphics, mouseX, mouseY);
+        drawScrollArrows(graphics, ClientBackpackView.get().layout());
         drawCloseButton(graphics, state);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
@@ -149,42 +154,59 @@ public final class FloatingPanelRenderer {
         graphics.fill(x + w - 1, y, x + w, y + h, COLOR_EDGE_DARK);
     }
 
-    private static void drawSlotsWithItems(GuiGraphics graphics, FloatingPanelState state, int hoveredSlot) {
+    private static void drawSlotsWithItems(GuiGraphics graphics, int mouseX, int mouseY) {
         Minecraft minecraft = Minecraft.getInstance();
         ClientBackpackView view = ClientBackpackView.get();
+        PanelLayout layout = view.layout();
+        PanelLayout.Hit hovered = layout.hit(mouseX, mouseY);
         Preview<ItemStack> preview = PanelDragInput.preview();
         PanelSelection selection = PanelSelection.get();
-        for (int i = 0; i < view.slotCount(); i++) {
-            if (!PanelSlots.isRowVisible(state, i)) {
-                continue;
-            }
-            int sx = PanelSlots.slotX(state, i);
-            int sy = PanelSlots.slotY(state, i);
-            drawSlotWell(graphics, sx, sy);
-            ItemStack stack = view.getStackInSlot(i);
-            int previewIndex = preview != null ? preview.slots().indexOf(i) : -1;
-            if (previewIndex >= 0) {
-                // 013: the slot is part of the drag; show what it would hold after the release.
-                graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_DRAG_SLOT);
-                ItemStack planned = preview.stacks().get(previewIndex);
-                if (!planned.isEmpty()) {
-                    String text = preview.capped().get(previewIndex)
-                            ? ChatFormatting.YELLOW + String.valueOf(planned.getCount())
-                            : null;
-                    graphics.renderItem(planned, sx + 1, sy + 1);
-                    graphics.renderItemDecorations(minecraft.font, planned, sx + 1, sy + 1, text);
+        for (PanelArea area : PanelArea.values()) {
+            for (int ordinal = 0; ordinal < layout.visibleCount(area); ordinal++) {
+                // A filler cell (beyond the area's capacity, or the empty tail of the main area's last row)
+                // is left as plain panel background: the panel stays one rectangle without inventing slots.
+                int index = layout.slotIndex(area, ordinal);
+                if (index < 0) {
+                    continue;
                 }
-            } else if (!stack.isEmpty()) {
-                graphics.renderItem(stack, sx + 1, sy + 1);
-                graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
-            }
-            if (selection.contains(i)) {
-                drawSelectionBorder(graphics, sx, sy);
-            }
-            if (i == hoveredSlot) {
-                graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_SLOT_HOVER);
+                int sx = layout.cellX(area, ordinal);
+                int sy = layout.cellY(area, ordinal);
+                drawSlotWell(graphics, sx, sy, wellColor(area));
+                ItemStack stack = area == PanelArea.MAIN ? view.getStackInSlot(index) : view.getToolStack(area, index);
+                // 013 drag preview and 014 selection only exist in the main area.
+                int previewIndex = area == PanelArea.MAIN && preview != null ? preview.slots().indexOf(index) : -1;
+                if (previewIndex >= 0) {
+                    // 013: the slot is part of the drag; show what it would hold after the release.
+                    graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_DRAG_SLOT);
+                    ItemStack planned = preview.stacks().get(previewIndex);
+                    if (!planned.isEmpty()) {
+                        String text = preview.capped().get(previewIndex)
+                                ? ChatFormatting.YELLOW + String.valueOf(planned.getCount())
+                                : null;
+                        graphics.renderItem(planned, sx + 1, sy + 1);
+                        graphics.renderItemDecorations(minecraft.font, planned, sx + 1, sy + 1, text);
+                    }
+                } else if (!stack.isEmpty()) {
+                    graphics.renderItem(stack, sx + 1, sy + 1);
+                    graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
+                }
+                if (area == PanelArea.MAIN && selection.contains(index)) {
+                    drawSelectionBorder(graphics, sx, sy);
+                }
+                if (hovered != null && hovered.area() == area && hovered.index() == index) {
+                    graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_SLOT_HOVER);
+                }
             }
         }
+    }
+
+    private static int wellColor(PanelArea area) {
+        return switch (area) {
+            case MAIN -> COLOR_SLOT;
+            case LEFT -> COLOR_SLOT_LEFT;
+            case RIGHT -> COLOR_SLOT_RIGHT;
+            case BOTTOM -> COLOR_SLOT_BOTTOM;
+        };
     }
 
     /** One pixel frame just inside the slot. */
@@ -197,30 +219,66 @@ public final class FloatingPanelRenderer {
         graphics.fill(x2 - 1, y + 1, x2, y2 - 1, COLOR_SELECTED);
     }
 
-    private static void drawSlotWell(GuiGraphics graphics, int x, int y) {
+    private static void drawSlotWell(GuiGraphics graphics, int x, int y, int color) {
         int x2 = x + PanelSlots.SLOT_SIZE;
         int y2 = y + PanelSlots.SLOT_SIZE;
-        graphics.fill(x, y, x2, y2, COLOR_SLOT);
+        graphics.fill(x, y, x2, y2, color);
         graphics.fill(x, y, x2, y + 1, COLOR_SLOT_LIGHT);
         graphics.fill(x, y, x + 1, y2, COLOR_SLOT_LIGHT);
         graphics.fill(x, y2 - 1, x2, y2, COLOR_SLOT_DARK);
         graphics.fill(x2 - 1, y, x2, y2, COLOR_SLOT_DARK);
     }
 
-    private static void drawScrollbar(GuiGraphics graphics, FloatingPanelState state) {
-        if (!state.needsScrollbar()) {
-            return;
+    /**
+     * Small flat arrows at the edges of an area that has hidden content (016): up/down for the main area and the
+     * side columns, left/right for the bottom row. Both ends show one when there is content on both sides; none
+     * when the whole area is visible. They are drawn over the cells' edge and never take part in hit-testing.
+     */
+    private static void drawScrollArrows(GuiGraphics graphics, PanelLayout layout) {
+        for (PanelArea area : PanelArea.values()) {
+            PanelLayout.Rect r = layout.rect(area);
+            boolean back = layout.canBack(area);
+            boolean forward = layout.canForward(area);
+            if (area == PanelArea.BOTTOM) {
+                int cy = r.y() + r.h() / 2;
+                if (back) {
+                    drawArrow(graphics, r.x() + 1, cy, -1, 0);
+                }
+                if (forward) {
+                    drawArrow(graphics, r.x() + r.w() - 2, cy, 1, 0);
+                }
+            } else {
+                int cx = r.x() + r.w() / 2;
+                if (back) {
+                    drawArrow(graphics, cx, r.y() + 1, 0, -1);
+                }
+                if (forward) {
+                    drawArrow(graphics, cx, r.y() + r.h() - 2, 0, 1);
+                }
+            }
         }
-        int trackX = PanelSlots.scrollbarTrackX(state);
-        int trackY = PanelSlots.scrollbarTrackY(state);
-        int trackH = PanelSlots.scrollbarTrackHeight(state);
-        int thumbY = PanelSlots.scrollbarThumbY(state);
-        int thumbH = PanelSlots.scrollbarThumbHeight(state);
-        int trackX2 = trackX + PanelSlots.SCROLLBAR_WIDTH;
-        graphics.fill(trackX, trackY, trackX2, trackY + trackH, COLOR_SCROLL_TRACK);
-        graphics.fill(trackX, thumbY, trackX2, thumbY + thumbH, COLOR_SCROLL_THUMB);
-        graphics.fill(trackX, thumbY, trackX2, thumbY + 1, COLOR_SCROLL_THUMB_EDGE);
-        graphics.fill(trackX, thumbY, trackX + 1, thumbY + thumbH, COLOR_SCROLL_THUMB_EDGE);
+    }
+
+    /**
+     * A triangle with its tip at (tipX, tipY) pointing along (dx, dy): a light outline triangle with a dark one
+     * inside it, built from 1-pixel lines of width 1, 3, 5, 7 (outline 1..9) so it needs no texture.
+     */
+    private static void drawArrow(GuiGraphics graphics, int tipX, int tipY, int dx, int dy) {
+        drawTriangle(graphics, tipX, tipY, dx, dy, ARROW_SIZE + 1, COLOR_ARROW_OUTLINE);
+        drawTriangle(graphics, tipX - dx, tipY - dy, dx, dy, ARROW_SIZE, COLOR_ARROW);
+    }
+
+    private static void drawTriangle(GuiGraphics graphics, int tipX, int tipY, int dx, int dy, int size, int color) {
+        for (int i = 0; i < size; i++) {
+            // Line i lies i steps back from the tip, 2*i+1 pixels wide, centred on the axis.
+            int bx = tipX - dx * i;
+            int by = tipY - dy * i;
+            if (dy != 0) {
+                graphics.fill(bx - i, by, bx + i + 1, by + 1, color);
+            } else {
+                graphics.fill(bx, by - i, bx + 1, by + i + 1, color);
+            }
+        }
     }
 
     /** Geometry must match {@link FloatingPanelState#hitsCloseButton}. */

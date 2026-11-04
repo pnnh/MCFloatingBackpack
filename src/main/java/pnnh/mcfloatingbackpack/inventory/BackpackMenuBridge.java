@@ -1,5 +1,8 @@
 package pnnh.mcfloatingbackpack.inventory;
 
+import java.util.function.IntFunction;
+import java.util.function.ObjIntConsumer;
+
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,13 +35,25 @@ public final class BackpackMenuBridge {
      */
     public static ItemStack clickWithMenuCarried(
             BackpackInventory backpack, AbstractContainerMenu menu, int slotIndex, boolean rightClick) {
-        mergePanelCursorIntoCarried(backpack, menu);
-        ItemStack newCarried = BackpackClickLogic.click(
+        return clickWithMenuCarried(
+                backpack,
+                menu,
                 backpack::getStackInSlot,
                 (stack, index) -> backpack.setStackInSlot(index, stack),
-                menu.getCarried(),
                 slotIndex,
                 rightClick);
+    }
+
+    /** Same, for the slots of any area (016): {@code getSlot/setSlot} read and write the clicked area. */
+    public static ItemStack clickWithMenuCarried(
+            BackpackInventory backpack,
+            AbstractContainerMenu menu,
+            IntFunction<ItemStack> getSlot,
+            ObjIntConsumer<ItemStack> setSlot,
+            int slotIndex,
+            boolean rightClick) {
+        mergePanelCursorIntoCarried(backpack, menu);
+        ItemStack newCarried = BackpackClickLogic.click(getSlot, setSlot, menu.getCarried(), slotIndex, rightClick);
         menu.setCarried(newCarried);
         backpack.setCursor(ItemStack.EMPTY);
         return newCarried;

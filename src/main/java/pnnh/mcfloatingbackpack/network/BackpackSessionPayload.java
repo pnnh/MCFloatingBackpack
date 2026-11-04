@@ -17,12 +17,13 @@ import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
 
 /**
  * Server tells client whether the panel may be open and pushes a full contents mirror.
  */
 public record BackpackSessionPayload(
-        boolean open, int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor)
+        boolean open, int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor, ToolAreaContents tools)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackSessionPayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -40,11 +41,13 @@ public record BackpackSessionPayload(
                     BackpackSessionPayload::slots,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackSessionPayload::cursor,
+                    ToolAreaContents.STREAM_CODEC,
+                    BackpackSessionPayload::tools,
                     BackpackSessionPayload::new);
 
     public static BackpackSessionPayload closed() {
         return new BackpackSessionPayload(
-                false, 0, -1, List.of(), ItemStack.EMPTY);
+                false, 0, -1, List.of(), ItemStack.EMPTY, ToolAreaContents.EMPTY);
     }
 
     public static BackpackSessionPayload open(BackpackRef ref, BackpackInventory inventory) {
@@ -57,7 +60,8 @@ public record BackpackSessionPayload(
                 ref.source().ordinal(),
                 ref.invIndex(),
                 slots,
-                inventory.getCursor().copy());
+                inventory.getCursor().copy(),
+                inventory.toolContents());
     }
 
     @Override
@@ -76,7 +80,7 @@ public record BackpackSessionPayload(
                 FloatingPanelEvents.syncMouseToPanelVisibility();
                 return;
             }
-            ClientBackpackView.get().applyFull(payload.slots(), payload.cursor());
+            ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor());
             BackpackRef.Source[] sources = BackpackRef.Source.values();
             int ord = payload.sourceOrdinal();
             BackpackRef.Source source =

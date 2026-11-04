@@ -92,9 +92,14 @@ public final class BackpackClickLogic {
     }
 
     public static void applyTo(BackpackInventory inventory, int slotIndex, boolean rightClick) {
+        applyTo(inventory, PanelArea.MAIN, slotIndex, rightClick);
+    }
+
+    /** Click on a slot of any area (016) with the panel's own cursor. */
+    public static void applyTo(BackpackInventory inventory, PanelArea area, int slotIndex, boolean rightClick) {
         ItemStack newCursor = click(
-                inventory::getStackInSlot,
-                (stack, index) -> inventory.setStackInSlot(index, stack),
+                index -> inventory.getStackInSlot(area, index),
+                (stack, index) -> inventory.setStackInSlot(area, index, stack),
                 inventory.getCursor(),
                 slotIndex,
                 rightClick);

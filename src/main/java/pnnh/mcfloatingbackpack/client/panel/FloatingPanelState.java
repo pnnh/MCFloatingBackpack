@@ -1,5 +1,7 @@
 package pnnh.mcfloatingbackpack.client.panel;
 
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
+
 /**
  * Client runtime state for the empty floating panel. No item data.
  * Kept free of Dist annotations so clamp logic can be unit-tested without NeoForge.
@@ -35,8 +37,10 @@ public final class FloatingPanelState {
     private int visibleRows = 4;
     private int visibleCols = PanelSlots.COLS;
     private int scrollRow;
-    private boolean scrolling;
-    private int scrollGrabOffsetY;
+    /** Scroll offsets of the three tool areas (016), indexed by {@link PanelArea#ordinal()}; MAIN uses {@link #scrollRow}. */
+    private final int[] toolScroll = new int[PanelArea.values().length];
+    /** Slot counts of the three tool areas, as last reported by the client view; used only to clamp their scrolling. */
+    private final int[] toolCount = new int[PanelArea.values().length];
     /**
      * True once the player has explicitly resized the panel (by dragging the handle, or by
      * loading a previously-saved size). While false, {@link #layout(int, int)} keeps the old
@@ -65,9 +69,9 @@ public final class FloatingPanelState {
         this.visible = visible;
         if (!visible) {
             dragging = false;
-            scrolling = false;
             resizing = false;
             scrollRow = 0;
+            java.util.Arrays.fill(toolScroll, 0);
         }
     }
 
@@ -100,10 +104,6 @@ public final class FloatingPanelState {
         return dragging;
     }
 
-    public boolean isScrolling() {
-        return scrolling;
-    }
-
     public boolean isResizing() {
         return resizing;
     }
@@ -131,7 +131,6 @@ public final class FloatingPanelState {
 
     public void beginDrag(int mouseX, int mouseY) {
         dragging = true;
-        scrolling = false;
         resizing = false;
         dragOffsetX = mouseX - posX;
         dragOffsetY = mouseY - posY;
@@ -149,35 +148,6 @@ public final class FloatingPanelState {
         dragging = false;
     }
 
-    public void beginScrollDrag(int mouseY) {
-        scrolling = true;
-        dragging = false;
-        resizing = false;
-        scrollGrabOffsetY = mouseY - PanelSlots.scrollbarThumbY(this);
-    }
-
-    public void updateScrollDrag(int mouseY) {
-        if (!scrolling) {
-            return;
-        }
-        int thumbTop = mouseY - scrollGrabOffsetY;
-        int trackY = PanelSlots.scrollbarTrackY(this);
-        int track = PanelSlots.scrollbarTrackHeight(this);
-        int thumb = PanelSlots.scrollbarThumbHeight(this);
-        int travel = Math.max(1, track - thumb);
-        int maxScroll = Math.max(0, totalRows - visibleRows);
-        if (maxScroll <= 0) {
-            scrollRow = 0;
-            return;
-        }
-        double ratio = (thumbTop - trackY) / (double) travel;
-        setScrollRow((int) Math.round(ratio * maxScroll));
-    }
-
-    public void endScrollDrag() {
-        scrolling = false;
-    }
-
     /**
      * Starts a drag-resize gesture. The resulting row/column count is recorded relative to this
      * grab point ({@link #updateResize}), not accumulated per mouse-move event, so the gesture
@@ -186,7 +156,6 @@ public final class FloatingPanelState {
     public void beginResize(int mouseX, int mouseY) {
         resizing = true;
         dragging = false;
-        scrolling = false;
         sizePreferenceSet = true;
         resizeGrabOffsetX = mouseX;
         resizeGrabOffsetY = mouseY;
@@ -277,10 +246,6 @@ public final class FloatingPanelState {
         return scrollRow;
     }
 
-    public boolean needsScrollbar() {
-        return totalRows > visibleRows;
-    }
-
     public void setTotalRows(int totalRows) {
         this.totalRows = Math.max(1, totalRows);
         clampScroll();
@@ -293,6 +258,35 @@ public final class FloatingPanelState {
 
     public void scrollBy(int deltaRows) {
         setScrollRow(scrollRow + deltaRows);
+    }
+
+    public int getScroll(PanelArea area) {
+        return area == PanelArea.MAIN ? scrollRow : toolScroll[area.ordinal()];
+    }
+
+    /** Scrolls one area on its own: rows for the main area and the side columns, columns for the bottom row. */
+    public void scrollBy(PanelArea area, int delta) {
+        if (area == PanelArea.MAIN) {
+            scrollBy(delta);
+            return;
+        }
+        toolScroll[area.ordinal()] = Math.max(0, toolScroll[area.ordinal()] + delta);
+        clampScroll();
+    }
+
+    /**
+     * Tells the state how many slots a tool area has so its scrolling can be clamped. A different count
+     * means the content changed shape, so that area goes back to its start (FR-016).
+     */
+    public void setToolCount(PanelArea area, int count) {
+        if (!area.isTool()) {
+            return;
+        }
+        if (toolCount[area.ordinal()] != count) {
+            toolCount[area.ordinal()] = count;
+            toolScroll[area.ordinal()] = 0;
+        }
+        clampScroll();
     }
 
     /**
@@ -308,16 +302,14 @@ public final class FloatingPanelState {
      * into range if the current screen can no longer fit the preferred size.
      */
     public void layout(int screenWidth, int screenHeight) {
-        int bottomLimit = Math.max(PanelSlots.panelHeight(1), screenHeight - BOTTOM_HUD_MARGIN);
+        int bottomLimit = Math.max(PanelLayout.height(1), screenHeight - BOTTOM_HUD_MARGIN);
+        // 016: the bottom row and the two side columns are always attached outside the main area, so they
+        // come off the budget before the main area gets its rows and columns.
         int availableHeight = bottomLimit - PanelSlots.PAD_TOP - PanelSlots.PAD_BOTTOM;
-        int fitRows = Math.max(1, availableHeight / PanelSlots.SLOT_SIZE);
+        int fitRows = Math.max(1, availableHeight / PanelSlots.SLOT_SIZE - 1);
 
-        // Always budget for the vertical scrollbar's width so columns never make the panel wider
-        // than the screen the moment it needs one.
-        int availableWidth = Math.max(
-                PanelSlots.SLOT_SIZE,
-                screenWidth - PanelSlots.PAD_X * 2 - PanelSlots.SCROLLBAR_GAP - PanelSlots.SCROLLBAR_WIDTH);
-        int fitCols = Math.max(1, availableWidth / PanelSlots.SLOT_SIZE);
+        int availableWidth = Math.max(PanelSlots.SLOT_SIZE, screenWidth - PanelSlots.PAD_X * 2);
+        int fitCols = Math.max(1, availableWidth / PanelSlots.SLOT_SIZE - 2);
 
         // The MIN_VISIBLE_CELLS floor wins even on a screen too small to naturally fit it; only
         // the position gets squeezed (via clampToScreen / the posY fix-up below), not the size.
@@ -332,21 +324,32 @@ public final class FloatingPanelState {
             visibleCols = colsUpper;
         }
         clampScroll();
-        width = PanelSlots.panelWidth(visibleCols, needsScrollbar());
+        width = PanelSlots.panelWidth(visibleCols);
         height = PanelSlots.panelHeight(visibleRows);
         if (posY + height > bottomLimit) {
             posY = Math.max(0, bottomLimit - height);
         }
     }
 
+    /**
+     * The panel's geometry for the current position, size and scroll (016).
+     *
+     * @param counts slot count of each area indexed by {@link pnnh.mcfloatingbackpack.inventory.PanelArea#ordinal()}
+     */
+    public PanelLayout layoutModel(int[] counts) {
+        return PanelLayout.of(posX, posY, visibleCols, visibleRows, counts,
+                new int[] {scrollRow, toolScroll[1], toolScroll[2], toolScroll[3]});
+    }
+
     private void clampScroll() {
-        int maxScroll = Math.max(0, totalRows - Math.max(1, visibleRows));
-        if (scrollRow > maxScroll) {
-            scrollRow = maxScroll;
-        }
-        if (scrollRow < 0) {
-            scrollRow = 0;
-        }
+        scrollRow = AxisScroll.clamp(scrollRow, totalRows, Math.max(1, visibleRows));
+        int sideVisible = Math.max(1, visibleRows);
+        toolScroll[PanelArea.LEFT.ordinal()] =
+                AxisScroll.clamp(toolScroll[PanelArea.LEFT.ordinal()], toolCount[PanelArea.LEFT.ordinal()], sideVisible);
+        toolScroll[PanelArea.RIGHT.ordinal()] =
+                AxisScroll.clamp(toolScroll[PanelArea.RIGHT.ordinal()], toolCount[PanelArea.RIGHT.ordinal()], sideVisible);
+        toolScroll[PanelArea.BOTTOM.ordinal()] = AxisScroll.clamp(
+                toolScroll[PanelArea.BOTTOM.ordinal()], toolCount[PanelArea.BOTTOM.ordinal()], Math.max(1, visibleCols) + 2);
     }
 
     private static int clamp(int value, int min, int max) {

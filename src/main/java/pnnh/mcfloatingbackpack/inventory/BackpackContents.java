@@ -14,9 +14,10 @@ import net.minecraft.world.item.ItemStack;
 
 /**
  * Immutable snapshot stored on a floating-backpack ItemStack as a data component.
- * List length is the tier capacity (at most {@link BackpackInventory#MAX_SIZE}).
+ * The main list length is the tier capacity (at most {@link BackpackInventory#MAX_SIZE}); the three tool
+ * areas (016) are kept apart in {@link ToolAreaContents}, so nothing that walks the main slots can reach them.
  */
-public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
+public record BackpackContents(List<ItemStack> items, ItemStack cursor, ToolAreaContents tools) {
     public static final Codec<BackpackContents> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     ItemStack.OPTIONAL_CODEC
@@ -25,7 +26,10 @@ public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
                             .forGetter(BackpackContents::items),
                     ItemStack.OPTIONAL_CODEC
                             .optionalFieldOf("cursor", ItemStack.EMPTY)
-                            .forGetter(c -> c.cursor().isEmpty() ? ItemStack.EMPTY : c.cursor()))
+                            .forGetter(c -> c.cursor().isEmpty() ? ItemStack.EMPTY : c.cursor()),
+                    ToolAreaContents.CODEC
+                            .optionalFieldOf("tools", ToolAreaContents.EMPTY)
+                            .forGetter(BackpackContents::tools))
             .apply(instance, BackpackContents::normalize));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, BackpackContents> STREAM_CODEC =
@@ -34,14 +38,21 @@ public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
                     BackpackContents::items,
                     ItemStack.OPTIONAL_STREAM_CODEC,
                     BackpackContents::cursor,
+                    ToolAreaContents.STREAM_CODEC,
+                    BackpackContents::tools,
                     BackpackContents::normalize);
 
     public static BackpackContents empty(int capacity) {
-        return fit(List.of(), ItemStack.EMPTY, capacity);
+        return fit(List.of(), ItemStack.EMPTY, ToolAreaContents.EMPTY, capacity);
     }
 
-    /** Copies stacks and clamps the list to {@link BackpackInventory#MAX_SIZE} without padding. */
+    /** Copies stacks and clamps the list to {@link BackpackInventory#MAX_SIZE} without padding; no tool areas. */
     public static BackpackContents normalize(List<ItemStack> items, ItemStack cursor) {
+        return normalize(items, cursor, ToolAreaContents.EMPTY);
+    }
+
+    /** Copies stacks and clamps the lists without padding. */
+    public static BackpackContents normalize(List<ItemStack> items, ItemStack cursor, ToolAreaContents tools) {
         int size = items == null ? 0 : Math.min(items.size(), BackpackInventory.MAX_SIZE);
         NonNullList<ItemStack> slots = NonNullList.create();
         for (int i = 0; i < size; i++) {
@@ -49,10 +60,23 @@ public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
             slots.add(stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
         }
         ItemStack cursorCopy = cursor == null || cursor.isEmpty() ? ItemStack.EMPTY : cursor.copy();
-        return new BackpackContents(slots, cursorCopy);
+        ToolAreaContents toolsCopy = tools == null
+                ? ToolAreaContents.EMPTY
+                : ToolAreaContents.normalize(tools.left(), tools.right(), tools.bottom());
+        return new BackpackContents(slots, cursorCopy, toolsCopy);
     }
 
+    /** Main slots fitted to {@code capacity}, tool areas empty (padded to their capacities). */
     public static BackpackContents fit(List<ItemStack> items, ItemStack cursor, int capacity) {
+        return fit(items, cursor, ToolAreaContents.EMPTY, capacity);
+    }
+
+    /**
+     * Main slots cut or padded to {@code capacity}; each tool area resized to its own capacity without
+     * dropping items ({@link ToolAreaCapacity#fit}).
+     */
+    public static BackpackContents fit(
+            List<ItemStack> items, ItemStack cursor, ToolAreaContents tools, int capacity) {
         int size = Math.max(0, Math.min(BackpackInventory.MAX_SIZE, capacity));
         NonNullList<ItemStack> slots = NonNullList.withSize(size, ItemStack.EMPTY);
         if (items != null) {
@@ -62,14 +86,15 @@ public record BackpackContents(List<ItemStack> items, ItemStack cursor) {
             }
         }
         ItemStack cursorCopy = cursor == null || cursor.isEmpty() ? ItemStack.EMPTY : cursor.copy();
-        return new BackpackContents(slots, cursorCopy);
+        ToolAreaContents fittedTools = (tools == null ? ToolAreaContents.EMPTY : tools).fit(size);
+        return new BackpackContents(slots, cursorCopy, fittedTools);
     }
 
     public BackpackContents fit(int capacity) {
-        return fit(items, cursor, capacity);
+        return fit(items, cursor, tools, capacity);
     }
 
     public BackpackContents copy() {
-        return normalize(items, cursor);
+        return normalize(items, cursor, tools);
     }
 }

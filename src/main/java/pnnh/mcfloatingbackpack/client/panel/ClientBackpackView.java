@@ -1,11 +1,16 @@
 package pnnh.mcfloatingbackpack.client.panel;
 
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaCapacity;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 
 /**
@@ -16,10 +21,41 @@ public final class ClientBackpackView {
 
     private NonNullList<ItemStack> slots =
             NonNullList.withSize(BackpackTier.LEATHER.capacity(), ItemStack.EMPTY);
+    /** The three tool areas (016); a list's length is the area's slot count. */
+    private final Map<PanelArea, NonNullList<ItemStack>> tools = new EnumMap<>(PanelArea.class);
     private ItemStack cursor = ItemStack.EMPTY;
     private BackpackRef activeRef;
 
     private ClientBackpackView() {
+        resetTools(BackpackTier.LEATHER.capacity());
+    }
+
+    private void resetTools(int mainCapacity) {
+        for (PanelArea area : PanelArea.values()) {
+            if (area.isTool()) {
+                tools.put(area, NonNullList.withSize(ToolAreaCapacity.of(area, mainCapacity), ItemStack.EMPTY));
+            }
+        }
+    }
+
+    /** The panel's geometry for the current position, size and scroll, with this view's slot counts. */
+    public PanelLayout layout() {
+        return FloatingPanelState.get().layoutModel(new int[] {
+            slots.size(), toolCount(PanelArea.LEFT), toolCount(PanelArea.RIGHT), toolCount(PanelArea.BOTTOM)});
+    }
+
+    /** Slot count of a tool area (0 for MAIN: use {@link #slotCount()}). */
+    public int toolCount(PanelArea area) {
+        NonNullList<ItemStack> list = tools.get(area);
+        return list == null ? 0 : list.size();
+    }
+
+    public ItemStack getToolStack(PanelArea area, int index) {
+        NonNullList<ItemStack> list = tools.get(area);
+        if (list == null || index < 0 || index >= list.size()) {
+            return ItemStack.EMPTY;
+        }
+        return list.get(index);
     }
 
     public static ClientBackpackView get() {
@@ -62,7 +98,7 @@ public final class ClientBackpackView {
         this.activeRef = null;
     }
 
-    public void applyFull(List<ItemStack> synced, ItemStack syncedCursor) {
+    public void applyFull(List<ItemStack> synced, ToolAreaContents syncedTools, ItemStack syncedCursor) {
         int count = synced == null ? 0 : synced.size();
         if (count <= 0) {
             count = BackpackTier.LEATHER.capacity();
@@ -74,25 +110,51 @@ public final class ClientBackpackView {
             next.set(i, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
         }
         slots = next;
+        for (PanelArea area : PanelArea.values()) {
+            if (!area.isTool()) {
+                continue;
+            }
+            List<ItemStack> source = syncedTools == null ? List.of() : syncedTools.list(area);
+            int toolSize = source.isEmpty() ? ToolAreaCapacity.of(area, count) : source.size();
+            NonNullList<ItemStack> toolNext = NonNullList.withSize(toolSize, ItemStack.EMPTY);
+            for (int i = 0; i < toolSize && i < source.size(); i++) {
+                ItemStack stack = source.get(i);
+                toolNext.set(i, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+            }
+            tools.put(area, toolNext);
+        }
         cursor = syncedCursor == null || syncedCursor.isEmpty() ? ItemStack.EMPTY : syncedCursor.copy();
         if (sizeChanged) {
             FloatingPanelState.get().setScrollRow(0);
         }
+        reportToolCounts();
         FloatingPanelState.get().setTotalRows(rows());
     }
 
-    public void applySlotUpdate(int slotIndex, ItemStack stack, ItemStack syncedCursor) {
-        if (slotIndex >= 0 && slotIndex < slots.size()) {
-            slots.set(slotIndex, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+    public void applySlotUpdate(PanelArea area, int slotIndex, ItemStack stack, ItemStack syncedCursor) {
+        List<ItemStack> target = area.isTool() ? tools.get(area) : slots;
+        if (target != null && slotIndex >= 0 && slotIndex < target.size()) {
+            target.set(slotIndex, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
         }
         cursor = syncedCursor == null || syncedCursor.isEmpty() ? ItemStack.EMPTY : syncedCursor.copy();
     }
 
     public void clear() {
         slots = NonNullList.withSize(BackpackTier.LEATHER.capacity(), ItemStack.EMPTY);
+        resetTools(BackpackTier.LEATHER.capacity());
         cursor = ItemStack.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
+        reportToolCounts();
         FloatingPanelState.get().setTotalRows(rows());
+    }
+
+    /** The panel state clamps each tool area's scrolling against its slot count; a changed count resets that area. */
+    private void reportToolCounts() {
+        for (PanelArea area : PanelArea.values()) {
+            if (area.isTool()) {
+                FloatingPanelState.get().setToolCount(area, toolCount(area));
+            }
+        }
     }
 }

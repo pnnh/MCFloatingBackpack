@@ -16,11 +16,18 @@ public final class BackpackInventory {
     public static final int MAX_SIZE = 108;
 
     private final ItemStackHandler items;
+    /** The three tool areas (016), indexed by {@link PanelArea#ordinal()}; the MAIN slot of the array is unused. */
+    private final ItemStackHandler[] tools = new ItemStackHandler[PanelArea.values().length];
     private ItemStack cursor = ItemStack.EMPTY;
 
     public BackpackInventory(int capacity) {
         int size = Math.max(1, Math.min(MAX_SIZE, capacity));
         this.items = new ItemStackHandler(size);
+        for (PanelArea area : PanelArea.values()) {
+            if (area.isTool()) {
+                tools[area.ordinal()] = new ItemStackHandler(ToolAreaCapacity.of(area, size));
+            }
+        }
     }
 
     public int size() {
@@ -29,6 +36,47 @@ public final class BackpackInventory {
 
     public ItemStackHandler items() {
         return items;
+    }
+
+    /** The slots of a tool area; the main slots are {@link #items()}. */
+    public ItemStackHandler handler(PanelArea area) {
+        return area.isTool() ? tools[area.ordinal()] : items;
+    }
+
+    /** Slot count of an area; for a tool area this can exceed its capacity after a capacity decrease. */
+    public int size(PanelArea area) {
+        return handler(area).getSlots();
+    }
+
+    public ItemStack getStackInSlot(PanelArea area, int slot) {
+        ItemStackHandler handler = handler(area);
+        if (slot < 0 || slot >= handler.getSlots()) {
+            return ItemStack.EMPTY;
+        }
+        return handler.getStackInSlot(slot);
+    }
+
+    public void setStackInSlot(PanelArea area, int slot, ItemStack stack) {
+        ItemStackHandler handler = handler(area);
+        if (slot < 0 || slot >= handler.getSlots()) {
+            return;
+        }
+        handler.setStackInSlot(slot, stack);
+    }
+
+    /** The three tool areas as stored in the data component. */
+    public ToolAreaContents toolContents() {
+        return ToolAreaContents.normalize(
+                list(PanelArea.LEFT), list(PanelArea.RIGHT), list(PanelArea.BOTTOM));
+    }
+
+    private List<ItemStack> list(PanelArea area) {
+        ItemStackHandler handler = handler(area);
+        List<ItemStack> out = new ArrayList<>(handler.getSlots());
+        for (int i = 0; i < handler.getSlots(); i++) {
+            out.add(handler.getStackInSlot(i).copy());
+        }
+        return out;
     }
 
     public ItemStack getCursor() {
@@ -63,6 +111,17 @@ public final class BackpackInventory {
             inventory.setStackInSlot(i, fitted.items().get(i).copy());
         }
         inventory.setCursor(fitted.cursor());
+        for (PanelArea area : PanelArea.values()) {
+            if (!area.isTool()) {
+                continue;
+            }
+            List<ItemStack> stored = fitted.tools().list(area);
+            ItemStackHandler handler = inventory.handler(area);
+            handler.setSize(stored.size());
+            for (int i = 0; i < stored.size(); i++) {
+                handler.setStackInSlot(i, stored.get(i).copy());
+            }
+        }
         return inventory;
     }
 
@@ -71,7 +130,7 @@ public final class BackpackInventory {
         for (int i = 0; i < size(); i++) {
             list.add(getStackInSlot(i).copy());
         }
-        return BackpackContents.fit(list, getCursor().copy(), size());
+        return BackpackContents.fit(list, getCursor().copy(), toolContents(), size());
     }
 
     public static int capacityOf(ItemStack backpack) {

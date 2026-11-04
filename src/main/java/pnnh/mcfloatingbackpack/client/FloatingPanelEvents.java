@@ -30,6 +30,7 @@ import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.network.BackpackOpenRequestPayload;
 import pnnh.mcfloatingbackpack.network.MergePanelCursorPayload;
 
@@ -212,7 +213,7 @@ public final class FloatingPanelEvents {
         }
         updateResizeCursor(minecraft, state, guiMouseX(minecraft), guiMouseY(minecraft));
 
-        if (!state.isVisible() || (!state.isDragging() && !state.isScrolling() && !state.isResizing())) {
+        if (!state.isVisible() || (!state.isDragging() && !state.isResizing())) {
             return;
         }
         if (!allowsPanel(minecraft.screen)) {
@@ -222,8 +223,6 @@ public final class FloatingPanelEvents {
         int mouseY = (int) guiMouseY(minecraft);
         if (state.isDragging()) {
             state.updateDrag(mouseX, mouseY);
-        } else if (state.isScrolling()) {
-            state.updateScrollDrag(mouseY);
         } else if (state.isResizing()) {
             state.updateResize(mouseX, mouseY);
         }
@@ -330,7 +329,13 @@ public final class FloatingPanelEvents {
         if (!state.isVisible() || scrollDeltaY == 0 || !state.contains(mouseX, mouseY)) {
             return false;
         }
-        state.scrollBy(scrollDeltaY > 0 ? -1 : 1);
+        // 016: the wheel scrolls the area under the mouse and nothing else. Wheel up goes toward the start
+        // (up, or left for the bottom row). Over the title bar, the padding or an area that has nothing to
+        // scroll it does nothing, but the event is still taken so it cannot leak to the screen underneath.
+        PanelArea area = ClientBackpackView.get().layout().areaAt(mouseX, mouseY);
+        if (area != null) {
+            state.scrollBy(area, scrollDeltaY > 0 ? -1 : 1);
+        }
         return true;
     }
 

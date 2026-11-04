@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
+
 /**
  * Covers the 007 reflow behavior: PanelSlots geometry keyed off the player's current column
  * setting instead of the fixed 9-column constant, plus the new resize-handle/close-button hit
@@ -24,7 +26,6 @@ class PanelSlotsResizeTest {
         state.setPos(FloatingPanelState.DEFAULT_POS_X, FloatingPanelState.DEFAULT_POS_Y);
         state.setScrollRow(0);
         state.endDrag();
-        state.endScrollDrag();
         state.endResize();
         state.clearSizePreference();
     }
@@ -41,26 +42,41 @@ class PanelSlotsResizeTest {
     }
 
     @Test
-    void slotXAndSlotYReflowAroundTheCurrentColumnCount() {
+    void cellsReflowAroundTheCurrentColumnCount() {
         resizeTo(5, 8);
+        PanelLayout layout = state.layoutModel(new int[] {36, 4, 4, 11});
+        PanelLayout.Rect main = layout.rect(PanelArea.MAIN);
 
-        // index 0..4 is row 0, index 5..9 is row 1, under 5 columns (not the old fixed 9).
-        assertEquals(PanelSlots.slotX(state, 0), PanelSlots.slotX(state, 5));
-        assertEquals(state.getPosY() + PanelSlots.PAD_TOP, PanelSlots.slotY(state, 0));
-        assertEquals(
-                state.getPosY() + PanelSlots.PAD_TOP + PanelSlots.SLOT_SIZE, PanelSlots.slotY(state, 5));
-        assertTrue(PanelSlots.isRowVisible(state, 4));
-        assertEquals(
-                state.getPosX() + PanelSlots.PAD_X + 4 * PanelSlots.SLOT_SIZE, PanelSlots.slotX(state, 4));
+        // ordinal 0..4 is row 0, 5..9 is row 1, under 5 columns (not the old fixed 9).
+        assertEquals(layout.cellX(PanelArea.MAIN, 0), layout.cellX(PanelArea.MAIN, 5));
+        assertEquals(main.y(), layout.cellY(PanelArea.MAIN, 0));
+        assertEquals(main.y() + PanelSlots.SLOT_SIZE, layout.cellY(PanelArea.MAIN, 5));
+        assertEquals(main.x() + 4 * PanelSlots.SLOT_SIZE, layout.cellX(PanelArea.MAIN, 4));
+        // The main area starts one column in from the panel's left padding (the left tool column).
+        assertEquals(state.getPosX() + PanelSlots.PAD_X + PanelSlots.SLOT_SIZE, main.x());
     }
 
     @Test
     void indexAtFindsAReflowedSlotByItsOnScreenPosition() {
         resizeTo(5, 8);
+        PanelLayout layout = state.layoutModel(new int[] {state.getTotalRows() * 5, 0, 0, 0});
 
-        int x = PanelSlots.slotX(state, 6);
-        int y = PanelSlots.slotY(state, 6);
+        int x = layout.cellX(PanelArea.MAIN, 6);
+        int y = layout.cellY(PanelArea.MAIN, 6);
         assertEquals(6, PanelSlots.indexAt(state, x + 1, y + 1));
+    }
+
+    @Test
+    void indexAtAnswersForTheMainAreaOnly() {
+        // 011/013/014 find slots through indexAt; the tool areas must give -1 so those gestures never see them.
+        resizeTo(5, 4);
+        PanelLayout layout = state.layoutModel(new int[] {36, 4, 4, 11});
+        for (PanelArea area : new PanelArea[] {PanelArea.LEFT, PanelArea.RIGHT, PanelArea.BOTTOM}) {
+            PanelLayout.Rect r = layout.rect(area);
+            assertEquals(-1, PanelSlots.indexAt(state, r.x() + 2, r.y() + 2));
+        }
+        PanelLayout.Rect main = layout.rect(PanelArea.MAIN);
+        assertEquals(0, PanelSlots.indexAt(state, main.x() + 2, main.y() + 2));
     }
 
     @Test

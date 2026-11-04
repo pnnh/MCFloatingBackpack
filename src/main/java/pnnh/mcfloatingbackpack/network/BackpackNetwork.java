@@ -10,6 +10,7 @@ import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
 
 public final class BackpackNetwork {
     private BackpackNetwork() {
@@ -20,7 +21,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("6");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("7");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -77,16 +78,20 @@ public final class BackpackNetwork {
     }
 
     public static void sendSlotUpdate(ServerPlayer player, BackpackRef ref, int slotIndex) {
+        sendSlotUpdate(player, ref, PanelArea.MAIN, slotIndex);
+    }
+
+    public static void sendSlotUpdate(ServerPlayer player, BackpackRef ref, PanelArea area, int slotIndex) {
         if (ref == null || !ref.stillValid(player)) {
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;
         }
         BackpackInventory inventory = ref.loadInventory(player);
-        ItemStack slotStack = slotIndex >= 0 && slotIndex < inventory.size()
-                ? inventory.getStackInSlot(slotIndex).copy()
+        ItemStack slotStack = slotIndex >= 0 && slotIndex < inventory.size(area)
+                ? inventory.getStackInSlot(area, slotIndex).copy()
                 : ItemStack.EMPTY;
         PacketDistributor.sendToPlayer(
                 player,
-                new BackpackSlotUpdatePayload(slotIndex, slotStack, inventory.getCursor().copy()));
+                new BackpackSlotUpdatePayload(area.toByte(), slotIndex, slotStack, inventory.getCursor().copy()));
     }
 }

@@ -11,6 +11,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 
 /**
@@ -76,20 +77,23 @@ public final class FloatingPanelInput {
                 state.beginResize((int) mouseX, (int) mouseY);
                 return true;
             }
-            // Dragging the panel and the scrollbar stay left-button-only, but any press over the
+            // Dragging the panel stays left-button-only, but any press over the
             // panel must still be consumed so it can't leak through to whatever real screen sits
             // underneath the overlay.
             if (!isRight && state.hitsDragBar(mouseX, mouseY)) {
                 state.beginDrag((int) mouseX, (int) mouseY);
                 return true;
             }
-            if (!isRight && PanelSlots.hitsScrollbar(state, mouseX, mouseY)) {
-                if (PanelSlots.hitsScrollThumb(state, mouseX, mouseY)) {
-                    state.beginScrollDrag((int) mouseY);
-                } else {
-                    state.setScrollRow(PanelSlots.scrollRowAt(state, mouseY));
-                    state.beginScrollDrag((int) mouseY);
+            // 016: a press on a slot of one of the three tool areas. They only do plain clicks: a Shift or Ctrl
+            // press is swallowed (Shift belongs to the main area's selection, Ctrl to its transfers), a press
+            // while a main-area drag is under way does nothing, and otherwise the click goes out at once -
+            // no deferred settling, no selection change, no quick transfer.
+            PanelLayout.Hit toolHit = ClientBackpackView.get().layout().hit(mouseX, mouseY);
+            if (toolHit != null && toolHit.area().isTool()) {
+                if (Screen.hasShiftDown() || Screen.hasControlDown() || PanelDragInput.isActive()) {
+                    return true;
                 }
+                sendClick(toolHit.area(), toolHit.index(), isRight);
                 return true;
             }
             int slot = PanelSlots.indexAt(state, mouseX, mouseY);
@@ -139,11 +143,6 @@ public final class FloatingPanelInput {
             return true;
         }
 
-        if (action == GLFW.GLFW_RELEASE && state.isScrolling()) {
-            state.endScrollDrag();
-            return true;
-        }
-
         if (action == GLFW.GLFW_RELEASE && state.isResizing()) {
             finishResize(state);
             return true;
@@ -161,10 +160,6 @@ public final class FloatingPanelInput {
             state.updateDrag((int) mouseX, (int) mouseY);
             return true;
         }
-        if (state.isScrolling()) {
-            state.updateScrollDrag((int) mouseY);
-            return true;
-        }
         if (state.isResizing()) {
             state.updateResize((int) mouseX, (int) mouseY);
             return true;
@@ -173,6 +168,10 @@ public final class FloatingPanelInput {
     }
 
     static void sendClick(int slotIndex, boolean rightClick) {
+        sendClick(PanelArea.MAIN, slotIndex, rightClick);
+    }
+
+    static void sendClick(PanelArea area, int slotIndex, boolean rightClick) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
             return;
@@ -190,6 +189,7 @@ public final class FloatingPanelInput {
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
         PacketDistributor.sendToServer(
                 new BackpackClickPayload(
+                        area.toByte(),
                         slotIndex,
                         swapHand,
                         rightClick,

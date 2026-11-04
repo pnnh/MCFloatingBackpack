@@ -16,6 +16,9 @@ import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
@@ -24,6 +27,7 @@ import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
  * unchanged.
  */
 public record BackpackClickPayload(
+        byte area,
         int slotIndex,
         boolean swapHand,
         boolean rightClick,
@@ -41,6 +45,7 @@ public record BackpackClickPayload(
     public static final StreamCodec<RegistryFriendlyByteBuf, BackpackClickPayload> STREAM_CODEC =
             StreamCodec.of(
                     (buf, payload) -> {
+                        buf.writeByte(payload.area());
                         buf.writeVarInt(payload.slotIndex());
                         int flags = (payload.swapHand() ? 1 : 0)
                                 | (payload.rightClick() ? 2 : 0)
@@ -51,11 +56,13 @@ public record BackpackClickPayload(
                         buf.writeVarInt(payload.invIndex());
                     },
                     buf -> {
+                        byte area = buf.readByte();
                         int slotIndex = buf.readVarInt();
                         int flags = buf.readByte();
                         int sourceOrdinal = buf.readVarInt();
                         int invIndex = buf.readVarInt();
                         return new BackpackClickPayload(
+                                area,
                                 slotIndex,
                                 (flags & 1) != 0,
                                 (flags & 2) != 0,
@@ -76,9 +83,11 @@ public record BackpackClickPayload(
             if (!(player instanceof ServerPlayer serverPlayer)) {
                 return;
             }
-            if (!payload.panelOpen()
+            PanelArea area = PanelArea.fromByte(payload.area());
+            if (area == null
+                    || !payload.panelOpen()
                     || payload.slotIndex() < 0
-                    || payload.slotIndex() >= BackpackInventory.MAX_SIZE) {
+                    || payload.slotIndex() >= (area.isTool() ? ToolAreaContents.MAX_TOOL_SLOTS : BackpackInventory.MAX_SIZE)) {
                 return;
             }
 
@@ -98,35 +107,53 @@ public record BackpackClickPayload(
             }
 
             BackpackInventory inventory = ref.loadInventory(serverPlayer);
-            if (payload.slotIndex() >= inventory.size()) {
+            if (payload.slotIndex() >= inventory.size(area)) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }
             AbstractContainerMenu menu = serverPlayer.containerMenu;
+            boolean viaMenu = payload.screenOpen() && menu != null;
 
-            if (payload.screenOpen() && menu != null) {
+            // 016: what goes into a tool area is the server's call. Every item is accepted for now, but this is
+            // where a later feature can refuse an item for a given area; a refused click changes nothing.
+            if (area.isTool()) {
+                ItemStack held = viaMenu
+                        ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
+                        : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+                if (!held.isEmpty() && !ToolAreaRules.canPlace(area, held)) {
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                    return;
+                }
+            }
+
+            if (viaMenu) {
                 BackpackMenuBridge.clickWithMenuCarried(
-                        inventory, menu, payload.slotIndex(), payload.rightClick());
+                        inventory,
+                        menu,
+                        index -> inventory.getStackInSlot(area, index),
+                        (stack, index) -> inventory.setStackInSlot(area, index, stack),
+                        payload.slotIndex(),
+                        payload.rightClick());
                 menu.broadcastChanges();
             } else if (payload.swapHand()) {
                 // Do not swap the backpack item itself out of the main hand into a slot.
                 ItemStack hand = serverPlayer.getMainHandItem();
                 if (FloatingBackpackItem.isBackpack(hand)) {
                     ref.saveInventory(serverPlayer, inventory);
-                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, payload.slotIndex());
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                     return;
                 }
                 ItemStack handCopy = hand.copy();
-                ItemStack slot = inventory.getStackInSlot(payload.slotIndex()).copy();
-                inventory.setStackInSlot(payload.slotIndex(), handCopy);
+                ItemStack slot = inventory.getStackInSlot(area, payload.slotIndex()).copy();
+                inventory.setStackInSlot(area, payload.slotIndex(), handCopy);
                 serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, slot);
                 serverPlayer.getInventory().setChanged();
             } else {
-                BackpackClickLogic.applyTo(inventory, payload.slotIndex(), payload.rightClick());
+                BackpackClickLogic.applyTo(inventory, area, payload.slotIndex(), payload.rightClick());
             }
 
             ref.saveInventory(serverPlayer, inventory);
-            BackpackNetwork.sendSlotUpdate(serverPlayer, ref, payload.slotIndex());
+            BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
         });
     }
 
