@@ -1,0 +1,32 @@
+specs/010-backpack-texture-budget/spec.md
+  s_e4f0fbd798a6d8::t_e12870902d31b2 1-14,18-30,32-46,48-63,65-96,98,100-104,106-116,120-121,123-126,128-134
+  s_e4f0fbd798a6d8::t_4deb9974960fac 15-17,31,47,64,97,99,105,117-119,122,127
+specs/010-backpack-texture-budget/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_0656f18f165861 1-15,17-26,28,30-33
+  s_e4f0fbd798a6d8::t_4deb9974960fac 16,27,29,34-35
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_c025f4b64dc7dd 2
+specs/009-sculpted-mesh-backpack-models/tasks.md
+  s_e4f0fbd798a6d8::t_aabae32256fe79 68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bea6ebf68da435e8dba9539dfb50520e28f3fb6a",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
