@@ -102,6 +102,9 @@ configurations {
 // `runClient` / `runServer -PcompatRuntime` without needing a nested Gradle invocation.
 def compatRequested = findProperty('compatRuntime') != null
         || gradle.startParameter.taskNames.any { it.toLowerCase().endsWith('compat') }
+// 010: 同理，`runClientShader` / `-PshaderRuntime` 才会把 Iris + Sodium 放进开发运行时，用来查看 _n 法线贴图在光影包下的效果。
+def shaderRequested = findProperty('shaderRuntime') != null
+        || gradle.startParameter.taskNames.any { it.toLowerCase().endsWith('shader') }
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
@@ -122,6 +125,13 @@ dependencies {
         localRuntime "curse.maven:travelers-backpack-321117:9297032"
     }
 
+    // 010: 开发期光影包支持（仅 dev 运行时，不会进入发布 jar）。Iris 1.8.12 声明依赖的正是 Sodium 0.6.13。
+    // 启用：./gradlew runClientShader（或 -PshaderRuntime）；光影包放在 run/shaderpacks/，见 design/demo/tools/fetch_shaderpack.sh。
+    if (shaderRequested) {
+        localRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
+        localRuntime "maven.modrinth:iris:1.8.12+1.21.1-neoforge"
+    }
+
     // JEI for creative/debug item browsing in runClient only (not a published dependency).
     // Disable with: ./gradlew runClient -PnoJei
     // Must stay >= 19.32.0.359: that's the minimum sophisticated-core (M4 compatRuntime, above)
@@ -134,6 +144,12 @@ dependencies {
 tasks.register('runClientCompat') {
     group = 'run'
     description = "Runs the client with Sophisticated Backpacks + Traveler's Backpack loaded, for M4 compat testing."
+    dependsOn tasks.named('runClient')
+}
+
+tasks.register('runClientShader') {
+    group = 'run'
+    description = "Runs the client with Iris + Sodium loaded, for checking LabPBR normal maps under a shader pack."
     dependsOn tasks.named('runClient')
 }
 
