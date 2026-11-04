@@ -1,0 +1,107 @@
+specs/012-ctrl-transfer-to-open-container/quickstart.md
+  s_e4f0fbd798a6d8::t_612fb70d2fa276 67-94
+  s_e4f0fbd798a6d8::t_3eeb63985d4462 1-66
+specs/012-ctrl-transfer-to-open-container/spec.md
+  s_e4f0fbd798a6d8::t_551c56b06819b3 32,42,153-154
+  s_e4f0fbd798a6d8::t_f61539874755cb 1-6,8-19,21-31,33,37-41,43-109,130-142,144-152,155-165,173-190,194-201,206
+  s_e4f0fbd798a6d8::t_389c744ab1eea4 7
+  s_e4f0fbd798a6d8::t_badbd347806af3 20,34-36,110-129,143,166-172,191-193,202-205
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackQuickTransferPayload.java
+  s_e4f0fbd798a6d8::t_7eb56f7b64b0a4 16,18,92,140-175
+  s_e4f0fbd798a6d8::t_500462720457e5 176-177
+specs/012-ctrl-transfer-to-open-container/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_d785cd1ef59b72 37
+  s_e4f0fbd798a6d8::t_551c56b06819b3 1-36
+specs/011-ctrl-quick-transfer/contracts/quick-transfer.md
+  s_e4f0fbd798a6d8::t_c83da7c831442d 9
+  s_e4f0fbd798a6d8::t_00948bbb184acc 59-60
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferInput.java
+  s_e4f0fbd798a6d8::t_673103ac4d9661 3,20,23,27-30,44,53-56,59,65-66,69,75,83,90,121,136,140-143,145,151,156-167,169-172,177-179,182-205
+src/test/java/pnnh/mcfloatingbackpack/inventory/ContainerToBackpackTest.java
+  s_e4f0fbd798a6d8::t_c51b88bdbe26df 1-293
+src/main/java/pnnh/mcfloatingbackpack/inventory/OpenContainerDelivery.java
+  s_e4f0fbd798a6d8::t_220afb9da600cb 1-162
+specs/011-ctrl-quick-transfer/spec.md
+  s_e4f0fbd798a6d8::t_c83da7c831442d 29,147
+  s_e4f0fbd798a6d8::t_00948bbb184acc 144,146
+src/main/java/pnnh/mcfloatingbackpack/inventory/ContainerMenuAccess.java
+  s_e4f0fbd798a6d8::t_220afb9da600cb 1-61,122-126
+  s_e4f0fbd798a6d8::t_5e2a18f96abcda 62-121
+specs/012-ctrl-transfer-to-open-container/tasks.md
+  s_e4f0fbd798a6d8::t_00948bbb184acc 128-137,157
+  s_e4f0fbd798a6d8::t_f27ed49326dafc 48-55,68-73,88-92,139-147,149-156
+  s_e4f0fbd798a6d8::t_d500703622f305 9-10,86,119-127,138,148,158-160,175,183
+  s_e4f0fbd798a6d8::t_0abc5a70ce9c00 23,31-33,45-46,104,113-115,117-118
+  s_e4f0fbd798a6d8::t_1cac270afcaa01 1-8,11-22,24-30,34-44,47,56-67,74-85,87,93-103,105-112,116,161-174,176-182,184-222
+specs/011-ctrl-quick-transfer/data-model.md
+  s_e4f0fbd798a6d8::t_c83da7c831442d 17
+src/main/java/pnnh/mcfloatingbackpack/inventory/QuickTransferRequest.java
+  s_e4f0fbd798a6d8::t_7eb56f7b64b0a4 21-26
+  s_e4f0fbd798a6d8::t_5e2a18f96abcda 15-16,73-86,89
+  s_e4f0fbd798a6d8::t_9103a4d033569d 87-88,90-92
+specs/006-tiered-backpacks/DELIVERY.md
+  s_e4f0fbd798a6d8::t_00948bbb184acc 14
+specs/012-ctrl-transfer-to-open-container/data-model.md
+  s_e4f0fbd798a6d8::t_c83da7c831442d 10-11,19
+  s_e4f0fbd798a6d8::t_612fb70d2fa276 67-113
+  s_e4f0fbd798a6d8::t_3eeb63985d4462 1-9,12-18,20-66
+src/test/java/pnnh/mcfloatingbackpack/inventory/QuickTransferRequestTest.java
+  s_e4f0fbd798a6d8::t_c51b88bdbe26df 66-82
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_f61539874755cb 2
+src/test/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferRulesTest.java
+  s_e4f0fbd798a6d8::t_3d0b96a4f9ac49 10-11,13,15-19,23-24,26-27,35,43-56
+  s_e4f0fbd798a6d8::t_408091736c1309 57
+src/main/java/pnnh/mcfloatingbackpack/inventory/ContainerToBackpack.java
+  s_e4f0fbd798a6d8::t_5e2a18f96abcda 1-98
+specs/011-ctrl-quick-transfer/DELIVERY.md
+  s_e4f0fbd798a6d8::t_00948bbb184acc 70
+  s_e4f0fbd798a6d8::t_c83da7c831442d 71
+src/test/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferGestureTest.java
+  s_e4f0fbd798a6d8::t_3d0b96a4f9ac49 15-18,20,23-34,39-46,48,51,54,58,60,62,68-72,78-80,84,86-109,113,115-116,122,125-126
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_e4f0fbd798a6d8::t_16b98edb844208 23,48-51
+specs/012-ctrl-transfer-to-open-container/contracts/open-container-delivery.md
+  s_e4f0fbd798a6d8::t_612fb70d2fa276 45-85
+  s_e4f0fbd798a6d8::t_3eeb63985d4462 1-44
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTakeFromContainerPayload.java
+  s_e4f0fbd798a6d8::t_16b98edb844208 1-119
+specs/012-ctrl-transfer-to-open-container/research.md
+  s_e4f0fbd798a6d8::t_00948bbb184acc 105
+  s_e4f0fbd798a6d8::t_3eeb63985d4462 1-84
+  s_e4f0fbd798a6d8::t_612fb70d2fa276 85-104,106-144
+src/test/java/pnnh/mcfloatingbackpack/inventory/OpenContainerDeliveryTest.java
+  s_e4f0fbd798a6d8::t_9016acc2b20e5a 1-388
+specs/012-ctrl-transfer-to-open-container/DELIVERY.md
+  s_e4f0fbd798a6d8::t_00948bbb184acc 26-48
+  s_e4f0fbd798a6d8::t_f27ed49326dafc 49-56,76
+  s_e4f0fbd798a6d8::t_0abc5a70ce9c00 1-4,6-20,25,57-75
+  s_e4f0fbd798a6d8::t_d785cd1ef59b72 5,21-24
+specs/012-ctrl-transfer-to-open-container/plan.md
+  s_e4f0fbd798a6d8::t_0d73cc28af193d 1,3,5,9,11-15,18,26,28,30,32,34,36,38,40,42,44,54-65,72-81,87-97,100,130
+  s_e4f0fbd798a6d8::t_b09ddc3f2f0680 2,4,6-8,10,16,27,29,31,33,35,37,39,41,47,49-53,66-71,82-86,98-99,125-129
+  s_e4f0fbd798a6d8::t_612fb70d2fa276 17,19-25,43,45-46,48,101-124
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferGesture.java
+  s_e4f0fbd798a6d8::t_dd3589024cc839 9-10,13-16,21-24,27,33-35,49,57,62-65,67,71,74,76,81-83,94,97-98
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferRules.java
+  s_e4f0fbd798a6d8::t_dd3589024cc839 15-17,19-20,31-38
+  s_e4f0fbd798a6d8::t_2863e58f478206 39
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_00948bbb184acc 128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8dcd8a65a005b155120da951d279052d7746ade7",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
