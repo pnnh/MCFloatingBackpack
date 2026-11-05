@@ -1,5 +1,27 @@
 <!--
 Sync Impact Report
+- Version change: 2.0.0 -> 2.1.0 (MINOR: new principle VII)
+- Added principles:
+  - VII. Minimal Dependencies, Opt-Out Compatibility. Required dependencies are only
+    Minecraft 1.21.1 and NeoForge 21.1.251; every other mod is optional, compile-time-only
+    and dev-run-time-only; third-party types stay under compat/<modid>/; vanilla container
+    support is not configurable; every proactive interaction with another mod is controlled
+    by a mod-id -> level setting (FULL default / GENERIC / OFF); the dependency rules are
+    checked by an automated test. Codifies what the project already did (mods.toml, build.gradle,
+    the single JEI plugin) so a later change cannot break it unnoticed.
+- Modified principles: none (IV, the dev-only dependency bullet and II are consistent with VII;
+  the "mixins" question was raised but not decided, so VII says nothing about mixins)
+- Added sections: none
+- Removed sections: none
+- Templates reviewed, no change needed: .specify/templates/* (Constitution Check gates are read
+  from this file at plan time), AGENTS.md, CLAUDE.md
+- Follow-up TODOs:
+  - A feature (planned 020) implements the setting, its levels and the enforcement test.
+  - Whether to forbid mixins (unless justified in a plan) is undecided.
+  - What level OFF means for a mod that only decorates other screens (JEI) is to be defined by
+    the feature that introduces the setting.
+
+Previous report (1.1.0 -> 2.0.0):
 - Version change: 1.1.0 -> 2.0.0 (MAJOR: principle I is redefined, per the Governance
   rule "remove or redefine a principle")
 - Modified principles:
@@ -124,6 +146,44 @@ Rationale: a bundled texture inflated the shared atlas from 1024x1024 to
 4096x4096 and cost every player memory (specs 009 and 010). The effect was
 invisible to the feature's own screenshots and was found only from a game log.
 
+### VII. Minimal Dependencies, Opt-Out Compatibility
+
+The mod's only required dependencies are Minecraft 1.21.1 and NeoForge 21.1.251.
+Every other mod MUST be optional: declared `type="optional"` in
+`neoforge.mods.toml`, its API on the compile class path only (`compileOnly`), and
+present at run time only through the development-only mechanism under Additional
+Constraints. A feature MUST work with vanilla and NeoForge alone.
+
+Code that references another mod's types MUST live under `compat/<modid>/` and MUST
+be reached only through that mod's own discovery or registration point, so nothing
+outside `compat/` imports it. Behaviour that touches another mod's UI without
+referencing its types (for example working over any container screen) is not compat
+code, but it is still an interaction with that mod and falls under the setting below.
+
+Support for vanilla containers (the player inventory, chests, furnaces and the other
+vanilla menus) MUST NOT be configurable. Every proactive interaction with another mod
+MUST be controlled by a setting that maps that mod's id to a level; a mod that is not
+listed is at FULL:
+
+- FULL: the mod-specific adaptations and the generic interaction.
+- GENERIC: no mod-specific adaptation; only the generic interaction, as if the mod
+  were unknown.
+- OFF: no interaction; the panel does not open on that mod's UI. What OFF means for a
+  mod that only decorates other screens is defined by the specification of the
+  feature that introduces its adaptation.
+
+A feature that adds a mod-specific adaptation MUST state in its specification what
+each level changes. A decision that gates item movement and depends on this setting
+MUST be made on the server; a client-side setting only resolves client-side
+conflicts and is not a security boundary (principle II).
+
+The rules on required dependencies, `compat/<modid>/` and `neoforge.mods.toml` MUST
+be checked by an automated test, not by review alone.
+
+Rationale: the mod's value is that it sits beside the game's own UIs. Interactions with
+other mods cannot all be tested in advance, so the guarantee is a vanilla-only
+minimum plus an escape hatch for the player, not a promise of adapting to every mod.
+
 ## Additional Constraints
 
 - Minecraft 1.21.1, NeoForge 21.1.251, Java 21.
@@ -175,4 +235,4 @@ Amendments change this file and bump the version:
 - MINOR: add a principle or a constraint.
 - PATCH: wording that does not change a rule.
 
-**Version**: 2.0.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-05
+**Version**: 2.1.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-05
