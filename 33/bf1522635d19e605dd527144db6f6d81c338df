@@ -1,0 +1,165 @@
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelState.java
+  s_e4f0fbd798a6d8::t_8a45a3414a50c9 1-33
+specs/021-trash-can/plan.md
+  s_e4f0fbd798a6d8::t_a89836c98478b6 2,4,6-8,10,21,23,25,27,29,31,33,35,37,39,45,48-51,67-72,83-87,134-135,137-139
+  s_e4f0fbd798a6d8::t_d9162974dd244a 1,3,5,9,11-20,22,24,26,28,30,32,34,36,38,40-44,46-47,52-66,73-82,88-133,136,140
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelDragInput.java
+  s_e4f0fbd798a6d8::t_2964c989b60437 116-120
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_e4f0fbd798a6d8::t_1ed9b8ad99b248 28-29,123-131,194
+  s_e4f0fbd798a6d8::t_c0c310938d08a0 66-75
+  s_e4f0fbd798a6d8::t_c5d4a41dbbf20f 76-81
+specs/021-trash-can/research.md
+  s_e4f0fbd798a6d8::t_5b82f6a3523e56 1-112,114-130,132-162,164-167
+  s_e4f0fbd798a6d8::t_e503d2a37703f6 131,163
+  s_e4f0fbd798a6d8::t_eae5f1a191dbaa 113
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferInput.java
+  s_e4f0fbd798a6d8::t_ed1a14cfd0cf47 20,22,25,57-76,155-159,218,221,237-240
+design/demo/tools/make_trash_can_icon.py
+  s_e4f0fbd798a6d8::t_8dbc403111c36f 6-7
+  s_e4f0fbd798a6d8::t_50779b87a58479 1-5,8-84
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashRequest.java
+  s_e4f0fbd798a6d8::t_0eb800dbc707bf 1-62
+specs/021-trash-can/contracts/trash-network-storage.md
+  s_e4f0fbd798a6d8::t_d23b91718a36dc 1-66
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_e4f0fbd798a6d8::t_c0c310938d08a0 38-41,53
+src/test/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashDropTrackerTest.java
+  s_e4f0fbd798a6d8::t_201775be4ec1f2 1-77
+specs/014-panel-selection/spec.md
+  s_e4f0fbd798a6d8::t_9869c310966d83 13-14
+src/test/java/pnnh/mcfloatingbackpack/inventory/ToolAreaCapacityTest.java
+  s_e4f0fbd798a6d8::t_33f7847db4bd2b 125-126,128
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_e4f0fbd798a6d8::t_c5d4a41dbbf20f 26,124-125,130-137
+specs/013-panel-drag-split-gather/spec.md
+  s_e4f0fbd798a6d8::t_9869c310966d83 13-14
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashBin.java
+  s_e4f0fbd798a6d8::t_0eb800dbc707bf 1-102
+src/main/resources/data/mcfloatingbackpack/recipe/trash_can.json
+  s_e4f0fbd798a6d8::t_14f381c0632bdc 1-21
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashDropTracker.java
+  s_e4f0fbd798a6d8::t_201775be4ec1f2 1-38
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_e4f0fbd798a6d8::t_adb5797bcde72b 38-39,100,113,137,258-262,411-414
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_e4f0fbd798a6d8::t_8e74ebe7e45213 16-17,89-92,122-130
+  s_e4f0fbd798a6d8::t_2964c989b60437 43,52,55-58,187-191
+  s_e4f0fbd798a6d8::t_5f84299ad15784 7-8,21,139-143,192,231-256
+  s_e4f0fbd798a6d8::t_aa7c70f7901af2 193,257-258
+specs/021-trash-can/data-model.md
+  s_e4f0fbd798a6d8::t_e8555befdce165 1-124
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TrashBinTest.java
+  s_e4f0fbd798a6d8::t_0eb800dbc707bf 1-242
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashContentsPayload.java
+  s_e4f0fbd798a6d8::t_df2e14a0ae29c2 1-33
+specs/021-trash-can/DELIVERY.md
+  s_e4f0fbd798a6d8::t_a66f570f92591e 1-4,6-16
+  s_e4f0fbd798a6d8::t_1d3cad19f18d44 5
+  s_e4f0fbd798a6d8::t_4268e64c2bf165 46-64,68-77
+  s_e4f0fbd798a6d8::t_201775be4ec1f2 17-28
+  s_e4f0fbd798a6d8::t_9447268a1ec54d 29-45
+  s_e4f0fbd798a6d8::t_5b6c4ae6bcbab8 65-67
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_9869c310966d83 128
+specs/018-tag-manager/spec.md
+  s_e4f0fbd798a6d8::t_9869c310966d83 13-14
+src/test/java/pnnh/mcfloatingbackpack/resources/TrashCanResourcesTest.java
+  s_e4f0fbd798a6d8::t_89c622760036fc 38-41
+  s_e4f0fbd798a6d8::t_14f381c0632bdc 1-37,42-85
+src/test/java/pnnh/mcfloatingbackpack/inventory/ToolAreaRulesTest.java
+  s_e4f0fbd798a6d8::t_485b8a3dcfb817 1-76
+specs/021-trash-can/contracts/trash-panel-ui.md
+  s_e4f0fbd798a6d8::t_14967f70d71dbe 1-63
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelInput.java
+  s_e4f0fbd798a6d8::t_8e74ebe7e45213 1-2,8-9,11,14,21-22,26-28,31-42,48-49,55-60,128-129
+  s_e4f0fbd798a6d8::t_2964c989b60437 3-7,10,12-13,15,17-20,23-25,29-30,43-47,50-54,61-71,80-127
+  s_e4f0fbd798a6d8::t_ed1a14cfd0cf47 16,72-79
+src/main/java/pnnh/mcfloatingbackpack/compat/jei/FloatingBackpackJeiPlugin.java
+  s_e4f0fbd798a6d8::t_adb5797bcde72b 18-20,53-59
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferGesture.java
+  s_e4f0fbd798a6d8::t_fb9fd345567061 14-15,24-25,30-31,65-71,102
+src/main/java/pnnh/mcfloatingbackpack/inventory/ToolAreaRules.java
+  s_e4f0fbd798a6d8::t_fb9fd345567061 3-5,7-9,12-14,18-48
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashPayload.java
+  s_e4f0fbd798a6d8::t_c5d4a41dbbf20f 3-4,91-92,98-101,153-177,179-185,189-209,211
+  s_e4f0fbd798a6d8::t_df2e14a0ae29c2 1-2,5-90,93-97,102-152,178,186-188,210,212-238
+specs/021-trash-can/quickstart.md
+  s_e4f0fbd798a6d8::t_d44b521086b7e9 1-103
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackContents.java
+  s_e4f0fbd798a6d8::t_1ed9b8ad99b248 15,21-22,24-25,40-43,56-57,61,64,66,71,82-87,90,92,100-105,116-121,125,129
+src/test/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelLayoutTest.java
+  s_e4f0fbd798a6d8::t_8a45a3414a50c9 1-100
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_e4f0fbd798a6d8::t_14f381c0632bdc 43-48
+src/main/java/pnnh/mcfloatingbackpack/item/TrashCanItem.java
+  s_e4f0fbd798a6d8::t_c0c310938d08a0 1-15
+specs/021-trash-can/tasks.md
+  s_e4f0fbd798a6d8::t_201775be4ec1f2 50-60
+  s_e4f0fbd798a6d8::t_5b6c4ae6bcbab8 97-98,115-116,132-133
+  s_e4f0fbd798a6d8::t_485b8a3dcfb817 62,82
+  s_e4f0fbd798a6d8::t_cdd6c1247b9f25 1-22,24-30,36,39-49,61,63-73,81,83-93,99-109,117-127,134-144,146-151,156-218
+  s_e4f0fbd798a6d8::t_9447268a1ec54d 74-80
+  s_e4f0fbd798a6d8::t_4268e64c2bf165 94-96,110-114,128-131,145,152-155
+  s_e4f0fbd798a6d8::t_a66f570f92591e 23,31-35,37-38
+specs/016-panel-tool-areas/spec.md
+  s_e4f0fbd798a6d8::t_9869c310966d83 15-16
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ConsumedPressTracker.java
+  s_e4f0fbd798a6d8::t_2964c989b60437 28-32
+specs/021-trash-can/spec.md
+  s_e4f0fbd798a6d8::t_337d883fde6041 1-24,26-175,177-229,231-248,250-284,286,288-289
+  s_e4f0fbd798a6d8::t_89895497fafb30 285
+  s_e4f0fbd798a6d8::t_e503d2a37703f6 25,176,230,249,287
+src/main/java/pnnh/mcfloatingbackpack/inventory/recipe/BackpackUpgradeRecipe.java
+  s_e4f0fbd798a6d8::t_1ed9b8ad99b248 58
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_e4f0fbd798a6d8::t_8e74ebe7e45213 17-18,55,98-101,160,218,237
+  s_e4f0fbd798a6d8::t_2964c989b60437 151
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashContents.java
+  s_e4f0fbd798a6d8::t_e83118efd46bf6 1-55
+specs/021-trash-can/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_f70d3492605b1a 1-39
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_e4f0fbd798a6d8::t_df2e14a0ae29c2 24,41-44,69-72,88-94
+src/main/resources/assets/mcfloatingbackpack/models/item/trash_can.json
+  s_e4f0fbd798a6d8::t_14f381c0632bdc 1-6
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelRenderer.java
+  s_e4f0fbd798a6d8::t_8e74ebe7e45213 1-64
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_e4f0fbd798a6d8::t_1ed9b8ad99b248 10,26,103,114-122,156,176
+  s_e4f0fbd798a6d8::t_c0c310938d08a0 13,92-102
+  s_e4f0fbd798a6d8::t_c5d4a41dbbf20f 78-82
+  s_e4f0fbd798a6d8::t_a833e2161b0801 104
+src/test/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelStateTest.java
+  s_e4f0fbd798a6d8::t_8a45a3414a50c9 1-32
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_e4f0fbd798a6d8::t_14f381c0632bdc 43-48
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelLayout.java
+  s_e4f0fbd798a6d8::t_8a45a3414a50c9 1-71
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TrashRequestTest.java
+  s_e4f0fbd798a6d8::t_0eb800dbc707bf 1-60
+src/test/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferGestureTest.java
+  s_e4f0fbd798a6d8::t_485b8a3dcfb817 128-148,151-157,159-183
+  s_e4f0fbd798a6d8::t_6421137efca5ef 149-150,158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "33bf1522635d19e605dd527144db6f6d81c338df",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
