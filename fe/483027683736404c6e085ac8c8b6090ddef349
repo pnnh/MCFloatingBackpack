@@ -1,0 +1,129 @@
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_638feca08e742a 2
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackSessionPayload.java
+  s_e4f0fbd798a6d8::t_da6d0d0801be7f 17
+  s_e4f0fbd798a6d8::t_49645a9d5a71c3 80,91
+specs/019-fallback-host-screen/data-model.md
+  s_e4f0fbd798a6d8::t_9a95a04578c999 35
+  s_e4f0fbd798a6d8::t_e3d6a26bf7211e 56
+  s_e4f0fbd798a6d8::t_e7934ff822f407 1-34,36-55,57-82
+specs/019-fallback-host-screen/quickstart.md
+  s_e4f0fbd798a6d8::t_b48a140083fe96 23-27,32-33
+  s_e4f0fbd798a6d8::t_663f9dc0649c38 28-29
+  s_e4f0fbd798a6d8::t_da7ecd2e0c7dfd 1-22,34-48,50-78,80-82
+  s_e4f0fbd798a6d8::t_7d81e57c3f01bc 49
+  s_e4f0fbd798a6d8::t_9e28ef76b637eb 30-31,79
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 128
+specs/018-tag-manager/plan.md
+  s_e4f0fbd798a6d8::t_ad0c5e4da108a4 7-8
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferInput.java
+  s_e4f0fbd798a6d8::t_223e2dc814037c 35
+specs/016-panel-tool-areas/spec.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 11-12
+src/test/java/pnnh/mcfloatingbackpack/client/panel/HostKeyRouterTest.java
+  s_e4f0fbd798a6d8::t_9c986686a32c49 1-64
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_e4f0fbd798a6d8::t_318e1a2fd0c9cb 11,17,28,30,41-42,56-57,59-60,63-65,93,139-140,153,156-157,169-175,193-194,205-206,323,348,368,379
+  s_e4f0fbd798a6d8::t_eb0dcb4d5da40b 113-122,124-133,231-239
+  s_e4f0fbd798a6d8::t_551dfe1f9a2ddc 176-182,184,187,192
+  s_e4f0fbd798a6d8::t_04bdc0255fe5ae 123,195-204
+  s_e4f0fbd798a6d8::t_1c5e2a004b902c 144-147,207
+specs/011-ctrl-quick-transfer/spec.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 11-12
+specs/019-fallback-host-screen/tasks.md
+  s_e4f0fbd798a6d8::t_9a95a04578c999 73-74
+  s_e4f0fbd798a6d8::t_c9c9d941e1e5b1 1-21,23-29,35-45,55-65,75-85,91-101,104,106-117,119-125,128,130,134,137-196
+  s_e4f0fbd798a6d8::t_fbb0d3b6a1461b 22,30-34
+  s_e4f0fbd798a6d8::t_feeef24ccd79a9 46-52,66-67,69-70,86-88,102-103,105,118,126-127,129,131-133,135-136
+  s_e4f0fbd798a6d8::t_06f791f21db6e4 53-54,71-72,89-90
+  s_e4f0fbd798a6d8::t_663f9dc0649c38 68
+specs/013-panel-drag-split-gather/quickstart.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 3-4
+specs/018-tag-manager/spec.md
+  s_e4f0fbd798a6d8::t_ad0c5e4da108a4 11-12
+specs/019-fallback-host-screen/DELIVERY.md
+  s_e4f0fbd798a6d8::t_b48a140083fe96 39-62,129
+  s_e4f0fbd798a6d8::t_9a95a04578c999 87-106,126
+  s_e4f0fbd798a6d8::t_9e28ef76b637eb 18,107-125
+  s_e4f0fbd798a6d8::t_6bbb88ea1dd31f 63-86
+  s_e4f0fbd798a6d8::t_3fc29059ee91a6 1-4,6-17,19-38,127-128,130-153
+  s_e4f0fbd798a6d8::t_06f791f21db6e4 5
+specs/014-panel-selection/quickstart.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 3-4
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelHostScreen.java
+  s_e4f0fbd798a6d8::t_aa63ea272fd9e2 33,35-36,70,72-73,83,101,107-114,117-119,122,126,132-135,137-138,144
+  s_e4f0fbd798a6d8::t_223a6d658bcd32 152-158,161-162,164-169,171-172
+  s_e4f0fbd798a6d8::t_dc34c7bd09239b 150-151,159
+  s_e4f0fbd798a6d8::t_1b5a53a9119f88 1-15,17-28,40-63,76-77,79-82,88-98,139-143,147-149,170,181-184
+  s_e4f0fbd798a6d8::t_04bdc0255fe5ae 16,127-131
+  s_e4f0fbd798a6d8::t_1c5e2a004b902c 29-32,34,37-39,64-69,71,74-75,78,84-87,99-100,102-106,115-116,120-121,123-125,136,145-146,160,163,173-180
+specs/019-fallback-host-screen/contracts/host-screen-lifecycle.md
+  s_e4f0fbd798a6d8::t_bcf6d78560b166 1-18,20-35,37-50,52-53
+  s_e4f0fbd798a6d8::t_e3d6a26bf7211e 19
+  s_e4f0fbd798a6d8::t_6bbb88ea1dd31f 51
+  s_e4f0fbd798a6d8::t_9e28ef76b637eb 36
+specs/019-fallback-host-screen/spec.md
+  s_e4f0fbd798a6d8::t_bf94bd5eb520a8 1-202
+specs/011-ctrl-quick-transfer/quickstart.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 3-4
+specs/012-ctrl-transfer-to-open-container/spec.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 11-12
+specs/012-ctrl-transfer-to-open-container/quickstart.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 3-4
+src/main/java/pnnh/mcfloatingbackpack/client/panel/HostKeyRouter.java
+  s_e4f0fbd798a6d8::t_640eb75df28851 1-50
+specs/013-panel-drag-split-gather/spec.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 11-12
+specs/014-panel-selection/spec.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 11-12
+specs/016-panel-tool-areas/quickstart.md
+  s_e4f0fbd798a6d8::t_ce1c601defb385 3-4
+src/main/java/pnnh/mcfloatingbackpack/item/FloatingBackpackItem.java
+  s_e4f0fbd798a6d8::t_aa63ea272fd9e2 54-64
+src/main/java/pnnh/mcfloatingbackpack/client/ClientBackpackActions.java
+  s_e4f0fbd798a6d8::t_da6d0d0801be7f 7
+  s_e4f0fbd798a6d8::t_49645a9d5a71c3 28
+specs/019-fallback-host-screen/plan.md
+  s_e4f0fbd798a6d8::t_62ef1a5f85ec6b 2,4,6-8,10,19,23,25,27,29,31,33,35,37,43,45-49,51,68-72,83-87,108-109,111-115
+  s_e4f0fbd798a6d8::t_6bbb88ea1dd31f 13
+  s_e4f0fbd798a6d8::t_a5b218ac842b14 1,3,5,9,11-12,14-16,18,20-22,24,26,28,30,32,34,36,38-42,44,50,52-67,73-82,88-107,110,116
+  s_e4f0fbd798a6d8::t_9e28ef76b637eb 17
+specs/019-fallback-host-screen/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_5df951688a936c 1-38
+src/test/java/pnnh/mcfloatingbackpack/client/panel/HostScreenPolicyTest.java
+  s_e4f0fbd798a6d8::t_b9ff106eba3d1f 1-72
+src/main/java/pnnh/mcfloatingbackpack/client/panel/HostScreenManager.java
+  s_e4f0fbd798a6d8::t_dc34c7bd09239b 38-40,53,81,96-102
+  s_e4f0fbd798a6d8::t_9e7d90f655dd1c 1-2,8-12,14-26,41,82-93,114-128
+  s_e4f0fbd798a6d8::t_551dfe1f9a2ddc 44-48
+  s_e4f0fbd798a6d8::t_1c5e2a004b902c 3-7,29,37,42-43,50,54-56,60,66-67,74
+  s_e4f0fbd798a6d8::t_04bdc0255fe5ae 13,27-28,30-36,49,51-52,57-59,61-65,68-73,75-80,94-95,103-113
+src/main/java/pnnh/mcfloatingbackpack/client/panel/HostScreenPolicy.java
+  s_e4f0fbd798a6d8::t_db6ddc16594b8e 1-44
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelDragInput.java
+  s_e4f0fbd798a6d8::t_223e2dc814037c 35
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelSelectionInput.java
+  s_e4f0fbd798a6d8::t_223e2dc814037c 28
+specs/019-fallback-host-screen/research.md
+  s_e4f0fbd798a6d8::t_e3d6a26bf7211e 32,34-35,59-60
+  s_e4f0fbd798a6d8::t_a8580abaa5edb5 1-31,33,36-57,62-64,67-131
+  s_e4f0fbd798a6d8::t_6bbb88ea1dd31f 61
+  s_e4f0fbd798a6d8::t_9e28ef76b637eb 58,65-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fe483027683736404c6e085ac8c8b6090ddef349",
+  "prompts": {},
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
