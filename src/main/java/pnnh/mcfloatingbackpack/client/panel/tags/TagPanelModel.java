@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 
 import pnnh.mcfloatingbackpack.inventory.tags.TagBook;
+import pnnh.mcfloatingbackpack.inventory.trash.TagProtection;
 
 /**
  * 018: what the tag panel shows for the current selection. The selected slots are turned into item categories (the same
@@ -23,14 +25,21 @@ public final class TagPanelModel<K> {
     private final List<K> categories;
     private final List<String> commonTags;
     private final List<K> fullItems;
+    private final List<K> protectedItems;
     private final boolean canAdd;
 
     private TagPanelModel(
-            Status status, List<K> categories, List<String> commonTags, List<K> fullItems, boolean canAdd) {
+            Status status,
+            List<K> categories,
+            List<String> commonTags,
+            List<K> fullItems,
+            List<K> protectedItems,
+            boolean canAdd) {
         this.status = status;
         this.categories = categories;
         this.commonTags = commonTags;
         this.fullItems = fullItems;
+        this.protectedItems = protectedItems;
         this.canAdd = canAdd;
     }
 
@@ -41,6 +50,18 @@ public final class TagPanelModel<K> {
      */
     public static <K> TagPanelModel<K> of(
             Collection<Integer> selected, IntFunction<K> categoryAt, TagBook<K> book, boolean hasTool) {
+        return of(selected, categoryAt, book, hasTool, category -> false);
+    }
+
+    /**
+     * @param isProtected whether a category is on the protection list (022): such a category may not get the trash tag
+     */
+    public static <K> TagPanelModel<K> of(
+            Collection<Integer> selected,
+            IntFunction<K> categoryAt,
+            TagBook<K> book,
+            boolean hasTool,
+            Predicate<K> isProtected) {
         List<K> categories = new ArrayList<>();
         for (int slot : selected) {
             K category = categoryAt.apply(slot);
@@ -49,10 +70,11 @@ public final class TagPanelModel<K> {
             }
         }
         if (categories.isEmpty()) {
-            return new TagPanelModel<>(Status.NO_ITEMS, categories, List.of(), List.of(), false);
+            return new TagPanelModel<>(Status.NO_ITEMS, categories, List.of(), List.of(), List.of(), false);
         }
         List<K> full = book.full(categories);
-        return new TagPanelModel<>(Status.ITEMS, categories, book.common(categories), full, hasTool && full.isEmpty());
+        List<K> guarded = categories.stream().filter(isProtected).toList();
+        return new TagPanelModel<>(Status.ITEMS, categories, book.common(categories), full, guarded, hasTool && full.isEmpty());
     }
 
     public Status status() {
@@ -72,6 +94,16 @@ public final class TagPanelModel<K> {
     /** The selected categories that already carry the most tags allowed. */
     public List<K> fullItems() {
         return fullItems;
+    }
+
+    /** The selected categories on the protection list (022), in selection order. */
+    public List<K> protectedItems() {
+        return protectedItems;
+    }
+
+    /** Whether adding this tag to the selection is refused because a protected item is in it: only the trash tag is. */
+    public boolean blocks(String tag) {
+        return TagProtection.blocks(tag, protectedItems.size());
     }
 
     public boolean canAdd() {

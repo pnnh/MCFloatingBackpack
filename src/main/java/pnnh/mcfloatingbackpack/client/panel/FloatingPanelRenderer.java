@@ -14,6 +14,8 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmRenderer;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
@@ -98,6 +100,10 @@ public final class FloatingPanelRenderer {
         // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
         if (TrashPanelState.get().isOpen()) {
             TrashPanelRenderer.render(graphics, mouseX, mouseY);
+        }
+        // 022: a question waiting for the player's yes or no covers the whole panel.
+        if (TrashConfirmState.get().isPending()) {
+            TrashConfirmRenderer.render(graphics, mouseX, mouseY);
         }
 
         ItemStack cursor = cursorStack(minecraft);

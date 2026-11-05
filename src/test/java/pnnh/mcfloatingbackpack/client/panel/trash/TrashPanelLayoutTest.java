@@ -97,4 +97,46 @@ class TrashPanelLayoutTest {
             assertTrue(layout.rect().x() >= 40 + width);
         }
     }
+
+    @Test
+    void theIconsSitAtTheRightEndOfTheTitleBarDumpLeftOfDelete() {
+        TrashPanelLayout layout = layoutAt(20, 30, 200);
+        Rect title = layout.titleRect();
+        Rect dump = layout.iconRect(TrashPanelLayout.Icon.DUMP);
+        Rect delete = layout.iconRect(TrashPanelLayout.Icon.DELETE);
+        assertEquals(TrashPanelLayout.ICON, dump.w());
+        assertEquals(TrashPanelLayout.ICON, delete.h());
+        assertEquals(title.x() + title.w() - TrashPanelLayout.ICON_PAD, delete.x() + delete.w());
+        assertEquals(delete.x() - TrashPanelLayout.ICON_GAP, dump.x() + dump.w());
+        assertEquals(dump.y(), delete.y());
+        for (Rect icon : new Rect[] {dump, delete}) {
+            assertTrue(icon.x() >= title.x() && icon.x() + icon.w() <= title.x() + title.w());
+            assertTrue(icon.y() >= title.y() && icon.y() + icon.h() <= title.y() + title.h());
+        }
+        assertTrue(dump.x() + dump.w() <= delete.x());
+    }
+
+    @Test
+    void iconAtFindsEachIconAndNothingElse() {
+        TrashPanelLayout layout = layoutAt(10, 10, 150);
+        Rect dump = layout.iconRect(TrashPanelLayout.Icon.DUMP);
+        Rect delete = layout.iconRect(TrashPanelLayout.Icon.DELETE);
+        assertEquals(TrashPanelLayout.Icon.DUMP, layout.iconAt(dump.x(), dump.y()));
+        assertEquals(TrashPanelLayout.Icon.DUMP, layout.iconAt(dump.x() + dump.w() - 1, dump.y() + dump.h() - 1));
+        assertEquals(TrashPanelLayout.Icon.DELETE, layout.iconAt(delete.x() + 4, delete.y() + 4));
+        Rect title = layout.titleRect();
+        org.junit.jupiter.api.Assertions.assertNull(layout.iconAt(title.x() + 3, title.y() + 3));
+        org.junit.jupiter.api.Assertions.assertNull(layout.iconAt(dump.x() + dump.w(), dump.y() + 2)); // the gap
+        org.junit.jupiter.api.Assertions.assertNull(layout.iconAt(delete.x() + 4, title.y() + title.h() + 2)); // below the bar
+    }
+
+    @Test
+    void theTitleTextHasRoomAndStaysClearOfTheIcons() {
+        TrashPanelLayout layout = layoutAt(0, 0, 100);
+        Rect title = layout.titleRect();
+        Rect dump = layout.iconRect(TrashPanelLayout.Icon.DUMP);
+        int textStart = title.x() + TrashPanelLayout.PAD + 1;
+        assertTrue(layout.titleTextWidth() > 0);
+        assertTrue(textStart + layout.titleTextWidth() < dump.x());
+    }
 }

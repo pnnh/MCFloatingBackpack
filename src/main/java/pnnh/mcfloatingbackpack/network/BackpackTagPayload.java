@@ -22,6 +22,8 @@ import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
 import pnnh.mcfloatingbackpack.inventory.tags.TagBook;
 import pnnh.mcfloatingbackpack.inventory.tags.TagRequest;
 import pnnh.mcfloatingbackpack.inventory.tags.TagRequest.Op;
+import pnnh.mcfloatingbackpack.inventory.trash.TagProtection;
+import pnnh.mcfloatingbackpack.item.ModTags;
 import pnnh.mcfloatingbackpack.inventory.tags.TagRules;
 import pnnh.mcfloatingbackpack.item.ModItems;
 
@@ -88,6 +90,12 @@ public record BackpackTagPayload(byte op, int[] slots, String tag) implements Cu
             if (categories.isEmpty()) {
                 return;
             }
+            // 022: the trash tag may not be put on a protected item; the whole request is refused and the client is
+            // told what the tags really are.
+            if (op == Op.ADD && TagProtection.blocks(payload.tag(), protectedCategories(backpack, payload.slots()))) {
+                PacketDistributor.sendToPlayer(player, new BackpackTagsPayload(backpack.tags()));
+                return;
+            }
             TagBook<ResourceLocation> book = backpack.tags().toBook();
             TagBook<ResourceLocation> next =
                     op == Op.ADD ? book.addOrNull(categories, payload.tag()) : book.remove(categories, payload.tag());
@@ -107,6 +115,22 @@ public record BackpackTagPayload(byte op, int[] slots, String tag) implements Cu
             }
         }
         return false;
+    }
+
+    /** How many distinct item categories in the named main slots are on the protection list. */
+    private static int protectedCategories(BackpackInventory backpack, int[] slots) {
+        List<ResourceLocation> seen = new ArrayList<>();
+        for (int slot : slots) {
+            ItemStack stack = backpack.getStackInSlot(slot);
+            if (stack.isEmpty() || !stack.is(ModTags.NEVER_TRASH)) {
+                continue;
+            }
+            ResourceLocation id = BuiltInRegistries.ITEM.getKey(stack.getItem());
+            if (!seen.contains(id)) {
+                seen.add(id);
+            }
+        }
+        return seen.size();
     }
 
     /** The distinct item categories in the named main slots; empty slots are skipped. */

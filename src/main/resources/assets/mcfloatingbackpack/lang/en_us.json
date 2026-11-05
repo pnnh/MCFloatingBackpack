@@ -42,8 +42,20 @@
   "message.mcfloatingbackpack.config.file": "The config file had a syntax or format error: it was backed up as %s and the defaults were restored. Edit it while the game is closed, or use the in-game config screen",
   "message.mcfloatingbackpack.config.more": "... and %s more config problems, see the log",
   "item.mcfloatingbackpack.trash_can": "Trash Can",
-  "trash.mcfloatingbackpack.title": "Trash Can",
+  "trash.mcfloatingbackpack.title": "Trash",
   "message.mcfloatingbackpack.limit.trash_can": "Only one Trash Can fits in this area",
   "message.mcfloatingbackpack.limit.tag_manager": "Only one Tag Manager fits in this area",
-  "message.mcfloatingbackpack.trash.too_large": "This item carries too much data to fit in the Trash Can"
+  "message.mcfloatingbackpack.trash.too_large": "This item carries too much data to fit in the Trash Can",
+  "key.mcfloatingbackpack.delete_to_trash": "Delete to Trash Can",
+  "trash.mcfloatingbackpack.icon.dump": "Dump trash",
+  "trash.mcfloatingbackpack.dump.tooltip": "Move the items in the main area whose category is tagged as trash into the Trash Can. Protected items and items with extra data (enchantments, names, contents...) are skipped.",
+  "trash.mcfloatingbackpack.icon.delete": "Delete selected",
+  "trash.mcfloatingbackpack.delete.tooltip.disabled": "Hold Shift and select items in the main area first, then click here to delete them",
+  "trash.mcfloatingbackpack.delete.tooltip.enabled": "Delete the selected items (you can take them back from the Trash Can)",
+  "trash.mcfloatingbackpack.confirm.text": "%s groups of items will be destroyed for good. Continue?",
+  "trash.mcfloatingbackpack.confirm.yes": "OK",
+  "trash.mcfloatingbackpack.confirm.no": "Cancel",
+  "message.mcfloatingbackpack.trash.nothing_to_dump": "Nothing to dump (protected items and items with extra data are skipped)",
+  "message.mcfloatingbackpack.trash.changed": "The backpack changed, the action was cancelled. Please try again",
+  "tag.mcfloatingbackpack.protected": "These items cannot be marked as trash: %s"
 }

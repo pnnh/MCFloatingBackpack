@@ -13,6 +13,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
@@ -76,6 +77,10 @@ public final class FloatingPanelInput {
     private static boolean dispatchMouseButton(int button, int action, double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
         boolean isRight = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+        // 022: while a confirmation dialog is up every press, of any button, anywhere, goes to it first.
+        if (state.isVisible() && action == GLFW.GLFW_PRESS && TrashConfirmInput.onPress(button, mouseX, mouseY)) {
+            return true;
+        }
         if (!state.isVisible() || (button != GLFW.GLFW_MOUSE_BUTTON_LEFT && !isRight)) {
             return false;
         }

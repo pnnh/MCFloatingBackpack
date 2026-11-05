@@ -3,6 +3,8 @@ package pnnh.mcfloatingbackpack.client;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -23,6 +25,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
+import pnnh.mcfloatingbackpack.client.panel.DeleteKeyInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
@@ -35,6 +38,8 @@ import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.AttachNotice;
@@ -98,6 +103,7 @@ public final class FloatingPanelEvents {
         }
         state.setVisible(false);
         TrashPanelState.get().collapse();
+        TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.close());
         HostScreenManager.ensure();
@@ -111,6 +117,7 @@ public final class FloatingPanelEvents {
         PanelSelectionInput.reset();
         TagPanelState.get().reset();
         TrashPanelState.get().reset();
+        TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
@@ -135,6 +142,7 @@ public final class FloatingPanelEvents {
         HostScreenManager.reset();
         TagPanelState.get().reset();
         TrashPanelState.get().reset();
+        TrashConfirmState.get().cancel();
         QuickTransferInput.reset();
         PanelDragInput.reset();
         PanelSelectionInput.reset();
@@ -254,6 +262,11 @@ public final class FloatingPanelEvents {
         if (TagPanelState.get().isOpen()
                 && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTagManager())) {
             TagPanelState.get().collapse();
+        }
+        // 022: a question needs the panel, the trash can and the screen it was asked on.
+        if (TrashConfirmState.get().shouldDiscard(
+                FloatingPanelState.get().isVisible(), ClientBackpackView.get().hasTrashCan(), minecraft.screen)) {
+            TrashConfirmState.get().cancel();
         }
         // 021: the trash can panel needs a trash can in the right area (anywhere in its whole list) and an open panel.
         if (TrashPanelState.get().isOpen()
@@ -375,8 +388,34 @@ public final class FloatingPanelEvents {
     // focus nothing is cancelled.
     @SubscribeEvent
     public static void onScreenKeyPressed(ScreenEvent.KeyPressed.Pre event) {
+        // 022: with the confirmation dialog up ESC only withdraws the question. Cancelling the event means neither the
+        // host screen (which would close the panel) nor a container screen (which would close itself) ever sees it.
+        if (hostsPanel(event.getScreen())
+                && event.getKeyCode() == GLFW.GLFW_KEY_ESCAPE
+                && TrashConfirmInput.onEscape()) {
+            event.setCanceled(true);
+            return;
+        }
         if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
             TagPanelInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+            event.setCanceled(true);
+        }
+    }
+
+    /**
+     * 022: the delete key. {@code Post} fires only for a key the screen did not handle, so a search box with the focus
+     * (JEI, the recipe book) has already taken a Backspace and it never gets here. The event is cancelled, which swallows
+     * the key, only when the key was used; otherwise nothing is touched.
+     */
+    @SubscribeEvent
+    public static void onScreenKeyPressedPost(ScreenEvent.KeyPressed.Post event) {
+        if (!hostsPanel(event.getScreen())
+                || !FloatingBackpackKeys.DELETE_TO_TRASH.isActiveAndMatches(
+                        InputConstants.getKey(event.getKeyCode(), event.getScanCode()))) {
+            return;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        if (DeleteKeyInput.onKey(event.getScreen(), guiMouseX(minecraft), guiMouseY(minecraft))) {
             event.setCanceled(true);
         }
     }
@@ -408,6 +447,10 @@ public final class FloatingPanelEvents {
 
     private static boolean scrollPanel(double scrollDeltaY, double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
+        // 022: with the confirmation dialog up the wheel does nothing anywhere, and is taken.
+        if (state.isVisible() && scrollDeltaY != 0 && TrashConfirmState.get().isPending()) {
+            return true;
+        }
         // 021: the wheel over the trash can panel (outside the floating panel's rectangle) does nothing, but is taken.
         if (state.isVisible() && scrollDeltaY != 0 && TrashPanelInput.covers(mouseX, mouseY)) {
             return true;
@@ -437,6 +480,11 @@ public final class FloatingPanelEvents {
         }
         if (FloatingPanelInput.onMouseButton(
                 event.getButton(), GLFW.GLFW_PRESS, event.getMouseX(), event.getMouseY())) {
+            // 022: a click that lands on the panel is a click away from whatever text box has the focus. The screen and
+            // the mods' widgets (JEI's search box, the recipe book's) learn of a click elsewhere from the very events
+            // that are cancelled here, so without this the box would keep the keyboard. This is the screen's own
+            // "click elsewhere" step and names no mod's type.
+            event.getScreen().clearFocus();
             event.setCanceled(true);
             return;
         }

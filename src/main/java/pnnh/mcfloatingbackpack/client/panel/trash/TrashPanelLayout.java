@@ -17,6 +17,17 @@ public final class TrashPanelLayout {
     public static final int COLS = 3;
     public static final int ROWS = 3;
     public static final int CELLS = COLS * ROWS;
+    /** The two icons at the right end of the title bar (022). */
+    public static final int ICON = 9;
+    public static final int ICON_GAP = 2;
+    public static final int ICON_PAD = 4;
+
+    public enum Icon {
+        /** Moves the trash-tagged stacks of the main area into the trash can. */
+        DUMP,
+        /** Moves the selected main-area stacks into the trash can. */
+        DELETE
+    }
 
     private final int x;
     private final int y;
@@ -46,6 +57,28 @@ public final class TrashPanelLayout {
 
     public Rect titleRect() {
         return new Rect(x, y, width(), TITLE_H);
+    }
+
+    /** An icon's rectangle in the title bar: delete at the right end, dump to its left. */
+    public Rect iconRect(Icon icon) {
+        int deleteX = x + width() - ICON_PAD - ICON;
+        int iconX = icon == Icon.DELETE ? deleteX : deleteX - ICON_GAP - ICON;
+        return new Rect(iconX, y + (TITLE_H - ICON) / 2, ICON, ICON);
+    }
+
+    /** The icon under the point, or null. */
+    public Icon iconAt(double px, double py) {
+        for (Icon icon : Icon.values()) {
+            if (iconRect(icon).contains(px, py)) {
+                return icon;
+            }
+        }
+        return null;
+    }
+
+    /** How wide the title text may be: it starts a little inside the bar and stops short of the dump icon. */
+    public int titleTextWidth() {
+        return iconRect(Icon.DUMP).x() - 2 - (x + PAD + 1);
     }
 
     /** Cell {@code i} (0..8), counted left to right, top to bottom. */

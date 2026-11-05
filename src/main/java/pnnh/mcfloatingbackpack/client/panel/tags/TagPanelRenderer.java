@@ -60,6 +60,7 @@ public final class TagPanelRenderer {
         graphics.disableScissor();
         drawStatus(graphics, font, area, model, layout);
         drawPlusTooltip(graphics, font, area, model, layout, mouseX, mouseY);
+        drawBlockedTooltip(graphics, font, area, model, layout, mouseX, mouseY);
         // A narrow panel cuts the status text off: hovering the row shows all of it.
         if (statusTruncated && layout.hit(mouseX - area.x(), mouseY - area.y()).kind() == TagPanelLayout.Kind.STATUS) {
             graphics.renderComponentTooltip(font, java.util.List.of(statusText), mouseX, mouseY);
@@ -131,7 +132,9 @@ public final class TagPanelRenderer {
                 box(graphics, ox, oy, row, i == state.dropdownIndex() || hovered ? COLOR_DROPDOWN_SELECTED : COLOR_DROPDOWN);
                 String id = offered.get(i);
                 String name = TagPanelContext.label(id);
-                graphics.drawString(font, name, ox + row.x() + 3, oy + row.y() + 3, COLOR_TEXT, false);
+                // 022: the trash preset is greyed out while a protected item is selected.
+                boolean blocked = model.blocks(id);
+                graphics.drawString(font, name, ox + row.x() + 3, oy + row.y() + 3, blocked ? COLOR_TEXT_DIM : COLOR_TEXT, false);
                 if (!name.equals(id)) {
                     // The stored tag is the id; show it when the displayed name is something else (other languages).
                     int idX = ox + row.x() + 3 + font.width(name) + 4;
@@ -145,6 +148,26 @@ public final class TagPanelRenderer {
             graphics.drawString(font, "+", ox + plus.x() + (plus.w() - font.width("+")) / 2, oy + plus.y() + 3,
                     model.canAdd() ? COLOR_TEXT : COLOR_TEXT_DIM, false);
         }
+    }
+
+    /** 022: over the greyed-out trash entry of the drop-down: which selected items are protected. */
+    private static void drawBlockedTooltip(
+            GuiGraphics graphics,
+            Font font,
+            PanelLayout.Rect area,
+            TagPanelModel<ResourceLocation> model,
+            TagPanelLayout layout,
+            int mouseX,
+            int mouseY) {
+        TagPanelLayout.Hit hit = layout.hit(mouseX - area.x(), mouseY - area.y());
+        if (hit.kind() != TagPanelLayout.Kind.DROPDOWN) {
+            return;
+        }
+        java.util.List<String> offered = TagPanelContext.dropdown();
+        if (hit.index() >= offered.size() || !model.blocks(offered.get(hit.index()))) {
+            return;
+        }
+        graphics.renderComponentTooltip(font, java.util.List.of(TagPanelContext.protectedMessage(model)), mouseX, mouseY);
     }
 
     /** Over a greyed-out plus: why it is grey, and which items are the reason. */

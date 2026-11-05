@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -16,6 +17,7 @@ import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
 import pnnh.mcfloatingbackpack.inventory.tags.PresetTags;
 import pnnh.mcfloatingbackpack.inventory.tags.TagMatcher;
+import pnnh.mcfloatingbackpack.item.ModTags;
 
 /**
  * 018: ties the pure tag-panel classes to the game: the model for the current selection, the label shown for a tag,
@@ -41,7 +43,22 @@ public final class TagPanelContext {
                 selected,
                 TagPanelContext::categoryAt,
                 ClientBackpackView.get().tags().toBook(),
-                ClientBackpackView.get().hasTagManager());
+                ClientBackpackView.get().hasTagManager(),
+                TagPanelContext::isProtected);
+    }
+
+    /** 022: whether the item category is on the protection list (it may not be marked as trash). */
+    static boolean isProtected(ResourceLocation id) {
+        return BuiltInRegistries.ITEM.get(id).getDefaultInstance().is(ModTags.NEVER_TRASH);
+    }
+
+    /** 022: "these items cannot be marked as trash: a, b" for the selected protected items. */
+    public static Component protectedMessage(TagPanelModel<ResourceLocation> model) {
+        List<Component> names = new ArrayList<>();
+        for (ResourceLocation id : model.protectedItems()) {
+            names.add(itemName(id));
+        }
+        return Component.translatable("tag.mcfloatingbackpack.protected", ComponentUtils.formatList(names, Component.literal(", ")));
     }
 
     /** What a tag is called on screen: a preset in the current language, a custom tag as typed. */

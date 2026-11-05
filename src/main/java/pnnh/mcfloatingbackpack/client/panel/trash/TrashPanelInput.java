@@ -71,7 +71,19 @@ public final class TrashPanelInput {
             send(TrashRequest.Action.ADD, new int[0], minecraft);
             return true;
         }
-        // Empty cursor: a group is taken onto the cursor, or with Ctrl moved (dragging on moves more) into the main area.
+        // Empty cursor. The two icons in the title bar (022) come first.
+        TrashPanelLayout.Icon icon = layout().iconAt(mouseX, mouseY);
+        if (icon == TrashPanelLayout.Icon.DUMP) {
+            TrashActions.dump();
+            return true;
+        }
+        if (icon == TrashPanelLayout.Icon.DELETE) {
+            if (TrashActions.deleteEnabled()) {
+                TrashActions.deleteSelection();
+            }
+            return true;
+        }
+        // Otherwise a group is taken onto the cursor, or with Ctrl moved (dragging on moves more) into the main area.
         int cell = layout().cellAt(mouseX, mouseY);
         if (Screen.hasControlDown()) {
             QuickTransferInput.beginFromTrash(cell, mouseX, mouseY);
@@ -88,6 +100,11 @@ public final class TrashPanelInput {
      * @return true if it was such a drop
      */
     public static boolean onRelease(int button, double mouseX, double mouseY) {
+        // A question is waiting (022): a drag that was under way when it came up is not a drop.
+        if (TrashConfirmState.get().isPending()) {
+            DROPS.clear();
+            return false;
+        }
         if (!DROPS.release(button, covers(mouseX, mouseY))) {
             return false;
         }

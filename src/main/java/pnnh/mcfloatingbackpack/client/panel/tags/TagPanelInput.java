@@ -12,6 +12,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.PanelLayout;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
@@ -139,7 +140,13 @@ public final class TagPanelInput {
         if (!TagRules.isValid(tag)) {
             return;
         }
-        if (!TagPanelContext.model().canAdd()) {
+        TagPanelModel<ResourceLocation> model = TagPanelContext.model();
+        if (model.blocks(tag)) {
+            // 022: a protected item is selected and this is the trash tag. Nothing is added; the box stays so another tag can be typed.
+            FloatingPanelEvents.chat(Minecraft.getInstance(), TagPanelContext.protectedMessage(model));
+            return;
+        }
+        if (!model.canAdd()) {
             state.stopEditing();
             return;
         }

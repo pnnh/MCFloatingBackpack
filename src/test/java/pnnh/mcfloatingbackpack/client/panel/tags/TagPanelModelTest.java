@@ -98,4 +98,51 @@ class TagPanelModelTest {
         TagBook<String> b = new TagBook<>(Map.of("log", List.of("wood")));
         assertEquals(List.of("wood"), model(List.of(0), b, true).commonTags());
     }
+
+    // 022: the protection list. Categories "chest" and "egg" are protected in these tests.
+    private static final java.util.Set<String> PROTECTED = java.util.Set.of("chest", "egg");
+
+    private static TagPanelModel<String> protectedModel(String... categories) {
+        List<Integer> slots = new java.util.ArrayList<>();
+        for (int i = 0; i < categories.length; i++) {
+            slots.add(i);
+        }
+        return TagPanelModel.of(
+                slots, i -> categories[i].isEmpty() ? null : categories[i], new TagBook<String>(), true, PROTECTED::contains);
+    }
+
+    @Test
+    void protectedCategoriesAreListedOnceInSelectionOrder() {
+        TagPanelModel<String> m = protectedModel("log", "egg", "chest", "egg");
+        assertEquals(List.of("egg", "chest"), m.protectedItems());
+    }
+
+    @Test
+    void trashIsBlockedOnlyWhenAProtectedCategoryIsSelected() {
+        assertTrue(protectedModel("log", "chest").blocks("trash"));
+        assertFalse(protectedModel("log", "stone").blocks("trash"));
+        assertFalse(protectedModel("log", "").blocks("trash"));
+    }
+
+    @Test
+    void otherTagsAreNeverBlockedAndTheAddButtonKeepsItsMeaning() {
+        TagPanelModel<String> m = protectedModel("chest", "log");
+        assertFalse(m.blocks("food"));
+        assertFalse(m.blocks("wood"));
+        assertTrue(m.canAdd());
+    }
+
+    @Test
+    void anEmptySelectionHasNothingProtected() {
+        TagPanelModel<String> m = protectedModel("", "");
+        assertEquals(Status.NO_ITEMS, m.status());
+        assertEquals(List.of(), m.protectedItems());
+        assertFalse(m.blocks("trash"));
+    }
+
+    @Test
+    void theOldFactoryProtectsNothing() {
+        assertFalse(model(List.of(0, 1), book(), true).blocks("trash"));
+        assertEquals(List.of(), model(List.of(0), book(), true).protectedItems());
+    }
 }

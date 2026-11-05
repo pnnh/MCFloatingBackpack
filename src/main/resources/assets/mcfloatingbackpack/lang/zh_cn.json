@@ -45,5 +45,17 @@
   "trash.mcfloatingbackpack.title": "垃圾桶",
   "message.mcfloatingbackpack.limit.trash_can": "这里只能放一个垃圾桶",
   "message.mcfloatingbackpack.limit.tag_manager": "这里只能放一个标签管理器",
-  "message.mcfloatingbackpack.trash.too_large": "这件物品的数据太大，放不进垃圾桶"
+  "message.mcfloatingbackpack.trash.too_large": "这件物品的数据太大，放不进垃圾桶",
+  "key.mcfloatingbackpack.delete_to_trash": "删除到垃圾桶",
+  "trash.mcfloatingbackpack.icon.dump": "倾倒垃圾",
+  "trash.mcfloatingbackpack.dump.tooltip": "把主区域里带“垃圾”标签的物品移进垃圾桶。受保护的物品和带附魔、名称、内容物等数据的物品会被跳过。",
+  "trash.mcfloatingbackpack.icon.delete": "删除选中",
+  "trash.mcfloatingbackpack.delete.tooltip.disabled": "先在主区域用 Shift 选择物品，再点这里删除",
+  "trash.mcfloatingbackpack.delete.tooltip.enabled": "删除选中的物品（可从垃圾桶拿回）",
+  "trash.mcfloatingbackpack.confirm.text": "将永久销毁 %s 组物品，确认吗？",
+  "trash.mcfloatingbackpack.confirm.yes": "确认",
+  "trash.mcfloatingbackpack.confirm.no": "取消",
+  "message.mcfloatingbackpack.trash.nothing_to_dump": "没有可倾倒的物品（受保护或带数据的物品会被跳过）",
+  "message.mcfloatingbackpack.trash.changed": "背包内容已变化，操作已取消，请重试",
+  "tag.mcfloatingbackpack.protected": "这些物品不能标记为垃圾：%s"
 }
