@@ -1,5 +1,22 @@
 <!--
 Sync Impact Report
+- Version change: 2.1.0 -> 2.1.1 (PATCH: the three levels of principle VII are explained, no rule changes)
+- Modified principles:
+  - VII. Minimal Dependencies, Opt-Out Compatibility. The levels now say what they are about: FULL is
+    the mod-specific adaptation (code written for that mod, active compatibility, an enhancement);
+    GENERIC turns off any such code (for a mod nothing was written for it equals FULL) and does not decide
+    whether the panel shows on that mod's screens or exchanges items with its menus, which depends on how
+    the mod implements its containers; OFF is the only level that stops the panel being shown there.
+    (An intermediate wording, "no item exchange at GENERIC", was tried during the first client session of
+    spec 020 and withdrawn: it misread the intent.)
+- Added principles: none
+- Added sections: none
+- Removed sections: none
+- Templates reviewed, no change needed: .specify/templates/*, AGENTS.md, CLAUDE.md
+- Follow-up TODOs: as in 2.1.0 (mixin question undecided; the meaning of OFF for a mod that only decorates
+  other screens is defined by the feature that introduces its adaptation).
+
+Previous report (2.0.0 -> 2.1.0):
 - Version change: 2.0.0 -> 2.1.0 (MINOR: new principle VII)
 - Added principles:
   - VII. Minimal Dependencies, Opt-Out Compatibility. Required dependencies are only
@@ -165,10 +182,13 @@ vanilla menus) MUST NOT be configurable. Every proactive interaction with anothe
 MUST be controlled by a setting that maps that mod's id to a level; a mod that is not
 listed is at FULL:
 
-- FULL: the mod-specific adaptations and the generic interaction.
-- GENERIC: no mod-specific adaptation; only the generic interaction, as if the mod
-  were unknown.
-- OFF: no interaction; the panel does not open on that mod's UI. What OFF means for a
+- FULL: the mod-specific adaptations: the code written for that mod, that is active
+  compatibility with it, which can also be seen as an enhancement.
+- GENERIC: no mod-specific adaptation; none of the code written for that mod runs (for a
+  mod nothing was written for, the same as FULL). It does not decide whether the panel is
+  shown on that mod's screens or exchanges items with its menus: that depends on how the
+  mod implements its containers, and the closer to vanilla containers the better.
+- OFF: the panel is not shown on that mod's UI: the panel and that UI are either/or. What OFF means for a
   mod that only decorates other screens is defined by the specification of the
   feature that introduces its adaptation.
 
@@ -235,4 +255,4 @@ Amendments change this file and bump the version:
 - MINOR: add a principle or a constraint.
 - PATCH: wording that does not change a rule.
 
-**Version**: 2.1.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-05
+**Version**: 2.1.1 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-05

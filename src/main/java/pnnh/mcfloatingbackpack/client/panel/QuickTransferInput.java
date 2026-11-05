@@ -13,8 +13,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferGesture.Hit;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferGesture.Side;
+import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
 import pnnh.mcfloatingbackpack.network.BackpackQuickTransferPayload;
 import pnnh.mcfloatingbackpack.network.BackpackTakeFromContainerPayload;
@@ -109,6 +111,7 @@ public final class QuickTransferInput {
         return minecraft.player == null
                 || !FloatingPanelState.get().isVisible()
                 || minecraft.screen != activeScreen
+                || !FloatingPanelEvents.hostsPanel(minecraft.screen)
                 || !cursorIsEmpty(minecraft.screen);
     }
 
@@ -118,7 +121,9 @@ public final class QuickTransferInput {
 
     private static boolean supports(Screen screen) {
         return screen instanceof AbstractContainerScreen<?>
-                && QuickTransferRules.isInterceptableScreenClass(screen.getClass().getName());
+                && QuickTransferRules.isInterceptableScreenClass(screen.getClass().getName())
+                // 020: a screen whose mod is switched off in the config is left alone.
+                && ContainerScreenCompat.isOpenContainerScreen(screen);
     }
 
     private static Hit resolveAt(double x, double y) {

@@ -3,9 +3,11 @@ package pnnh.mcfloatingbackpack.client;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.system.MemoryUtil;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -33,7 +35,10 @@ import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.compat.AttachNotice;
+import pnnh.mcfloatingbackpack.compat.ConfigNotices;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
+import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.network.BackpackOpenRequestPayload;
@@ -149,6 +154,10 @@ public final class FloatingPanelEvents {
         // it is not drawn or clicked there, and its visible state is kept for when the screen closes.
         if (ContainerScreenCompat.isOpenContainerScreen(neu) && minecraft.player != null) {
             PacketDistributor.sendToServer(new MergePanelCursorPayload());
+            if (neu instanceof AbstractContainerScreen<?> container) {
+                // 020: say once, in the log, which mod id owns this screen (for the compat.modLevels config).
+                AttachNotice.onAttach(MenuOwner.ownerOf(container.getMenu()));
+            }
         }
     }
 
@@ -211,9 +220,27 @@ public final class FloatingPanelEvents {
         HostScreenManager.afterTick();
     }
 
+    /** A line in this player's own chat, led by the mod's name; nothing is sent to the server or anyone else. */
+    public static void chat(Minecraft minecraft, Component message) {
+        if (minecraft == null || minecraft.gui == null) {
+            return;
+        }
+        minecraft.gui.getChat().addMessage(
+                Component.translatable("message.mcfloatingbackpack.prefix")
+                        .withStyle(ChatFormatting.GOLD)
+                        .append(Component.literal(" "))
+                        .append(message.copy().withStyle(ChatFormatting.YELLOW)));
+    }
+
     @SubscribeEvent
     public static void onClientTick(ClientTickEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
+        // 020: problems with the player's config are shown in the chat once the player is in a world.
+        if (minecraft.player != null && ConfigNotices.hasPending()) {
+            for (ConfigNotices.Notice notice : ConfigNotices.drain()) {
+                chat(minecraft, Component.translatable(notice.key(), notice.arg()));
+            }
+        }
         QuickTransferInput.stopIfInvalid(minecraft);
         PanelDragInput.stopIfInvalid(minecraft);
         PanelSelectionInput.stopIfInvalid(minecraft);
@@ -316,6 +343,12 @@ public final class FloatingPanelEvents {
             return;
         }
         if (!allowsPanel(minecraft.screen)) {
+            // 020: a container screen of a mod switched off in the config: say why nothing happened.
+            if (minecraft.screen instanceof AbstractContainerScreen<?> container) {
+                // In the chat (only this player sees it, and T shows it again), not the action bar that fades at once.
+                chat(minecraft, Component.translatable(
+                        "message.mcfloatingbackpack.panel_off", MenuOwner.ownerOf(container.getMenu())));
+            }
             return;
         }
         BackpackRef ref = BackpackRef.resolve(minecraft.player);

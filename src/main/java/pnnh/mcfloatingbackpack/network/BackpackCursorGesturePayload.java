@@ -15,6 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.MenuOwner;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
@@ -91,6 +94,10 @@ public record BackpackCursorGesturePayload(byte mode, int[] slots, boolean scree
             }
 
             AbstractContainerMenu menu = player.containerMenu;
+            if (payload.screenOpen() && menu != null
+                    && !ServerCompatGate.allows(Action.USE_MENU_CURSOR, MenuOwner.ownerOf(menu))) {
+                return;
+            }
             PanelCursor cursor = PanelCursor.of(payload.screenOpen(), menu, backpack);
             if (cursor.usesMenu()) {
                 BackpackMenuBridge.mergePanelCursorIntoCarried(backpack, menu);

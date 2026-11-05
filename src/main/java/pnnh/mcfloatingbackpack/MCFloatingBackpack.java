@@ -5,10 +5,13 @@ import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
 
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 
 import pnnh.mcfloatingbackpack.client.ClientSetup;
+import pnnh.mcfloatingbackpack.compat.CompatConfig;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.recipe.ModRecipes;
 import pnnh.mcfloatingbackpack.item.ModItems;
@@ -23,14 +26,16 @@ public class MCFloatingBackpack {
     public static final String MOD_ID = "mcfloatingbackpack";
     public static final Logger LOGGER = LogUtils.getLogger();
 
-    public MCFloatingBackpack(IEventBus modEventBus) {
+    public MCFloatingBackpack(IEventBus modEventBus, ModContainer modContainer) {
         LOGGER.info("MCFloatingBackpack loading");
         ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModRecipes.register(modEventBus);
         BackpackNetwork.register(modEventBus);
+        // 020: client-only settings; a dedicated server never loads a CLIENT config.
+        modContainer.registerConfig(ModConfig.Type.CLIENT, CompatConfig.SPEC);
         if (FMLEnvironment.dist.isClient()) {
-            ClientSetup.register(modEventBus);
+            ClientSetup.register(modEventBus, modContainer);
         }
     }
 }

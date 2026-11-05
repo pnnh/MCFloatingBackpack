@@ -10,6 +10,9 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.MenuOwner;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
@@ -38,7 +41,7 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
                 return;
             }
             AbstractContainerMenu menu = serverPlayer.containerMenu;
-            if (menu == null) {
+            if (menu == null || !ServerCompatGate.allows(Action.MERGE_CURSOR, MenuOwner.ownerOf(menu))) {
                 return;
             }
             BackpackRef ref = BackpackRef.resolve(serverPlayer);

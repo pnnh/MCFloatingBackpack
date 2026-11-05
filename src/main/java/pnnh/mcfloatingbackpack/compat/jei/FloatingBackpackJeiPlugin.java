@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.CompatConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 
 /**
@@ -41,7 +42,9 @@ public final class FloatingBackpackJeiPlugin implements IModPlugin {
             @Override
             public Collection<Rect2i> getGuiExtraAreas() {
                 FloatingPanelState state = FloatingPanelState.get();
-                if (!state.isVisible()) {
+                // 020: this is the one mod-specific adaptation; the client config (compat.modLevels, mod id 'jei')
+                // switches it off at GENERIC or OFF. Asked every time JEI lays out, so a change needs no restart.
+                if (!state.isVisible() || !CompatConfig.policy().specificAdaptation("jei")) {
                     return Collections.emptyList();
                 }
                 return List.of(

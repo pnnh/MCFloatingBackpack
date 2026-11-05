@@ -11,6 +11,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.MenuOwner;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ContainerMenuAccess;
@@ -146,6 +149,9 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
     static void backpackOut(ServerPlayer player, BackpackInventory backpack, int[] sources) {
         if (!ContainerMenuAccess.hasOpenContainer(player)) {
             backpackToInventory(player.getInventory(), backpack, sources);
+            return;
+        }
+        if (!ServerCompatGate.allows(Action.DELIVER_TO_CONTAINER, MenuOwner.ownerOf(player.containerMenu))) {
             return;
         }
         ContainerMenuAccess menu = new ContainerMenuAccess(player);

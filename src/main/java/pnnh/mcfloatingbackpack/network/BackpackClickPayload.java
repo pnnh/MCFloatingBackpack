@@ -12,6 +12,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.MenuOwner;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
+import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
@@ -113,6 +116,9 @@ public record BackpackClickPayload(
             }
             AbstractContainerMenu menu = serverPlayer.containerMenu;
             boolean viaMenu = payload.screenOpen() && menu != null;
+            if (viaMenu && !ServerCompatGate.allows(Action.USE_MENU_CURSOR, MenuOwner.ownerOf(menu))) {
+                return;
+            }
 
             // 016: what goes into a tool area is the server's call. Every item is accepted for now, but this is
             // where a later feature can refuse an item for a given area; a refused click changes nothing.

@@ -3,8 +3,12 @@ package pnnh.mcfloatingbackpack.client;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.neoforge.client.gui.ConfigurationScreen;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.ConfigFileWatch;
 import pnnh.mcfloatingbackpack.client.render.BackpackRenderEvents;
 
 /**
@@ -15,10 +19,15 @@ public final class ClientSetup {
     private ClientSetup() {
     }
 
-    public static void register(IEventBus modEventBus) {
+    public static void register(IEventBus modEventBus, ModContainer modContainer) {
         MCFloatingBackpack.LOGGER.info("MCFloatingBackpack client setup");
         modEventBus.addListener(FloatingBackpackKeys::registerKeys);
         BackpackRenderEvents.register(modEventBus);
         FloatingPanelEvents.init();
+        // 020: tell the player in chat when NeoForge had to set a broken config file aside.
+        modEventBus.addListener(ConfigFileWatch::onLoading);
+        modEventBus.addListener(ConfigFileWatch::onReloading);
+        // 020: the config screen, reachable from the mod list.
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
     }
 }

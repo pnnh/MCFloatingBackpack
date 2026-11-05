@@ -8,6 +8,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
 import pnnh.mcfloatingbackpack.network.BackpackQuickTransferPayload;
 
@@ -145,7 +146,11 @@ public final class PanelSelectionInput {
     }
 
     private static boolean invalid(Minecraft minecraft) {
-        return minecraft.player == null || !FloatingPanelState.get().isVisible() || minecraft.screen != activeScreen;
+        return minecraft.player == null
+                || !FloatingPanelState.get().isVisible()
+                || minecraft.screen != activeScreen
+                // 020: the screen stopped hosting the panel (its mod was switched off in the config).
+                || !FloatingPanelEvents.hostsPanel(minecraft.screen);
     }
 
     private static int slotAt(double x, double y) {
