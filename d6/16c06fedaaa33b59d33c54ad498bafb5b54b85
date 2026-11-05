@@ -1,0 +1,29 @@
+specs/022-trash-delete-tools/spec.md
+  s_e4f0fbd798a6d8::t_4df4684a255e7c 139
+  s_e4f0fbd798a6d8::t_3d61027133023b 1-138,140-300
+specs/022-trash-delete-tools/checklists/requirements.md
+  s_e4f0fbd798a6d8::t_4df4684a255e7c 1-39
+.specify/feature.json
+  s_e4f0fbd798a6d8::t_be7e5fb6355222 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "d616c06fedaaa33b59d33c54ad498bafb5b54b85",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
