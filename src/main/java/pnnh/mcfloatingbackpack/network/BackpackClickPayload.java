@@ -23,6 +23,7 @@ import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
+import pnnh.mcfloatingbackpack.item.ModItems;
 
 /**
  * {@code swapHand} is the old {@code shiftDown} bit (014): the click asks to swap the slot with the main-hand
@@ -120,13 +121,20 @@ public record BackpackClickPayload(
                 return;
             }
 
-            // 016: what goes into a tool area is the server's call. Every item is accepted for now, but this is
-            // where a later feature can refuse an item for a given area; a refused click changes nothing.
+            // 016: what goes into a tool area is the server's call. Since 021 the right area takes one trash can and the
+            // bottom area one tag manager (ToolAreaRules); a refused click changes nothing.
             if (area.isTool()) {
                 ItemStack held = viaMenu
                         ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
                         : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
-                if (!held.isEmpty() && !ToolAreaRules.canPlace(area, held)) {
+                if (!held.isEmpty()
+                        && !ToolAreaRules.canPlace(
+                                area,
+                                held,
+                                payload.slotIndex(),
+                                inventory.toolStacks(area),
+                                stack -> stack.is(ModItems.TRASH_CAN.get()),
+                                stack -> stack.is(ModItems.TAG_MANAGER.get()))) {
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                     return;
                 }

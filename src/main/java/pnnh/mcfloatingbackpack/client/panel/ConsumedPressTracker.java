@@ -25,6 +25,11 @@ final class ConsumedPressTracker {
         return consumed.remove(button);
     }
 
+    /** @return true if this button's press was swallowed and its release has not come yet; changes nothing */
+    boolean has(int button) {
+        return consumed.contains(button);
+    }
+
     void clear() {
         consumed.clear();
     }

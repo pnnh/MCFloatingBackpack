@@ -11,7 +11,8 @@ import java.util.Set;
  *
  * <ul>
  *   <li>the first slot's group fixes the direction for the whole drag: INVENTORY and CONTAINER slots
- *       both go <em>into the backpack</em>, PANEL slots go <em>out of it</em>;
+ *       both go <em>into the backpack</em>, PANEL slots go <em>out of it</em>, TRASH slots (021) go from the trash can
+ *       into the main area; only slots of the first slot's group are taken;
  *   <li>a slot is reported at most once per drag (slots of different sides are different slots even if
  *       their indices are equal);
  *   <li>between two frames the mouse path is sampled every few pixels so a fast move does not skip slots.
@@ -20,12 +21,14 @@ import java.util.Set;
 public final class QuickTransferGesture {
     /**
      * Where a slot lives. INVENTORY = the player's own inventory slots (index 0-35), CONTAINER = slots of the
-     * open container (index = menu slot index), PANEL = floating-panel slots (index = backpack slot).
+     * open container (index = menu slot index), PANEL = floating-panel slots (index = backpack slot), TRASH = the
+     * trash can panel's cells (021, index = trash slot 0..8).
      */
     public enum Side {
         INVENTORY,
         CONTAINER,
-        PANEL
+        PANEL,
+        TRASH
     }
 
     /** A slot under the cursor: its side, its index on that side, and whether it holds an item. */
@@ -59,8 +62,13 @@ public final class QuickTransferGesture {
         return side;
     }
 
-    private static boolean intoBackpack(Side s) {
-        return s != Side.PANEL;
+    /** Slots of one group are moved the same way; a drag takes only slots of the group it started in. */
+    private static int group(Side s) {
+        return switch (s) {
+            case INVENTORY, CONTAINER -> 0;
+            case PANEL -> 1;
+            case TRASH -> 2;
+        };
     }
 
     /** Starts a drag on {@code start}; returns the slots to transfer right now (the start slot, if it holds an item). */
@@ -91,7 +99,7 @@ public final class QuickTransferGesture {
             double px = lastX + dx * k / steps;
             double py = lastY + dy * k / steps;
             Hit hit = resolver.resolve(px, py);
-            if (hit == null || intoBackpack(hit.side()) != intoBackpack(side)) {
+            if (hit == null || group(hit.side()) != group(side)) {
                 continue;
             }
             if (visited.add(hit.key()) && hit.hasItem()) {

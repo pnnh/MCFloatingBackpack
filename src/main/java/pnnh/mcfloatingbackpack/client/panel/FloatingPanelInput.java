@@ -4,6 +4,8 @@ import org.lwjgl.glfw.GLFW;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -11,9 +13,12 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 
@@ -35,6 +40,7 @@ public final class FloatingPanelInput {
     /** Call when a mouse event arrives while the panel is hidden: forget any presses it had swallowed. */
     public static void resetPressTracking() {
         PRESSES.clear();
+        TrashPanelInput.resetTracking();
     }
 
     /**
@@ -43,7 +49,12 @@ public final class FloatingPanelInput {
     public static boolean onMouseButton(int button, int action, double mouseX, double mouseY) {
         if (!FloatingPanelState.get().isVisible()) {
             PRESSES.clear();
+            TrashPanelInput.resetTracking();
             return false;
+        }
+        // 021: where a press went down decides whether its release on the trash can panel is a drop.
+        if (action == GLFW.GLFW_PRESS) {
+            TrashPanelInput.notePress(button, mouseX, mouseY);
         }
         boolean consumed = dispatchMouseButton(button, action, mouseX, mouseY);
         if (action == GLFW.GLFW_PRESS) {
@@ -75,6 +86,10 @@ public final class FloatingPanelInput {
                     && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
                 TagPanelState.get().stopEditing();
             }
+            // 021: the trash can panel lies outside the floating panel's rectangle; a press on it is claimed here.
+            if (TrashPanelInput.onPress(button, mouseX, mouseY)) {
+                return true;
+            }
             // Close button and resize handle sit on/inside the drag bar and body respectively, so
             // they must be checked before those broader hit tests claim the press first.
             if (!isRight && state.hitsCloseButton(mouseX, mouseY)) {
@@ -104,12 +119,26 @@ public final class FloatingPanelInput {
                 // 018: a plain left click with an empty cursor on a tag manager in the function area opens or closes
                 // the tag panel instead of picking it up; the right button still picks it up. Anywhere else it is an
                 // ordinary item.
+                // 021: the same for a trash can in the right area, which opens or closes the trash can panel.
+                if (!isRight
+                        && toolHit.area() == PanelArea.RIGHT
+                        && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
+                        && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
+                                .is(ModItems.TRASH_CAN.get())) {
+                    TrashPanelState.get().toggle();
+                    return true;
+                }
                 if (!isRight
                         && toolHit.area() == PanelArea.BOTTOM
                         && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
                         && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
                                 .is(ModItems.TAG_MANAGER.get())) {
                     TagPanelState.get().toggle();
+                    return true;
+                }
+                // 021: the right area takes one trash can and the bottom area one tag manager. The server decides; this
+                // only spares the round trip and says why nothing happened.
+                if (refusedByLimit(toolHit.area(), toolHit.index())) {
                     return true;
                 }
                 sendClick(toolHit.area(), toolHit.index(), isRight);
@@ -155,6 +184,13 @@ public final class FloatingPanelInput {
             return false;
         }
 
+        // 021: a drag that ends on the trash can panel drops the cursor stack into it; no other gesture settles it. The
+        // release is swallowed only if its press was (ours); a press that went down on a container screen's slot is left
+        // to the game, which finishes its own drag with the now empty cursor.
+        if (action == GLFW.GLFW_RELEASE && TrashPanelInput.onRelease(button, mouseX, mouseY)) {
+            return PRESSES.has(button);
+        }
+
         if (action == GLFW.GLFW_RELEASE && PanelSelectionInput.onRelease(button, mouseX, mouseY)) {
             return true;
         }
@@ -190,6 +226,34 @@ public final class FloatingPanelInput {
             return true;
         }
         return false;
+    }
+
+    /**
+     * 021: whether putting what the player holds into this tool-area slot would break the one-per-area limit; if so
+     * the player is told in the chat. Reads the same stack the server will (the cursor, or with Alt and no container
+     * screen the main-hand item).
+     */
+    private static boolean refusedByLimit(PanelArea area, int slotIndex) {
+        Minecraft minecraft = Minecraft.getInstance();
+        boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
+        ItemStack held = !screenOpen && Screen.hasAltDown() && minecraft.player != null
+                ? minecraft.player.getMainHandItem()
+                : FloatingPanelRenderer.cursorStack(minecraft);
+        if (held.isEmpty()
+                || ToolAreaRules.canPlace(
+                        area,
+                        held,
+                        slotIndex,
+                        ClientBackpackView.get().toolStacks(area),
+                        stack -> stack.is(ModItems.TRASH_CAN.get()),
+                        stack -> stack.is(ModItems.TAG_MANAGER.get()))) {
+            return false;
+        }
+        String key = held.is(ModItems.TRASH_CAN.get())
+                ? "message.mcfloatingbackpack.limit.trash_can"
+                : "message.mcfloatingbackpack.limit.tag_manager";
+        FloatingPanelEvents.chat(minecraft, Component.translatable(key));
+        return true;
     }
 
     static void sendClick(int slotIndex, boolean rightClick) {

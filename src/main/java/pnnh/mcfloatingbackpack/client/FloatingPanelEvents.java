@@ -35,6 +35,8 @@ import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.AttachNotice;
 import pnnh.mcfloatingbackpack.compat.ConfigNotices;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
@@ -95,6 +97,7 @@ public final class FloatingPanelEvents {
             return;
         }
         state.setVisible(false);
+        TrashPanelState.get().collapse();
         ClientBackpackView.get().clear();
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.close());
         HostScreenManager.ensure();
@@ -107,6 +110,7 @@ public final class FloatingPanelEvents {
         PanelDragInput.reset();
         PanelSelectionInput.reset();
         TagPanelState.get().reset();
+        TrashPanelState.get().reset();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
@@ -130,6 +134,7 @@ public final class FloatingPanelEvents {
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         HostScreenManager.reset();
         TagPanelState.get().reset();
+        TrashPanelState.get().reset();
         QuickTransferInput.reset();
         PanelDragInput.reset();
         PanelSelectionInput.reset();
@@ -249,6 +254,11 @@ public final class FloatingPanelEvents {
         if (TagPanelState.get().isOpen()
                 && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTagManager())) {
             TagPanelState.get().collapse();
+        }
+        // 021: the trash can panel needs a trash can in the right area (anywhere in its whole list) and an open panel.
+        if (TrashPanelState.get().isOpen()
+                && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTrashCan())) {
+            TrashPanelState.get().collapse();
         }
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
@@ -398,6 +408,10 @@ public final class FloatingPanelEvents {
 
     private static boolean scrollPanel(double scrollDeltaY, double mouseX, double mouseY) {
         FloatingPanelState state = FloatingPanelState.get();
+        // 021: the wheel over the trash can panel (outside the floating panel's rectangle) does nothing, but is taken.
+        if (state.isVisible() && scrollDeltaY != 0 && TrashPanelInput.covers(mouseX, mouseY)) {
+            return true;
+        }
         if (!state.isVisible() || scrollDeltaY == 0 || !state.contains(mouseX, mouseY)) {
             return false;
         }

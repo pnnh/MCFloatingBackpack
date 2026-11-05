@@ -21,7 +21,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("8");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("9");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -38,6 +38,10 @@ public final class BackpackNetwork {
                 BackpackTagsPayload.TYPE,
                 BackpackTagsPayload.STREAM_CODEC,
                 BackpackTagsPayload::handleClient);
+        registrar.playToClient(
+                BackpackTrashContentsPayload.TYPE,
+                BackpackTrashContentsPayload.STREAM_CODEC,
+                BackpackTrashContentsPayload::handleClient);
         registrar.playToServer(
                 BackpackClickPayload.TYPE,
                 BackpackClickPayload.STREAM_CODEC,
@@ -63,6 +67,10 @@ public final class BackpackNetwork {
                 BackpackTagPayload.STREAM_CODEC,
                 BackpackTagPayload::handleServer);
         registrar.playToServer(
+                BackpackTrashPayload.TYPE,
+                BackpackTrashPayload.STREAM_CODEC,
+                BackpackTrashPayload::handleServer);
+        registrar.playToServer(
                 BackpackOpenRequestPayload.TYPE,
                 BackpackOpenRequestPayload.STREAM_CODEC,
                 BackpackOpenRequestPayload::handleServer);
@@ -77,6 +85,13 @@ public final class BackpackNetwork {
         PacketDistributor.sendToPlayer(player, BackpackSessionPayload.open(ref, inventory));
         // 018: the tags travel in their own packet (the session payload has no room for another field).
         PacketDistributor.sendToPlayer(player, new BackpackTagsPayload(inventory.tags()));
+        // 021: and so does the trash can's content.
+        sendTrash(player, inventory);
+    }
+
+    /** 021: what the trash can holds, as the server has it. */
+    public static void sendTrash(ServerPlayer player, BackpackInventory inventory) {
+        PacketDistributor.sendToPlayer(player, new BackpackTrashContentsPayload(inventory.trash()));
     }
 
     public static void sendFullSync(ServerPlayer player, BackpackRef ref) {

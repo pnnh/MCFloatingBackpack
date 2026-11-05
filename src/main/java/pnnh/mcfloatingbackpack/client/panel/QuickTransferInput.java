@@ -17,9 +17,12 @@ import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferGesture.Hit;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferGesture.Side;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
+import pnnh.mcfloatingbackpack.inventory.trash.TrashRequest;
 import pnnh.mcfloatingbackpack.network.BackpackQuickTransferPayload;
 import pnnh.mcfloatingbackpack.network.BackpackTakeFromContainerPayload;
+import pnnh.mcfloatingbackpack.network.BackpackTrashPayload;
 
 /**
  * The part of the Ctrl quick-transfer gesture (011, 012) that talks to the game: finding the slot under
@@ -48,6 +51,26 @@ public final class QuickTransferInput {
         }
         boolean hasItem = !ClientBackpackView.get().getStackInSlot(backpackIndex).isEmpty();
         start(minecraft, new Hit(Side.PANEL, backpackIndex, hasItem), mouseX, mouseY);
+        return true;
+    }
+
+    /**
+     * Ctrl+left-click on a cell of the trash can panel (021) with an empty cursor: the groups in the cells the drag goes
+     * over move into the main area. {@code cell} is -1 on the title bar or the padding, where a drag can still start.
+     *
+     * @return true if the press was taken
+     */
+    public static boolean beginFromTrash(int cell, double mouseX, double mouseY) {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!Screen.hasControlDown()
+                || Screen.hasShiftDown()
+                || !FloatingPanelRenderer.cursorStack(minecraft).isEmpty()
+                || !cursorIsEmpty(minecraft.screen)) {
+            return false;
+        }
+        boolean hasItem = cell >= 0 && !ClientBackpackView.get().trash().get(cell).isEmpty();
+        // A press that is not on a cell still starts the drag; it just has no slot of its own to report.
+        start(minecraft, new Hit(Side.TRASH, cell, hasItem), mouseX, mouseY);
         return true;
     }
 
@@ -129,6 +152,11 @@ public final class QuickTransferInput {
     private static Hit resolveAt(double x, double y) {
         FloatingPanelState state = FloatingPanelState.get();
         ClientBackpackView view = ClientBackpackView.get();
+        // 021: the trash can panel lies outside the floating panel's rectangle and covers what is under it.
+        if (TrashPanelInput.covers(x, y)) {
+            int cell = TrashPanelInput.layout().cellAt(x, y);
+            return cell < 0 ? null : new Hit(Side.TRASH, cell, !view.trash().get(cell).isEmpty());
+        }
         if (state.contains(x, y)) {
             // Over the panel only its own slots count; the panel covers whatever is underneath (FR-015).
             int index = PanelSlots.indexAt(state, x, y);
@@ -187,8 +215,10 @@ public final class QuickTransferInput {
         List<Integer> inventory = new ArrayList<>();
         List<Integer> container = new ArrayList<>();
         List<Integer> panel = new ArrayList<>();
+        List<Integer> trash = new ArrayList<>();
         for (Hit hit : hits) {
             switch (hit.side()) {
+                case TRASH -> trash.add(hit.index());
                 case INVENTORY -> inventory.add(hit.index());
                 case CONTAINER -> container.add(hit.index());
                 case PANEL -> panel.add(hit.index());
@@ -203,6 +233,10 @@ public final class QuickTransferInput {
         }
         if (!panel.isEmpty()) {
             PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_INVENTORY, toArray(panel)));
+        }
+        if (!trash.isEmpty()) {
+            // The target is the backpack's main area, so no menu is involved.
+            PacketDistributor.sendToServer(BackpackTrashPayload.of(TrashRequest.Action.RESTORE, toArray(trash), false));
         }
     }
 

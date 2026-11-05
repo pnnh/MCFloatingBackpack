@@ -55,7 +55,7 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
                 ModDataComponents.BACKPACK_CONTENTS.get(), BackpackContents.empty(capacity));
         upgraded.set(
                 ModDataComponents.BACKPACK_CONTENTS.get(),
-                BackpackContents.fit(current.items(), current.cursor(), current.tools(), current.tags(), capacity));
+                BackpackContents.fit(current.items(), current.cursor(), current.tools(), current.tags(), current.trash(), capacity));
         return upgraded;
     }
 

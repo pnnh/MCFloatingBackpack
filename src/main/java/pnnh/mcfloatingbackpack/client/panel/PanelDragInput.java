@@ -113,6 +113,11 @@ public final class PanelDragInput {
         }
     }
 
+    /** Drops a gesture that is under way without any request (a release on the trash can panel is not its to settle). */
+    public static void cancel() {
+        stop();
+    }
+
     public static void reset() {
         gesture = newGesture();
         activeButton = -1;

@@ -25,6 +25,8 @@ public final class ClientBackpackView {
     private final Map<PanelArea, NonNullList<ItemStack>> tools = new EnumMap<>(PanelArea.class);
     private ItemStack cursor = ItemStack.EMPTY;
     private pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
+    private pnnh.mcfloatingbackpack.inventory.trash.TrashContents trash =
+            pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
     private BackpackRef activeRef;
 
     private ClientBackpackView() {
@@ -59,6 +61,22 @@ public final class ClientBackpackView {
             }
         }
         return false;
+    }
+
+    /** 021: whether the right area holds a trash can, anywhere in its whole list (not only in the visible cells). */
+    public boolean hasTrashCan() {
+        for (int i = 0; i < toolCount(PanelArea.RIGHT); i++) {
+            if (getToolStack(PanelArea.RIGHT, i).is(pnnh.mcfloatingbackpack.item.ModItems.TRASH_CAN.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** The stacks of a tool area, its whole list (for the placement rules); a read-only view. */
+    public List<ItemStack> toolStacks(PanelArea area) {
+        NonNullList<ItemStack> list = tools.get(area);
+        return list == null ? List.of() : java.util.Collections.unmodifiableList(list);
     }
 
     public ItemStack getToolStack(PanelArea area, int index) {
@@ -100,6 +118,15 @@ public final class ClientBackpackView {
 
     public void setTags(pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags) {
         this.tags = tags == null ? pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY : tags;
+    }
+
+    /** 021: what the open backpack's trash can holds, newest group first. */
+    public pnnh.mcfloatingbackpack.inventory.trash.TrashContents trash() {
+        return trash;
+    }
+
+    public void setTrash(pnnh.mcfloatingbackpack.inventory.trash.TrashContents trash) {
+        this.trash = trash == null ? pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY : trash;
     }
 
     public ItemStack getCursor() {
@@ -164,6 +191,7 @@ public final class ClientBackpackView {
         resetTools(BackpackTier.LEATHER.capacity());
         cursor = ItemStack.EMPTY;
         tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
+        trash = pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
         reportCounts();

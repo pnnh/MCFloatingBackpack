@@ -40,5 +40,10 @@
   "message.mcfloatingbackpack.config.unknown_level": "配置 modLevels 里的 \"%s\" 档位无法识别，按 FULL 处理（可用 FULL、GENERIC、OFF）",
   "message.mcfloatingbackpack.config.duplicate": "配置 modLevels 里模组 %s 重复列出，以最后一条为准",
   "message.mcfloatingbackpack.config.file": "配置文件有语法或格式错误，已被备份为 %s 并恢复默认；请在游戏关闭时修改，或用游戏里的配置界面",
-  "message.mcfloatingbackpack.config.more": "……还有 %s 条配置问题，详见日志"
+  "message.mcfloatingbackpack.config.more": "……还有 %s 条配置问题，详见日志",
+  "item.mcfloatingbackpack.trash_can": "垃圾桶",
+  "trash.mcfloatingbackpack.title": "垃圾桶",
+  "message.mcfloatingbackpack.limit.trash_can": "这里只能放一个垃圾桶",
+  "message.mcfloatingbackpack.limit.tag_manager": "这里只能放一个标签管理器",
+  "message.mcfloatingbackpack.trash.too_large": "这件物品的数据太大，放不进垃圾桶"
 }

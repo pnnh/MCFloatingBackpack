@@ -15,6 +15,9 @@ import net.minecraft.resources.ResourceLocation;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.CompatConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.PanelLayout;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 
 /**
  * Tells JEI to treat the floating panel's current screen area as occupied (008), via JEI's own
@@ -47,8 +50,13 @@ public final class FloatingBackpackJeiPlugin implements IModPlugin {
                 if (!state.isVisible() || !CompatConfig.policy().specificAdaptation("jei")) {
                     return Collections.emptyList();
                 }
-                return List.of(
-                        new Rect2i(state.getPosX(), state.getPosY(), state.getWidth(), state.getHeight()));
+                Rect2i panel = new Rect2i(state.getPosX(), state.getPosY(), state.getWidth(), state.getHeight());
+                if (!TrashPanelState.get().isOpen()) {
+                    return List.of(panel);
+                }
+                // 021: the trash can panel hangs off the right edge, outside the panel's rectangle.
+                PanelLayout.Rect trash = TrashPanelInput.layout().rect();
+                return List.of(panel, new Rect2i(trash.x(), trash.y(), trash.w(), trash.h()));
             }
         });
     }

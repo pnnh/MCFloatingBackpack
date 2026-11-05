@@ -35,6 +35,10 @@ public final class ModItems {
     public static final DeferredHolder<Item, TagManagerItem> TAG_MANAGER =
             ITEMS.register("tag_manager", () -> new TagManagerItem(new Item.Properties()));
 
+    /** 021: lives in the panel's right area; see {@link TrashCanItem}. */
+    public static final DeferredHolder<Item, TrashCanItem> TRASH_CAN =
+            ITEMS.register("trash_can", () -> new TrashCanItem(new Item.Properties()));
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -46,6 +50,7 @@ public final class ModItems {
                                     output.accept(stackFor(tier));
                                 }
                                 output.accept(TAG_MANAGER.get());
+                                output.accept(TRASH_CAN.get());
                             })
                             .build());
 

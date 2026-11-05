@@ -14,6 +14,8 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelRenderer;
+import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
@@ -50,7 +52,7 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SLOT_LIGHT = 0xFF373737;
     private static final int COLOR_SLOT_DARK = 0xFFFFFFFF;
     /** Same white translucent hover used by vanilla container slots. */
-    private static final int COLOR_SLOT_HOVER = 0x80FFFFFF;
+    public static final int COLOR_SLOT_HOVER = 0x80FFFFFF;
     /** Same translucent white vanilla paints over slots taking part in a drag. */
     private static final int COLOR_DRAG_SLOT = 0x80FFFFFF;
     /** Border of a selected slot (014): golden, so it differs from the white hover and drag-preview fills. */
@@ -93,6 +95,10 @@ public final class FloatingPanelRenderer {
         drawCloseButton(graphics, state);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
+        // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
+        if (TrashPanelState.get().isOpen()) {
+            TrashPanelRenderer.render(graphics, mouseX, mouseY);
+        }
 
         ItemStack cursor = cursorStack(minecraft);
         if (!cursor.isEmpty()) {
@@ -142,7 +148,7 @@ public final class FloatingPanelRenderer {
         }
     }
 
-    static ItemStack cursorStack(Minecraft minecraft) {
+    public static ItemStack cursorStack(Minecraft minecraft) {
         if (minecraft.player != null
                 && ContainerScreenCompat.isOpenContainerScreen(minecraft.screen)
                 && minecraft.player.containerMenu != null) {
@@ -151,7 +157,7 @@ public final class FloatingPanelRenderer {
         return ClientBackpackView.get().getCursor();
     }
 
-    private static void drawVanillaPanel(GuiGraphics graphics, int x, int y, int w, int h) {
+    public static void drawVanillaPanel(GuiGraphics graphics, int x, int y, int w, int h) {
         graphics.fill(x - 1, y - 1, x + w + 1, y + h + 1, COLOR_OUTLINE);
         graphics.fill(x, y, x + w, y + h, COLOR_PANEL);
         graphics.fill(x, y, x + w, y + 1, COLOR_EDGE_LIGHT);
@@ -209,7 +215,7 @@ public final class FloatingPanelRenderer {
         }
     }
 
-    private static int wellColor(PanelArea area) {
+    public static int wellColor(PanelArea area) {
         return switch (area) {
             case MAIN -> COLOR_SLOT;
             case LEFT -> COLOR_SLOT_LEFT;
@@ -228,7 +234,7 @@ public final class FloatingPanelRenderer {
         graphics.fill(x2 - 1, y + 1, x2, y2 - 1, COLOR_SELECTED);
     }
 
-    private static void drawSlotWell(GuiGraphics graphics, int x, int y, int color) {
+    public static void drawSlotWell(GuiGraphics graphics, int x, int y, int color) {
         int x2 = x + PanelSlots.SLOT_SIZE;
         int y2 = y + PanelSlots.SLOT_SIZE;
         graphics.fill(x, y, x2, y2, color);

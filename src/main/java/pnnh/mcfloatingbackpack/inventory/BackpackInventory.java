@@ -7,8 +7,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
+import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
+import pnnh.mcfloatingbackpack.item.ModItems;
 
 /**
  * Mutable working copy of one backpack item. Capacity follows that item's tier.
@@ -21,6 +23,7 @@ public final class BackpackInventory {
     private final ItemStackHandler[] tools = new ItemStackHandler[PanelArea.values().length];
     private ItemStack cursor = ItemStack.EMPTY;
     private ItemTags tags = ItemTags.EMPTY;
+    private TrashContents trash = TrashContents.EMPTY;
 
     public BackpackInventory(int capacity) {
         int size = Math.max(1, Math.min(MAX_SIZE, capacity));
@@ -72,6 +75,11 @@ public final class BackpackInventory {
                 list(PanelArea.LEFT), list(PanelArea.RIGHT), list(PanelArea.BOTTOM));
     }
 
+    /** Copies of the stacks of a tool area, its whole stored list (for the placement rules). */
+    public List<ItemStack> toolStacks(PanelArea area) {
+        return list(area);
+    }
+
     private List<ItemStack> list(PanelArea area) {
         ItemStackHandler handler = handler(area);
         List<ItemStack> out = new ArrayList<>(handler.getSlots());
@@ -81,6 +89,19 @@ public final class BackpackInventory {
         return out;
     }
 
+    /**
+     * 021: whether the right area holds a trash can, which is what makes the trash can panel available. Looks at the
+     * whole stored list, not at the cells the panel currently shows.
+     */
+    public boolean hasTrashCan() {
+        for (int i = 0; i < size(PanelArea.RIGHT); i++) {
+            if (getStackInSlot(PanelArea.RIGHT, i).is(ModItems.TRASH_CAN.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** The tags of this backpack, by item category (018). */
     public ItemTags tags() {
         return tags;
@@ -88,6 +109,15 @@ public final class BackpackInventory {
 
     public void setTags(ItemTags tags) {
         this.tags = tags == null ? ItemTags.EMPTY : tags;
+    }
+
+    /** What the trash can holds (021), newest group first. */
+    public TrashContents trash() {
+        return trash;
+    }
+
+    public void setTrash(TrashContents trash) {
+        this.trash = trash == null ? TrashContents.EMPTY : trash;
     }
 
     public ItemStack getCursor() {
@@ -123,6 +153,7 @@ public final class BackpackInventory {
         }
         inventory.setCursor(fitted.cursor());
         inventory.setTags(fitted.tags());
+        inventory.setTrash(fitted.trash());
         for (PanelArea area : PanelArea.values()) {
             if (!area.isTool()) {
                 continue;
@@ -142,7 +173,7 @@ public final class BackpackInventory {
         for (int i = 0; i < size(); i++) {
             list.add(getStackInSlot(i).copy());
         }
-        return BackpackContents.fit(list, getCursor().copy(), toolContents(), tags, size());
+        return BackpackContents.fit(list, getCursor().copy(), toolContents(), tags, trash, size());
     }
 
     public static int capacityOf(ItemStack backpack) {
