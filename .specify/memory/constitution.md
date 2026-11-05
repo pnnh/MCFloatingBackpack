@@ -1,22 +1,36 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 -> 1.1.0
+- Version change: 1.1.0 -> 2.0.0 (MAJOR: principle I is redefined, per the Governance
+  rule "remove or redefine a principle")
 - Modified principles:
-  - V. Verify In A Client Session (PATCH-level clarification only: what a completion
-    claim must state, scripts/compiles do not substitute, fixes are checked under the
-    reported conditions; the rule itself is unchanged)
-- Added principles:
-  - VI. Shared Resources Have A Budget (from specs 009 and 010)
-- Added sections: none (new bullets under Additional Constraints and Development Workflow)
+  - I. Overlay Not Screen (name kept so earlier specs' Constitution Check tables still
+    match). Old rule: the panel MUST NOT take over `Minecraft.screen` as its primary
+    open path, and "lack of" a current Screen was an allowed state. New rule: the panel
+    is an overlay on whatever Screen is current and MUST NOT replace, wrap, subclass or
+    intercept another Screen; when the panel is visible and no other Screen is open, the
+    mod MAY show a transparent fallback host Screen that yields to any other Screen and
+    returns when it closes. Reason: the screen-less HUD mode needed a second input and
+    render path beside the Screen-event path (planned feature 019 replaces it).
+- Added principles: none
+- Added sections: none
 - Expanded sections:
-  - Additional Constraints: design/ directory, Git LFS boundary, dev-only runtime deps
-  - Development Workflow: backfilling work that landed outside Spec Kit
+  - Additional Constraints: the panel toggle hotkey bullet now also names the host Screen
 - Removed sections: none
 - Templates reviewed, no change needed: .specify/templates/plan-template.md (Constitution
   Check gates are read from this file at plan time), spec-template.md, tasks-template.md,
   AGENTS.md, CLAUDE.md (no principle numbers or names are quoted there)
-- Follow-up TODOs: none. The mesh triangle-count ceiling is intentionally left undefined
-  until frame-rate data exists (spec 009 known limitation 3, task T024).
+- Follow-up TODOs:
+  - Feature 019 (replace HUD mode with the fallback host Screen) must run its
+    Constitution Check against the new principle I and must be implemented before 018.
+  - Earlier specs (003, 007, 011-014, ...) describe the screen-less HUD mode; they are
+    historical and are updated by 019, not by this amendment.
+  - The mesh triangle-count ceiling is intentionally left undefined until frame-rate
+    data exists (spec 009 known limitation 3, task T024).
+
+Previous report (1.0.0 -> 1.1.0): added principle VI (Shared Resources Have A Budget,
+specs 009 and 010); PATCH-level clarification of V; new bullets under Additional
+Constraints (design/, Git LFS boundary, dev-only runtime deps) and Development Workflow
+(backfilling work that landed outside Spec Kit).
 -->
 
 # MCFloatingBackpack Constitution
@@ -25,13 +39,29 @@ Sync Impact Report
 
 ### I. Overlay Not Screen
 
-The floating backpack MUST NOT take over `Minecraft.screen` as its primary
-open path. Opening the panel MUST leave the current container GUI (or lack of
-one) intact. The panel MUST behave as a draggable overlay that can stay visible
-while the player inventory, chests, or other container screens are open.
+The floating backpack MUST be an overlay drawn on top of whatever Screen is
+current. It MUST NOT replace, wrap, subclass, or intercept the vanilla inventory,
+chest, or another mod's Screen in order to open or show the panel. Opening the
+panel MUST leave the current container GUI intact. The panel MUST behave as a
+draggable overlay that can stay visible while the player inventory, chests, or
+other container screens are open.
+
+When the panel is visible and no other Screen is open, the mod MAY show its own
+transparent host Screen so that the panel has a Screen to sit on. The host Screen
+is a fallback only:
+
+- It MUST give way the moment any other Screen opens, whether the player, a
+  keybinding, or another mod opened it, and MUST come back when that Screen closes
+  while the panel is still visible.
+- It MUST NOT pause the game, MUST NOT hold item storage, and MUST keep every
+  keybinding that opens another Screen working.
+- It MUST NOT be used for anything but hosting the panel; any other use requires its
+  own feature specification.
 
 Rationale: the product goal is MMO-style bags that float above other UIs. A
-normal Screen replaces the previous one and cannot meet that goal.
+normal Screen replaces the previous one and cannot meet that goal. A screen-less
+HUD mode needed a second input and render path beside the Screen-event path; a
+fallback host Screen removes that path without taking any other Screen's place.
 
 ### II. Server Owns Items
 
@@ -102,7 +132,7 @@ invisible to the feature's own screenshots and was found only from a game log.
   while still leaving the common entry point in place.
 - `thirdpart/` is local reference only and MUST stay gitignored.
 - Hotkeys that toggle the panel MUST remain usable while another Screen is
-  open (universal conflict context or equivalent).
+  open, including the host Screen (universal conflict context or equivalent).
 - `design/` holds development-time source assets and processing scripts (GLB, OBJ,
   Blender projects, Python and Blender scripts). It MUST NOT be shipped in the mod
   and runtime code MUST NOT reference it.
@@ -145,4 +175,4 @@ Amendments change this file and bump the version:
 - MINOR: add a principle or a constraint.
 - PATCH: wording that does not change a rule.
 
-**Version**: 1.1.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-04
+**Version**: 2.0.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-05
