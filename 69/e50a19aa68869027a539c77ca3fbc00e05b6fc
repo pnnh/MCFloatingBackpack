@@ -1,0 +1,158 @@
+specs/021-trash-can/spec.md
+  s_e4f0fbd798a6d8::t_27f6b27f4fd6f4 11-12
+src/main/java/pnnh/mcfloatingbackpack/client/panel/tags/TagPanelModel.java
+  s_e4f0fbd798a6d8::t_e9e3f496d1d5a7 7,10,28,32-37,42,53-64,73,76-77,99-107
+  s_e4f0fbd798a6d8::t_6d48d74f006ec4 108
+src/main/java/pnnh/mcfloatingbackpack/item/ModTags.java
+  s_e4f0fbd798a6d8::t_163cc3bb1becb1 1-21
+src/test/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelLayoutTest.java
+  s_e4f0fbd798a6d8::t_9fe78889570e17 100-141
+specs/022-trash-delete-tools/tasks.md
+  s_e4f0fbd798a6d8::t_d553f482743c0a 85-89
+  s_e4f0fbd798a6d8::t_69790d051252ed 27,35-54
+  s_e4f0fbd798a6d8::t_fb190ea1c58a20 102-109,141-143
+  s_e4f0fbd798a6d8::t_e37feac4838f18 1-26,28-34,55-65,73-84,90-101,110-121,129-140,144-155,157-162,167-169,177-236
+  s_e4f0fbd798a6d8::t_b1082601c90a97 66-72
+  s_e4f0fbd798a6d8::t_6e249112ef10b5 164-166
+  s_e4f0fbd798a6d8::t_27f6b27f4fd6f4 122-128,156,163
+  s_e4f0fbd798a6d8::t_378fcabfcb0ab1 170-172,174-176
+  s_e4f0fbd798a6d8::t_111745b92b26d3 173
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingBackpackKeys.java
+  s_e4f0fbd798a6d8::t_eb0b730aab6f55 8,30-41,47
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashSendRequest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-63
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashConfirmInput.java
+  s_e4f0fbd798a6d8::t_79637758460a99 1-68
+src/test/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashConfirmStateTest.java
+  s_e4f0fbd798a6d8::t_163cc3bb1becb1 1-67
+src/main/java/pnnh/mcfloatingbackpack/client/panel/DeleteKeyInput.java
+  s_e4f0fbd798a6d8::t_eb0b730aab6f55 1-105
+specs/022-trash-delete-tools/plan.md
+  s_e4f0fbd798a6d8::t_ef3c81093337d5 1,3,5,9,11-18,20,22,24,26,28,30,32,34,36,38-42,44-45,50-65,72-81,87-127,130,134
+  s_e4f0fbd798a6d8::t_5f3f28cd8866f3 2,4,6-8,10,19,21,23,25,27,29,31,33,35,37,43,46-49,66-71,82-86,128-129,131-133
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashConfirmRenderer.java
+  s_e4f0fbd798a6d8::t_79637758460a99 1-68
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TrashSendRequestTest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-78
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TrashDeletePlanTest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-48
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashSendPayload.java
+  s_e4f0fbd798a6d8::t_1e4f4e38ffc052 1-261
+src/test/java/pnnh/mcfloatingbackpack/resources/TrashToolsResourcesTest.java
+  s_e4f0fbd798a6d8::t_163cc3bb1becb1 1-71
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/DeletableSlots.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-22
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_e4f0fbd798a6d8::t_a4188a789b3678 45,48-55,57-60
+  s_e4f0fbd798a6d8::t_99ce8dd25e3f4a 56
+specs/022-trash-delete-tools/quickstart.md
+  s_e4f0fbd798a6d8::t_a53ba46b258cf9 1-87
+src/main/java/pnnh/mcfloatingbackpack/client/panel/tags/TagPanelContext.java
+  s_e4f0fbd798a6d8::t_b9fac9f8897704 10,20,46-61
+src/main/java/pnnh/mcfloatingbackpack/client/panel/tags/TagPanelRenderer.java
+  s_e4f0fbd798a6d8::t_b9fac9f8897704 63,135-137,153-170
+  s_e4f0fbd798a6d8::t_b94f60a5cd2386 171-172
+src/test/java/pnnh/mcfloatingbackpack/resources/NeverTrashResourcesTest.java
+  s_e4f0fbd798a6d8::t_163cc3bb1becb1 1-66
+specs/022-trash-delete-tools/DELIVERY.md
+  s_e4f0fbd798a6d8::t_fb190ea1c58a20 13-18,29-31
+  s_e4f0fbd798a6d8::t_378fcabfcb0ab1 19-26,28,64-72
+  s_e4f0fbd798a6d8::t_111745b92b26d3 27,73
+  s_e4f0fbd798a6d8::t_6e249112ef10b5 5,32-63,74-88
+  s_e4f0fbd798a6d8::t_5c0c5d8f14cbfc 1-4,6-12
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashConfirmState.java
+  s_e4f0fbd798a6d8::t_163cc3bb1becb1 1-66
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashDeletePlan.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-26
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_e4f0fbd798a6d8::t_79637758460a99 16,80-83
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_e4f0fbd798a6d8::t_eb0b730aab6f55 6,28,405-418
+  s_e4f0fbd798a6d8::t_355f8eb76d8a64 483-487
+  s_e4f0fbd798a6d8::t_79637758460a99 41-42,106,120,145,266-270,391-398,419-420,450-453
+  s_e4f0fbd798a6d8::t_49ffbbabb75c91 7
+  s_e4f0fbd798a6d8::t_d3be2bba22f4cb 421-422
+specs/022-trash-delete-tools/research.md
+  s_e4f0fbd798a6d8::t_5bd690ec72f85f 1-124
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashConfirmLayout.java
+  s_e4f0fbd798a6d8::t_99ce8dd25e3f4a 1-93
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelInput.java
+  s_e4f0fbd798a6d8::t_79637758460a99 74-86,103-107
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/StackExtraDataTest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-34
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TrashDumpTest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-49
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/StackExtraData.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-29
+specs/018-tag-manager/spec.md
+  s_e4f0fbd798a6d8::t_27f6b27f4fd6f4 15-16
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_e4f0fbd798a6d8::t_1e4f4e38ffc052 24,73-76
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TagProtection.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-17
+src/test/java/pnnh/mcfloatingbackpack/client/panel/DeleteKeyRulesTest.java
+  s_e4f0fbd798a6d8::t_aadece71ce8254 1-59
+specs/022-trash-delete-tools/data-model.md
+  s_e4f0fbd798a6d8::t_02e62cc9de6172 1-124,126-140
+  s_e4f0fbd798a6d8::t_49b374f16114a9 125
+src/main/resources/data/mcfloatingbackpack/tags/item/never_trash.json
+  s_e4f0fbd798a6d8::t_163cc3bb1becb1 1-104
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_e4f0fbd798a6d8::t_a4188a789b3678 48-60
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashStacks.java
+  s_e4f0fbd798a6d8::t_1e4f4e38ffc052 1-54
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTagPayload.java
+  s_e4f0fbd798a6d8::t_d553f482743c0a 25-26,93-98,120-133
+  s_e4f0fbd798a6d8::t_9127358624c279 134-135
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashDump.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-38
+src/main/java/pnnh/mcfloatingbackpack/client/panel/tags/TagPanelInput.java
+  s_e4f0fbd798a6d8::t_b9fac9f8897704 15,143-149
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/DeletableSlotsTest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-41
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_e4f0fbd798a6d8::t_79637758460a99 17-18,104-106
+  s_e4f0fbd798a6d8::t_0a2129bc3eb8c8 107
+specs/022-trash-delete-tools/contracts/trash-tools-ui.md
+  s_e4f0fbd798a6d8::t_f510b2b82302af 1-59
+src/test/java/pnnh/mcfloatingbackpack/client/panel/tags/TagPanelModelTest.java
+  s_e4f0fbd798a6d8::t_e9e3f496d1d5a7 101-147
+src/test/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashConfirmLayoutTest.java
+  s_e4f0fbd798a6d8::t_99ce8dd25e3f4a 1-108
+src/main/java/pnnh/mcfloatingbackpack/client/panel/DeleteKeyRules.java
+  s_e4f0fbd798a6d8::t_aadece71ce8254 1-69
+specs/022-trash-delete-tools/contracts/trash-send-network.md
+  s_e4f0fbd798a6d8::t_5f67f000f67b49 1-57
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelLayout.java
+  s_e4f0fbd798a6d8::t_9fe78889570e17 20-30,62-82
+  s_e4f0fbd798a6d8::t_819a853b28f41a 83
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TagProtectionTest.java
+  s_e4f0fbd798a6d8::t_bdedc330413c19 1-35
+docs/MCFloatingBackpack.md
+  s_e4f0fbd798a6d8::t_27f6b27f4fd6f4 128
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashActions.java
+  s_e4f0fbd798a6d8::t_480442d0668a99 1-118
+src/main/java/pnnh/mcfloatingbackpack/client/panel/trash/TrashPanelRenderer.java
+  s_e4f0fbd798a6d8::t_89dbb82acd6c03 29-39,48,51,56,77-124
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "69e50a19aa68869027a539c77ca3fbc00e05b6fc",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_e4f0fbd798a6d8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fd8b6022-0385-449d-baab-87fe7fd6d74f",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
