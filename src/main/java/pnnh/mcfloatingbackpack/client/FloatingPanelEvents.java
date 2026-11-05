@@ -5,15 +5,16 @@ import org.lwjgl.system.MemoryUtil;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -24,7 +25,9 @@ import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.HostScreenManager;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragInput;
+import pnnh.mcfloatingbackpack.client.panel.PanelHostScreen;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
@@ -35,7 +38,8 @@ import pnnh.mcfloatingbackpack.network.BackpackOpenRequestPayload;
 import pnnh.mcfloatingbackpack.network.MergePanelCursorPayload;
 
 /**
- * Client overlay: in-world or over container GUIs. Hidden on pause/options/other menus.
+ * Client overlay: over container GUIs, or over the transparent host screen (019) when no other screen is open.
+ * Hidden on pause/options/other menus.
  */
 @EventBusSubscriber(modid = MCFloatingBackpack.MOD_ID, value = Dist.CLIENT)
 public final class FloatingPanelEvents {
@@ -49,27 +53,16 @@ public final class FloatingPanelEvents {
     }
 
     /**
-     * Panel may show in the world HUD ({@code screen == null}) or over a container GUI.
-     * Not over pause / options / other game menus.
+     * The screens the panel is drawn on and takes the mouse from: its own host screen (019) or a container GUI.
+     * On any other screen (pause, options, chat...) the panel is hidden, not closed.
      */
-    public static boolean allowsPanel(Screen screen) {
-        return screen == null || ContainerScreenCompat.isOpenContainerScreen(screen);
+    public static boolean hostsPanel(Screen screen) {
+        return screen instanceof PanelHostScreen || ContainerScreenCompat.isOpenContainerScreen(screen);
     }
 
-    /** After server session open/close updates visibility. */
-    public static void syncMouseToPanelVisibility() {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null || minecraft.screen != null) {
-            return;
-        }
-        FloatingPanelState state = FloatingPanelState.get();
-        if (state.isVisible()) {
-            if (minecraft.mouseHandler.isMouseGrabbed()) {
-                minecraft.mouseHandler.releaseMouse();
-            }
-        } else if (!minecraft.mouseHandler.isMouseGrabbed()) {
-            minecraft.mouseHandler.grabMouse();
-        }
+    /** The panel may be opened with its hotkey with no screen open, or over a screen that hosts it. */
+    public static boolean allowsPanel(Screen screen) {
+        return screen == null || hostsPanel(screen);
     }
 
     private static void ensureConfigLoaded() {
@@ -97,16 +90,7 @@ public final class FloatingPanelEvents {
         state.setVisible(false);
         ClientBackpackView.get().clear();
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.close());
-        syncMouseToPanelVisibility();
-    }
-
-    private static void hideIfDisallowed(Minecraft minecraft) {
-        if (minecraft == null) {
-            return;
-        }
-        if (!allowsPanel(minecraft.screen) && FloatingPanelState.get().isVisible()) {
-            closePanel();
-        }
+        HostScreenManager.ensure();
     }
 
     @SubscribeEvent
@@ -126,38 +110,51 @@ public final class FloatingPanelEvents {
                 minecraft.getWindow().getGuiScaledHeight());
     }
 
+    private static void finishPanelMove(Minecraft minecraft, FloatingPanelState state) {
+        state.endDrag();
+        state.clampToScreen(
+                minecraft.getWindow().getGuiScaledWidth(), minecraft.getWindow().getGuiScaledHeight());
+        FloatingPanelConfig.saveFrom(state);
+    }
+
+    /** The visible state does not survive leaving the world (019: other screens only hide the panel). */
+    @SubscribeEvent
+    public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
+        HostScreenManager.reset();
+        QuickTransferInput.reset();
+        PanelDragInput.reset();
+        PanelSelectionInput.reset();
+        ClientBackpackView.get().clear();
+        FloatingPanelState state = FloatingPanelState.get();
+        state.setVisible(false);
+        state.endDrag();
+        state.endResize();
+    }
+
     @SubscribeEvent
     public static void onScreenOpening(ScreenEvent.Opening event) {
         Minecraft minecraft = Minecraft.getInstance();
-        FloatingPanelState state = FloatingPanelState.get();
         Screen neu = event.getNewScreen();
 
-        // ESC while panel open → close panel, do not open pause menu.
-        if (state.isVisible() && neu instanceof PauseScreen) {
-            event.setCanceled(true);
-            closePanel();
+        // 019: the host is the panel's own screen, never a reason to close it.
+        if (neu instanceof PanelHostScreen) {
             return;
         }
 
-        if (ContainerScreenCompat.isOpenContainerScreen(neu)) {
-            if (minecraft.player != null) {
-                PacketDistributor.sendToServer(new MergePanelCursorPayload());
-            }
-            return;
-        }
-
-        if (neu != null && state.isVisible()) {
-            closePanel();
+        // A container screen takes over the panel's cursor stack. Any other screen only hides the panel (019):
+        // it is not drawn or clicked there, and its visible state is kept for when the screen closes.
+        if (ContainerScreenCompat.isOpenContainerScreen(neu) && minecraft.player != null) {
+            PacketDistributor.sendToServer(new MergePanelCursorPayload());
         }
     }
 
     @SubscribeEvent
     public static void onScreenRender(ScreenEvent.Render.Post event) {
-        if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
+        if (!hostsPanel(event.getScreen())) {
             return;
         }
-        // 011: while a screen is open only this hook drives a Ctrl drag (onRenderGui returns early),
-        // so it runs exactly once per frame.
+        // 011/013/014: this hook is the only per-frame driver of the panel's gestures, so each runs exactly once
+        // per frame.
         QuickTransferInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
         PanelDragInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
         PanelSelectionInput.tick(Minecraft.getInstance(), event.getMouseX(), event.getMouseY());
@@ -169,26 +166,45 @@ public final class FloatingPanelEvents {
                 event.getMouseY());
     }
 
+    /**
+     * 019: puts the host screen back the moment it is due, before the frame is drawn, so a screen closed from an
+     * input callback never leaves a frame without the panel.
+     */
     @SubscribeEvent
-    public static void onRenderGui(RenderGuiEvent.Post event) {
+    public static void onRenderFramePre(RenderFrameEvent.Pre event) {
+        HostScreenManager.ensure();
+    }
+
+    /**
+     * While the host is away replaying a key (a tick or so, with no screen at all) the panel would blink out. It is
+     * drawn here for that window only - drawn, not clickable: there is no input path without a screen, and the host
+     * is back before anyone could use it.
+     */
+    @SubscribeEvent
+    public static void onRenderGuiWhileAway(RenderGuiEvent.Post event) {
         Minecraft minecraft = Minecraft.getInstance();
-        // When a screen is open, ScreenEvent.Render draws the panel instead.
-        if (minecraft.screen != null) {
-            return;
-        }
         FloatingPanelState state = FloatingPanelState.get();
-        if (!state.isVisible()) {
+        if (minecraft.screen != null || !state.isVisible() || !HostScreenManager.isAway()) {
             return;
         }
         ensureConfigLoaded();
-        QuickTransferInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
-        PanelDragInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
-        PanelSelectionInput.tick(minecraft, guiMouseX(minecraft), guiMouseY(minecraft));
         FloatingPanelRenderer.render(
-                event.getGuiGraphics(),
-                state,
-                (int) guiMouseX(minecraft),
-                (int) guiMouseY(minecraft));
+                event.getGuiGraphics(), state, (int) guiMouseX(minecraft), (int) guiMouseY(minecraft));
+    }
+
+    /**
+     * Last at the start of a tick, so every other mod has had its start-of-tick handler (some read their keys
+     * there) before a key the host replayed is dropped and the host comes back.
+     */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onClientTickStartLast(ClientTickEvent.Pre event) {
+        HostScreenManager.beforeTick();
+    }
+
+    /** Last at the end of a tick, so every other mod has had its tick (and may have opened a screen). */
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onClientTickLast(ClientTickEvent.Post event) {
+        HostScreenManager.afterTick();
     }
 
     @SubscribeEvent
@@ -198,7 +214,6 @@ public final class FloatingPanelEvents {
         PanelDragInput.stopIfInvalid(minecraft);
         PanelSelectionInput.stopIfInvalid(minecraft);
         syncSelectionContext();
-        hideIfDisallowed(minecraft);
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
             state.setTotalRows(ClientBackpackView.get().rows());
@@ -208,15 +223,20 @@ public final class FloatingPanelEvents {
                     minecraft.getWindow().getGuiScaledWidth(),
                     minecraft.getWindow().getGuiScaledHeight());
         }
-        if (state.isVisible() && minecraft.screen == null) {
-            syncMouseToPanelVisibility();
-        }
         updateResizeCursor(minecraft, state, guiMouseX(minecraft), guiMouseY(minecraft));
 
         if (!state.isVisible() || (!state.isDragging() && !state.isResizing())) {
             return;
         }
-        if (!allowsPanel(minecraft.screen)) {
+        if (!hostsPanel(minecraft.screen)) {
+            // A screen that does not host the panel (or a moment with none) took over mid-gesture: end it, so the
+            // panel is not left stuck to the mouse.
+            if (state.isDragging()) {
+                finishPanelMove(minecraft, state);
+            } else {
+                state.endResize();
+                FloatingPanelConfig.saveFrom(state);
+            }
             return;
         }
         int mouseX = (int) guiMouseX(minecraft);
@@ -274,11 +294,6 @@ public final class FloatingPanelEvents {
         }
 
         FloatingPanelState state = FloatingPanelState.get();
-        if (event.getKey() == GLFW.GLFW_KEY_ESCAPE && state.isVisible()) {
-            closePanel();
-            return;
-        }
-
         if (minecraft.screen instanceof ChatScreen) {
             return;
         }
@@ -304,19 +319,8 @@ public final class FloatingPanelEvents {
     }
 
     @SubscribeEvent
-    public static void onWorldMouseScroll(InputEvent.MouseScrollingEvent event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft == null || minecraft.screen != null) {
-            return;
-        }
-        if (scrollPanel(event.getScrollDeltaY(), guiMouseX(minecraft), guiMouseY(minecraft))) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
     public static void onScreenMouseScroll(ScreenEvent.MouseScrolled.Pre event) {
-        if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
+        if (!hostsPanel(event.getScreen())) {
             return;
         }
         if (scrollPanel(event.getScrollDeltaY(), event.getMouseX(), event.getMouseY())) {
@@ -340,27 +344,8 @@ public final class FloatingPanelEvents {
     }
 
     @SubscribeEvent
-    public static void onWorldMouseButton(InputEvent.MouseButton.Pre event) {
-        Minecraft minecraft = Minecraft.getInstance();
-        if (minecraft.screen != null) {
-            return;
-        }
-        if (!FloatingPanelState.get().isVisible()) {
-            FloatingPanelInput.resetPressTracking();
-            return;
-        }
-        if (FloatingPanelInput.onMouseButton(
-                event.getButton(),
-                event.getAction(),
-                guiMouseX(minecraft),
-                guiMouseY(minecraft))) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
     public static void onScreenMousePressed(ScreenEvent.MouseButtonPressed.Pre event) {
-        if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
+        if (!hostsPanel(event.getScreen())) {
             return;
         }
         if (FloatingPanelInput.onMouseButton(
@@ -380,7 +365,7 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onScreenMouseReleased(ScreenEvent.MouseButtonReleased.Pre event) {
-        if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
+        if (!hostsPanel(event.getScreen())) {
             return;
         }
         if (FloatingPanelInput.onMouseButton(
@@ -391,7 +376,7 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onScreenMouseDragged(ScreenEvent.MouseDragged.Pre event) {
-        if (!ContainerScreenCompat.isOpenContainerScreen(event.getScreen())) {
+        if (!hostsPanel(event.getScreen())) {
             return;
         }
         if (FloatingPanelInput.onMouseDragged(event.getMouseX(), event.getMouseY())) {

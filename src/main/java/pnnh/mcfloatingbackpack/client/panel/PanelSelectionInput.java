@@ -25,7 +25,7 @@ import pnnh.mcfloatingbackpack.network.BackpackQuickTransferPayload;
 public final class PanelSelectionInput {
     private static final SelectionGesture GESTURE = new SelectionGesture();
     private static int activeButton = -1;
-    /** The screen (null = HUD) the gesture started on; it ends when that changes. */
+    /** The screen (the host screen or a container screen) the gesture started on; it ends when that changes. */
     private static Screen activeScreen;
 
     private PanelSelectionInput() {

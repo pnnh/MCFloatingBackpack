@@ -51,6 +51,17 @@ public class FloatingBackpackItem extends Item implements Equipable {
         return EquipmentSlot.CHEST;
     }
 
+    /**
+     * The backpack's contents live in a data component that is written again on every panel click and sync, and
+     * {@code BackpackContents} holds item stacks (which compare by identity), so a held backpack never equals its
+     * previous self. The default rule would replay the "item changed" dip of the first-person hand each time; only a
+     * different item or a different hotbar slot should.
+     */
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return slotChanged || !ItemStack.isSameItem(oldStack, newStack);
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);

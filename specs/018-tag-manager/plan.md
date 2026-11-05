@@ -4,6 +4,8 @@
 
 **Input**: Feature specification from `/specs/018-tag-manager/spec.md`
 
+> **019 依赖**：本 feature 依赖 `specs/019-fallback-host-screen/`（兜底透明宿主界面，取代无界面 HUD 模式），**019 先于 018 实现**。019 完成后，本文里与 HUD 相关的部分需要简化：去掉 `TagInputScreen` 的宪法例外与 Complexity Tracking 条目、去掉"HUD 键盘捕获"（宿主与容器界面上的输入框都走 `ScreenEvent.KeyPressed.Pre`，宿主已把"让出再重放"限定在无焦点输入时）。简化在 019 验证后再做，本说明之前的内容保持原样。
+
 ## Summary
 
 新增物品"标签管理器"：放进功能区后左键展开一个覆盖主区域的标签面板，管理主区域**选中物品的分类**的标签（查看、增加、删除，每个分类最多 10 个，多选只显示共同标签）；标签保存在背包的数据里、按物品注册 id 为键。研究阶段（见 [research.md](./research.md)）读源码得出的方案：

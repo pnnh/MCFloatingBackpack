@@ -12,9 +12,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.HostScreenManager;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
@@ -77,7 +77,7 @@ public record BackpackSessionPayload(
                 state.setScrollRow(0);
                 ClientBackpackView.get().clear();
                 ClientBackpackView.get().clearActiveRef();
-                FloatingPanelEvents.syncMouseToPanelVisibility();
+                HostScreenManager.ensure();
                 return;
             }
             ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor());
@@ -88,7 +88,7 @@ public record BackpackSessionPayload(
             ClientBackpackView.get()
                     .setActiveRef(new BackpackRef(source, payload.invIndex()));
             state.setVisible(true);
-            FloatingPanelEvents.syncMouseToPanelVisibility();
+            HostScreenManager.ensure();
         });
     }
 }

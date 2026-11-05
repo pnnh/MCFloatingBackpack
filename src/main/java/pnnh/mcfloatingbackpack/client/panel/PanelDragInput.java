@@ -32,7 +32,7 @@ import pnnh.mcfloatingbackpack.network.BackpackCursorGesturePayload;
 public final class PanelDragInput {
     private static PanelDragGesture<ItemStack> gesture = newGesture();
     private static int activeButton = -1;
-    /** The screen (null = HUD) the gesture started on; it ends when that changes. */
+    /** The screen (the host screen or a container screen) the gesture started on; it ends when that changes. */
     private static Screen activeScreen;
 
     private PanelDragInput() {

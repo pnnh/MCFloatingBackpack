@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.HostScreenManager;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.network.BackpackOpenRequestPayload;
 
@@ -24,7 +25,7 @@ public final class ClientBackpackActions {
         if (state.isVisible()) {
             state.setVisible(false);
             PacketDistributor.sendToServer(BackpackOpenRequestPayload.close());
-            FloatingPanelEvents.syncMouseToPanelVisibility();
+            HostScreenManager.ensure();
             return;
         }
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.toggleMainHand());

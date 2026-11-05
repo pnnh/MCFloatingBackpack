@@ -32,7 +32,7 @@ import pnnh.mcfloatingbackpack.network.BackpackTakeFromContainerPayload;
 @OnlyIn(Dist.CLIENT)
 public final class QuickTransferInput {
     private static final QuickTransferGesture GESTURE = new QuickTransferGesture();
-    /** The screen (null = HUD) the gesture started on; a drag ends when it changes. */
+    /** The screen (the host screen or a container screen) the gesture started on; a drag ends when it changes. */
     private static Screen activeScreen;
 
     private QuickTransferInput() {
