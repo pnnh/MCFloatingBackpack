@@ -24,6 +24,7 @@ public final class ClientBackpackView {
     /** The three tool areas (016); a list's length is the area's slot count. */
     private final Map<PanelArea, NonNullList<ItemStack>> tools = new EnumMap<>(PanelArea.class);
     private ItemStack cursor = ItemStack.EMPTY;
+    private pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
     private BackpackRef activeRef;
 
     private ClientBackpackView() {
@@ -48,6 +49,16 @@ public final class ClientBackpackView {
     public int toolCount(PanelArea area) {
         NonNullList<ItemStack> list = tools.get(area);
         return list == null ? 0 : list.size();
+    }
+
+    /** 018: whether the function area (bottom row) holds a tag manager, which is what makes the tag panel available. */
+    public boolean hasTagManager() {
+        for (int i = 0; i < toolCount(PanelArea.BOTTOM); i++) {
+            if (getToolStack(PanelArea.BOTTOM, i).is(pnnh.mcfloatingbackpack.item.ModItems.TAG_MANAGER.get())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ItemStack getToolStack(PanelArea area, int index) {
@@ -80,6 +91,15 @@ public final class ClientBackpackView {
             return ItemStack.EMPTY;
         }
         return slots.get(index);
+    }
+
+    /** 018: the open backpack's tags, by item category. */
+    public pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags() {
+        return tags;
+    }
+
+    public void setTags(pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags) {
+        this.tags = tags == null ? pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY : tags;
     }
 
     public ItemStack getCursor() {
@@ -143,6 +163,7 @@ public final class ClientBackpackView {
         slots = NonNullList.withSize(BackpackTier.LEATHER.capacity(), ItemStack.EMPTY);
         resetTools(BackpackTier.LEATHER.capacity());
         cursor = ItemStack.EMPTY;
+        tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
         reportCounts();

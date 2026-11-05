@@ -31,6 +31,10 @@ public final class ModItems {
     public static final DeferredHolder<Item, FloatingBackpackItem> NETHERITE_FLOATING_BACKPACK =
             register(BackpackTier.NETHERITE);
 
+    /** 018: lives in the panel's function area; see {@link TagManagerItem}. */
+    public static final DeferredHolder<Item, TagManagerItem> TAG_MANAGER =
+            ITEMS.register("tag_manager", () -> new TagManagerItem(new Item.Properties()));
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -41,6 +45,7 @@ public final class ModItems {
                                 for (BackpackTier tier : BackpackTier.values()) {
                                     output.accept(stackFor(tier));
                                 }
+                                output.accept(TAG_MANAGER.get());
                             })
                             .build());
 

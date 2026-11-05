@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
@@ -19,6 +20,7 @@ public final class BackpackInventory {
     /** The three tool areas (016), indexed by {@link PanelArea#ordinal()}; the MAIN slot of the array is unused. */
     private final ItemStackHandler[] tools = new ItemStackHandler[PanelArea.values().length];
     private ItemStack cursor = ItemStack.EMPTY;
+    private ItemTags tags = ItemTags.EMPTY;
 
     public BackpackInventory(int capacity) {
         int size = Math.max(1, Math.min(MAX_SIZE, capacity));
@@ -79,6 +81,15 @@ public final class BackpackInventory {
         return out;
     }
 
+    /** The tags of this backpack, by item category (018). */
+    public ItemTags tags() {
+        return tags;
+    }
+
+    public void setTags(ItemTags tags) {
+        this.tags = tags == null ? ItemTags.EMPTY : tags;
+    }
+
     public ItemStack getCursor() {
         return cursor;
     }
@@ -111,6 +122,7 @@ public final class BackpackInventory {
             inventory.setStackInSlot(i, fitted.items().get(i).copy());
         }
         inventory.setCursor(fitted.cursor());
+        inventory.setTags(fitted.tags());
         for (PanelArea area : PanelArea.values()) {
             if (!area.isTool()) {
                 continue;
@@ -130,7 +142,7 @@ public final class BackpackInventory {
         for (int i = 0; i < size(); i++) {
             list.add(getStackInSlot(i).copy());
         }
-        return BackpackContents.fit(list, getCursor().copy(), toolContents(), size());
+        return BackpackContents.fit(list, getCursor().copy(), toolContents(), tags, size());
     }
 
     public static int capacityOf(ItemStack backpack) {

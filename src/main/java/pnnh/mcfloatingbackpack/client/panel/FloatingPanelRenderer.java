@@ -12,6 +12,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelRenderer;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
@@ -84,6 +86,10 @@ public final class FloatingPanelRenderer {
         drawVanillaPanel(graphics, x, y, w, h);
         drawSlotsWithItems(graphics, mouseX, mouseY);
         drawScrollArrows(graphics, ClientBackpackView.get().layout());
+        // 018: the expanded tag panel replaces the main area (its cells, selection and arrows are not drawn).
+        if (TagPanelState.get().isOpen()) {
+            TagPanelRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
+        }
         drawCloseButton(graphics, state);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
@@ -162,6 +168,9 @@ public final class FloatingPanelRenderer {
         Preview<ItemStack> preview = PanelDragInput.preview();
         PanelSelection selection = PanelSelection.get();
         for (PanelArea area : PanelArea.values()) {
+            if (area == PanelArea.MAIN && TagPanelState.get().isOpen()) {
+                continue;
+            }
             for (int ordinal = 0; ordinal < layout.visibleCount(area); ordinal++) {
                 // A filler cell (beyond the area's capacity, or the empty tail of the main area's last row)
                 // is left as plain panel background: the panel stays one rectangle without inventing slots.
@@ -236,6 +245,9 @@ public final class FloatingPanelRenderer {
      */
     private static void drawScrollArrows(GuiGraphics graphics, PanelLayout layout) {
         for (PanelArea area : PanelArea.values()) {
+            if (area == PanelArea.MAIN && TagPanelState.get().isOpen()) {
+                continue;
+            }
             PanelLayout.Rect r = layout.rect(area);
             boolean back = layout.canBack(area);
             boolean forward = layout.canForward(area);

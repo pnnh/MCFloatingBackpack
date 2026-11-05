@@ -9,9 +9,12 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 
 /**
@@ -67,6 +70,11 @@ public final class FloatingPanelInput {
         }
 
         if (action == GLFW.GLFW_PRESS) {
+            // 018: a press anywhere but on the tag panel itself takes the focus away from its text box.
+            if (TagPanelState.get().isEditing()
+                    && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
+                TagPanelState.get().stopEditing();
+            }
             // Close button and resize handle sit on/inside the drag bar and body respectively, so
             // they must be checked before those broader hit tests claim the press first.
             if (!isRight && state.hitsCloseButton(mouseX, mouseY)) {
@@ -93,8 +101,25 @@ public final class FloatingPanelInput {
                 if (Screen.hasShiftDown() || Screen.hasControlDown() || PanelDragInput.isActive()) {
                     return true;
                 }
+                // 018: a plain left click with an empty cursor on a tag manager in the function area opens or closes
+                // the tag panel instead of picking it up; the right button still picks it up. Anywhere else it is an
+                // ordinary item.
+                if (!isRight
+                        && toolHit.area() == PanelArea.BOTTOM
+                        && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
+                        && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
+                                .is(ModItems.TAG_MANAGER.get())) {
+                    TagPanelState.get().toggle();
+                    return true;
+                }
                 sendClick(toolHit.area(), toolHit.index(), isRight);
                 return true;
+            }
+            // 018: while the tag panel covers the main area it takes every press there, and the main area's own
+            // gestures (selection, quick transfer, drag) never see it.
+            if (TagPanelState.get().isOpen()
+                    && ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
+                return TagPanelInput.onMainPress(button, mouseX, mouseY);
             }
             int slot = PanelSlots.indexAt(state, mouseX, mouseY);
             // The last reflowed row can run past the backpack's real slot count once visibleCols

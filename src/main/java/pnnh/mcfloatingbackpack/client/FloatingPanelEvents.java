@@ -31,6 +31,8 @@ import pnnh.mcfloatingbackpack.client.panel.PanelHostScreen;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
@@ -99,6 +101,7 @@ public final class FloatingPanelEvents {
         QuickTransferInput.reset();
         PanelDragInput.reset();
         PanelSelectionInput.reset();
+        TagPanelState.get().reset();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
@@ -121,6 +124,7 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         HostScreenManager.reset();
+        TagPanelState.get().reset();
         QuickTransferInput.reset();
         PanelDragInput.reset();
         PanelSelectionInput.reset();
@@ -214,6 +218,11 @@ public final class FloatingPanelEvents {
         PanelDragInput.stopIfInvalid(minecraft);
         PanelSelectionInput.stopIfInvalid(minecraft);
         syncSelectionContext();
+        // 018: the tag panel needs a tag manager in the function area and an open backpack panel.
+        if (TagPanelState.get().isOpen()
+                && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTagManager())) {
+            TagPanelState.get().collapse();
+        }
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
             state.setTotalRows(ClientBackpackView.get().rows());
@@ -318,6 +327,32 @@ public final class FloatingPanelEvents {
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.open(ref));
     }
 
+    // 018: while the tag text box has the focus the keyboard is the box's. These run before the screen (and the host
+    // screen's key forwarding) sees the event, and cancelling them also keeps InputEvent.Key from firing. Without the
+    // focus nothing is cancelled.
+    @SubscribeEvent
+    public static void onScreenKeyPressed(ScreenEvent.KeyPressed.Pre event) {
+        if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
+            TagPanelInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onScreenKeyReleased(ScreenEvent.KeyReleased.Pre event) {
+        if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
+            event.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onScreenCharTyped(ScreenEvent.CharacterTyped.Pre event) {
+        if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
+            TagPanelInput.onCharTyped(event.getCodePoint());
+            event.setCanceled(true);
+        }
+    }
+
     @SubscribeEvent
     public static void onScreenMouseScroll(ScreenEvent.MouseScrolled.Pre event) {
         if (!hostsPanel(event.getScreen())) {
@@ -337,6 +372,11 @@ public final class FloatingPanelEvents {
         // (up, or left for the bottom row). Over the title bar, the padding or an area that has nothing to
         // scroll it does nothing, but the event is still taken so it cannot leak to the screen underneath.
         PanelArea area = ClientBackpackView.get().layout().areaAt(mouseX, mouseY);
+        // 018: the expanded tag panel covers the main area and takes the wheel there.
+        if (area == PanelArea.MAIN && TagPanelState.get().isOpen()) {
+            TagPanelInput.onMainScroll(scrollDeltaY);
+            return true;
+        }
         if (area != null) {
             state.scrollBy(area, scrollDeltaY > 0 ? -1 : 1);
         }

@@ -16,7 +16,7 @@
 | 左键点击 ✕ | 发 `BackpackTagPayload(REMOVE, 选区下标, tag)`，`pendingDelete` 清空 |
 | 左键点击加号 | 可用：进入编辑（文本框获得焦点，见 §4）；灰色：无效 |
 | 左键点击文本框 | 保持编辑，移动光标 |
-| 左键点击下拉项 | 选中该项（`dropdownIndex`），不立即添加；回车才添加 |
+| 左键点击下拉项 | **立即添加**该预设（2026-11-05 验证后改：原先只选中、要回车才添加，用户点了没反应；键盘仍是方向键 + 回车） |
 | 左键点击其他空白 | 取消编辑与待删除 |
 | 其他按键/右键 | 消费并忽略 |
 | 滚轮 | 面板内容纵向滚动（每档一行） |
@@ -35,7 +35,7 @@
 ## 4. 键盘焦点模型（FR-016）
 
 ```text
-没有焦点（默认）            →  不拦截任何键盘事件；HUD 下 WASD 照常移动
+没有焦点（默认）            →  标签功能不拦截任何键盘事件（宿主/容器界面各自的按键规则照旧）
         │ 点击可用的加号
         ▼
 文本框有焦点（editing）     →  键盘字符与按键只作用于文本框
@@ -44,24 +44,14 @@
 没有焦点
 ```
 
-- **容器界面打开时**：编辑期间，`ScreenEvent.KeyPressed.Pre`、`KeyReleased.Pre`、`CharacterTyped.Pre` 把事件交给 `TagTextInput`/面板处理并**取消**，原版收不到。
-- **HUD（没有界面）时**：编辑开始时 `minecraft.setScreen(new TagInputScreen())`（透明、`isPauseScreen() == false`、不绘制任何内容、`shouldCloseOnEsc() == false`），之后键盘事件同样走上面的 `ScreenEvent` 钩子；原版因为有界面打开而释放全部按键状态，WASD 不再移动角色。编辑结束时 `setScreen(null)`。
+- **宿主界面与容器界面一视同仁**（019 之后面板下面始终有其中之一）：编辑期间，`ScreenEvent.KeyPressed.Pre`、`KeyReleased.Pre`、`CharacterTyped.Pre` 把事件交给 `TagTextInput`/面板处理并**取消**，界面自己（包括宿主的"让出再重放"）和原版都收不到。这些事件作用的界面由 `FloatingPanelEvents.hostsPanel(screen)`（宿主界面或容器界面，019 已提供）判定。
 - 编辑期间的按键：可见字符 → `type`；Backspace/Delete/左右/Home/End → 编辑；上下 → 移动 `dropdownIndex`；回车 → 添加；**ESC → 取消编辑**（不关浮动面板、不弹暂停菜单）；粘贴（`Screen.isPaste`）→ `paste`（逐字符过滤，大写被过滤）。
-- `FloatingPanelEvents.onKey`（`InputEvent.Key`）在编辑中直接返回，避免热键或 ESC 同时触发面板切换/关闭。
+- 被 `ScreenEvent` 取消的按键不会再发出 `InputEvent.Key`（`KeyboardHandler` 在发出之前就返回了），所以 `onKey` 里的热键切换不会和编辑冲突，不需要特殊处理。
 - 没有焦点时，ESC 与热键的行为保持原样（ESC 关闭浮动面板）。
 
-## 5. `TagInputScreen` 与现有逻辑的衔接
+## 5. 与 019 宿主界面的衔接
 
-新增 `FloatingPanelEvents.hostsPanel(screen)` = 容器界面（`ContainerScreenCompat.isOpenContainerScreen`）**或** `TagInputScreen`，用于：
-
-| 位置 | 用途 |
-|---|---|
-| `allowsPanel` / `hideIfDisallowed` | 输入屏幕打开时不关闭面板 |
-| `onScreenOpening` | 输入屏幕打开时不因"非容器界面"而关闭面板 |
-| `onScreenRender` | 输入屏幕打开时由 `ScreenEvent.Render.Post` 绘制面板（`RenderGuiEvent.Post` 在有界面时不画） |
-| 鼠标按下/松开/拖动/滚轮钩子 | 输入屏幕打开时点击与滚轮仍然交给面板 |
-
-不变：`screenOpen`/光标来源仍只认容器界面，所以输入屏幕打开时用面板自己的光标；输入屏幕关闭后 `syncMouseToPanelVisibility` 在下一 tick 重新释放鼠标。
+标签面板不新增任何界面。019 已提供 `FloatingPanelEvents.hostsPanel(screen)`（宿主界面或容器界面），面板的渲染、鼠标、滚轮钩子本来就挂在它上面；本 feature 只需把键盘的三个 `ScreenEvent` 钩子也挂在 `hostsPanel` 上，并在非编辑时一律不取消。光标来源/`screenOpen` 仍只认容器界面。
 
 ## 6. 本地化
 

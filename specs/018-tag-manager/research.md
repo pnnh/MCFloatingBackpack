@@ -80,18 +80,20 @@ P I P      I = minecraft:ink_sac 或 minecraft:black_dye（墨）
 
 **Rationale**: 满足 FR-004，并且让 011/013/014 的输入类一行不用改（它们只是收不到被面板消费的事件）。
 
-## Decision 11（关键）: 键盘接管用"事件拦截 + 仅在编辑时存在的透明输入屏幕"
+## Decision 11（关键）: 键盘接管用"ScreenEvent 事件拦截"，宿主与容器界面同一条路径
+
+> **2026-11-05 修订**：原版本为 HUD（没有任何界面）设计了一个"仅在编辑时存在的透明输入屏幕 `TagInputScreen`"，并为它记了对宪法 I 的例外。019 取消了无界面的 HUD 模式、改为兜底的透明宿主界面后，面板下面始终有一个界面，这个屏幕和例外都不再需要。
 
 **Decision**:
-- **有界面打开**（容器界面）：文本框有焦点时，用 NeoForge 的 `ScreenEvent.KeyPressed.Pre`、`KeyReleased.Pre`、`CharacterTyped.Pre`（都可取消）把键盘事件喂给 `TagTextInput` 并取消，原版因此收不到。
-- **HUD 模式（没有任何界面）**：原版在没有界面时，按键直接进 `KeyMapping`，NeoForge 的 `InputEvent.Key` **不可取消**且没有字符事件，所以无法拦截。做法是文本框获得焦点的那一刻 `minecraft.setScreen(new TagInputScreen())`——一个**透明、不暂停、不画任何东西**的 `Screen`——打开它会让原版自动释放所有按键状态（WASD 不再移动角色），并且之后的按键与字符都走上面同样的 `ScreenEvent` 事件；文本框失去焦点（ESC、回车、点击别处、面板收起、工具离开、浮动面板关闭）时 `setScreen(null)`，键盘立刻还给游戏。
-- **没有焦点时不创建这个屏幕、不拦截任何事件**（FR-016）：HUD 下 WASD 照常。
-- 这个屏幕只是键盘承载体，不是面板的打开路径：浮动面板仍然是叠层。因此需要让现有逻辑把它当作"可以承载面板的界面"：`allowsPanel`、`onScreenOpening`（不要因为它打开而关闭面板）、`onScreenRender`（它打开时面板由 `ScreenEvent.Render.Post` 绘制，因为 `RenderGuiEvent.Post` 在有界面时不画）、鼠标事件钩子（它打开时点击仍交给面板）都新增 `FloatingPanelEvents.hostsPanel(screen)`（容器界面或 `TagInputScreen`）；而"光标来源/`screenOpen`"仍只认容器界面（`ContainerScreenCompat.isOpenContainerScreen`），所以这个屏幕下仍然用面板自己的光标。
-- `FloatingPanelEvents.onKey`（`InputEvent.Key`，现有的热键切换与 ESC 关面板）在编辑中直接返回，避免文本框里的 `Esc`/热键字符同时触发面板切换。
+- 文本框有焦点时，用 NeoForge 的 `ScreenEvent.KeyPressed.Pre`、`KeyReleased.Pre`、`CharacterTyped.Pre`（都可取消）把键盘事件喂给 `TagTextInput` 并取消。这三个事件在界面自己的 `keyPressed`/`charTyped` **之前**触发，所以宿主界面的"让出再重放"和原版都收不到编辑时打的字符。
+- 作用的界面 = `FloatingPanelEvents.hostsPanel(screen)`（宿主界面或容器界面，019 提供）。
+- 没有焦点时标签功能**不取消任何事件**（FR-016）；宿主/容器界面各自的按键规则照旧。
+- 读 `KeyboardHandler.keyPress` 已确认：界面前置事件取消了按键，就在发出 `InputEvent.Key` 之前返回，所以 `FloatingPanelEvents.onKey`（热键切换）不会和编辑冲突，不需要特殊处理。
+- 光标来源/`screenOpen` 仍只认容器界面，所以宿主下仍用面板自己的光标。
 
-**Rationale**: 这是唯一不改原版代码（不用 mixin）就能在 HUD 下可靠地独占键盘并让角色停止移动的办法；它只在编辑时存在，满足用户"没有焦点时不拦截、HUD 下 WASD 照常"。**这是对宪法 I 的一个窄例外**（宪法说不得把 `Minecraft.screen` 当作面板的主要打开路径；这里它只是编辑期的键盘承载体），记录在 Complexity Tracking，并在 quickstart 里专门验证（不弹暂停菜单、不遮挡画面、鼠标抓取恢复）。
+**Rationale**: 不新增任何 Screen、不改原版代码、不用 mixin，也没有对宪法的例外；比原方案少一个类和一组衔接改动。
 
-**Alternatives considered**: 在 `InputEvent.Key` 里读按键并自己转字符、每 tick 清 `KeyMapping`（键盘布局相关、按键状态闪烁，不可靠）；mixin `KeyboardHandler`（侵入大，维护成本高）；始终打开一个屏幕（违背宪法 I，且没有焦点时就会拦截）。
+**Alternatives considered**: 原方案（HUD 下临时开 `TagInputScreen`）——019 之后多余；在 `InputEvent.Key` 里自己把按键转字符（不可取消、键盘布局相关）；mixin `KeyboardHandler`（侵入大）。
 
 ## Decision 12: 展开/收起的点击分派
 
@@ -109,8 +111,8 @@ P I P      I = minecraft:ink_sac 或 minecraft:black_dye（墨）
 
 ## 仍不确定 / 需要游戏内确认
 
-- **透明输入屏幕**：打开时是否有一帧闪烁、鼠标抓取/释放是否正常、`ScreenEvent.Opening` 是否会因为我们的屏幕而误关面板、`F3`/截图等系统热键是否仍可用、焦点丢失后移动键是否立刻恢复（宪法 I 的例外，必须在 HUD 与容器界面两种情况下验证）。
-- `InputEvent.Key` 在被 `ScreenEvent` 取消的按键上是否真的不再触发（源码里看起来是 `return` 在前，需要实测）。
+- 编辑时 `ScreenEvent` 取消的按键，宿主是否真的收不到（不触发"让出再重放"，不关面板）；ESC 在编辑中是否只取消编辑——必须在宿主界面与容器界面两种情况下验证。
+- `InputEvent.Key` 在被 `ScreenEvent` 取消的按键上不再触发（读 `KeyboardHandler` 已确认，仍建议实测一次）。
 - 标签管理器图标的最终效果与 ludo.ai 额度；是否需要退回自绘。
 - 分类数封顶 1024 是 spec 没写的内部保护，建议补进 spec。
 - 面板在最小主区域（3×3 = 54×54 像素）里的排版是否仍可用（状态行 + 一行标签 + 加号，靠滚动查看更多）。

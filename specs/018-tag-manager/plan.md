@@ -4,7 +4,7 @@
 
 **Input**: Feature specification from `/specs/018-tag-manager/spec.md`
 
-> **019 依赖**：本 feature 依赖 `specs/019-fallback-host-screen/`（兜底透明宿主界面，取代无界面 HUD 模式），**019 先于 018 实现**。019 完成后，本文里与 HUD 相关的部分需要简化：去掉 `TagInputScreen` 的宪法例外与 Complexity Tracking 条目、去掉"HUD 键盘捕获"（宿主与容器界面上的输入框都走 `ScreenEvent.KeyPressed.Pre`，宿主已把"让出再重放"限定在无焦点输入时）。简化在 019 验证后再做，本说明之前的内容保持原样。
+> **019 已完成（2026-11-05），本文已按它简化**：本 feature 依赖 `specs/019-fallback-host-screen/`——没有容器界面时面板挂在兜底的透明宿主界面上，不再有无界面的 HUD 模式。因此原来的 `TagInputScreen`（HUD 下编辑文本时临时开的输入屏幕）、对宪法 I 的例外、Complexity Tracking 条目和"HUD 键盘捕获"都**不再需要**：宿主与容器界面都是界面，文本框的键盘走同一条 `ScreenEvent.KeyPressed.Pre`/`KeyReleased.Pre`/`CharacterTyped.Pre`（可取消）路径，先于宿主自己的按键处理，所以编辑时打出的 `e`、`t` 不会触发宿主的"让出再重放"。另一个变化：宿主在场时玩家本来就不能移动（019 的已确认取舍），所以"没有焦点时 WASD 照常"改为"没有焦点时标签功能不拦截任何键盘事件"。
 
 ## Summary
 
@@ -15,7 +15,7 @@
 3. **服务端权威的增删**：`BackpackTagPayload(op, 选区的主格子下标, 标签)`；服务端核对背包与"功能区里有标签管理器"、校验请求、把下标解析成物品 id 并去重，整个请求要么全成要么零变化；之后用 `BackpackTagsPayload` 把整份标签发回客户端。协议 `"7"` → `"8"`。
 4. **纯逻辑为主**：`TagRules`、`PresetTags`（10 个稳定英文 id）、`TagMatcher`（前缀 > 子串 > 子序列的模糊匹配）、`TagBook`、`TagRequest`、`TagPanelModel`、`TagPanelLayout`、`TagTextInput` 都不依赖 Minecraft，可单元测试。
 5. **标签面板是覆盖主区域的叠层**：展开时命中主区域的点击与滚轮由面板消费（不进入选区/Ctrl 转移/拖动手势，选区保持不变）；用 `fill` 和字体绘制，不新增贴图。
-6. **键盘接管看焦点（关键设计）**：没有焦点时**完全不拦截**；文本框有焦点时，容器界面里用可取消的 `ScreenEvent.Key*/CharacterTyped` 拦截；**HUD 下**因为 `InputEvent.Key` 不可取消，编辑期间临时打开一个**透明、不暂停、不绘制的 `TagInputScreen`** 来承载键盘（原版因此释放按键状态，WASD 不再移动角色），编辑结束立即关闭——这是对宪法 I 的一个窄例外，已在 Complexity Tracking 里说明。
+6. **键盘接管看焦点（关键设计，019 之后已简化）**：没有焦点时标签功能**完全不拦截**；文本框有焦点时，在宿主界面和容器界面上都用可取消的 `ScreenEvent.KeyPressed.Pre`/`KeyReleased.Pre`/`CharacterTyped.Pre` 拦截并取消（它们先于界面自己的处理，所以宿主不会把编辑时打的 `e`、`t` 当成"让出"的按键）。**不再需要 `TagInputScreen`，也没有对宪法 I 的例外。**
 7. **配方**：3×3 `线 纸 线 / 皮革 书 皮革 / 纸 墨 纸`（参考精妙背包/旅行者背包"线 + 皮革 + 主题材料"的升级组件，一段式，不用第三方物品）。
 8. **图标**：一张 16×16 平面贴图（`item/generated`），先用 ludo.ai 生成再整理成 16×16，失败则自绘；记录来源。
 
@@ -29,7 +29,7 @@
 
 **Storage**: 物品数据组件 `BACKPACK_CONTENTS` 新增可选字段 `tags`；界面状态（展开、输入框内容、滚动）只在客户端会话里，不持久化
 
-**Testing**: JUnit 5 纯逻辑测试：`TagRules`、`PresetTags`、`TagMatcher`、`TagBook`、`TagRequest`、`TagTextInput`、`TagPanelModel`、`TagPanelLayout`；资源测试：解析配方 JSON 与两份语言文件的键；加客户端会话手测（quickstart，宪法 V），HUD 与打开界面都要测，重点是键盘接管
+**Testing**: JUnit 5 纯逻辑测试：`TagRules`、`PresetTags`、`TagMatcher`、`TagBook`、`TagRequest`、`TagTextInput`、`TagPanelModel`、`TagPanelLayout`；资源测试：解析配方 JSON 与两份语言文件的键；加客户端会话手测（quickstart，宪法 V），宿主界面与容器界面都要测，重点是键盘接管
 
 **Target Platform**: Minecraft 1.21.1 桌面客户端 + 服务端（双端模组）；开发机 macOS
 
@@ -39,11 +39,11 @@
 
 **Constraints**:
 - 标签的增删由服务端校验并执行，服务端不信任客户端的物品 id；整个请求要么全成要么零变化（宪法 II）
-- 没有焦点时不得拦截任何键盘事件；HUD 下 WASD 照常
+- 没有焦点时标签功能不得拦截任何键盘事件
 - 011～017 的行为、放入规则、选区、手势、合法尺寸全部不变
 - 只新增一张 16×16 贴图与语言条目（宪法 VI）；协议版本升到 `"8"`
 
-**Scale/Scope**: 约 14 个新类（物品、`TagRules`、`PresetTags`、`TagMatcher`、`TagBook`、`ItemTags`、`TagRequest`、两个网络包、`TagPanelState`、`TagPanelModel`、`TagPanelLayout`、`TagTextInput`、`TagInputScreen`、渲染与输入的接入类）；改动 `BackpackContents`、`BackpackInventory`、`BackpackUpgradeRecipe`、`BackpackNetwork`、`ClientBackpackView`、`FloatingPanelInput`、`FloatingPanelEvents`、`FloatingPanelRenderer`、`ModItems`；约 8 个新测试类；资源：配方、模型、贴图、语言
+**Scale/Scope**: 约 13 个新类（物品、`TagRules`、`PresetTags`、`TagMatcher`、`TagBook`、`ItemTags`、`TagRequest`、两个网络包、`TagPanelState`、`TagPanelModel`、`TagPanelLayout`、`TagTextInput`、渲染与输入的接入类）；改动 `BackpackContents`、`BackpackInventory`、`BackpackUpgradeRecipe`、`BackpackNetwork`、`ClientBackpackView`、`FloatingPanelInput`、`FloatingPanelEvents`、`FloatingPanelRenderer`、`ModItems`；约 8 个新测试类；资源：配方、模型、贴图、语言
 
 ## Constitution Check
 
@@ -51,16 +51,16 @@
 
 | 原则 | 评估 | 结论 |
 |---|---|---|
-| I. Overlay Not Screen | 浮动面板与标签面板仍是叠层，打开路径不变；**HUD 编辑文本时**临时打开一个透明输入屏幕作为键盘承载体，仅此一处，编辑结束即关闭（见 Complexity Tracking） | PASS（有一处已说明的窄例外） |
+| I. Overlay Not Screen | 浮动面板与标签面板仍是叠层，打开路径不变；**不新增任何 Screen**——键盘走宿主界面/容器界面上的 `ScreenEvent` 事件（宪法 2.0.0 的兜底宿主已由 019 提供） | PASS |
 | II. Server Owns Items | 标签的增删与上限在服务端校验、保存；客户端只发选区下标与标签，不发物品 id；服务端核对工具存在；整个请求原子 | PASS |
-| III. One Feature At A Time | 只做标签管理器（物品、配方、图标、标签数据、面板、文本输入）；垃圾桶、标签显示/筛选/重命名明确不做；键盘承载屏幕是它的实现需要，不另开功能 | PASS |
+| III. One Feature At A Time | 只做标签管理器（物品、配方、图标、标签数据、面板、文本输入）；垃圾桶、标签显示/筛选/重命名明确不做；不再有键盘承载屏幕 | PASS |
 | IV. Vanilla Path Before Compat | 配方只用原版材料与 NeoForge 通用标签；不引用精妙背包、旅行者背包的任何物品或类型 | PASS |
-| V. Verify In A Client Session | quickstart 46 项逐场景要求客户端验证（HUD/容器界面、键盘接管、ESC、持久化、升级、旧存档）；Windows/Linux 无法验证，登记为未验证 | PASS（已规划，实现阶段必须执行） |
+| V. Verify In A Client Session | quickstart 46 项逐场景要求客户端验证（宿主界面/容器界面、键盘接管、ESC、持久化、升级、旧存档）；Windows/Linux 无法验证，登记为未验证 | PASS（已规划，实现阶段必须执行） |
 | VI. Shared Resources Have A Budget | 只新增一张 16×16 物品贴图（物品图集，不进方块图集的大图），面板全是 `fill`；实现完成时度量一次图集作回归，生成来源记录在 DELIVERY | PASS（已规划） |
 
-**Re-check after Phase 1 design**：除上面 I 的一个窄例外外，没有新增违反项。实现阶段要盯住的风险：
-1. **透明输入屏幕**：打开/关闭时的闪烁、鼠标抓取、`ScreenEvent.Opening` 误关面板、系统热键、焦点丢失后移动键恢复——必须在 HUD 与容器界面两种情况下实测（research Decision 11）；
-2. **`InputEvent.Key` 是否在被 `ScreenEvent` 取消的按键上跳过**：源码看起来是先 `return`，需要实测，否则 `onKey` 里要靠"编辑中直接返回"兜底（已设计）；
+**Re-check after Phase 1 design**：没有违反项（019 之后没有宪法例外）。实现阶段要盯住的风险：
+1. **编辑时的键盘**：`ScreenEvent.KeyPressed.Pre` 取消后宿主不得再收到该键（不触发"让出再重放"），`KeyReleased.Pre`、`CharacterTyped.Pre` 同理；ESC 在编辑中只取消编辑、不关面板——必须在宿主界面与容器界面两种情况下实测（research Decision 11）；
+2. **`InputEvent.Key` 是否在被 `ScreenEvent` 取消的按键上跳过**：019 读 `KeyboardHandler` 已确认被取消的按键会在发出 `InputEvent.Key` 之前返回，所以 `onKey` 不需要为编辑做特殊处理（仍建议实测一次）；
 3. **存储与同步**：`BackpackContents` 编码改变、会话包字段已满所以另发标签包、协议升到 8；旧背包读成空（research Decision 2/6）；
 4. **展开期间主区域被面板消费**：不能漏出任何点击到选区/Ctrl 转移/拖动手势。
 
@@ -104,7 +104,7 @@ src/main/java/pnnh/mcfloatingbackpack/
 │   ├── BackpackTagsPayload.java       # 新增：服务端→客户端，整份标签同步
 │   └── BackpackNetwork.java           # 修改："7" → "8"，注册两个包，sendSession(open) 后发标签
 └── client/
-    ├── FloatingPanelEvents.java       # 修改：hostsPanel、ScreenEvent 键盘钩子、onKey 编辑中返回、每 tick 同步
+    ├── FloatingPanelEvents.java       # 修改：ScreenEvent 键盘钩子（作用于宿主界面与容器界面，即 019 的 hostsPanel）、每 tick 同步
     └── panel/
         ├── tags/
         │   ├── TagPanelState.java     # 新增：界面状态单例
@@ -112,8 +112,7 @@ src/main/java/pnnh/mcfloatingbackpack/
         │   ├── TagPanelLayout.java    # 新增：纯逻辑，排版与命中
         │   ├── TagTextInput.java      # 新增：纯逻辑，文本编辑
         │   ├── TagPanelInput.java     # 新增：与游戏相连，点击/键盘/发请求
-        │   ├── TagPanelRenderer.java  # 新增：用 fill 与字体绘制
-        │   └── TagInputScreen.java    # 新增：透明、不暂停的键盘承载屏幕（仅 HUD 编辑时存在）
+        │   └── TagPanelRenderer.java  # 新增：用 fill 与字体绘制
         ├── ClientBackpackView.java    # 修改：保存 ItemTags
         ├── FloatingPanelInput.java    # 修改：功能区里标签管理器的左键切换；展开时主区域输入交给面板
         └── FloatingPanelRenderer.java # 修改：展开时绘制标签面板并隐藏主区域格子/选区/箭头
@@ -135,12 +134,10 @@ src/test/java/pnnh/mcfloatingbackpack/
 specs/016、017 与 docs/MCFloatingBackpack.md   # 修改：加 018 说明
 ```
 
-**Structure Decision**: 沿用单模块。规则、排版、编辑、模型都是不依赖 Minecraft 的纯类；与游戏相连的部分（输入、渲染、输入屏幕、网络）单独成类；标签子系统放在 `inventory/tags` 与 `client/panel/tags` 两个子包里，避免挤进已有的大类。
+**Structure Decision**: 沿用单模块。规则、排版、编辑、模型都是不依赖 Minecraft 的纯类；与游戏相连的部分（输入、渲染、网络）单独成类；标签子系统放在 `inventory/tags` 与 `client/panel/tags` 两个子包里，避免挤进已有的大类。
 
 ## Complexity Tracking
 
 > **Fill ONLY if Constitution Check has violations that must be justified**
 
-| Violation | Why Needed | Simpler Alternative Rejected Because |
-|---|---|---|
-| 宪法 I：HUD 下编辑标签文本时临时打开一个透明输入屏幕（`TagInputScreen`），把 `Minecraft.screen` 用作键盘承载体 | 没有界面时按键直接进 `KeyMapping`，`InputEvent.Key` 不可取消、也没有字符事件，无法既把字符送进文本框、又让 WASD 不再移动角色；用户明确要求"焦点在文本框时才接管键盘、HUD 下没有焦点时 WASD 照常" | ① 在 `InputEvent.Key` 里自己把按键转成字符并每 tick 清 `KeyMapping`：依赖键盘布局、按键状态会闪烁，不可靠；② mixin `KeyboardHandler`：侵入大、维护成本高；③ 始终打开一个屏幕：违背宪法 I 且没有焦点时也会拦截。该屏幕只在编辑时存在、不绘制、不暂停，浮动面板与标签面板仍是叠层，面板的打开路径没有变化 |
+无违反项，不需要填写。（原先为 HUD 下编辑文本而设计的 `TagInputScreen` 及其对宪法 I 的例外，已因 019 的兜底宿主界面而取消。）

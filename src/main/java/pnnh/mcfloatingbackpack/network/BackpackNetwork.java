@@ -21,7 +21,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("7");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("8");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -34,6 +34,10 @@ public final class BackpackNetwork {
                 BackpackSessionPayload.TYPE,
                 BackpackSessionPayload.STREAM_CODEC,
                 BackpackSessionPayload::handleClient);
+        registrar.playToClient(
+                BackpackTagsPayload.TYPE,
+                BackpackTagsPayload.STREAM_CODEC,
+                BackpackTagsPayload::handleClient);
         registrar.playToServer(
                 BackpackClickPayload.TYPE,
                 BackpackClickPayload.STREAM_CODEC,
@@ -55,6 +59,10 @@ public final class BackpackNetwork {
                 BackpackCursorGesturePayload.STREAM_CODEC,
                 BackpackCursorGesturePayload::handleServer);
         registrar.playToServer(
+                BackpackTagPayload.TYPE,
+                BackpackTagPayload.STREAM_CODEC,
+                BackpackTagPayload::handleServer);
+        registrar.playToServer(
                 BackpackOpenRequestPayload.TYPE,
                 BackpackOpenRequestPayload.STREAM_CODEC,
                 BackpackOpenRequestPayload::handleServer);
@@ -67,6 +75,8 @@ public final class BackpackNetwork {
         }
         BackpackInventory inventory = ref.loadInventory(player);
         PacketDistributor.sendToPlayer(player, BackpackSessionPayload.open(ref, inventory));
+        // 018: the tags travel in their own packet (the session payload has no room for another field).
+        PacketDistributor.sendToPlayer(player, new BackpackTagsPayload(inventory.tags()));
     }
 
     public static void sendFullSync(ServerPlayer player, BackpackRef ref) {

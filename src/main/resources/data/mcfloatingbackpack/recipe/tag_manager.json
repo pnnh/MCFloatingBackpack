@@ -1,0 +1,35 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "S": {
+      "tag": "c:strings"
+    },
+    "P": {
+      "item": "minecraft:paper"
+    },
+    "L": {
+      "tag": "c:leathers"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "I": [
+      {
+        "item": "minecraft:ink_sac"
+      },
+      {
+        "item": "minecraft:black_dye"
+      }
+    ]
+  },
+  "pattern": [
+    "SPS",
+    "LBL",
+    "PIP"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:tag_manager"
+  }
+}
