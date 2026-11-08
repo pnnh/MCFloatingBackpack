@@ -1,0 +1,28 @@
+specs/024-auto-pickup/tasks.md
+  s_9aefe4a2760245::t_0fca79845b0f79 144
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_0fca79845b0f79 66-67
+specs/024-auto-pickup/DELIVERY.md
+  s_9aefe4a2760245::t_0fca79845b0f79 5,45,52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "988d75db6b59534d65c7b51a49b71ebc9f582d9f",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
