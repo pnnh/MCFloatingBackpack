@@ -125,7 +125,7 @@ class ToolAreaCapacityTest {
     void thePlacementHookAcceptsOrdinaryItemsInEveryArea() {
         // since 021 only the trash can (right area) and the tag manager (bottom area) are limited, see ToolAreaRulesTest
         for (PanelArea area : PanelArea.values()) {
-            assertTrue(ToolAreaRules.canPlace(area, "anything", 0, java.util.List.of("anything"), s -> false, s -> false));
+            assertTrue(ToolAreaRules.canPlace(area, "anything", 0, java.util.List.of("anything"), s -> false, s -> false, s -> false));
         }
     }
 }

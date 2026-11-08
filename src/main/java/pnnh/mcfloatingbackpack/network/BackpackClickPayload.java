@@ -122,7 +122,7 @@ public record BackpackClickPayload(
             }
 
             // 016: what goes into a tool area is the server's call. Since 021 the right area takes one trash can and the
-            // bottom area one tag manager (ToolAreaRules); a refused click changes nothing.
+            // bottom area one tag manager and (024) the left area one auto pickup (ToolAreaRules); a refused click changes nothing.
             if (area.isTool()) {
                 ItemStack held = viaMenu
                         ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
@@ -134,7 +134,8 @@ public record BackpackClickPayload(
                                 payload.slotIndex(),
                                 inventory.toolStacks(area),
                                 stack -> stack.is(ModItems.TRASH_CAN.get()),
-                                stack -> stack.is(ModItems.TAG_MANAGER.get()))) {
+                                stack -> stack.is(ModItems.TAG_MANAGER.get()),
+                                stack -> stack.is(ModItems.AUTO_PICKUP.get()))) {
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                     return;
                 }

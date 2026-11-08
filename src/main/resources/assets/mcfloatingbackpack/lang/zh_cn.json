@@ -57,5 +57,11 @@
   "trash.mcfloatingbackpack.confirm.no": "取消",
   "message.mcfloatingbackpack.trash.nothing_to_dump": "没有可倾倒的物品（受保护或带数据的物品会被跳过）",
   "message.mcfloatingbackpack.trash.changed": "背包内容已变化，操作已取消，请重试",
-  "tag.mcfloatingbackpack.protected": "这些物品不能标记为垃圾：%s"
+  "tag.mcfloatingbackpack.protected": "这些物品不能标记为垃圾：%s",
+  "item.mcfloatingbackpack.auto_pickup": "自动拾取",
+  "pickup.mcfloatingbackpack.title": "自动拾取黑名单",
+  "pickup.mcfloatingbackpack.status": "自动拾取黑名单  %s/%s",
+  "pickup.mcfloatingbackpack.none": "无",
+  "pickup.mcfloatingbackpack.full": "黑名单已满（%s）",
+  "message.mcfloatingbackpack.limit.auto_pickup": "这里只能放一个自动拾取"
 }

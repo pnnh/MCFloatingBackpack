@@ -57,5 +57,11 @@
   "trash.mcfloatingbackpack.confirm.no": "Cancel",
   "message.mcfloatingbackpack.trash.nothing_to_dump": "Nothing to dump (protected items and items with extra data are skipped)",
   "message.mcfloatingbackpack.trash.changed": "The backpack changed, the action was cancelled. Please try again",
-  "tag.mcfloatingbackpack.protected": "These items cannot be marked as trash: %s"
+  "tag.mcfloatingbackpack.protected": "These items cannot be marked as trash: %s",
+  "item.mcfloatingbackpack.auto_pickup": "Auto Pickup",
+  "pickup.mcfloatingbackpack.title": "Auto Pickup Blacklist",
+  "pickup.mcfloatingbackpack.status": "Auto Pickup Blacklist  %s/%s",
+  "pickup.mcfloatingbackpack.none": "None",
+  "pickup.mcfloatingbackpack.full": "Blacklist is full (%s)",
+  "message.mcfloatingbackpack.limit.auto_pickup": "Only one Auto Pickup fits in this area"
 }

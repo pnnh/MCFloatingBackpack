@@ -6,6 +6,7 @@ import java.util.List;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist;
 import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
@@ -24,6 +25,7 @@ public final class BackpackInventory {
     private ItemStack cursor = ItemStack.EMPTY;
     private ItemTags tags = ItemTags.EMPTY;
     private TrashContents trash = TrashContents.EMPTY;
+    private PickupBlacklist pickupBlacklist = PickupBlacklist.EMPTY;
 
     public BackpackInventory(int capacity) {
         int size = Math.max(1, Math.min(MAX_SIZE, capacity));
@@ -120,6 +122,28 @@ public final class BackpackInventory {
         this.trash = trash == null ? TrashContents.EMPTY : trash;
     }
 
+    /**
+     * 024: whether the left area holds an auto pickup, which is what makes the pickup blacklist editable. Looks at the
+     * whole stored list, not at the cells the panel currently shows.
+     */
+    public boolean hasAutoPickup() {
+        for (int i = 0; i < size(PanelArea.LEFT); i++) {
+            if (getStackInSlot(PanelArea.LEFT, i).is(ModItems.AUTO_PICKUP.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** The tags of which an item category carrying one is left on the ground by the auto pickup (024). */
+    public PickupBlacklist pickupBlacklist() {
+        return pickupBlacklist;
+    }
+
+    public void setPickupBlacklist(PickupBlacklist pickupBlacklist) {
+        this.pickupBlacklist = pickupBlacklist == null ? PickupBlacklist.EMPTY : pickupBlacklist;
+    }
+
     public ItemStack getCursor() {
         return cursor;
     }
@@ -154,6 +178,7 @@ public final class BackpackInventory {
         inventory.setCursor(fitted.cursor());
         inventory.setTags(fitted.tags());
         inventory.setTrash(fitted.trash());
+        inventory.setPickupBlacklist(fitted.pickupBlacklist());
         for (PanelArea area : PanelArea.values()) {
             if (!area.isTool()) {
                 continue;
@@ -173,7 +198,7 @@ public final class BackpackInventory {
         for (int i = 0; i < size(); i++) {
             list.add(getStackInSlot(i).copy());
         }
-        return BackpackContents.fit(list, getCursor().copy(), toolContents(), tags, trash, size());
+        return BackpackContents.fit(list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, size());
     }
 
     public static int capacityOf(ItemStack backpack) {

@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * What may be put into a tool area (016, FR-011); this is the one place the server asks. Since 021 two tools are
- * limited: the right area holds at most one trash can and the bottom (function) area at most one tag manager.
- * Anything else, in any area, is accepted. Pure logic over an abstract stack type, so it can be unit-tested.
+ * What may be put into a tool area (016, FR-011); this is the one place the server asks. Three tools are limited: the
+ * right area holds at most one trash can (021), the bottom (function) area at most one tag manager (021) and the left
+ * (input) area at most one auto pickup (024). Anything else, in any area, is accepted. Pure logic over an abstract stack type, so it can be unit-tested.
  */
 public final class ToolAreaRules {
     /** How many of the area's own tool fit in it at once. */
@@ -28,10 +28,12 @@ public final class ToolAreaRules {
             int slotIndex,
             List<T> areaSlots,
             Predicate<T> isTrashCan,
-            Predicate<T> isTagManager) {
+            Predicate<T> isTagManager,
+            Predicate<T> isAutoPickup) {
         Predicate<T> limited = switch (area) {
             case RIGHT -> isTrashCan;
             case BOTTOM -> isTagManager;
+            case LEFT -> isAutoPickup;
             default -> null;
         };
         if (limited == null || !limited.test(incoming)) {

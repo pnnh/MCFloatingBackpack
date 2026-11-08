@@ -9,15 +9,16 @@ import java.util.function.Predicate;
 
 import org.junit.jupiter.api.Test;
 
-/** 021: at most one trash can in the right area and one tag manager in the bottom area, and nothing else is limited. */
+/** 021/024: at most one trash can in the right area, one tag manager in the bottom area and one auto pickup in the left area; nothing else is limited. */
 class ToolAreaRulesTest {
     private static final Predicate<String> TRASH = "trash"::equals;
     private static final Predicate<String> TAGS = "tags"::equals;
+    private static final Predicate<String> AUTO = "auto"::equals;
     private static final String E = "";
 
     private static boolean can(PanelArea area, String incoming, int slot, String... slots) {
         List<String> list = Arrays.asList(slots);
-        return ToolAreaRules.canPlace(area, incoming, slot, list, TRASH, TAGS);
+        return ToolAreaRules.canPlace(area, incoming, slot, list, TRASH, TAGS, AUTO);
     }
 
     @Test
@@ -55,6 +56,9 @@ class ToolAreaRulesTest {
     void otherAreasAreNotLimited() {
         assertTrue(can(PanelArea.MAIN, "trash", 1, "trash", E));
         assertTrue(can(PanelArea.LEFT, "trash", 1, "trash", E));
+        assertTrue(can(PanelArea.MAIN, "auto", 1, "auto", E));
+        assertTrue(can(PanelArea.RIGHT, "auto", 1, "auto", E));
+        assertTrue(can(PanelArea.BOTTOM, "auto", 1, "auto", E));
         assertTrue(can(PanelArea.BOTTOM, "trash", 1, "trash", E));
         assertTrue(can(PanelArea.RIGHT, "tags", 1, "tags", E));
         assertTrue(can(PanelArea.MAIN, "tags", 1, "tags", E));
@@ -72,5 +76,32 @@ class ToolAreaRulesTest {
         assertFalse(can(PanelArea.RIGHT, "trash", 9, "trash", E));
         assertFalse(can(PanelArea.RIGHT, "trash", -1, "trash", E));
         assertTrue(can(PanelArea.RIGHT, "trash", 9, E, E));
+    }
+
+    @Test
+    void aSecondAutoPickupInTheLeftAreaIsRefused() {
+        assertTrue(can(PanelArea.LEFT, "auto", 0, E, E, E));
+        assertFalse(can(PanelArea.LEFT, "auto", 2, "auto", E, E));
+        assertFalse(can(PanelArea.LEFT, "auto", 1, "auto", "dirt", E));
+    }
+
+    @Test
+    void swappingOnTheAutoPickupsOwnSlotIsFine() {
+        assertTrue(can(PanelArea.LEFT, "auto", 0, "auto", E, E));
+    }
+
+    @Test
+    void leftoverAutoPickupsAreNeitherRemovedNorAllowedToGrow() {
+        // a backpack that already has two auto pickups in the left area
+        assertFalse(can(PanelArea.LEFT, "auto", 2, "auto", "auto", E));
+        assertTrue(can(PanelArea.LEFT, "auto", 0, "auto", "auto", E));
+        assertTrue(can(PanelArea.LEFT, "auto", 1, "auto", "auto", E));
+    }
+
+    @Test
+    void theLeftAreaDoesNotLimitTheOtherTools() {
+        assertTrue(can(PanelArea.LEFT, "trash", 2, "trash", E, E));
+        assertTrue(can(PanelArea.LEFT, "tags", 2, "tags", E, E));
+        assertTrue(can(PanelArea.LEFT, "dirt", 1, "auto", E));
     }
 }

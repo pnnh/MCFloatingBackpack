@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import pnnh.mcfloatingbackpack.client.panel.DeleteKeyRules.Inputs;
 import pnnh.mcfloatingbackpack.client.panel.DeleteKeyRules.ScreenKind;
 import pnnh.mcfloatingbackpack.client.panel.DeleteKeyRules.Target;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashActions;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmState;
@@ -61,8 +62,9 @@ public final class DeleteKeyInput {
                 panel.isVisible(),
                 view.hasTrashCan(),
                 TrashConfirmState.get().isPending(),
-                TagPanelState.get().isOpen(),
-                TagPanelState.get().isEditing(),
+                // 024: the pickup blacklist page covers the main area like the tag panel, and has a text box of its own.
+                TagPanelState.get().isOpen() || PickupPanelState.get().isOpen(),
+                TagPanelState.get().isEditing() || PickupPanelState.get().isEditing(),
                 kind,
                 TrashActions.deleteEnabled(),
                 hoverMainHasItem,

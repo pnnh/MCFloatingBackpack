@@ -27,6 +27,8 @@ public final class ClientBackpackView {
     private pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
     private pnnh.mcfloatingbackpack.inventory.trash.TrashContents trash =
             pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
+    private pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist pickupBlacklist =
+            pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY;
     private BackpackRef activeRef;
 
     private ClientBackpackView() {
@@ -67,6 +69,16 @@ public final class ClientBackpackView {
     public boolean hasTrashCan() {
         for (int i = 0; i < toolCount(PanelArea.RIGHT); i++) {
             if (getToolStack(PanelArea.RIGHT, i).is(pnnh.mcfloatingbackpack.item.ModItems.TRASH_CAN.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** 024: whether the left area holds an auto pickup, anywhere in its whole list (not only in the visible cells). */
+    public boolean hasAutoPickup() {
+        for (int i = 0; i < toolCount(PanelArea.LEFT); i++) {
+            if (getToolStack(PanelArea.LEFT, i).is(pnnh.mcfloatingbackpack.item.ModItems.AUTO_PICKUP.get())) {
                 return true;
             }
         }
@@ -127,6 +139,17 @@ public final class ClientBackpackView {
 
     public void setTrash(pnnh.mcfloatingbackpack.inventory.trash.TrashContents trash) {
         this.trash = trash == null ? pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY : trash;
+    }
+
+    /** 024: the open backpack's pickup blacklist. */
+    public pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist pickupBlacklist() {
+        return pickupBlacklist;
+    }
+
+    public void setPickupBlacklist(pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist pickupBlacklist) {
+        this.pickupBlacklist = pickupBlacklist == null
+                ? pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY
+                : pickupBlacklist;
     }
 
     public ItemStack getCursor() {
@@ -192,6 +215,7 @@ public final class ClientBackpackView {
         cursor = ItemStack.EMPTY;
         tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
         trash = pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
+        pickupBlacklist = pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
         reportCounts();

@@ -11,6 +11,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
@@ -91,6 +93,11 @@ public final class FloatingPanelInput {
                     && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
                 TagPanelState.get().stopEditing();
             }
+            // 024: and the same for the pickup blacklist page's text box.
+            if (PickupPanelState.get().isEditing()
+                    && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
+                PickupPanelState.get().stopEditing();
+            }
             // 021: the trash can panel lies outside the floating panel's rectangle; a press on it is claimed here.
             if (TrashPanelInput.onPress(button, mouseX, mouseY)) {
                 return true;
@@ -141,6 +148,16 @@ public final class FloatingPanelInput {
                     TagPanelState.get().toggle();
                     return true;
                 }
+                // 024: a plain left click with an empty cursor on an auto pickup in the left area opens or closes the
+                // blacklist page instead of picking it up; the right button still picks it up.
+                if (!isRight
+                        && toolHit.area() == PanelArea.LEFT
+                        && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
+                        && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
+                                .is(ModItems.AUTO_PICKUP.get())) {
+                    PickupPanelState.get().toggle();
+                    return true;
+                }
                 // 021: the right area takes one trash can and the bottom area one tag manager. The server decides; this
                 // only spares the round trip and says why nothing happened.
                 if (refusedByLimit(toolHit.area(), toolHit.index())) {
@@ -154,6 +171,11 @@ public final class FloatingPanelInput {
             if (TagPanelState.get().isOpen()
                     && ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
                 return TagPanelInput.onMainPress(button, mouseX, mouseY);
+            }
+            // 024: the same for the pickup blacklist page.
+            if (PickupPanelState.get().isOpen()
+                    && ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
+                return PickupPanelInput.onMainPress(button, mouseX, mouseY);
             }
             int slot = PanelSlots.indexAt(state, mouseX, mouseY);
             // The last reflowed row can run past the backpack's real slot count once visibleCols
@@ -234,7 +256,7 @@ public final class FloatingPanelInput {
     }
 
     /**
-     * 021: whether putting what the player holds into this tool-area slot would break the one-per-area limit; if so
+     * 021/024: whether putting what the player holds into this tool-area slot would break the one-per-area limit; if so
      * the player is told in the chat. Reads the same stack the server will (the cursor, or with Alt and no container
      * screen the main-hand item).
      */
@@ -251,12 +273,15 @@ public final class FloatingPanelInput {
                         slotIndex,
                         ClientBackpackView.get().toolStacks(area),
                         stack -> stack.is(ModItems.TRASH_CAN.get()),
-                        stack -> stack.is(ModItems.TAG_MANAGER.get()))) {
+                        stack -> stack.is(ModItems.TAG_MANAGER.get()),
+                        stack -> stack.is(ModItems.AUTO_PICKUP.get()))) {
             return false;
         }
         String key = held.is(ModItems.TRASH_CAN.get())
                 ? "message.mcfloatingbackpack.limit.trash_can"
-                : "message.mcfloatingbackpack.limit.tag_manager";
+                : held.is(ModItems.AUTO_PICKUP.get())
+                        ? "message.mcfloatingbackpack.limit.auto_pickup"
+                        : "message.mcfloatingbackpack.limit.tag_manager";
         FloatingPanelEvents.chat(minecraft, Component.translatable(key));
         return true;
     }

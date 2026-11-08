@@ -12,6 +12,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelRenderer;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmRenderer;
@@ -97,6 +99,10 @@ public final class FloatingPanelRenderer {
         // 018: the expanded tag panel replaces the main area (its cells, selection and arrows are not drawn).
         if (TagPanelState.get().isOpen()) {
             TagPanelRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
+        }
+        // 024: the pickup blacklist page covers the main area the same way (never together with the tag panel).
+        if (PickupPanelState.get().isOpen()) {
+            PickupPanelRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
         }
         drawCloseButton(graphics, state);
         drawResizeHandle(graphics, state);
@@ -189,7 +195,7 @@ public final class FloatingPanelRenderer {
         Preview<ItemStack> preview = PanelDragInput.preview();
         PanelSelection selection = PanelSelection.get();
         for (PanelArea area : PanelArea.values()) {
-            if (area == PanelArea.MAIN && TagPanelState.get().isOpen()) {
+            if (area == PanelArea.MAIN && (TagPanelState.get().isOpen() || PickupPanelState.get().isOpen())) {
                 continue;
             }
             for (int ordinal = 0; ordinal < layout.visibleCount(area); ordinal++) {
@@ -266,7 +272,7 @@ public final class FloatingPanelRenderer {
      */
     private static void drawScrollArrows(GuiGraphics graphics, PanelLayout layout) {
         for (PanelArea area : PanelArea.values()) {
-            if (area == PanelArea.MAIN && TagPanelState.get().isOpen()) {
+            if (area == PanelArea.MAIN && (TagPanelState.get().isOpen() || PickupPanelState.get().isOpen())) {
                 continue;
             }
             PanelLayout.Rect r = layout.rect(area);

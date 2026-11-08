@@ -39,6 +39,10 @@ public final class ModItems {
     public static final DeferredHolder<Item, TrashCanItem> TRASH_CAN =
             ITEMS.register("trash_can", () -> new TrashCanItem(new Item.Properties()));
 
+    /** 024: lives in the panel's left area; see {@link AutoPickupItem}. */
+    public static final DeferredHolder<Item, AutoPickupItem> AUTO_PICKUP =
+            ITEMS.register("auto_pickup", () -> new AutoPickupItem(new Item.Properties()));
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -51,6 +55,7 @@ public final class ModItems {
                                 }
                                 output.accept(TAG_MANAGER.get());
                                 output.accept(TRASH_CAN.get());
+                                output.accept(AUTO_PICKUP.get());
                             })
                             .build());
 

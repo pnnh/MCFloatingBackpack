@@ -36,6 +36,8 @@ import pnnh.mcfloatingbackpack.client.panel.PanelHostScreen;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
@@ -102,6 +104,7 @@ public final class FloatingPanelEvents {
             return;
         }
         state.setVisible(false);
+        PickupPanelState.get().collapse();
         TrashPanelState.get().collapse();
         TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
@@ -116,6 +119,7 @@ public final class FloatingPanelEvents {
         PanelDragInput.reset();
         PanelSelectionInput.reset();
         TagPanelState.get().reset();
+        PickupPanelState.get().reset();
         TrashPanelState.get().reset();
         TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
@@ -141,6 +145,7 @@ public final class FloatingPanelEvents {
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         HostScreenManager.reset();
         TagPanelState.get().reset();
+        PickupPanelState.get().reset();
         TrashPanelState.get().reset();
         TrashConfirmState.get().cancel();
         QuickTransferInput.reset();
@@ -262,6 +267,11 @@ public final class FloatingPanelEvents {
         if (TagPanelState.get().isOpen()
                 && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTagManager())) {
             TagPanelState.get().collapse();
+        }
+        // 024: the pickup blacklist page needs an auto pickup in the left area (anywhere in its whole list) and an open panel.
+        if (PickupPanelState.get().isOpen()
+                && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasAutoPickup())) {
+            PickupPanelState.get().collapse();
         }
         // 022: a question needs the panel, the trash can and the screen it was asked on.
         if (TrashConfirmState.get().shouldDiscard(
@@ -400,6 +410,11 @@ public final class FloatingPanelEvents {
             TagPanelInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
             event.setCanceled(true);
         }
+        // 024: the pickup blacklist page's text box takes the keyboard the same way.
+        if (hostsPanel(event.getScreen()) && PickupPanelState.get().isEditing()) {
+            PickupPanelInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+            event.setCanceled(true);
+        }
     }
 
     /**
@@ -422,7 +437,8 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onScreenKeyReleased(ScreenEvent.KeyReleased.Pre event) {
-        if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
+        if (hostsPanel(event.getScreen())
+                && (TagPanelState.get().isEditing() || PickupPanelState.get().isEditing())) {
             event.setCanceled(true);
         }
     }
@@ -431,6 +447,10 @@ public final class FloatingPanelEvents {
     public static void onScreenCharTyped(ScreenEvent.CharacterTyped.Pre event) {
         if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
             TagPanelInput.onCharTyped(event.getCodePoint());
+            event.setCanceled(true);
+        }
+        if (hostsPanel(event.getScreen()) && PickupPanelState.get().isEditing()) {
+            PickupPanelInput.onCharTyped(event.getCodePoint());
             event.setCanceled(true);
         }
     }
@@ -465,6 +485,11 @@ public final class FloatingPanelEvents {
         // 018: the expanded tag panel covers the main area and takes the wheel there.
         if (area == PanelArea.MAIN && TagPanelState.get().isOpen()) {
             TagPanelInput.onMainScroll(scrollDeltaY);
+            return true;
+        }
+        // 024: so does the pickup blacklist page.
+        if (area == PanelArea.MAIN && PickupPanelState.get().isOpen()) {
+            PickupPanelInput.onMainScroll(scrollDeltaY);
             return true;
         }
         if (area != null) {

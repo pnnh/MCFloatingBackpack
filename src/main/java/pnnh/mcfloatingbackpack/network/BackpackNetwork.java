@@ -21,7 +21,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("11");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("12");
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -42,6 +42,10 @@ public final class BackpackNetwork {
                 BackpackTrashContentsPayload.TYPE,
                 BackpackTrashContentsPayload.STREAM_CODEC,
                 BackpackTrashContentsPayload::handleClient);
+        registrar.playToClient(
+                BackpackPickupBlacklistPayload.TYPE,
+                BackpackPickupBlacklistPayload.STREAM_CODEC,
+                BackpackPickupBlacklistPayload::handleClient);
         registrar.playToServer(
                 BackpackClickPayload.TYPE,
                 BackpackClickPayload.STREAM_CODEC,
@@ -75,6 +79,10 @@ public final class BackpackNetwork {
                 BackpackTrashSendPayload.STREAM_CODEC,
                 BackpackTrashSendPayload::handleServer);
         registrar.playToServer(
+                BackpackPickupBlacklistOpPayload.TYPE,
+                BackpackPickupBlacklistOpPayload.STREAM_CODEC,
+                BackpackPickupBlacklistOpPayload::handleServer);
+        registrar.playToServer(
                 BackpackOpenRequestPayload.TYPE,
                 BackpackOpenRequestPayload.STREAM_CODEC,
                 BackpackOpenRequestPayload::handleServer);
@@ -91,6 +99,13 @@ public final class BackpackNetwork {
         PacketDistributor.sendToPlayer(player, new BackpackTagsPayload(inventory.tags()));
         // 021: and so does the trash can's content.
         sendTrash(player, inventory);
+        // 024: and the pickup blacklist.
+        sendPickupBlacklist(player, inventory);
+    }
+
+    /** 024: the pickup blacklist, as the server has it. */
+    public static void sendPickupBlacklist(ServerPlayer player, BackpackInventory inventory) {
+        PacketDistributor.sendToPlayer(player, new BackpackPickupBlacklistPayload(inventory.pickupBlacklist()));
     }
 
     /** 021: what the trash can holds, as the server has it. */

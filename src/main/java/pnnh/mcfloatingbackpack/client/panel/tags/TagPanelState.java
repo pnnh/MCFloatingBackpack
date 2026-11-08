@@ -33,6 +33,8 @@ public final class TagPanelState {
         if (open) {
             collapse();
         } else {
+            // 024: the pickup blacklist page covers the same area, so only one of the two is expanded.
+            pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState.get().collapse();
             open = true;
         }
     }
