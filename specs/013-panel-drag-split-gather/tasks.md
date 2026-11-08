@@ -122,8 +122,8 @@
 **Independent Test**: quickstart 五（16–22）：单击放下/交换、拿起整组/一半、右键放一个、Ctrl 与 Shift 让路、玩家物品栏/箱子/精妙背包/旅行者背包自己的格子、重跑 011/012 的 quickstart。
 
 - [X] T032 [US5] 静态检查：对 013 新增和修改的文件运行 `grep -n "hasShiftDown\|KEY_LEFT_SHIFT\|KEY_RIGHT_SHIFT"`，确认**读取 Shift 只出现在"按下 Shift 就让路"的判断里**（`PanelDragInput`），没有任何地方用 Shift 触发行为；`grep -n "net.p3pp3rf1y\|com.tiviacz"` 在新增文件上无命中（宪法 IV）；并运行 `git diff --stat -- src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferInput.java src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferGesture.java src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferRules.java`，确认 011/012 的客户端手势文件**没有被 013 改动**。结果与命令记到 `DELIVERY.md`
-- [ ] T033 [US5] 按 `quickstart.md` 五（16–22）验证：HUD 与打开界面下单击放下/交换、光标为空时单击拿起整组与右键拿起一半、右键放一个；按着 Command/Shift 不触发本功能；用 `./gradlew runClientCompat` 确认精妙背包、旅行者背包、箱子、玩家物品栏**自己的格子**里的拖动不受影响；**重跑 011 和 012 的 quickstart**确认 Ctrl 快速转移的结果相同。结果记到 `DELIVERY.md`
-- [ ] T034 [US5] 按 `quickstart.md` 六（23–24）补做：拖动分配中途按 E/ESC 或隐藏面板（分配作废、收集保留已收的）；50 次以上拖动均分与拖动收集（含已满、不同种、数量不足）前后物品总数相等；搜 `run/logs/latest.log` 没有新增报错；macOS Command 键只用于让路的验证；Windows/Linux **无法验证**，在 `DELIVERY.md` 里如实写"未验证"
+- [ ] T033（2026-11-07 部分：统一回归 REG-1～REG-3 通过；**013-21（精妙背包、旅行者背包、箱子、玩家物品栏自己格子里的拖动，会话 S2）仍未验证**） [US5] 按 `quickstart.md` 五（16–22）验证：HUD 与打开界面下单击放下/交换、光标为空时单击拿起整组与右键拿起一半、右键放一个；按着 Command/Shift 不触发本功能；用 `./gradlew runClientCompat` 确认精妙背包、旅行者背包、箱子、玩家物品栏**自己的格子**里的拖动不受影响；**重跑 011 和 012 的 quickstart**确认 Ctrl 快速转移的结果相同。结果记到 `DELIVERY.md`
+- [X] T034（2026-11-07 用户验证 CONS-1、CONS-2 通过：混合操作含拖动均分/收集，前后总数相等、日志无新增报错；中途取消此前已确认；Windows/Linux 未验证） [US5] 按 `quickstart.md` 六（23–24）补做：拖动分配中途按 E/ESC 或隐藏面板（分配作废、收集保留已收的）；50 次以上拖动均分与拖动收集（含已满、不同种、数量不足）前后物品总数相等；搜 `run/logs/latest.log` 没有新增报错；macOS Command 键只用于让路的验证；Windows/Linux **无法验证**，在 `DELIVERY.md` 里如实写"未验证"
 
 **Checkpoint**: US5 达成 FR-010、FR-011、FR-014、FR-018、SC-003、SC-005、SC-007。
 
@@ -134,7 +134,7 @@
 - [X] T035 [P] 更新 `specs/011-ctrl-quick-transfer/spec.md` 与 `specs/012-ctrl-transfer-to-open-container/spec.md` 的"假设"处各加一条【013 修订/说明】：面板里 Ctrl/Shift 按下时 013 的拖动让路，011/012 的 Ctrl 手势优先；网络协议版本现为 6（`specs/006-tiered-backpacks/DELIVERY.md` 的协议版本说明同步）
 - [X] T036 [P] 更新 `docs/MCFloatingBackpack.md` M5 里关于面板操作的那段：补"面板里拿着物品按住左/右键拖过多个格子可均分/逐格放一个，单击拿起后按住滑过同种格子可收集，双击收集"，并指向 `specs/013-panel-drag-split-gather/`
 - [X] T037 创建 `specs/013-panel-drag-split-gather/DELIVERY.md`：记录 T016、T023、T027、T031、T033、T034 的结果，**包括没做到的和结论不确定的**；列出已知限制（`screenOpen` 是客户端自报、未做客户端预测、菜单格子/混合拖动/中键/触摸屏/Shift+双击不做、Windows/Linux 未验证）；记录行为变化（拿着物品放下改为松开时结算）与用户是否接受
-- [ ] T038 运行最终回归 `./gradlew compileJava test`，并确认游戏能启动（`./gradlew runClient` 进入世界无报错）；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
+- [X] T038（2026-11-06 `compileJava test` 61 类/468 用例全绿；用户确认进入世界无报错；验证未完成的部分写在 DELIVERY.md 与 spec Status） 运行最终回归 `./gradlew compileJava test`，并确认游戏能启动（`./gradlew runClient` 进入世界无报错）；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
   - **部分完成**：`./gradlew compileJava test` 退出码 0；**游戏启动与进入世界未验证**（本次没有启动客户端），spec Status 保持 Draft→实现完成但未验证，见 DELIVERY.md
 
 ---

@@ -47,12 +47,12 @@
 - [ ] T007 [US1] 按 `quickstart.md` 一（1–6）与二（7–9）在 `./gradlew runClient` 逐项验证（macOS 用 Command 键）：箱子、木桶、末影箱、潜影盒、漏斗、发射器，物品栏满，容器满，以及熔炉、工作台、铁砧、酿造台、村民交易与 Shift+点击一致；结果记到 `specs/012-ctrl-transfer-to-open-container/DELIVERY.md`（没做的项记"未验证"）
   - 2026-11-05 用户验证了箱子、精妙背包、旅行者背包的双向 Ctrl+点击/拖动功能正常；**未验证的子项保持未勾选，所以本任务不勾选**：
     - [X] 一.1 打开箱子，Ctrl+点击面板槽位 → 物品进入箱子（FR-001）
-    - [ ] 一.2 箱子里已有同种半堆叠时先并入
-    - [ ] 一.3 容器满：放不下的留在面板，不进物品栏
-    - [ ] 一.4 玩家物品栏满时仍能存入容器
-    - [ ] 一.5 木桶、末影箱、潜影盒、漏斗、发射器
-    - [ ] 一.6 与 Shift+点击的落点对比
-    - [ ] 二.7～9 熔炉、工作台、铁砧、酿造台、村民交易与 Shift+点击一致
+    - [X] 一.2 箱子里已有同种半堆叠时先并入
+    - [X] 一.3 容器满：放不下的留在面板，不进物品栏
+    - [X] 一.4 玩家物品栏满时仍能存入容器
+    - [ ] 一.5 木桶、末影箱、潜影盒、漏斗、发射器（2026-11-06 只验证了木桶，其余未验证）
+    - [X] 一.6 与 Shift+点击的落点对比
+    - [ ] 二.7～9 熔炉、工作台、铁砧、酿造台、村民交易与 Shift+点击一致（2026-11-06 熔炉(7)、工作台(8)通过；铁砧、酿造台、村民交易(9)未验证）
 
 **Checkpoint**: US1 达成 FR-001、FR-002、FR-003、FR-005、FR-007～FR-010、FR-013、FR-016。
 
@@ -64,7 +64,7 @@
 
 **Independent Test**: quickstart 三：`runClientCompat` 下对同一物品分别做"面板 Ctrl+点击"和"在容器里 Shift+点击物品栏里的同一件物品"，落点一致。
 
-- [ ] T008 [US2] 按 `quickstart.md` 三（10–13）在 `./gradlew runClientCompat` 逐项验证，**重点是第 12 条：物品栏已满 + 手持模组背包**（精妙背包与旅行者背包各做一次，确认物品不丢、手持的背包物品完好、转移正常）；并检查 `run/logs/latest.log` 里没有"守恒检查失败"或"转出异常"的日志。结果记到 `DELIVERY.md`
+- [X] T008（2026-11-07 用户验证 012-10b、11b、12、13 与 012-LOG 通过，含重点项 012-12 物品栏塞满 + 手持模组背包） [US2] 按 `quickstart.md` 三（10–13）在 `./gradlew runClientCompat` 逐项验证，**重点是第 12 条：物品栏已满 + 手持模组背包**（精妙背包与旅行者背包各做一次，确认物品不丢、手持的背包物品完好、转移正常）；并检查 `run/logs/latest.log` 里没有"守恒检查失败"或"转出异常"的日志。结果记到 `DELIVERY.md`
   - 2026-11-05 用户验证了箱子、精妙背包、旅行者背包的双向 Ctrl+点击/拖动功能正常；**未验证的子项保持未勾选，所以本任务不勾选**：
     - [X] 三.10 精妙背包：Ctrl+点击面板里的普通物品 → 进入它的存储区
     - [X] 三.11 旅行者背包：Ctrl+点击面板里的普通物品 → 进入它的存储
@@ -84,12 +84,12 @@
 **Independent Test**: quickstart 四：打开箱子，面板一行 9 个堆叠，按住 Ctrl 与左键滑过，9 个依次进入箱子；中途关闭容器后之后的槽位转到物品栏。
 
 - [X] T010 [US3]（2026-11-05 `git status/diff` 对 `src/main/java/pnnh/mcfloatingbackpack/client` 无任何改动；**这只对正向成立，反向（Phase 8）必须改客户端**）确认客户端没有被改动：运行 `git diff --stat -- src/main/java/pnnh/mcfloatingbackpack/client`，012 的实现**不应**让这个目录出现任何新改动（客户端不判断也不指定目标容器，spec FR-013）；如果有，说明实现偏离了设计，回头修正。结果记到 `DELIVERY.md`
-- [ ] T011 [US3] 按 `quickstart.md` 四（14–16）在 `./gradlew runClient` 逐项验证：一行 9 格滑过箱子 3 秒内完成；拖动中途关闭容器；拖动中容器放满。结果记到 `DELIVERY.md`
+- [X] T011 [US3]（2026-11-06 用户在箱子上验证 14–16 通过，见 DELIVERY.md） 按 `quickstart.md` 四（14–16）在 `./gradlew runClient` 逐项验证：一行 9 格滑过箱子 3 秒内完成；拖动中途关闭容器；拖动中容器放满。结果记到 `DELIVERY.md`
   - 2026-11-05 用户验证了箱子、精妙背包、旅行者背包的双向 Ctrl+点击/拖动功能正常；**未验证的子项保持未勾选，所以本任务不勾选**：
     - [X] 四.14 打开箱子，Ctrl+拖动滑过面板一行 → 依次进入箱子
-    - [ ] 四.14 的"9 格 3 秒内完成"计时、精妙背包/旅行者背包里的拖动
-    - [ ] 四.15 拖动中途关闭容器 → 之后的槽位转到物品栏
-    - [ ] 四.16 拖动中容器放满 → 放不下的槽位保持不变
+    - [X] 四.14 的"9 格 3 秒内完成"计时（2026-11-06 箱子上通过；精妙背包/旅行者背包里的拖动归入 `runClientCompat` 会话，尚未验证）
+    - [X] 四.15 拖动中途关闭容器（2026-11-06：转移瞬间完成，来不及中途按 E/ESC，见 DELIVERY.md 的观察） → 之后的槽位转到物品栏
+    - [X] 四.16 拖动中容器放满 → 放不下的槽位保持不变
 
 **Checkpoint**: US3 达成 FR-006、SC-006。
 
@@ -102,7 +102,7 @@
 **Independent Test**: quickstart 五：没有容器时与 011 一致；物品栏→面板方向不变；Shift 手势不变；011 的 quickstart 重跑通过。
 
 - [X] T012 [US4]（2026-11-05 两条 grep 均无命中，见 DELIVERY.md）静态检查：对 012 新增和修改的文件（`OpenContainerDelivery.java`、`ContainerMenuAccess.java`、`BackpackQuickTransferPayload.java`）运行 `grep -n "hasShiftDown\|KEY_LEFT_SHIFT\|KEY_RIGHT_SHIFT"`，确认没有读取 Shift；并确认没有 `import` 任何 `net.p3pp3rf1y`、`com.tiviacz` 包（宪法 IV）。结果与命令记到 `DELIVERY.md`
-- [ ] T013 [US4] 按 `quickstart.md` 五（17–20）验证：HUD 与只开着物品栏（E）时面板转出进玩家物品栏；箱子打开时 Ctrl+点击玩家物品栏槽位进入浮动背包；Shift+点击进入箱子（原版）；面板隐藏时 Ctrl 手势与原版一致；并**重跑 011 的 quickstart**（`specs/011-ctrl-quick-transfer/quickstart.md`）确认结果相同。结果记到 `DELIVERY.md`
+- [X] T013（2026-11-07 五 17–20 此前已通过；用户验证统一回归 REG-1、REG-2 通过，即重跑 011 的结果相同） [US4] 按 `quickstart.md` 五（17–20）验证：HUD 与只开着物品栏（E）时面板转出进玩家物品栏；箱子打开时 Ctrl+点击玩家物品栏槽位进入浮动背包；Shift+点击进入箱子（原版）；面板隐藏时 Ctrl 手势与原版一致；并**重跑 011 的 quickstart**（`specs/011-ctrl-quick-transfer/quickstart.md`）确认结果相同。结果记到 `DELIVERY.md`
 
 **Checkpoint**: US4 达成 FR-002、FR-015、SC-004、SC-005。
 
@@ -113,8 +113,8 @@
 - [X] T014 [P] 更新 `specs/011-ctrl-quick-transfer/spec.md`：FR-018、澄清第二条和"背景与已确认的决策"里"面板转出只进玩家物品栏"的说法后面加【012 修订】：有打开的容器时进容器，没有时进玩家物品栏；同时注明"容器自己的格子不参与转进来"（FR-017）仍然成立
 - [X] T015 [P] 更新 `specs/011-ctrl-quick-transfer/contracts/quick-transfer.md`（`TO_INVENTORY` 的目标描述）、`specs/011-ctrl-quick-transfer/data-model.md`（`Direction` 的含义）与 `specs/011-ctrl-quick-transfer/DELIVERY.md`（已知限制）：各加【012 修订】
 - [X] T016 [P] 更新 `docs/MCFloatingBackpack.md` M5 里关于 011 的那句：补"从面板转出时，打开着容器就存入容器（含精妙背包、旅行者背包），否则进玩家物品栏"，并指向 `specs/012-ctrl-transfer-to-open-container/`
-- [ ] T017 按 `quickstart.md` 六与七补做：30 次以上转移（含容器满、拒收、物品栏满、两个模组）前后相关物品总数相等；搜 `run/logs/latest.log` 中 `mcfloatingbackpack` 的守恒/异常日志；macOS Command 键可用；Windows/Linux **无法验证**，在 `DELIVERY.md` 里如实写"未验证"
-- [ ] T018（`DELIVERY.md` 已创建并写入自动化结果；待 T007、T008、T011、T013、T017 的人工验证结果补全后再勾）创建 `specs/012-ctrl-transfer-to-open-container/DELIVERY.md`：记录 T007、T008、T010～T013、T017 的结果，**包括没做到的和结论不确定的**；列出已知限制（第三方菜单抛异常时无法回滚、工作台类界面放不下时留在玩家物品栏、容器→面板不做）
+- [X] T017（2026-11-07 用户验证 CONS-1、CONS-2 通过：30～50 次混合操作前后总数相等、日志无守恒/回退记录；012-LOG 在 compat 下同样通过；Windows/Linux 未验证） 按 `quickstart.md` 六与七补做：30 次以上转移（含容器满、拒收、物品栏满、两个模组）前后相关物品总数相等；搜 `run/logs/latest.log` 中 `mcfloatingbackpack` 的守恒/异常日志；macOS Command 键可用；Windows/Linux **无法验证**，在 `DELIVERY.md` 里如实写"未验证"
+- [ ] T018（2026-11-07：T008、T011、T013、T017 已勾选；**只差 T007**——012-5b 末影箱/潜影盒/漏斗/发射器与 012-9 铁砧/酿造台/村民交易未验证）创建 `specs/012-ctrl-transfer-to-open-container/DELIVERY.md`：记录 T007、T008、T010～T013、T017 的结果，**包括没做到的和结论不确定的**；列出已知限制（第三方菜单抛异常时无法回滚、工作台类界面放不下时留在玩家物品栏、容器→面板不做）
 - [X] T019（2026-11-05 编译与 16 个测试类通过、客户端能启动；spec Status 已更新为"验证未完成"）运行最终回归 `./gradlew compileJava test`，并确认游戏能启动（`./gradlew runClient` 进入世界无报错）；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
 
 ---
@@ -135,17 +135,17 @@
 - [X] T027 [US5] 新建 `src/main/java/pnnh/mcfloatingbackpack/network/BackpackTakeFromContainerPayload.java`：字段 `containerId`、`menuSlots`（VarInt 列表，读取时超过 `MAX_MENU_SLOTS` 抛 `DecoderException`）；`handleServer` 按 contracts §5 实现（背包有效、光标为空、`containerMenu != inventoryMenu`、`containerId` 匹配、`validateMenuSlots`、每个槽位非玩家物品栏槽位且有资格，用 `ContainerToBackpack` 取出并放进背包，之后 `ref.saveInventory`、`setChanged`、`broadcastChanges`、`sendFullSync`；守恒失败或触发回退时记日志，含菜单类名与物品）。在 `BackpackNetwork.java` 注册它并把 `versioned("4")` 改成 `versioned("5")`。依赖 T025、T026
 - [X] T028 [US5] 客户端：①`src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferRules.java` 实现 T022 里的新规则；②`QuickTransferGesture.java` 增加 `Side.CONTAINER` 并按 data-model 把 `INVENTORY`/`CONTAINER` 分为同组，`advance` 按来源侧返回分开的下标列表；③`QuickTransferInput.java`：命中测试扩展到容器槽位（`slot.container != 玩家 Inventory`、`isActive()`、`hasItem()`、`mayPickup`、`mayPlace(自己的物品)`，且 `screen.getMenu() != player.inventoryMenu`）；取消 011 的类名白名单，改用 `isInterceptableScreenClass`；**`Screen.hasShiftDown()` 为真时一律不开始手势、也不继续拖动**（Shift 让路，这是 011 起唯一一处读取 Shift，目的是不占用 Ctrl+Shift）；容器槽位的请求走 `BackpackTakeFromContainerPayload`（带 `screen.getMenu().containerId`），玩家物品栏槽位仍走 011 的包，每帧每种来源至多一个包。依赖 T022、T023、T027
 - [X] T029 [US5]（2026-11-05 `compileJava test` 通过，17 个测试类）运行 `./gradlew compileJava test`，确认 T020～T023 与全部既有测试通过
-- [ ] T030 [US5] 按 `quickstart.md` 八（21–28）在 `./gradlew runClient` 逐项验证（macOS 用 Command 键）：箱子取入、背包满时留在容器、熔炉/工作台/铁砧/交易输出槽不参与、拖动一行 9 格、起点方向、Shift 让路、面板隐藏。结果记到 `DELIVERY.md`
+- [X] T030 [US5]（2026-11-06 用户验证 21–28 通过，见 DELIVERY.md） 按 `quickstart.md` 八（21–28）在 `./gradlew runClient` 逐项验证（macOS 用 Command 键）：箱子取入、背包满时留在容器、熔炉/工作台/铁砧/交易输出槽不参与、拖动一行 9 格、起点方向、Shift 让路、面板隐藏。结果记到 `DELIVERY.md`
   - 2026-11-05 用户验证了箱子、精妙背包、旅行者背包的双向 Ctrl+点击/拖动功能正常；**未验证的子项保持未勾选，所以本任务不勾选**：
     - [X] 八.21 打开箱子，Ctrl+点击箱子里的堆叠 → 进入浮动背包
     - [X] 八.25 Ctrl+拖动滑过箱子一行 → 依次进入浮动背包
-    - [ ] 八.22 浮动背包里已有同种半堆叠时先并入
-    - [ ] 八.23 浮动背包塞满：放不下的留在箱子原槽位
-    - [ ] 八.24 熔炉、工作台、铁砧、村民交易的输出槽不参与
-    - [ ] 八.26 起点方向（物品栏起点 / 面板起点）
-    - [ ] 八.27 Ctrl+Shift 让路
-    - [ ] 八.28 面板隐藏时 Ctrl+点击容器槽位与原版一致
-- [ ] T031 [US5] 按 `quickstart.md` 八（29–32）在 `./gradlew runClientCompat` 逐项验证：精妙背包（存储槽、大堆叠 >64、被滚动隐藏的槽位、升级槽/锁定槽，**以及它自己的 Ctrl 用法有没有被破坏**）、旅行者背包（存储槽、工具槽、记忆槽），以及两个界面里玩家物品栏槽位的 011 方向；检查 `run/logs/latest.log` 没有守恒失败或回退日志。结果记到 `DELIVERY.md`。**如发现与第三方 Ctrl 用法冲突或槽位判定不对，回到 `QuickTransferRules`/`OpenContainer` 一侧收紧通用规则，补单元测试，不要写模组专属分支**
+    - [X] 八.22 浮动背包里已有同种半堆叠时先并入
+    - [X] 八.23 浮动背包塞满：放不下的留在箱子原槽位
+    - [X] 八.24 熔炉、工作台、铁砧、村民交易的输出槽不参与
+    - [X] 八.26 起点方向（物品栏起点 / 面板起点）
+    - [X] 八.27 Ctrl+Shift 让路
+    - [X] 八.28 面板隐藏时 Ctrl+点击容器槽位与原版一致
+- [X] T031（2026-11-07 用户验证 012-14b、29b、30、31b、32 与 012-LOG 通过） [US5] 按 `quickstart.md` 八（29–32）在 `./gradlew runClientCompat` 逐项验证：精妙背包（存储槽、大堆叠 >64、被滚动隐藏的槽位、升级槽/锁定槽，**以及它自己的 Ctrl 用法有没有被破坏**）、旅行者背包（存储槽、工具槽、记忆槽），以及两个界面里玩家物品栏槽位的 011 方向；检查 `run/logs/latest.log` 没有守恒失败或回退日志。结果记到 `DELIVERY.md`。**如发现与第三方 Ctrl 用法冲突或槽位判定不对，回到 `QuickTransferRules`/`OpenContainer` 一侧收紧通用规则，补单元测试，不要写模组专属分支**
   - 2026-11-05 用户验证了箱子、精妙背包、旅行者背包的双向 Ctrl+点击/拖动功能正常；**未验证的子项保持未勾选，所以本任务不勾选**：
     - [X] 八.29（前半）精妙背包：Ctrl+点击存储槽位 → 进入浮动背包
     - [X] 八.31（前半）旅行者背包：Ctrl+点击存储槽位 → 进入浮动背包
@@ -155,7 +155,7 @@
     - [ ] 八.32 两个界面里玩家物品栏槽位的 Ctrl+点击（011 方向对第三方界面生效）
     - [ ] 守恒与日志：`run/logs/latest.log` 没有守恒失败或回退日志
 - [X] T032 [US5] 文档：给 011 的 `spec.md`（FR-016、FR-017）、`contracts/quick-transfer.md`（"界面类型"一行与"外部容器自身槽位不参与"）、`DELIVERY.md` 加【012 修订】，说明容器自身的槽位现在可以作为转入浮动背包的来源、第三方界面里的 Ctrl 手势由 012 处理、协议版本升到 5；更新 `docs/MCFloatingBackpack.md` M5 里关于 012 的那句，补"反向"；在 `specs/006-tiered-backpacks/DELIVERY.md` 的协议版本说明里补"012 起为 5"
-- [ ] T033 [US5] 更新 `specs/012-ctrl-transfer-to-open-container/DELIVERY.md`：补反向的自动化结果与 T030、T031 的结果（包括没做到的和结论不确定的）；重新运行最终回归 `./gradlew compileJava test` 并确认游戏能启动；把 spec 的 Status 改为反映反向的实现状态
+- [X] T033（2026-11-07 T030、T031 已通过，BOOT-1 已确认能进入世界，今天 `compileJava test` 为 62 个测试类、473 个用例、0 失败；spec Status 已更新，仍如实写明 5b/9 未验证） [US5] 更新 `specs/012-ctrl-transfer-to-open-container/DELIVERY.md`：补反向的自动化结果与 T030、T031 的结果（包括没做到的和结论不确定的）；重新运行最终回归 `./gradlew compileJava test` 并确认游戏能启动；把 spec 的 Status 改为反映反向的实现状态
 
 **Checkpoint**: US5 达成 FR-017～FR-023、SC-008～SC-010。
 

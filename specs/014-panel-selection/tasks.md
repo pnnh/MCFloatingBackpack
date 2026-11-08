@@ -111,7 +111,7 @@
   - **结果**：Shift 只出现在 `PanelSelectionInput`（选择手势与吞掉其余组合、批量提交时检查）以及 011/013 既有的让路判断；Alt 只出现在 `FloatingPanelInput.sendClick` 与 `PanelDragInput` 的让路判断；新增文件无 `p3pp3rf1y`/`tiviacz`；`git diff --stat` 对 `QuickTransferInput/Gesture/Rules` 为空
 - [X] T024 [US4] 运行 `./gradlew compileJava test`，确认全部测试通过
   - **结果**：退出码 0，22 个测试类（原 20 个 + 014 新增 2 个）
-- [ ] T025 [US4] 按 `quickstart.md` 四（22–29）验证：Alt+点击主手交换（主手是背包本身时的保护、副手打开面板才能构造交换场景，不能构造则记"未验证"）、Shift+点击不交换、光标拿着物品时 Alt+点击立即交换、打开界面时 Alt 与普通点击一致、Shift+Alt、Ctrl+Shift 与 Shift+右键被忽略、重跑 013 与 011/012 的 quickstart；再按五（30–31）做守恒与日志检查；用 `./gradlew runClientCompat` 按六（32–33）验证精妙背包、旅行者背包。Windows/Linux 无法验证（尤其 Alt+点击是否被窗口管理器占用），在 `DELIVERY.md` 里如实写"未验证"。结果记到 `DELIVERY.md`
+- [ ] T025（2026-11-07 部分：四（22–27）、重跑 013 与 011/012（REG-1～REG-4）、五（30–31）守恒与日志（CONS-1/2）已由用户验证通过；**六（32–33）`runClientCompat`——014-32、014-33——仍未验证**） [US4] 按 `quickstart.md` 四（22–29）验证：Alt+点击主手交换（主手是背包本身时的保护、副手打开面板才能构造交换场景，不能构造则记"未验证"）、Shift+点击不交换、光标拿着物品时 Alt+点击立即交换、打开界面时 Alt 与普通点击一致、Shift+Alt、Ctrl+Shift 与 Shift+右键被忽略、重跑 013 与 011/012 的 quickstart；再按五（30–31）做守恒与日志检查；用 `./gradlew runClientCompat` 按六（32–33）验证精妙背包、旅行者背包。Windows/Linux 无法验证（尤其 Alt+点击是否被窗口管理器占用），在 `DELIVERY.md` 里如实写"未验证"。结果记到 `DELIVERY.md`
   - **部分确认（2026-11-05）**：用户确认 Alt+点击切换主手功能没有问题；其余项（Shift+点击不交换、Shift+Alt、Ctrl+Shift/Shift+右键被忽略、重跑 013 与 011/012、守恒与日志、`runClientCompat`、Windows/Linux）未确认，保持未验证
 
 **Checkpoint**: US4 达成 FR-010、FR-016～FR-020、SC-005、SC-006、SC-008。
@@ -122,7 +122,7 @@
 
 - [X] T026 [P] 更新文档：`specs/003-cross-gui-drag/spec.md` 的主手 Shift 路径处（行 64、87 附近）加【014 修订】——主手交换改为 Alt；`specs/011-ctrl-quick-transfer/spec.md`、`specs/012-ctrl-transfer-to-open-container/spec.md`、`specs/013-panel-drag-split-gather/spec.md` 的"假设"处各加一条【014 说明】——Shift 在面板里现专用于选区，Ctrl 点击已选格子由 014 接管为批量转出，未选格子行为不变；`docs/MCFloatingBackpack.md` 第 32 行"面板内格子支持……Shift 点击"和 M5 条目里补"Shift 单击/拖动选择格子（金色边框），Ctrl 点击已选格子批量转出，HUD 下主手交换改为 Alt+点击"，并指向 `specs/014-panel-selection/`
 - [X] T027 创建 `specs/014-panel-selection/DELIVERY.md`：记录 T010、T015、T019、T025 的结果，**包括没做到的和结论不确定的**；列出已知限制（选区只在客户端、同栏位换同容量背包不清空、Windows/Linux 未验证、Alt 键冲突未验证、金色边框辨识度结论）；记录行为变化（Shift 不再触发主手交换；Shift+右键与 Ctrl+Shift 被忽略；Ctrl 批量转出是松开才发送；不按 Shift 的面板点击会清空选区）及用户是否接受
-- [ ] T028 运行最终回归 `./gradlew compileJava test`，并确认游戏能启动（`./gradlew runClient` 进入世界无报错；**启动前先 `pgrep -f "fml.modFolders=mcfloatingbackpack"` 确认没有正在运行的客户端，不要杀用户的游戏**）；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
+- [X] T028（2026-11-06 `compileJava test` 61 类/468 用例全绿；用户确认进入世界无报错；验证未完成的部分写在 DELIVERY.md 与 spec Status） 运行最终回归 `./gradlew compileJava test`，并确认游戏能启动（`./gradlew runClient` 进入世界无报错；**启动前先 `pgrep -f "fml.modFolders=mcfloatingbackpack"` 确认没有正在运行的客户端，不要杀用户的游戏**）；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
   - **部分完成**：`./gradlew compileJava test` 退出码 0（22 个测试类）；**游戏启动与进入世界未验证**（本次没有启动客户端）；spec Status 已改为"代码与单元测试完成，未在游戏里验证"
 
 ---

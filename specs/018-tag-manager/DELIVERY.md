@@ -97,3 +97,17 @@
 ## 对 019 宿主界面的依赖
 
 键盘接管只靠 `ScreenEvent.KeyPressed.Pre`/`KeyReleased.Pre`/`CharacterTyped.Pre`，作用的界面由 019 的 `FloatingPanelEvents.hostsPanel` 判定（宿主界面或容器界面）；这些前置事件先于宿主自己的按键处理（"让出再重放"），所以编辑时打的字符不会被当作要让出的按键。
+
+## 2026-11-06：Claude 代跑的自动项
+
+- **T051 的 43（`./gradlew compileJava test`）**：`./gradlew compileJava test --rerun-tasks` 退出码 0（BUILD SUCCESSFUL）：61 个测试类、468 个用例、0 失败、0 跳过（测试编译只有 3 条 `Dist.CLIENT` 注解警告，测试类路径没有 NeoForge 所致）。
+- **T051 的 44（图集度量）**：先 `pgrep` 确认没有客户端在运行，再跑 `design/demo/tools/check_atlas_budget.sh`：共用方块图集 **2048×1024**（mip 级别 4），估算显存约 11.2MB，预算 2048 → **通过**，退出码 0；脚本结束后确认没有残留的客户端进程。本 feature 只新增一张 16×16 物品贴图，宪法 VI 通过。
+- **T051 的 45（`latest.log` 无新增报错）**：这次启动只到创建图集（主菜单之前），日志 65 行，`ERROR` / `Exception` 0 行；共 10 条 WARN，全部来自原版或开发环境（命令歧义 5 条、`Assets URL … uses unexpected schema` 2 条、缺少山羊角音效 2 条、`rendertype_entity_translucent_emissive` 着色器 1 条），没有本模组的 WARN 或 ERROR。**没有进入世界**，所以"进入世界无报错"与"游戏内日志无新增报错"仍未验证。
+- **仍未做**：T051 的 46（`runClientCompat` 下精妙背包/旅行者背包界面里面板与标签管理器不受影响）。该任务写明由用户确认后才打勾，**保持未勾选**。
+
+## 2026-11-06：用户人工验证（清单 E–H 组）
+
+来源：用户在 `docs/plan/manual-verification-checklist.md` 里逐项勾选并备注；清单只记录通过与否和少量备注，没有逐项数据。没勾的项仍是**未验证**。
+
+- 用户确认通过：018-14（状态行文字被截断时悬停弹出完整文字）、018-16/17（下拉预设立即添加；英文界面预设为小写，中文界面显示"本地化名 + 灰色 id"）、018-22（多选三种物品添加 `wood`，三种都得到）、018-33～36（满 10 个标签后加号变灰、悬停提示列出已满的物品、多选时只列已满那一种、删除一个后恢复、另一种恰好 9 个再加 1 个成功）、018-45（游戏内日志无新增报错）。这些覆盖了第一轮验证里标"未验证"的"满 10 个后加号变灰与悬停提示、多选添加"一行。
+- **T051 仍保持未勾选**：`runClientCompat` 下精妙背包、旅行者背包里面板与标签管理器的行为（018-46）尚未验证。`compileJava test` 与图集度量已由 Claude 代跑通过（见上节）。

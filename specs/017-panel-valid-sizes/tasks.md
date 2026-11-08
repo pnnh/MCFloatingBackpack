@@ -96,7 +96,7 @@
 
 - [X] T017 [P] 更新文档：`specs/007-floating-window-chrome/spec.md` 加【017 修订】——面板的行列不再能任意取值，只停在不会出现实心格子的合法尺寸（规则见 `specs/017-panel-valid-sizes/`）；`specs/016-panel-tool-areas/spec.md` 加【017 说明】——Edge Cases 里的"填充格"在标准等级下不再出现（017 的合法尺寸规则保证），代码里的填充格不绘制只保留为兜底；`docs/MCFloatingBackpack.md` M5 里 016 的那句补"拖动缩放只停在合法尺寸、箭头更小更贴边"
 - [X] T018 创建 `specs/017-panel-valid-sizes/DELIVERY.md`：记录 T001、T009、T013、T016 的结果，**包括没做到的和结论不确定的**；列出已知限制（合法尺寸之间"跳"的手感、屏幕极小时的取舍、偏好被改写成合法值后不会记住、Windows/Linux 未验证）；记录行为变化（缩放不再能任意行列、各等级的合法形状表）及用户是否接受
-- [ ] T019 运行最终回归：`./gradlew compileJava test`；确认没有客户端在运行后跑 `design/demo/tools/check_atlas_budget.sh`，图集仍 2048×1024（本 feature 不新增资源）；按 `quickstart.md` 四（17–18）重跑 016 的布局/滚动/存放与 011～014 的主区域手势验证项并记录结果；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
+- [X] T019（2026-11-07 测试与图集已由 Claude 代跑通过；016 布局/滚动/存放与 011～014 主区域手势重跑已由用户通过统一回归 REG-1～REG-5 验证） 运行最终回归：`./gradlew compileJava test`；确认没有客户端在运行后跑 `design/demo/tools/check_atlas_budget.sh`，图集仍 2048×1024（本 feature 不新增资源）；按 `quickstart.md` 四（17–18）重跑 016 的布局/滚动/存放与 011～014 的主区域手势验证项并记录结果；把 spec 的 Status 改为实现完成，并如实写明验证未完成的部分
   - **部分完成**：`./gradlew compileJava test` 退出码 0（26 个测试类）；**图集度量没有做**——检测到用户的客户端正在运行（`pgrep` 有进程），按规则不去杀它；本 feature 没有新增或修改任何资源，图集应不变，但**没有实测**；quickstart 四（重跑 016 与 011～014 的回归）未做；spec Status 已改为"代码与单元测试完成，未在游戏里验证"
 
 ---

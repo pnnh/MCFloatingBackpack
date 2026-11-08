@@ -4,12 +4,13 @@
   "key": {
     "L": { "item": "minecraft:leather" },
     "C": { "item": "minecraft:chest" },
-    "S": { "item": "minecraft:string" }
+    "S": { "item": "minecraft:string" },
+    "I": { "item": "minecraft:iron_ingot" }
   },
   "pattern": [
     "LSL",
     "LCL",
-    "LLL"
+    "ILI"
   ],
   "result": {
     "count": 1,

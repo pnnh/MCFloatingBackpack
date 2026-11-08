@@ -1,6 +1,7 @@
 {
   "type": "mcfloatingbackpack:backpack_upgrade",
+  "template": { "item": "minecraft:eye_armor_trim_smithing_template" },
   "base": { "item": "mcfloatingbackpack:gold_floating_backpack" },
-  "addition": { "item": "minecraft:diamond" },
+  "addition": { "item": "minecraft:diamond_block" },
   "result": { "id": "mcfloatingbackpack:diamond_floating_backpack", "count": 1 }
 }

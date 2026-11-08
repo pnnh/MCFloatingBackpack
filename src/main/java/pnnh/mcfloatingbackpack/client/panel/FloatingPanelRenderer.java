@@ -37,6 +37,10 @@ public final class FloatingPanelRenderer {
      * reach roughly 400 + 150 + a few.
      */
     private static final float OVERLAY_Z = 800.0F;
+    /** 022: the confirmation dialog sits above every slot item (icon 150, count text 200 over {@link #OVERLAY_Z}). */
+    private static final float CONFIRM_Z = 300.0F;
+    /** The item riding the cursor stays above the confirmation dialog. */
+    private static final float CURSOR_Z = 400.0F;
 
     private static final int COLOR_PANEL = 0xFFC6C6C6;
     private static final int COLOR_EDGE_LIGHT = 0xFFFFFFFF;
@@ -102,8 +106,13 @@ public final class FloatingPanelRenderer {
             TrashPanelRenderer.render(graphics, mouseX, mouseY);
         }
         // 022: a question waiting for the player's yes or no covers the whole panel.
+        // Item icons are drawn 150 deep and their count text 200 deep (GuiGraphics), so a mask drawn at the panel's own
+        // depth ends up *under* them; lift the whole dialog above that.
         if (TrashConfirmState.get().isPending()) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0.0F, 0.0F, CONFIRM_Z);
             TrashConfirmRenderer.render(graphics, mouseX, mouseY);
+            graphics.pose().popPose();
         }
 
         ItemStack cursor = cursorStack(minecraft);
@@ -114,7 +123,7 @@ public final class FloatingPanelRenderer {
             String text = preview != null && shown.isEmpty() ? ChatFormatting.YELLOW + "0" : null;
             ItemStack drawn = shown.isEmpty() ? cursor : shown;
             graphics.pose().pushPose();
-            graphics.pose().translate(0.0F, 0.0F, 32.0F);
+            graphics.pose().translate(0.0F, 0.0F, CURSOR_Z);
             graphics.renderItem(drawn, mouseX - 8, mouseY - 8);
             graphics.renderItemDecorations(minecraft.font, drawn, mouseX - 8, mouseY - 8, text);
             graphics.pose().popPose();

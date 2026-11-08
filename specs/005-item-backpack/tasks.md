@@ -86,7 +86,7 @@
 
 - [x] T022 [P] Update `docs/plan/005-gameplay-item-tiers.md` with “005 已开做 A/C/E；B/D 仍延后” pointer to `specs/005-item-backpack`
 - [x] T023 Run `./gradlew test` and `./gradlew compileJava`
-- [ ] T024 Manual `runClient` per quickstart; note status in `specs/005-item-backpack/DELIVERY.md` when done（2026-11-04：大部分通过，门禁 3 发现缺陷 BUG-005-1 已修复待重测；JEI/依赖部分未验证，见 DELIVERY.md）
+- [X] T024 Manual `runClient` per quickstart; note status in `specs/005-item-backpack/DELIVERY.md` when done（2026-11-04：大部分通过，门禁 3 发现缺陷 BUG-005-1 已修复并重测；2026-11-06 用户补验 JEI/依赖（M1–M3）通过，见 DELIVERY.md）
 - [x] T025 Regression: cross-GUI drag with item-bound backpack still works (003 path)（2026-11-04 人工验证通过）
 - [X] T026 修复 BUG-005-1（右键使用背包时面板反复开关）：`ConsumedPressTracker` 只吞被面板吞掉的按下所对应的松开；`toggleFromUse()` 先释放使用键。根因分析与修复见 DELIVERY.md；`compileJava test` 通过
 - [X] T027 在游戏里重测 BUG-005-1（2026-11-04 用户确认已修复）。quickstart 的 JEI/依赖部分仍未验证，故 T024 保持未勾

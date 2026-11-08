@@ -101,7 +101,7 @@
 
 - [X] T022 [US4] 审阅（读代码，不改行为）宿主 ↔ 容器界面、宿主 ↔ 非容器界面切换时各手势的取消路径：`QuickTransferInput.stopIfInvalid`、`PanelDragInput.stopIfInvalid`、`PanelSelectionInput.stopIfInvalid` 都靠 `minecraft.screen != activeScreen` 取消——确认宿主让位/恢复时 `activeScreen` 与 `minecraft.screen` 的比较对新增的 `PanelHostScreen` 同样成立；确认取消时不发请求；确认 `PanelSelection.syncContext` 以"可见"为清空条件（隐藏期间选区保留）。发现缺口就在 `FloatingPanelEvents` 或对应输入类里补，并在 DELIVERY.md 记录；没有缺口也记"已审阅，无需改动"
   - **结果**：已审阅，无需改动：三个手势都用 `minecraft.screen != activeScreen` 取消，宿主每次都是新实例，宿主 ↔ 容器/其它界面切换必然取消，取消时不发请求；`PanelSelection.syncContext` 以"可见"为条件，隐藏期间选区保留
-- [ ] T023 [US4] 按 `quickstart.md` 四（19–23）在 `./gradlew runClient` 逐项验证：面板光标上拿物品 + E / 聊天 / 关面板的物品总数；拖动均分、Ctrl 转出、选区拖选、面板拖动、缩放进行中按 E 或弹出聊天后无残留预览与"粘住鼠标"；宿主 ↔ 物品栏来回 10 次后位置/尺寸/滚动/选区不变；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T023（2026-11-06 用户验证 019-19～23 通过） [US4] 按 `quickstart.md` 四（19–23）在 `./gradlew runClient` 逐项验证：面板光标上拿物品 + E / 聊天 / 关面板的物品总数；拖动均分、Ctrl 转出、选区拖选、面板拖动、缩放进行中按 E 或弹出聊天后无残留预览与"粘住鼠标"；宿主 ↔ 物品栏来回 10 次后位置/尺寸/滚动/选区不变；结果记到 DELIVERY.md（由用户确认后才打勾）
   - **状态（2026-11-05）**：客户端验证**未做**，等用户确认后才打勾
 
 **Checkpoint**: US4 达成 FR-016、FR-017、SC-006（物品守恒部分）。
@@ -114,7 +114,7 @@
 
 **Independent Test**: quickstart 五（24–26）。
 
-- [ ] T024 [US5] 按 `quickstart.md` 五（24–26）在 `./gradlew runClient` 验证：创造模式没开界面时按 B 面板在宿主上可用；按 E 打开创造物品栏时面板的表现（沿用现状，**只记录观察**，未验证则写"未验证"）；按住 W 时按 B 开面板、松开 W、再关面板，角色不会自己继续走（SC-007）；结果记到 DELIVERY.md（由用户确认后才打勾）。若发现卡键，修复点在 `PanelHostScreen`/`HostScreenManager` 的按键释放处理，回到 US2 的任务补测试或观察
+- [X] T024（2026-11-06 用户验证 019-24～26 通过） [US5] 按 `quickstart.md` 五（24–26）在 `./gradlew runClient` 验证：创造模式没开界面时按 B 面板在宿主上可用；按 E 打开创造物品栏时面板的表现（沿用现状，**只记录观察**，未验证则写"未验证"）；按住 W 时按 B 开面板、松开 W、再关面板，角色不会自己继续走（SC-007）；结果记到 DELIVERY.md（由用户确认后才打勾）。若发现卡键，修复点在 `PanelHostScreen`/`HostScreenManager` 的按键释放处理，回到 US2 的任务补测试或观察
   - **状态（2026-11-05）**：客户端验证**未做**，等用户确认后才打勾
 
 **Checkpoint**: US5 达成 FR-008（不卡键）、FR-018、SC-007。
@@ -125,13 +125,13 @@
 
 - [X] T025 [P] 更新受影响的历史文档，把"无界面 HUD"改写成"没有容器界面时的宿主界面（019）"，已勾选的历史验证项不改：`specs/003-cross-gui-drag/`、`specs/007-floating-window-chrome/`、`specs/011-ctrl-quick-transfer/`、`specs/012-ctrl-transfer-to-open-container/`、`specs/013-panel-drag-split-gather/`、`specs/014-panel-selection/`、`specs/016-panel-tool-areas/` 里 spec/plan/quickstart 的相关描述，以及 `docs/MCFloatingBackpack.md`；先 `grep -rn "HUD\|没有打开任何界面\|无界面" specs/003* specs/007* specs/011* specs/012* specs/013* specs/014* specs/016* docs/MCFloatingBackpack.md` 列出清单，逐处改。**不要修改 `docs/ideas`**
 - [X] T026 [P] 在 `specs/018-tag-manager/spec.md` 与 `specs/018-tag-manager/plan.md` 顶部背景里各加一段说明：018 依赖 019（宿主界面）；019 完成后 018 的 plan 需简化——去掉 `TagInputScreen` 的宪法例外与 Complexity Tracking 条目、去掉 HUD 键盘捕获与 `hostsPanel` 的特殊扩展；**只加说明，不在本 feature 里改 018 的设计**
-- [ ] T027 按 `quickstart.md` 六（27–33）逐项观察并记录已知限制与未验证项：F1/F3 在宿主下是否生效、F2/F11 是否生效、窗口失焦是否弹暂停菜单、JEI 叠层在宿主上的表现、切换维度前后的面板状态、隐藏期间背包被取走时的收敛、关闭界面后鼠标是否回到屏幕中心及可否接受、功能键（如 F5）按一次时宿主是否闪烁；每项写观察到什么，没做的写"未验证"
+- [X] T027（2026-11-06 用户观察 019-27～29、32、33 已记录；019-30 切换维度、019-31 隐藏期间丢背包记为"未验证"） 按 `quickstart.md` 六（27–33）逐项观察并记录已知限制与未验证项：F1/F3 在宿主下是否生效、F2/F11 是否生效、窗口失焦是否弹暂停菜单、JEI 叠层在宿主上的表现、切换维度前后的面板状态、隐藏期间背包被取走时的收敛、关闭界面后鼠标是否回到屏幕中心及可否接受、功能键（如 F5）按一次时宿主是否闪烁；每项写观察到什么，没做的写"未验证"
   - **状态（2026-11-05）**：观察**未做**，等用户确认后才打勾
-- [ ] T028 按 `quickstart.md` 七（34、36）回归与压力：重跑 011/012/013/014/016/017 的 quickstart 里"打开着界面"的场景；50 次随机开关（B、E、ESC、聊天混合）后检查无卡键、无残留宿主、物品守恒、`run/logs/latest.log` 无新增报错；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T028（2026-11-06 019-36 的 50 次压力与日志已由用户确认；2026-11-07 统一回归 REG-1～REG-9 在宿主界面与打开着界面各扫一遍通过） 按 `quickstart.md` 七（34、36）回归与压力：重跑 011/012/013/014/016/017 的 quickstart 里"打开着界面"的场景；50 次随机开关（B、E、ESC、聊天混合）后检查无卡键、无残留宿主、物品守恒、`run/logs/latest.log` 无新增报错；结果记到 DELIVERY.md（由用户确认后才打勾）
   - **状态（2026-11-05）**：回归与压力验证**未做**，等用户确认后才打勾
 - [X] T029 静态检查（`quickstart.md` 七 35）：`grep -rn "RenderGuiEvent\|InputEvent.MouseButton\|isMouseGrabbed\|grabMouse\|releaseMouse" src/main/java`（无 HUD 专用驱动）；`grep -rn "setScreen(" src/main/java`（唯一性）；`git diff --stat` 确认没有改动 `QuickTransferInput/Gesture/Rules` 的逻辑（只允许 T011 的注释改动）、没有改动任何网络包与 `BackpackNetwork` 的协议版本（仍为 `"7"`）；`grep -rn "p3pp3rf1y\|tiviacz" src/main/java/pnnh/mcfloatingbackpack/client/panel/Host*` 无命中（宪法 IV）；结果记到 DELIVERY.md
   - **结果**：见 DELIVERY.md 静态检查一节，全部符合
-- [ ] T030 启动检查（`quickstart.md` 七 37）：先 `pgrep` 确认没有运行中的客户端，能进入世界、日志无报错；本 feature 不新增资源，宪法 VI 不适用，无需度量图集（在 DELIVERY.md 里写明"不适用"，不要声称已度量）
+- [X] T030（2026-11-06 用户确认能进入世界、日志无本模组报错；宪法 VI 不适用，未度量图集——代跑的 2048×1024 只是顺带观察） 启动检查（`quickstart.md` 七 37）：先 `pgrep` 确认没有运行中的客户端，能进入世界、日志无报错；本 feature 不新增资源，宪法 VI 不适用，无需度量图集（在 DELIVERY.md 里写明"不适用"，不要声称已度量）
   - **状态（2026-11-05）**：启动检查**未做**，等用户确认后才打勾
 - [X] T031 新建 `specs/019-fallback-host-screen/DELIVERY.md`（中文）：汇总自动化结果（T001 基线与 T006/T012/T016/T020 的编译与测试结果、新增测试用例数）、与 plan/tasks 的偏离、行为变化（HUD 模式取消：宿主在场期间世界交互失效；非容器界面不再关闭面板而是隐藏；ESC 行为）、**每个客户端验证项实际验证了什么 / 未验证什么**、已知限制（F1/F3、不经 `consumeClick` 的模组按键、JEI/EMI、Windows/Linux 未验证）、对 018 的后续影响
 

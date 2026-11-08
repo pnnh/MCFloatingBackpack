@@ -58,7 +58,7 @@
 - [X] T017 [US1] 修改 `…/client/FloatingPanelEvents.java`：①`scrollPanel` 里鼠标在垃圾桶外框内时消费滚轮不做事（要在 `state.contains` 判断之前处理，因为外框在面板矩形之外）；②`onClientTick` 里垃圾桶面板展开但（浮动面板不可见 或 `!ClientBackpackView.get().hasTrashCan()`）→ `collapse()`；③`onLoggingIn/onLoggingOut` 与 `closePanel` 里收起/重置；渲染与输入都已挂在 `hostsPanel(screen)` 之后，确认 OFF 界面上不画不响应。依赖 T014、T016
 - [X] T018 [US1] 修改 `…/compat/jei/FloatingBackpackJeiPlugin.java`：`getGuiExtraAreas` 在已有的浮动面板矩形之外，当 `TrashPanelState.get().isOpen()` 时再追加垃圾桶外框的 `Rect2i`（来自 `TrashPanelLayout.of(...)`）；仍由 `CompatConfig.policy().specificAdaptation("jei")` 控制。依赖 T013、T014
 - [X] T019 [US1] 运行 `./gradlew compileJava test`，确认 T009（贴图部分在 T011 后）、T012、T014 与全部既有测试通过
-- [ ] T020 [US1] 按 `quickstart.md` A（Q1～Q4 中除图集度量外）、B（Q5～Q11）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：配方与 JEI 里的配方、贴图外观；右侧区左键展开/收起、右键拿起、光标非空时的普通点击、其它三个区域里只是普通物品；展开位置与对齐、没有图标按钮；拿走/换出/关闭浮动面板自动收起；与标签面板同时展开；点击与滚轮不穿透；结果记到 DELIVERY.md（**由用户确认后才打勾**）
+- [X] T020（2026-11-07 用户逐项验证 Q1～Q3、Q5～Q11 通过；Q4 图集度量已由 Claude 代跑通过，见 DELIVERY） [US1] 按 `quickstart.md` A（Q1～Q4 中除图集度量外）、B（Q5～Q11）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：配方与 JEI 里的配方、贴图外观；右侧区左键展开/收起、右键拿起、光标非空时的普通点击、其它三个区域里只是普通物品；展开位置与对齐、没有图标按钮；拿走/换出/关闭浮动面板自动收起；与标签面板同时展开；点击与滚轮不穿透；结果记到 DELIVERY.md（**由用户确认后才打勾**）
   - **2026-11-05 用户反馈**：已进游戏验证过基本功能，没有问题；**未做全面验证**（没有逐项对照 quickstart），本任务保持未勾选，逐项结果在 DELIVERY.md 标"未验证"
 
 **Checkpoint**: 可以拿到并摆放垃圾桶，面板能展开收起，但还不能丢东西。
@@ -78,7 +78,7 @@
 - [X] T025 [US2] 修改 `…/client/panel/trash/TrashPanelInput.java`：`onPress` 里光标非空（`FloatingPanelRenderer.cursorStack(minecraft)`）时点在外框内任意位置 → 发 `BackpackTrashPayload.of(ADD, [], screenOpen)`（`screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen)`）；按住 Shift 或 `PanelDragInput.isActive()` 时只吞掉不发；右键只吞掉。修改 `TrashPanelRenderer`：按 `ClientBackpackView.trash()` 画 9 格里的物品与数量（`renderItem` + `renderItemDecorations`，最新的在第 1 格）。依赖 T015、T016、T023
 - [X] T026 [US2] 实现松开在垃圾桶上的拖放（research Decision 8、contracts 第 4 节）。**先读** `build/moddev/artifacts/neoforge-21.1.251-sources.jar` 里的 `AbstractContainerScreen.mouseClicked/mouseDragged/mouseReleased`，确认"光标为空按下立即拿起并 `skipNextRelease`""光标非空按下进入 `isQuickCrafting`、松开时点击松开位置或 `-999` 扔出""携带物为空时松开是空操作"这些假设，把读到的结论（与假设不一致处）写进 DELIVERY.md；再实现：①`PanelDragInput` 增加公开的 `cancel()`（即现有 `stop()` 的公开入口）；②`FloatingPanelInput.onMouseButton` 的 PRESS 入口对所有被分派到的按下调用 `TrashDropTracker.press(button, onTrash)`（含未被消费、落在原版界面格子上的按下）；`resetPressTracking()`、面板隐藏、登出时 `clear()`；③RELEASE 分支**最前面**（早于选区、013、面板拖动、缩放）调用 `TrashPanelInput.onRelease`：左键、记录为"按下在外"、松开点在外框内、无 Shift/Ctrl、垃圾桶展开时 → `PanelDragInput.cancel()`、发 `ADD`、客户端预测清空光标（菜单携带物 `menu.setCarried(ItemStack.EMPTY)`，或面板光标 `ClientBackpackView.applySlotUpdate(MAIN, -1, EMPTY, EMPTY)`）；返回"是否吞掉"：按下被面板消费过（`PRESSES` 里有）→ 吞掉，否则（按下落在原版界面格子上）→ **放行**。依赖 T022、T024、T025
 - [X] T027 [US2] 运行 `./gradlew compileJava test`，确认 T021 与全部既有测试通过；`grep -rn "setScreen(" …/client/panel/trash` 应无命中（本 feature 不新增任何 Screen）
-- [ ] T028 [US2] 按 `quickstart.md` C（Q12～Q14）、D（Q16～Q21）、E（Q22～Q23）、H（Q41～Q42）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：宿主界面与容器界面（箱子、玩家物品栏）下点击丢入；主区域/工具区/箱子/物品栏按下后拖到垃圾桶松开；原版没有卡在拖动分配状态、物品没有被扔出或落进被遮住的格子；快速点击拿起原处松开不算；在垃圾桶上按下松开只丢一次；满 9 组挤出最旧的一组且服务端日志有调试行；嵌套背包/潜影盒数据完整；极端大物品被体积保护拒绝时有提示，并记录实测上限；若 Q18/Q19 在容器界面上仍有残留状态，**按 research Decision 8 的退路处理并向用户报告，不要自作主张降级**；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T028（2026-11-07 用户逐项验证 Q12～Q14、Q16～Q23、Q41、Q42 通过；Q42 用塞满的下界合金背包、皮革背包、旅行者背包都没触及体积上限，实测上限未确定） [US2] 按 `quickstart.md` C（Q12～Q14）、D（Q16～Q21）、E（Q22～Q23）、H（Q41～Q42）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：宿主界面与容器界面（箱子、玩家物品栏）下点击丢入；主区域/工具区/箱子/物品栏按下后拖到垃圾桶松开；原版没有卡在拖动分配状态、物品没有被扔出或落进被遮住的格子；快速点击拿起原处松开不算；在垃圾桶上按下松开只丢一次；满 9 组挤出最旧的一组且服务端日志有调试行；嵌套背包/潜影盒数据完整；极端大物品被体积保护拒绝时有提示，并记录实测上限；若 Q18/Q19 在容器界面上仍有残留状态，**按 research Decision 8 的退路处理并向用户报告，不要自作主张降级**；结果记到 DELIVERY.md（由用户确认后才打勾）
   - **2026-11-05 用户反馈**：已进游戏验证过基本功能，没有问题；**未做全面验证**（没有逐项对照 quickstart），本任务保持未勾选，逐项结果在 DELIVERY.md 标"未验证"
 
 **Checkpoint**: 可以把东西丢进垃圾桶（点击与拖放），只留最近 9 组。
@@ -143,7 +143,7 @@
 **Independent Test**: quickstart H（Q36～Q40）、I（Q43～Q46）、J（Q47～Q48）、K（Q49）。
 
 - [X] T044 [US6] 审阅（读代码，不改行为）：①`BackpackUpgradeRecipe` 升级后 `trash` 保留（T007 已核对，再确认）；②`BackpackContents.normalize/fit` 在容量缩小时不丢 `trash`；③读入旧存档（无 `trash` 字段）为 `TrashContents.EMPTY`；④服务端所有非法请求路径（越界下标、光标为空却 `ADD`、光标非空却 `TAKE`、垃圾桶不在右侧区却发请求、`RESTORE` 下标全空、未知动作、`ADD` 带下标）都整个丢弃且背包数据零变化，只补发同步；⑤菜单分支都过 `ServerCompatGate`；发现缺口就补并记录，没有缺口也记"已审阅，无缺口"
-- [ ] T045 [US6] 按 `quickstart.md` H（Q36～Q40）、I（Q43～Q46）、J（Q47～Q48）、K（Q49）在 `./gradlew runClient` 验证（先 `pgrep`）：退出重进/关闭浮动面板内容仍在；垃圾桶取走再放回内容还在；两只背包互不共享；锻造台升级保留；旧背包为空不报错；JEI 在 FULL 下避让、GENERIC/OFF 下不避让；OFF 的模组界面上垃圾桶面板整体隐藏且状态保留；窗口缩窄/面板靠右时被裁剪、拉宽恢复；右侧区滚动/缩小后垃圾桶不在可见格子里面板不收起；**重跑 011～020 的 quickstart 中与面板有关的场景**（点击、013 拖动均分与收集、014 选区、Ctrl 转移、缩放、滚动、标签管理器与标签面板、兼容开关、宿主界面键盘）；联机无条件则写"未验证"；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T045（2026-11-07 部分：Q36～Q40、Q43、Q45、Q46、Q48 已由用户验证通过；Q47（统一回归 REG-1～REG-9）已于 2026-11-07 由用户验证通过；Q44（OFF 的模组界面，会话 S2）、Q49（联机，没有条件，未做）仍待） [US6] 按 `quickstart.md` H（Q36～Q40）、I（Q43～Q46）、J（Q47～Q48）、K（Q49）在 `./gradlew runClient` 验证（先 `pgrep`）：退出重进/关闭浮动面板内容仍在；垃圾桶取走再放回内容还在；两只背包互不共享；锻造台升级保留；旧背包为空不报错；JEI 在 FULL 下避让、GENERIC/OFF 下不避让；OFF 的模组界面上垃圾桶面板整体隐藏且状态保留；窗口缩窄/面板靠右时被裁剪、拉宽恢复；右侧区滚动/缩小后垃圾桶不在可见格子里面板不收起；**重跑 011～020 的 quickstart 中与面板有关的场景**（点击、013 拖动均分与收集、014 选区、Ctrl 转移、缩放、滚动、标签管理器与标签面板、兼容开关、宿主界面键盘）；联机无条件则写"未验证"；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 ---
 

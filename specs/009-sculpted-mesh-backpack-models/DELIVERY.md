@@ -30,3 +30,21 @@
 - **铁背包 OBJ 不再是"完整原始网格"**：`iron_backpack.obj` 末尾多了 10 块薄板（40 个三角形，正反各一层），补的是手持第一人称时能看到背后场景的缝。开放边数量没变（122），只是在缝里放了遮挡板。补丁脚本 `design/demo/tools/patch_iron_slit.py`，检查工具 `design/demo/tools/firstperson_holes.py`（按游戏真实的手持变换重建画面找洞），过程与踩坑见 `design/demo/README.md` 第十轮。重新导出铁背包时需要重新打补丁。
 - **开发期光影环境**：`./gradlew runClientShader`（Iris 1.8.12 + Sodium 0.6.13，仅开发运行时）与 `design/demo/tools/fetch_shaderpack.sh`；见 010 的 DELIVERY.md。
 - **清理遗留**（F008）：2026-11-04 删除了 `floating_backpack.json`、`textures/entity/backpack_back.png`、`FloatingBackpackItem.texture()`、`BackpackTier.texturePath()`；之后又删除了模板遗留的空 `mcfloatingbackpack.mixins.json`、空 `META-INF/accesstransformer.cfg`（及 `neoforge.mods.toml` 里对应的两段声明）和不再使用的语言键 `panel.mcfloatingbackpack.title`。`compileJava test` 通过，客户端启动无加载错误。
+
+## 2026-11-06：用户人工验证（清单 A–D 组）
+
+来源：用户在 `docs/plan/manual-verification-checklist.md` 里逐项勾选并备注；清单只记录通过与否和少量备注，没有逐项数据。没勾的项仍是**未验证**。
+
+| 项 | 结果 |
+| --- | --- |
+| T023 升级保留物品（D3） | 通过 → **T023 勾选**（容量与互拖此前已通过） |
+| T024 性能粗测 J1/J3 | 已测，数据见下；J2（局域网多人同屏）按可选项**跳过，无数据** → T024 勾选，已知限制 3 只有单人数据 |
+
+### 性能粗测数据（J1、J3，已知限制 3 的第一组数据）
+
+- 机器与设置：macOS Pro 笔记本，分辨率 2230×1406，渲染距离 12 区块，**未开光影**（J3）。
+- 同一位置、同一视角、未做其它操作：**不背包稳定约 38 fps；背上下界合金背包稳定约 33 fps**（约 −13%）。
+- **背上和取下背包的瞬间**帧率掉到约 20 fps 或更低，短时间内恢复。
+- **打开物品栏**时帧率很低，稳定约 **15 fps**；物品栏里有多个背包，用户观察到此时"显示的似乎不是背包贴图而是模型"（物品栏里的 3D 模型渲染）。
+- **用户不确定**瞬间掉帧是背包渲染本身还是其它因素（例如模型/缓存的首次加载、资源上传）；物品栏的低帧率与 GUI 里渲染多个高面数模型的关系**未做隔离测试**。
+- 没有对照"物品栏里没有背包"时的帧率，所以不能把 15 fps 全部归因于背包。结论：背着的稳态开销可接受（约 5 fps），但**背上/取下的瞬时卡顿与物品栏里多个背包的开销值得进一步隔离**，建议作为 F002（每档面数上限）的输入。

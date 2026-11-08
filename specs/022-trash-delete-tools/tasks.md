@@ -70,7 +70,7 @@
 - [X] T026 [US1] 修改 `…/client/panel/trash/TrashPanelRenderer.java`：标题文字按 `titleTextWidth()` 用 `font.plainSubstrByWidth` 截断；用 `fill` 画两个图标（倾倒 = 向下小三角 + 托盘线；删除 = `×`），置灰与否由 `TrashActions.deleteEnabled()`（本任务先返回 false，T041 实现）决定，悬停图标时底色高亮并 `renderComponentTooltip`（倾倒：`dump.tooltip`；删除：置灰时 `delete.tooltip.disabled`、可用时 `delete.tooltip.enabled`）；颜色与尺寸常量集中在类顶部。依赖 T023
 - [X] T027 [US1] 修改 `…/client/panel/trash/TrashPanelInput.java`：`onPress` 里光标为空、无 Shift、`PanelDragInput` 不在途、点在倾倒图标上 → `TrashActions.dump()`；点在删除图标上先不做事（T041 接上）；标题栏其它位置吞掉；光标非空时仍按 021 的"追加"处理（不管点在哪个图标上）。依赖 T024、T026
 - [X] T028 [US1] 运行 `./gradlew compileJava test`，确认 T022 与全部既有测试通过；`grep -rn "setScreen(" …/client/panel/trash` 应无命中
-- [ ] T029 [US1] 按 `quickstart.md` A（Q1～Q2）、B（Q3～Q7）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：图标位置与外观、悬停说明（中英文）、倾倒顺序与保留、不超过阈值时直接执行、没有可倾倒的物品时聊天提示、其它三个区域不被倾倒、拿回与倾倒前一致；**只测销毁数不超过 9 的倾倒，大批量留到 US4**；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T029（2026-11-07 用户逐项验证 Q1～Q7 通过） [US1] 按 `quickstart.md` A（Q1～Q2）、B（Q3～Q7）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：图标位置与外观、悬停说明（中英文）、倾倒顺序与保留、不超过阈值时直接执行、没有可倾倒的物品时聊天提示、其它三个区域不被倾倒、拿回与倾倒前一致；**只测销毁数不超过 9 的倾倒，大批量留到 US4**；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 **Checkpoint**: 一键倾倒可用（不超过阈值的）。
 
@@ -87,7 +87,7 @@
 - [X] T032 [US2] 修改 `…/client/panel/tags/TagPanelContext.java`、`TagPanelInput.java`、`TagPanelRenderer.java`：`TagPanelContext.model()` 传入 `protectedAt`（`BuiltInRegistries.ITEM.get(id)` 的默认栈 `.is(ModTags.NEVER_TRASH)`）；`TagPanelInput.add(tag)` 在 `model.blocks(tag)` 时直接返回**不停止编辑**，并在聊天区发 `tag.mcfloatingbackpack.protected`（列出物品名，用 `TagPanelContext.itemName`）；`TagPanelInput` 的下拉点击、方向键回车、手打回车三条路径都经过 `add`；`TagPanelRenderer` 把下拉里的 `trash` 预设在 `blocks("trash")` 时画成灰色，悬停时 `renderComponentTooltip` 列出受保护物品；其它标签与加号可用性不变。依赖 T031
 - [X] T033 [US2] 修改 `…/network/BackpackTagPayload.java`：在解析出分类之后、修改 `TagBook` 之前，若 `op == ADD` 且 `TagProtection.blocks(tag, 受保护分类数)`（受保护 = 被选中非空格子里 `stack.is(ModTags.NEVER_TRASH)` 的不同分类）→ 整个请求忽略、数据零变化，并补发一次 `BackpackTagsPayload`；`REMOVE` 与其它标签不受影响。依赖 T013、T017
 - [X] T034 [US2] 运行 `./gradlew compileJava test`，确认 T030 与全部既有测试（含 018 的 `TagPanelModelTest`）通过
-- [ ] T035 [US2] 按 `quickstart.md` C（Q8～Q14）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：受保护物品选中时"垃圾"预设灰色、悬停提示、点击/回车/手打都不添加且有聊天提示，加号与其它标签仍可用；10 类受保护物品各试一次；圆石 + 潜影盒混选被拒；受保护物品已带 trash 标签时倾倒被跳过；附魔、改名、药水、旗帜、头颅、地图、书的栈倾倒时被跳过而磨损的镐被倾倒（**这一条验证 research Decision 3 的组件补丁判断，要实测**）；数据包增删条目生效；`bundle` 缺失不报错；主动删除不受保护；**重跑 018 的标签面板场景**（加号、预设下拉、回车添加、点击添加、删除）；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T035（2026-11-07 部分：Q8～Q10 用户验证通过；**Q11（栈级跳过实测，research Decision 3）、Q12、Q13、Q14 仍未验证**） [US2] 按 `quickstart.md` C（Q8～Q14）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：受保护物品选中时"垃圾"预设灰色、悬停提示、点击/回车/手打都不添加且有聊天提示，加号与其它标签仍可用；10 类受保护物品各试一次；圆石 + 潜影盒混选被拒；受保护物品已带 trash 标签时倾倒被跳过；附魔、改名、药水、旗帜、头颅、地图、书的栈倾倒时被跳过而磨损的镐被倾倒（**这一条验证 research Decision 3 的组件补丁判断，要实测**）；数据包增删条目生效；`bundle` 缺失不报错；主动删除不受保护；**重跑 018 的标签面板场景**（加号、预设下拉、回车添加、点击添加、删除）；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 **Checkpoint**: 倾倒有了两层保护，标签面板拦截生效。
 
@@ -107,7 +107,7 @@
 - [X] T041 [US3] 修改 `…/client/panel/trash/TrashPanelRenderer.java` 与 `TrashPanelInput.java`：删除图标用 `TrashActions.deleteEnabled()` 决定置灰；`TrashPanelInput.onPress` 里点在可用的删除图标上 → `TrashActions.deleteSelection()`，置灰时吞掉不做事。依赖 T039
 - [X] T042 [US3] 修改 `…/client/FloatingPanelEvents.java`：新增 `@SubscribeEvent onScreenKeyPressedPost(ScreenEvent.KeyPressed.Post)`：`hostsPanel(screen)`、`FloatingBackpackKeys.DELETE_TO_TRASH.matches(keyCode, scanCode)` 且其冲突上下文活动才继续；组装 `DeleteKeyRules.Inputs`（面板可见、`hasTrashCan()`、`TrashConfirmState.isPending()`、`TagPanelState` 的展开与编辑、界面种类先只区分 `HOST` 与 `OTHER`——物品栏/箱子在 T054 接入、选区是否有物品、悬停主区域格子 = `PanelSlots.indexAt(state, guiMouseX, guiMouseY)` 且 `< slotCount` 且有物品）→ `decide`；`MAIN_SELECTION` → `TrashActions.deleteSelection()`；`MAIN_HOVER` → `TrashActions.deleteMainSlots(new int[]{slot})`；**只有目标不是 `NONE` 时才 `event.setCanceled(true)`**。依赖 T037、T038、T039
 - [X] T043 [US3] 运行 `./gradlew compileJava test`，确认 T036 与全部既有测试通过
-- [ ] T044 [US3] 按 `quickstart.md` D（Q15～Q16）、E（Q17～Q23）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：删除图标置灰/可用与悬停说明；点图标删除选区且清选区；Delete（macOS Backspace）删除选区/悬停格子、选区优先；工具区与垃圾桶面板上不触发且**不吞键**；标签面板展开或文本框有焦点时不触发；没有垃圾桶时不触发；宿主界面与开着玩家物品栏/箱子时主区域的 Delete 都可用，不引起宿主让位；删除本模组的背包/标签管理器/垃圾桶允许；删除后拿回一致；**只测销毁数不超过 9 的删除**；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T044（2026-11-07 用户逐项验证 Q15～Q23 通过；只测了销毁数不超过 9 的删除） [US3] 按 `quickstart.md` D（Q15～Q16）、E（Q17～Q23）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：删除图标置灰/可用与悬停说明；点图标删除选区且清选区；Delete（macOS Backspace）删除选区/悬停格子、选区优先；工具区与垃圾桶面板上不触发且**不吞键**；标签面板展开或文本框有焦点时不触发；没有垃圾桶时不触发；宿主界面与开着玩家物品栏/箱子时主区域的 Delete 都可用，不引起宿主让位；删除本模组的背包/标签管理器/垃圾桶允许；删除后拿回一致；**只测销毁数不超过 9 的删除**；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 **Checkpoint**: 三种主动删除手段中的两种（图标、主区域 Delete）可用；MVP（US1 + US2 + US3）成立。
 
@@ -126,7 +126,7 @@
 - [X] T049 [US4] 修改 `…/client/FloatingPanelEvents.java`：①`onScreenKeyPressed`（`KeyPressed.Pre`）里：`hostsPanel(screen)` 且 `TrashConfirmState.isPending()` 且 `keyCode == GLFW_KEY_ESCAPE` → `TrashConfirmState.cancel()` 并 `event.setCanceled(true)`（优先于 018 的编辑分支，确认期间不会在编辑）；②`scrollPanel` 里待确认时一律消费（先于垃圾桶面板判断）；③`onClientTick` 里 `TrashConfirmState.shouldDiscard(面板可见, hasTrashCan(), minecraft.screen)` 为真 → `cancel()`；④`closePanel`、登入/登出里 `cancel()`。依赖 T015、T048
 - [X] T050 [US4] 修改 `…/client/panel/trash/TrashPanelInput.java`：`onRelease` 在 `TrashConfirmState.isPending()` 时直接返回 false（弹窗打开前的拖动按下仍可能在途，松开不当作丢入）。依赖 T015
 - [X] T051 [US4] 运行 `./gradlew compileJava test`，确认 T045 与全部既有测试通过
-- [ ] T052 [US4] 按 `quickstart.md` F（Q24～Q30）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：倾倒 20 个栈弹出确认且文字显示销毁数 11；"确认"执行、"取消"/点蒙版空白/点面板外含垃圾桶面板/ESC 都只取消，**ESC 不关面板不弹暂停菜单**（宿主界面和开着箱子两种情况都测）；弹窗期间 Delete/滚轮/拖动/缩放无效，点关闭按钮只取消；热键关闭面板、换界面、垃圾桶离开右侧区时待确认被丢弃；阈值边界（9 不弹、10 弹，选 12 格删除不弹、选 20 格弹）；最小面板下文字与按钮完整；服务端拒绝没带标志的请求（没有条件构造就写"仅单元测试覆盖/未验证"）；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T052（2026-11-07 用户逐项验证 Q24～Q30 通过，含 ESC 与蒙版输入；确认框遮罩层级与取消时保留选区的修复另见 DELIVERY） [US4] 按 `quickstart.md` F（Q24～Q30）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：倾倒 20 个栈弹出确认且文字显示销毁数 11；"确认"执行、"取消"/点蒙版空白/点面板外含垃圾桶面板/ESC 都只取消，**ESC 不关面板不弹暂停菜单**（宿主界面和开着箱子两种情况都测）；弹窗期间 Delete/滚轮/拖动/缩放无效，点关闭按钮只取消；热键关闭面板、换界面、垃圾桶离开右侧区时待确认被丢弃；阈值边界（9 不弹、10 弹，选 12 格删除不弹、选 20 格弹）；最小面板下文字与按钮完整；服务端拒绝没带标志的请求（没有条件构造就写"仅单元测试覆盖/未验证"）；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 **Checkpoint**: 大批量操作有确认保护。
 
@@ -141,7 +141,7 @@
 - [X] T053 [US5] 在 `BackpackTrashSendPayload` 里实现 `MENU_SLOT` 的 `collect`（contracts 第 2 节步骤 4）：`containerId` 等于 `player.containerMenu.containerId`；菜单是 `player.inventoryMenu` 或 `ChestMenu`；`MenuOwner.ownerOf(menu)` 是 `minecraft`；`ServerCompatGate.allows(Action.TAKE_FROM_CONTAINER, owner)`；菜单格子号 ∈ `[0, menu.slots.size())`；由 `slot.container` 推出 `ownInventory`（`== player.getInventory()`）与 `chestOwnSlot`（`== chestMenu.getContainer()`）后过 `DeletableSlots.allowed(ownInventory, slot.getContainerSlot(), chestOwnSlot)`；`slot.hasItem()` 且 `slot.mayPickup(player)`；返回这一个栈与"`slot.remove(count)` + `slot.setChanged()`"的取走动作；**先读 `Slot` 与 `ChestMenu` 源码**确认 `remove` 无需 `onTake`，把结论记到 DELIVERY.md。依赖 T020、T011
 - [X] T054 [US5] 修改 `…/client/FloatingPanelEvents.java`（`onScreenKeyPressedPost`）与 `…/client/panel/trash/TrashActions.java`：界面种类细分——`InventoryScreen` → `INVENTORY`，`AbstractContainerScreen` 且菜单是 `ChestMenu` 且 `MenuOwner.ownerOf` 为 `minecraft` → `CHEST`，宿主 → `HOST`，其它 → `OTHER`；`hoverMenuAllowedWithItem` = `getSlotUnderMouse()` 非空、有物品、`DeletableSlots.allowed(slot.container == player.getInventory(), slot.getContainerSlot(), chest 时 slot.container == chestMenu.getContainer())`；目标 `MENU_SLOT` 时 `TrashActions.deleteMenuSlot(containerId, slot.index)` 发 `BackpackTrashSendPayload(MENU_SLOT, false, containerId, [slot.index])`（单格，不需要确认），并取消事件。依赖 T042、T053
 - [X] T055 [US5] 运行 `./gradlew compileJava test`
-- [ ] T056 [US5] 按 `quickstart.md` G（Q31～Q38）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：玩家物品栏主物品栏 27 格各试一次；快捷栏、装备栏、副手、合成格 0 次触发 0 次吞键；箱子/大箱子/木桶/末影箱的箱子格子与下方第 9～35 格成功、快捷栏不处理；潜影盒、漏斗、熔炉、创造模式界面菜单格子不触发不吞键但主区域仍可用；**JEI 或配方书搜索框有焦点时按 Backspace 改的是文字、不删物品**；箱子里删除后同步（有第二位玩家才验，否则"未验证"）；光标上拿着物品时只处理悬停格子；面板不可见或右侧区没有垃圾桶时不拦截；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [X] T056（2026-11-07 用户验证 Q31～Q35、Q37、Q38 通过；**Q36 箱子里 Delete 后另一位玩家那边的同步没有条件，记为未验证**，按本任务原文允许） [US5] 按 `quickstart.md` G（Q31～Q38）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：玩家物品栏主物品栏 27 格各试一次；快捷栏、装备栏、副手、合成格 0 次触发 0 次吞键；箱子/大箱子/木桶/末影箱的箱子格子与下方第 9～35 格成功、快捷栏不处理；潜影盒、漏斗、熔炉、创造模式界面菜单格子不触发不吞键但主区域仍可用；**JEI 或配方书搜索框有焦点时按 Backspace 改的是文字、不删物品**；箱子里删除后同步（有第二位玩家才验，否则"未验证"）；光标上拿着物品时只处理悬停格子；面板不可见或右侧区没有垃圾桶时不拦截；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 **Checkpoint**: 三种来源都可用。
 
@@ -154,7 +154,7 @@
 **Independent Test**: quickstart H（Q39～Q42）。
 
 - [X] T057 [US6] 审阅（读代码，不改行为）：①`PanelHostScreen.boundMappings` 对 `DELETE_TO_TRASH`（GUI 上下文）在"无界面"检查里不活动，所以 Delete 在宿主上是 `PASS`、`Post` 会触发；②所有 Delete/ESC 处理都挂在 `hostsPanel(screen)` 之后，020 的 OFF 界面不生效；③`DeleteKeyRules` 返回 `NONE` 的所有路径都**没有** `setCanceled`；④服务端三种来源的非法请求（越界下标、菜单 id 不匹配、格子不在允许范围、`mayPickup` 为假、菜单不是原版、垃圾桶不在右侧区、没带 `confirmed` 却销毁超过 9 组、体积超限、给含受保护物品的选区加 trash）都整个丢弃且零变化，只补发同步；⑤菜单分支过 `ServerCompatGate`；⑥`BackpackTrashPayload`（021）与确认弹窗不互相干扰；发现缺口就补并记录，没有缺口也记"已审阅，无缺口"
-- [ ] T058 [US6] 按 `quickstart.md` H（Q39～Q42）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：控制设置里有"删除到垃圾桶"（中英文名），macOS 默认 Backspace；改成 X 后 X 触发、Backspace 不触发也不被吞；改成 W 时宿主上的表现（记录到已知限制，不要求修复）；OFF 的模组界面上面板、垃圾桶面板、Delete 都不生效；**重跑 021 的垃圾桶本体（点击丢入、拖放、拿回、Ctrl 恢复、限放 1 个）与 011～020 的验证项**；联机无条件则写"未验证"；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T058（2026-11-07 部分：Q39、Q40、Q42 用户验证通过（Q42 的 021/018 回归并入清单 K 组）；统一回归 REG-1～REG-9 已于 2026-11-07 由用户验证通过；**Q41（OFF 的模组界面，会话 S2）仍未做**） [US6] 按 `quickstart.md` H（Q39～Q42）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：控制设置里有"删除到垃圾桶"（中英文名），macOS 默认 Backspace；改成 X 后 X 触发、Backspace 不触发也不被吞；改成 W 时宿主上的表现（记录到已知限制，不要求修复）；OFF 的模组界面上面板、垃圾桶面板、Delete 都不生效；**重跑 021 的垃圾桶本体（点击丢入、拖放、拿回、Ctrl 恢复、限放 1 个）与 011～020 的验证项**；联机无条件则写"未验证"；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 ---
 

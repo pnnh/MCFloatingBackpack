@@ -51,28 +51,38 @@ public final class TrashActions {
         return selectedSlotsWithItems().length > 0;
     }
 
-    /** The delete icon, or the delete key with a selection: the selected stacks go into the trash can and the selection is cleared. */
+    /**
+     * The delete icon, or the delete key with a selection: the selected stacks go into the trash can and the selection is
+     * cleared. If a confirmation is needed the selection stays: it is cleared when the player says yes (see
+     * {@link #sendConfirmed()}), so cancelling leaves everything as it was.
+     */
     public static void deleteSelection() {
         int[] slots = selectedSlotsWithItems();
         if (slots.length == 0) {
             return;
         }
-        deleteMainSlots(slots);
-        PanelSelection.get().clear();
+        if (deleteMainSlots(slots)) {
+            PanelSelection.get().clear();
+        }
     }
 
-    /** The stacks in these main-area slots go into the trash can (the delete key over one slot, or a selection). */
-    public static void deleteMainSlots(int[] slots) {
+    /**
+     * The stacks in these main-area slots go into the trash can (the delete key over one slot, or a selection).
+     *
+     * @return true if the request was sent now, false if nothing was done or a confirmation was opened instead
+     */
+    public static boolean deleteMainSlots(int[] slots) {
         if (slots.length == 0) {
-            return;
+            return false;
         }
         ClientBackpackView view = ClientBackpackView.get();
         int destroyed = TrashDeletePlan.destroyed(view.trash().groups().size(), slots.length);
         if (TrashDeletePlan.needsConfirm(destroyed)) {
             TrashConfirmState.get().open(Kind.MAIN_SLOTS, slots, destroyed, Minecraft.getInstance().screen);
-            return;
+            return false;
         }
         send(Source.MAIN_SLOTS, false, 0, slots);
+        return true;
     }
 
     /** The delete key over a slot of the open vanilla inventory or chest: one stack, so it never needs confirming. */

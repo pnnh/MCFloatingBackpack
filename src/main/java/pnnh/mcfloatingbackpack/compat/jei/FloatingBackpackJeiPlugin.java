@@ -6,8 +6,11 @@ import java.util.List;
 
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.gui.builder.IIngredientAcceptor;
 import mezz.jei.api.gui.handlers.IGlobalGuiHandler;
+import mezz.jei.api.recipe.category.extensions.vanilla.smithing.ISmithingCategoryExtension;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +21,7 @@ import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 import pnnh.mcfloatingbackpack.client.panel.PanelLayout;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
+import pnnh.mcfloatingbackpack.inventory.recipe.BackpackUpgradeRecipe;
 
 /**
  * Tells JEI to treat the floating panel's current screen area as occupied (008), via JEI's own
@@ -37,6 +41,37 @@ public final class FloatingBackpackJeiPlugin implements IModPlugin {
     @Override
     public ResourceLocation getPluginUid() {
         return PLUGIN_UID;
+    }
+
+    /**
+     * JEI's smithing category only shows recipes whose class has a registered extension (vanilla registers the transform
+     * and trim classes); our {@link BackpackUpgradeRecipe} is its own class, so without this the upgrades work at the
+     * smithing table but are invisible in JEI.
+     */
+    @Override
+    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+        registration.getSmithingCategory().addExtension(BackpackUpgradeRecipe.class, new ISmithingCategoryExtension<>() {
+            @Override
+            public <T extends IIngredientAcceptor<T>> void setTemplate(BackpackUpgradeRecipe recipe, T acceptor) {
+                // 023: the template the tier asks for; a recipe without one (the 006 format) leaves the slot empty.
+                acceptor.addIngredients(recipe.template());
+            }
+
+            @Override
+            public <T extends IIngredientAcceptor<T>> void setBase(BackpackUpgradeRecipe recipe, T acceptor) {
+                acceptor.addIngredients(recipe.base());
+            }
+
+            @Override
+            public <T extends IIngredientAcceptor<T>> void setAddition(BackpackUpgradeRecipe recipe, T acceptor) {
+                acceptor.addIngredients(recipe.addition());
+            }
+
+            @Override
+            public <T extends IIngredientAcceptor<T>> void setOutput(BackpackUpgradeRecipe recipe, T acceptor) {
+                acceptor.addItemStack(recipe.result());
+            }
+        });
     }
 
     @Override

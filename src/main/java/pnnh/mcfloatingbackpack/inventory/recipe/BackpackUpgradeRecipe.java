@@ -19,20 +19,43 @@ import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
- * Smithing upgrade: empty template slot, one addition item, contents copied forward.
+ * Smithing upgrade: a template, one base backpack, one addition item; contents copied forward.
+ *
+ * <p>023: the template is an ingredient of its own ({@code template} in the JSON). It is optional: leaving it out gives
+ * {@link Ingredient#EMPTY}, which {@link Ingredient#test} only accepts for an empty stack, so a recipe written for 006
+ * (no template) still wants an empty template slot. The smithing table consumes one of each of the three inputs.
  */
 public class BackpackUpgradeRecipe implements SmithingRecipe {
+    private final Ingredient template;
     private final Ingredient base;
     private final Ingredient addition;
     private final ItemStack result;
 
-    public BackpackUpgradeRecipe(Ingredient base, Ingredient addition, ItemStack result) {
+    public BackpackUpgradeRecipe(Ingredient template, Ingredient base, Ingredient addition, ItemStack result) {
+        this.template = template;
         this.base = base;
         this.addition = addition;
         this.result = result;
     }
 
+    public Ingredient template() {
+        return template;
+    }
+
+    public Ingredient base() {
+        return base;
+    }
+
+    public Ingredient addition() {
+        return addition;
+    }
+
+    public ItemStack result() {
+        return result;
+    }
+
     public static final MapCodec<BackpackUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Ingredient.CODEC.optionalFieldOf("template", Ingredient.EMPTY).forGetter(recipe -> recipe.template),
             Ingredient.CODEC.fieldOf("base").forGetter(recipe -> recipe.base),
             Ingredient.CODEC.fieldOf("addition").forGetter(recipe -> recipe.addition),
             ItemStack.STRICT_CODEC.fieldOf("result").forGetter(recipe -> recipe.result)
@@ -43,7 +66,7 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
 
     @Override
     public boolean matches(SmithingRecipeInput input, Level level) {
-        return input.template().isEmpty() && base.test(input.base()) && addition.test(input.addition());
+        return template.test(input.template()) && base.test(input.base()) && addition.test(input.addition());
     }
 
     @Override
@@ -66,7 +89,7 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
 
     @Override
     public boolean isTemplateIngredient(ItemStack stack) {
-        return stack.isEmpty();
+        return template.test(stack);
     }
 
     @Override
@@ -90,13 +113,15 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
     }
 
     private static BackpackUpgradeRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
+        Ingredient templateIngredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
         Ingredient baseIngredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
         Ingredient additionIngredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
         ItemStack resultStack = ItemStack.STREAM_CODEC.decode(buffer);
-        return new BackpackUpgradeRecipe(baseIngredient, additionIngredient, resultStack);
+        return new BackpackUpgradeRecipe(templateIngredient, baseIngredient, additionIngredient, resultStack);
     }
 
     private static void toNetwork(RegistryFriendlyByteBuf buffer, BackpackUpgradeRecipe recipe) {
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.template);
         Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.base);
         Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.addition);
         ItemStack.STREAM_CODEC.encode(buffer, recipe.result);

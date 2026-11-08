@@ -180,7 +180,7 @@
 
 - [X] T050 [P] 更新文档：`specs/016-panel-tool-areas/` 与 `specs/017-panel-valid-sizes/` 的 spec 加一段 018 说明（功能区现在可放标签管理器并展开覆盖主区域的标签面板）；`docs/MCFloatingBackpack.md` 在 017 说明之后加 018 说明（标签管理器、标签按物品分类存放在背包数据里、协议 8）；**不要修改 `docs/ideas`**
   - **结果**：016/017 的 spec 与 `docs/MCFloatingBackpack.md` 已加 018 说明；未改 `docs/ideas`
-- [ ] T051 按 `quickstart.md` 九（43–46）：`./gradlew compileJava test` 退出码 0；先 `pgrep` 确认没有运行中的客户端，再跑 `design/demo/tools/check_atlas_budget.sh`，图集应仍为 2048×1024（宪法 VI；本 feature 只新增一张 16×16 物品贴图），结果记到 DELIVERY.md——**跑不了就写"未度量"，不要声称已满足**；检查 `run/logs/latest.log` 无新增报错；`runClientCompat` 下精妙背包、旅行者背包界面里面板与标签管理器行为不受影响（由用户确认后才打勾）
+- [ ] T051（2026-11-06 部分：`compileJava test` 与图集度量已由 Claude 代跑通过；018-14、16/17、22、33～36、45 已由用户验证通过；`runClientCompat` 下的行为（018-46）仍待） 按 `quickstart.md` 九（43–46）：`./gradlew compileJava test` 退出码 0；先 `pgrep` 确认没有运行中的客户端，再跑 `design/demo/tools/check_atlas_budget.sh`，图集应仍为 2048×1024（宪法 VI；本 feature 只新增一张 16×16 物品贴图），结果记到 DELIVERY.md——**跑不了就写"未度量"，不要声称已满足**；检查 `run/logs/latest.log` 无新增报错；`runClientCompat` 下精妙背包、旅行者背包界面里面板与标签管理器行为不受影响（由用户确认后才打勾）
   - **状态（2026-11-05）**：自动部分已做（`./gradlew compileJava test` 通过）；**图集度量（需先 `pgrep`）、日志检查、`runClientCompat` 兼容检查未做**，等用户确认后才打勾
 - [X] T052 静态检查：`git diff --stat` 确认没有改动 `QuickTransferInput/Gesture/Rules`、`PanelDragInput`、`PanelSelectionInput` 的逻辑，也没有改动 `ToolAreaRules`（仍恒为真）；`grep -rn "p3pp3rf1y\|tiviacz" src/main/java/pnnh/mcfloatingbackpack/inventory/tags src/main/java/pnnh/mcfloatingbackpack/client/panel/tags src/main/resources/data/mcfloatingbackpack/recipe/tag_manager.json` 无命中（宪法 IV）；`grep -rn "extends Screen" src/main/java` 只有 019 的 `PanelHostScreen`（本 feature 不新增任何 Screen）
   - **结果**：见 DELIVERY.md 静态检查一节，全部符合
