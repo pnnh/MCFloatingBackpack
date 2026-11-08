@@ -13,6 +13,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
@@ -92,6 +93,11 @@ public final class FloatingPanelInput {
             if (TagPanelState.get().isEditing()
                     && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
                 TagPanelState.get().stopEditing();
+            }
+            // 025: and for the tag overview's filter box.
+            if (TagOverviewState.get().isFilterEditing()
+                    && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
+                TagOverviewState.get().stopFilterEditing();
             }
             // 024: and the same for the pickup blacklist page's text box.
             if (PickupPanelState.get().isEditing()

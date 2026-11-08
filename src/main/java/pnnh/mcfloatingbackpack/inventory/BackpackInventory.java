@@ -123,6 +123,19 @@ public final class BackpackInventory {
     }
 
     /**
+     * 025: whether the bottom (function) area holds a tag manager, which is what lets the tag overview change tags. Looks
+     * at the whole stored list, not at the cells the panel currently shows.
+     */
+    public boolean hasTagManager() {
+        for (int i = 0; i < size(PanelArea.BOTTOM); i++) {
+            if (getStackInSlot(PanelArea.BOTTOM, i).is(ModItems.TAG_MANAGER.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 024: whether the left area holds an auto pickup, which is what makes the pickup blacklist editable. Looks at the
      * whole stored list, not at the cells the panel currently shows.
      */

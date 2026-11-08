@@ -63,5 +63,17 @@
   "pickup.mcfloatingbackpack.status": "Auto Pickup Blacklist  %s/%s",
   "pickup.mcfloatingbackpack.none": "None",
   "pickup.mcfloatingbackpack.full": "Blacklist is full (%s)",
-  "message.mcfloatingbackpack.limit.auto_pickup": "Only one Auto Pickup fits in this area"
+  "message.mcfloatingbackpack.limit.auto_pickup": "Only one Auto Pickup fits in this area",
+  "overview.mcfloatingbackpack.icon.open": "Tag overview",
+  "overview.mcfloatingbackpack.icon.close": "Back to selection",
+  "overview.mcfloatingbackpack.title": "Tag overview  %s",
+  "overview.mcfloatingbackpack.empty": "No item has any tags yet",
+  "overview.mcfloatingbackpack.filter.placeholder": "Filter by tag",
+  "overview.mcfloatingbackpack.filter.none": "No matching items",
+  "overview.mcfloatingbackpack.filter.clear": "Clear filter",
+  "overview.mcfloatingbackpack.detail.back": "Back",
+  "overview.mcfloatingbackpack.detail.missing": "This item is no longer in the game; you can only remove its tags",
+  "overview.mcfloatingbackpack.clear": "Clear",
+  "overview.mcfloatingbackpack.clear.confirm": "Clear all?",
+  "overview.mcfloatingbackpack.clear.tooltip": "Clear all tags of this item"
 }

@@ -38,6 +38,8 @@ import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewInput;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
@@ -119,6 +121,7 @@ public final class FloatingPanelEvents {
         PanelDragInput.reset();
         PanelSelectionInput.reset();
         TagPanelState.get().reset();
+        TagOverviewState.get().reset();
         PickupPanelState.get().reset();
         TrashPanelState.get().reset();
         TrashConfirmState.get().cancel();
@@ -145,6 +148,7 @@ public final class FloatingPanelEvents {
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         HostScreenManager.reset();
         TagPanelState.get().reset();
+        TagOverviewState.get().reset();
         PickupPanelState.get().reset();
         TrashPanelState.get().reset();
         TrashConfirmState.get().cancel();
@@ -267,6 +271,12 @@ public final class FloatingPanelEvents {
         if (TagPanelState.get().isOpen()
                 && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTagManager())) {
             TagPanelState.get().collapse();
+        }
+        // 025: the overview goes back to the selection view when the panel is hidden or the tag manager has left the
+        // function area (collapsing the tag panel by hand keeps it, so it is found as it was left).
+        if ((!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTagManager())
+                && !TagOverviewState.get().isPristine()) {
+            TagOverviewState.get().resetView();
         }
         // 024: the pickup blacklist page needs an auto pickup in the left area (anywhere in its whole list) and an open panel.
         if (PickupPanelState.get().isOpen()
@@ -406,8 +416,14 @@ public final class FloatingPanelEvents {
             event.setCanceled(true);
             return;
         }
-        if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
-            TagPanelInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+        if (hostsPanel(event.getScreen())
+                && (TagPanelState.get().isEditing() || TagOverviewState.get().isFilterEditing())) {
+            // 025: in the overview the keys go to its own text box (the filter box, or the detail page's add box).
+            if (TagOverviewState.get().view() != TagOverviewState.View.SELECTION) {
+                TagOverviewInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+            } else {
+                TagPanelInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+            }
             event.setCanceled(true);
         }
         // 024: the pickup blacklist page's text box takes the keyboard the same way.
@@ -438,15 +454,22 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onScreenKeyReleased(ScreenEvent.KeyReleased.Pre event) {
         if (hostsPanel(event.getScreen())
-                && (TagPanelState.get().isEditing() || PickupPanelState.get().isEditing())) {
+                && (TagPanelState.get().isEditing()
+                        || PickupPanelState.get().isEditing()
+                        || TagOverviewState.get().isFilterEditing())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onScreenCharTyped(ScreenEvent.CharacterTyped.Pre event) {
-        if (hostsPanel(event.getScreen()) && TagPanelState.get().isEditing()) {
-            TagPanelInput.onCharTyped(event.getCodePoint());
+        if (hostsPanel(event.getScreen())
+                && (TagPanelState.get().isEditing() || TagOverviewState.get().isFilterEditing())) {
+            if (TagOverviewState.get().view() != TagOverviewState.View.SELECTION) {
+                TagOverviewInput.onCharTyped(event.getCodePoint());
+            } else {
+                TagPanelInput.onCharTyped(event.getCodePoint());
+            }
             event.setCanceled(true);
         }
         if (hostsPanel(event.getScreen()) && PickupPanelState.get().isEditing()) {

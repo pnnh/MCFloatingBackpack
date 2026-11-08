@@ -133,4 +133,13 @@ public final class TagBook<K> {
         }
         return new TagBook<>(next);
     }
+
+    /** 025: removes every tag of each given category, so the categories disappear from the book; missing ones are ignored. */
+    public TagBook<K> clear(Collection<K> keys) {
+        Map<K, List<String>> next = new LinkedHashMap<>(map);
+        for (K key : keys) {
+            next.remove(key);
+        }
+        return new TagBook<>(next);
+    }
 }

@@ -59,8 +59,11 @@ public final class TagPanelRenderer {
         drawContent(graphics, font, area, model, layout, mouseX, mouseY);
         graphics.disableScissor();
         drawStatus(graphics, font, area, model, layout);
+        // 025: the menu icon that opens the tag overview, at the status row's right end.
+        TagOverviewRenderer.drawMenuIcon(graphics, area, mouseX, mouseY, false);
         drawPlusTooltip(graphics, font, area, model, layout, mouseX, mouseY);
         drawBlockedTooltip(graphics, font, area, model, layout, mouseX, mouseY);
+        TagOverviewRenderer.drawMenuTooltip(graphics, area, mouseX, mouseY, false);
         // A narrow panel cuts the status text off: hovering the row shows all of it.
         if (statusTruncated && layout.hit(mouseX - area.x(), mouseY - area.y()).kind() == TagPanelLayout.Kind.STATUS) {
             graphics.renderComponentTooltip(font, java.util.List.of(statusText), mouseX, mouseY);
@@ -74,7 +77,7 @@ public final class TagPanelRenderer {
         Component text = model.status() == TagPanelModel.Status.NO_ITEMS
                 ? Component.translatable("tag.mcfloatingbackpack.hint.select")
                 : Component.translatable("tag.mcfloatingbackpack.status", model.categories().size());
-        String fitted = font.plainSubstrByWidth(text.getString(), area.w() - 8);
+        String fitted = font.plainSubstrByWidth(text.getString(), area.w() - 8 - 18);
         graphics.drawString(font, fitted, area.x() + 4, area.y() + 5, COLOR_TEXT, false);
         statusTruncated = !fitted.equals(text.getString());
         statusText = text;

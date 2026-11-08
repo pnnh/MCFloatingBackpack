@@ -15,6 +15,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 import pnnh.mcfloatingbackpack.client.panel.HostScreenManager;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
@@ -72,6 +73,8 @@ public record BackpackSessionPayload(
     public static void handleClient(BackpackSessionPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             FloatingPanelState state = FloatingPanelState.get();
+            // 025: a new session (possibly another backpack) or none: the tag overview starts from the selection view.
+            TagOverviewState.get().resetView();
             if (!payload.open()) {
                 state.setVisible(false);
                 state.setScrollRow(0);

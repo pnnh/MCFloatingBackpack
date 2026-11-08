@@ -63,5 +63,17 @@
   "pickup.mcfloatingbackpack.status": "自动拾取黑名单  %s/%s",
   "pickup.mcfloatingbackpack.none": "无",
   "pickup.mcfloatingbackpack.full": "黑名单已满（%s）",
-  "message.mcfloatingbackpack.limit.auto_pickup": "这里只能放一个自动拾取"
+  "message.mcfloatingbackpack.limit.auto_pickup": "这里只能放一个自动拾取",
+  "overview.mcfloatingbackpack.icon.open": "标签总览",
+  "overview.mcfloatingbackpack.icon.close": "返回选区",
+  "overview.mcfloatingbackpack.title": "标签总览  %s",
+  "overview.mcfloatingbackpack.empty": "还没有给任何物品打过标签",
+  "overview.mcfloatingbackpack.filter.placeholder": "按标签筛选",
+  "overview.mcfloatingbackpack.filter.none": "没有符合的物品",
+  "overview.mcfloatingbackpack.filter.clear": "清除筛选",
+  "overview.mcfloatingbackpack.detail.back": "返回",
+  "overview.mcfloatingbackpack.detail.missing": "这个物品已不在游戏里，只能删除标签",
+  "overview.mcfloatingbackpack.clear": "清空",
+  "overview.mcfloatingbackpack.clear.confirm": "确认清空？",
+  "overview.mcfloatingbackpack.clear.tooltip": "清空这个物品的所有标签"
 }

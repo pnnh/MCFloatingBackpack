@@ -14,6 +14,8 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewRenderer;
+import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmRenderer;
@@ -98,7 +100,12 @@ public final class FloatingPanelRenderer {
         drawScrollArrows(graphics, ClientBackpackView.get().layout());
         // 018: the expanded tag panel replaces the main area (its cells, selection and arrows are not drawn).
         if (TagPanelState.get().isOpen()) {
-            TagPanelRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
+            // 025: the tag panel has a second view, the overview of every item the backpack has tags for.
+            if (TagOverviewState.get().view() == TagOverviewState.View.SELECTION) {
+                TagPanelRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
+            } else {
+                TagOverviewRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
+            }
         }
         // 024: the pickup blacklist page covers the main area the same way (never together with the tag panel).
         if (PickupPanelState.get().isOpen()) {

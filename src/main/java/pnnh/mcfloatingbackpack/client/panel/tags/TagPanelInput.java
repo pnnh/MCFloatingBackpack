@@ -33,11 +33,20 @@ public final class TagPanelInput {
 
     /** A press on the main area while the tag panel covers it. @return true: it is always taken. */
     public static boolean onMainPress(int button, double mouseX, double mouseY) {
+        // 025: in the overview the presses are its own.
+        if (TagOverviewState.get().view() != TagOverviewState.View.SELECTION) {
+            return TagOverviewInput.onMainPress(button, mouseX, mouseY);
+        }
         TagPanelState state = TagPanelState.get();
         if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             return true;
         }
         PanelLayout.Rect area = ClientBackpackView.get().layout().rect(PanelArea.MAIN);
+        // 025: the menu icon at the status row's right end opens the tag overview.
+        if (TagOverviewLayout.menuIconRect(area.w()).contains(mouseX - area.x(), mouseY - area.y())) {
+            TagOverviewState.get().enterList();
+            return true;
+        }
         TagPanelModel<ResourceLocation> model = TagPanelContext.model();
         TagPanelLayout layout = TagPanelContext.layout(area.w(), area.h(), model);
         TagPanelLayout.Hit hit = layout.hit(mouseX - area.x(), mouseY - area.y());
@@ -71,6 +80,9 @@ public final class TagPanelInput {
 
     /** The wheel over the main area while the tag panel covers it. @return true: it is always taken. */
     public static boolean onMainScroll(double scrollDeltaY) {
+        if (TagOverviewState.get().view() != TagOverviewState.View.SELECTION) {
+            return TagOverviewInput.onMainScroll(scrollDeltaY);
+        }
         TagPanelState state = TagPanelState.get();
         // One row per notch, up for wheel up; the layout clamps it to what the content allows.
         state.setScroll(state.scroll() + (scrollDeltaY > 0 ? -1 : 1));
