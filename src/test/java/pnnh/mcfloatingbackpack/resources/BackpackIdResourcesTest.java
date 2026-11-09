@@ -41,8 +41,7 @@ class BackpackIdResourcesTest {
         List<String> required = List.of(
                 "tooltip.mcfloatingbackpack.id",
                 "tooltip.mcfloatingbackpack.id.none",
-                "panel.mcfloatingbackpack.id.tooltip",
-                "message.mcfloatingbackpack.id.tombstone");
+                "panel.mcfloatingbackpack.id.tooltip");
         for (String key : required) {
             assertTrue(keys(en).contains(key), "en_us missing " + key);
             assertTrue(keys(zh).contains(key), "zh_cn missing " + key);
@@ -50,7 +49,7 @@ class BackpackIdResourcesTest {
         assertTrue(zh.contains("\"tooltip.mcfloatingbackpack.id\": \"编号：%s\""));
         assertTrue(en.contains("\"tooltip.mcfloatingbackpack.id\": \"ID: %s\""));
         // nothing is limited any more: the messages and the setting of the earlier draft are gone
-        for (String gone : List.of("id.limit", "id.no_id", "id.duplicate", "id.readopt_changed", "id.pickup_blocked", "id.claim_limit", "maxBackpacksPerPlayer")) {
+        for (String gone : List.of("id.tombstone", "id.limit", "id.no_id", "id.duplicate", "id.readopt_changed", "id.pickup_blocked", "id.claim_limit", "maxBackpacksPerPlayer")) {
             assertFalse(en.contains(gone), "en_us still has " + gone);
             assertFalse(zh.contains(gone), "zh_cn still has " + gone);
         }

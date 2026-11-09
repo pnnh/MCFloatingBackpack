@@ -14,21 +14,22 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 
-/** 026: the three-character backpack ids: format, count, and working an id out of an internal id. */
+/** 026: the four-character backpack ids: format, count, and working an id out of an internal id. */
 class BackpackIdsTest {
     @Test
-    void thereAre24576Ids() {
-        assertEquals(24576, BackpackIds.TOTAL);
-        assertEquals(24 * 32 * 32, BackpackIds.TOTAL);
+    void thereAre786432Ids() {
+        assertEquals(786432, BackpackIds.TOTAL);
+        assertEquals(24 * 32 * 32 * 32, BackpackIds.TOTAL);
+        assertEquals(4, BackpackIds.LENGTH);
     }
 
     @Test
     void validIds() {
-        assertTrue(BackpackIds.isValid("K7M"));
-        assertTrue(BackpackIds.isValid("A22"));
-        assertTrue(BackpackIds.isValid("ZZZ"));
-        assertTrue(BackpackIds.isValid("B99"));
-        assertTrue(BackpackIds.isValid("HJK"));
+        assertTrue(BackpackIds.isValid("K7M2"));
+        assertTrue(BackpackIds.isValid("A222"));
+        assertTrue(BackpackIds.isValid("ZZZZ"));
+        assertTrue(BackpackIds.isValid("B999"));
+        assertTrue(BackpackIds.isValid("HJKL"));
     }
 
     @Test
@@ -36,11 +37,12 @@ class BackpackIdsTest {
         assertFalse(BackpackIds.isValid(null));
         assertFalse(BackpackIds.isValid(""));
         assertFalse(BackpackIds.isValid("AB"));
-        assertFalse(BackpackIds.isValid("ABCD"));
-        assertFalse(BackpackIds.isValid("7AB"), "no digit first");
-        assertFalse(BackpackIds.isValid("k7m"), "capital letters only");
+        assertFalse(BackpackIds.isValid("K7M"), "three characters were the old length");
+        assertFalse(BackpackIds.isValid("ABCDE"));
+        assertFalse(BackpackIds.isValid("7ABC"), "no digit first");
+        assertFalse(BackpackIds.isValid("k7m2"), "capital letters only");
         // the confusable characters are left out
-        for (String bad : new String[] {"IAB", "OAB", "AIB", "AOB", "ABI", "ABO", "A0B", "A1B", "AB0", "AB1"}) {
+        for (String bad : new String[] {"IABC", "OABC", "AIBC", "AOBC", "ABIC", "ABOC", "ABCI", "ABCO", "A0BC", "A1BC", "AB0C", "AB1C", "ABC0", "ABC1"}) {
             assertFalse(BackpackIds.isValid(bad), bad);
         }
     }
@@ -55,7 +57,7 @@ class BackpackIdsTest {
             assertTrue(seen.add(id), "duplicate " + id);
         }
         assertEquals(BackpackIds.TOTAL, seen.size());
-        assertEquals(-1, BackpackIds.index("I00"));
+        assertEquals(-1, BackpackIds.index("I000"));
     }
 
     @Test
@@ -89,12 +91,13 @@ class BackpackIdsTest {
             firsts.add(id.charAt(0));
             rests.add(id.charAt(1));
             rests.add(id.charAt(2));
+            rests.add(id.charAt(3));
         }
         assertEquals(24, firsts.size());
         assertEquals(32, rests.size());
-        // 20000 draws over 24576 ids: most are different and none is drawn many times
-        assertTrue(counts.size() > 10000, "only " + counts.size() + " different ids");
-        assertTrue(counts.values().stream().mapToInt(Integer::intValue).max().orElse(0) <= 12);
+        // 20000 draws over 786432 ids: nearly all are different and none is drawn many times
+        assertTrue(counts.size() > 19000, "only " + counts.size() + " different ids");
+        assertTrue(counts.values().stream().mapToInt(Integer::intValue).max().orElse(0) <= 4);
     }
 
     @Test

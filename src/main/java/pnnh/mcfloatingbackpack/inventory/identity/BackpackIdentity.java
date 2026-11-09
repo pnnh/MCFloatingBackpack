@@ -14,7 +14,7 @@ public record BackpackIdentity(UUID uuid) {
         }
     }
 
-    /** The id players see, such as {@code K7M}. */
+    /** The id players see, such as {@code K7M2}. */
     public String id() {
         return BackpackIds.of(uuid);
     }

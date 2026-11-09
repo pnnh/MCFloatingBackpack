@@ -12,9 +12,13 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerContainerEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import pnnh.mcfloatingbackpack.client.ClientSetup;
 import pnnh.mcfloatingbackpack.compat.CompatConfig;
@@ -24,6 +28,8 @@ import pnnh.mcfloatingbackpack.inventory.pickup.AutoPickupEvents;
 import pnnh.mcfloatingbackpack.inventory.recipe.ModRecipes;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.network.BackpackNetwork;
+import pnnh.mcfloatingbackpack.snapshot.SnapshotCommands;
+import pnnh.mcfloatingbackpack.snapshot.SnapshotService;
 
 /**
  * Floating backpack mod entry. Common code always loads; client overlay hooks
@@ -52,8 +58,19 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
                 CreativeCursorBridge.onLogout(player);
+                // 030: what the player changed last is written as a snapshot now.
+                SnapshotService.get().ifPresent(service -> service.onLogout(player.getUUID()));
             }
         });
+        // 030: backpack snapshots, kept outside the world: started with the server, checked once a second, written out when it stops.
+        NeoForge.EVENT_BUS.addListener((ServerStartingEvent event) -> SnapshotService.start(event.getServer()));
+        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> SnapshotService.stop());
+        NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post event) -> {
+            if (event.getServer().getTickCount() % 20 == 0) {
+                SnapshotService.get().ifPresent(SnapshotService::tick);
+            }
+        });
+        NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> SnapshotCommands.register(event.getDispatcher()));
         // 020: client-only settings; a dedicated server never loads a CLIENT config.
         modContainer.registerConfig(ModConfig.Type.CLIENT, CompatConfig.SPEC);
         if (FMLEnvironment.dist.isClient()) {
