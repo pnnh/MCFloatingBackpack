@@ -21,6 +21,7 @@ import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
@@ -82,7 +83,12 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            if (backpack == null) {
+                BackpackNetwork.sendSession(player, false, null);
+                return;
+            }
             TrashRequest.Action action = TrashRequest.Action.fromByte(payload.action());
             // The trash can only works in the right area: no trash can there, no request.
             if (backpack.hasTrashCan() && TrashRequest.validate(action, payload.slots())) {

@@ -5,6 +5,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
@@ -91,6 +92,8 @@ public record BackpackRef(Source source, int invIndex) {
             return;
         }
         inventory.saveToItem(stack);
+        // 026: count the revision up and keep the registry's shadow copy current (nothing for an unregistered backpack).
+        BackpackGate.afterSave(player, stack);
         setStack(player, stack);
     }
 }

@@ -11,6 +11,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorBridge;
 
 public final class BackpackNetwork {
     private BackpackNetwork() {
@@ -21,7 +22,16 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("13");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("15");
+        // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
+        registrar.playToServer(
+                CreativeCursorReportPayload.TYPE,
+                CreativeCursorReportPayload.STREAM_CODEC,
+                CreativeCursorReportPayload::handleServer);
+        registrar.playToClient(
+                CreativeCursorPushPayload.TYPE,
+                CreativeCursorPushPayload.STREAM_CODEC,
+                CreativeCursorPushPayload::handleClient);
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -115,9 +125,12 @@ public final class BackpackNetwork {
     /** 021: what the trash can holds, as the server has it. */
     public static void sendTrash(ServerPlayer player, BackpackInventory inventory) {
         PacketDistributor.sendToPlayer(player, new BackpackTrashContentsPayload(inventory.trash()));
+        CreativeCursorBridge.pushIfChanged(player);
     }
 
     public static void sendFullSync(ServerPlayer player, BackpackRef ref) {
+        // 027: whatever the panel operation did to the creative cursor goes back with its result.
+        CreativeCursorBridge.pushIfChanged(player);
         if (ref == null || !ref.stillValid(player)) {
             return;
         }
@@ -130,6 +143,8 @@ public final class BackpackNetwork {
     }
 
     public static void sendSlotUpdate(ServerPlayer player, BackpackRef ref, PanelArea area, int slotIndex) {
+        // 027: whatever the panel operation did to the creative cursor goes back with its result.
+        CreativeCursorBridge.pushIfChanged(player);
         if (ref == null || !ref.stillValid(player)) {
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;

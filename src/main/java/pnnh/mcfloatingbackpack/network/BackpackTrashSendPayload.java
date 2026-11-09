@@ -26,6 +26,7 @@ import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
@@ -98,7 +99,12 @@ public record BackpackTrashSendPayload(byte source, boolean confirmed, int conta
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            if (backpack == null) {
+                BackpackNetwork.sendSession(player, false, null);
+                return;
+            }
             Source source = Source.fromByte(payload.source());
             if (backpack.hasTrashCan()
                     && TrashSendRequest.validate(source, payload.slots(), payload.containerId(), backpack.size())) {

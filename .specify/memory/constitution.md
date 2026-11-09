@@ -1,5 +1,26 @@
 <!--
 Sync Impact Report
+- Version change: 2.1.1 -> 2.2.0 (MINOR: principle VII gains the three-tier support priority and the rule that
+  a defect on vanilla is fixed, never restricted away)
+- Modified principles:
+  - VII. Minimal Dependencies, Opt-Out Compatibility. New subsection "Support priority": (1) vanilla, the
+    first priority, always supported and never switchable, the creative inventory screen and creative mode
+    included; a defect there MUST be fixed, and MUST NOT be answered by disabling the panel or a feature for
+    a game mode, a screen or a situation. (2) Well-known mods named in the feature specifications, supported
+    actively (FULL). (3) Every other mod: no promise; the closer its behaviour is to vanilla the more likely the
+    features work; the player can turn it off (GENERIC / OFF). Every compatibility finding is filed under one of
+    the three tiers. The level definitions below it are unchanged.
+  - Vanilla containers now explicitly include the creative inventory screen (it was already vanilla; this
+    removes the doubt raised by spec 011's note that its slots are client-side).
+- Added principles: none
+- Added sections: none (a subsection in VII)
+- Removed sections: none
+- Templates reviewed, no change needed: .specify/templates/*, AGENTS.md, CLAUDE.md
+- Follow-up TODOs: as in 2.1.1. Reason for the amendment: during spec 026 the panel was found not to take items
+  from the cursor on the creative inventory screen (the creative cursor lives only on the client); the question
+  "should the panel just stay away from creative mode or that screen" was answered no.
+
+Previous report (2.1.0 -> 2.1.1):
 - Version change: 2.1.0 -> 2.1.1 (PATCH: the three levels of principle VII are explained, no rule changes)
 - Modified principles:
   - VII. Minimal Dependencies, Opt-Out Compatibility. The levels now say what they are about: FULL is
@@ -177,8 +198,26 @@ outside `compat/` imports it. Behaviour that touches another mod's UI without
 referencing its types (for example working over any container screen) is not compat
 code, but it is still an interaction with that mod and falls under the setting below.
 
-Support for vanilla containers (the player inventory, chests, furnaces and the other
-vanilla menus) MUST NOT be configurable. Every proactive interaction with another mod
+#### Support priority
+
+Compatibility has three tiers, in this order, and every compatibility finding MUST be
+filed under exactly one of them:
+
+1. **Vanilla** is the first priority. Everything vanilla offers (the player inventory,
+   the creative inventory screen, chests and the other menus, every game mode) is always
+   supported, is never switchable, and is never restricted for the panel's convenience.
+   A defect found here MUST be fixed. It MUST NOT be answered by disabling the panel or
+   one of its features for a game mode, a screen or a situation, nor by a setting.
+2. **Well-known mods** that a feature specification names (today Sophisticated Backpacks,
+   Traveler's Backpack and JEI) are supported actively: the code written for them is the
+   FULL level, under `compat/<modid>/` where it needs their types.
+3. **Every other mod** gets no promise. The closer its containers and screens behave to
+   vanilla, the more likely the panel works on them. When it does not, the player can
+   switch the interaction down (GENERIC) or off (OFF); the mod itself is never changed
+   to special-case it.
+
+Support for vanilla containers (the player inventory, the creative inventory screen,
+chests, furnaces and the other vanilla menus) MUST NOT be configurable. Every proactive interaction with another mod
 MUST be controlled by a setting that maps that mod's id to a level; a mod that is not
 listed is at FULL:
 
@@ -255,4 +294,4 @@ Amendments change this file and bump the version:
 - MINOR: add a principle or a constraint.
 - PATCH: wording that does not change a rule.
 
-**Version**: 2.1.1 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-05
+**Version**: 2.2.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-08

@@ -11,6 +11,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
 import pnnh.mcfloatingbackpack.inventory.tags.TagBook;
@@ -60,7 +61,12 @@ public record BackpackTagOverviewPayload(byte op, String itemId, String tag) imp
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            if (backpack == null) {
+                BackpackNetwork.sendSession(player, false, null);
+                return;
+            }
             Op op = Op.fromByte(payload.op());
             ResourceLocation key = TagOverviewRequest.validate(op, payload.itemId(), payload.tag())
                     ? ResourceLocation.tryParse(payload.itemId())

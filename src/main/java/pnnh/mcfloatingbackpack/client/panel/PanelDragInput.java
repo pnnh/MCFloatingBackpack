@@ -13,6 +13,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.creative.CreativeCursorClient;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Release;
@@ -189,6 +190,7 @@ public final class PanelDragInput {
 
     private static void send(Mode mode, int[] slots) {
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(Minecraft.getInstance().screen);
+        CreativeCursorClient.flush(); // 027
         PacketDistributor.sendToServer(BackpackCursorGesturePayload.of(mode, slots, screenOpen));
     }
 

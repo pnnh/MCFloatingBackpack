@@ -232,6 +232,21 @@ public final class FloatingPanelState {
         return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
+    /** 026: the left edge of the close button, which is where the backpack's number must stop. */
+    public int closeButtonLeft() {
+        return posX + width - 3 - CLOSE_BUTTON_SIZE;
+    }
+
+    /** 026: the backpack's number in the title bar, to the right of the tier icon ({@code textWidth}: the whole number's width). */
+    public boolean hitsTitleId(double mouseX, double mouseY, int textWidth) {
+        TitleIdLayout layout = TitleIdLayout.of(posX, closeButtonLeft(), textWidth);
+        int x1 = layout.x();
+        int x2 = x1 + Math.min(textWidth, layout.maxWidth());
+        int y1 = posY + 1;
+        int y2 = y1 + TITLE_ICON_SIZE;
+        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
+    }
+
     /**
      * Keeps at least the drag bar inside the GUI viewport so the panel cannot be lost off-screen.
      */

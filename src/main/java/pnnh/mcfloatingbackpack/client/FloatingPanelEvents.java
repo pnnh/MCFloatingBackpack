@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -24,6 +25,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.client.creative.CreativeCursorClient;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.DeleteKeyInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
@@ -162,6 +164,14 @@ public final class FloatingPanelEvents {
         state.endResize();
     }
 
+    /** 027: the creative inventory closed; the server forgets its cursor mirror with the close packet. */
+    @SubscribeEvent
+    public static void onScreenClosing(ScreenEvent.Closing event) {
+        if (event.getScreen() instanceof CreativeModeInventoryScreen) {
+            CreativeCursorClient.reset();
+        }
+    }
+
     @SubscribeEvent
     public static void onScreenOpening(ScreenEvent.Opening event) {
         Minecraft minecraft = Minecraft.getInstance();
@@ -175,6 +185,9 @@ public final class FloatingPanelEvents {
         // A container screen takes over the panel's cursor stack. Any other screen only hides the panel (019):
         // it is not drawn or clicked there, and its visible state is kept for when the screen closes.
         if (ContainerScreenCompat.isOpenContainerScreen(neu) && minecraft.player != null) {
+            // 027: the creative inventory starts from an empty mirror; tell the server what is on the cursor before the merge.
+            CreativeCursorClient.reset();
+            CreativeCursorClient.flush(neu);
             PacketDistributor.sendToServer(new MergePanelCursorPayload());
             if (neu instanceof AbstractContainerScreen<?> container) {
                 // 020: say once, in the log, which mod id owns this screen (for the compat.modLevels config).
@@ -408,6 +421,8 @@ public final class FloatingPanelEvents {
     // focus nothing is cancelled.
     @SubscribeEvent
     public static void onScreenKeyPressed(ScreenEvent.KeyPressed.Pre event) {
+        // 027: before the screen sees E or ESC, so the cursor reaches the server ahead of the close packet.
+        CreativeCursorClient.flush();
         // 022: with the confirmation dialog up ESC only withdraws the question. Cancelling the event means neither the
         // host screen (which would close the panel) nor a container screen (which would close itself) ever sees it.
         if (hostsPanel(event.getScreen())
@@ -523,6 +538,8 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onScreenMousePressed(ScreenEvent.MouseButtonPressed.Pre event) {
+        // 027: the creative inventory's cursor, as it is before this click.
+        CreativeCursorClient.flush();
         if (!hostsPanel(event.getScreen())) {
             return;
         }
@@ -548,6 +565,7 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onScreenMouseReleased(ScreenEvent.MouseButtonReleased.Pre event) {
+        CreativeCursorClient.flush();
         if (!hostsPanel(event.getScreen())) {
             return;
         }

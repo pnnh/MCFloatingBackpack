@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "mcfloatingbackpack:backpack_crafting",
   "category": "equipment",
   "key": {
     "L": { "item": "minecraft:leather" },

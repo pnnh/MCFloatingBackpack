@@ -10,6 +10,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.creative.CreativeCursorClient;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
@@ -312,6 +313,8 @@ public final class FloatingPanelInput {
         // 014: Alt (Option on macOS) swaps with the main-hand item; Shift is the selection key.
         boolean swapHand = Screen.hasAltDown();
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
+        // 027: the server must know the creative cursor before it handles this click.
+        CreativeCursorClient.flush();
         PacketDistributor.sendToServer(
                 new BackpackClickPayload(
                         area.toByte(),

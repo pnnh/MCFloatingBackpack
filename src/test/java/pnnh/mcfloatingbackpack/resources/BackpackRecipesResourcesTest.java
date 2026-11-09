@@ -86,7 +86,8 @@ class BackpackRecipesResourcesTest {
         // The pattern rows contain meaningful spaces, so it is checked before the whitespace is stripped.
         assertTrue(Pattern.compile("\"pattern\"\\s*:\\s*\\[\\s*\"LSL\"\\s*,\\s*\"LCL\"\\s*,\\s*\"ILI\"\\s*\\]").matcher(raw).find());
         String recipe = raw.replaceAll("\\s+", "");
-        assertTrue(recipe.contains("\"type\":\"minecraft:crafting_shaped\""));
+        // 026: the same shaped recipe, as the mod's own type that stamps the result with an unregistered identity.
+        assertTrue(recipe.contains("\"type\":\"mcfloatingbackpack:backpack_crafting\""));
         assertTrue(recipe.contains("\"L\":{\"item\":\"minecraft:leather\"}"));
         assertTrue(recipe.contains("\"S\":{\"item\":\"minecraft:string\"}"));
         assertTrue(recipe.contains("\"C\":{\"item\":\"minecraft:chest\"}"));

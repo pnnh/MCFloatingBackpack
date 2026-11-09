@@ -26,6 +26,21 @@ public final class ModRecipes {
                 }
             });
 
+    /** 026: the leather backpack's crafting recipe, which stamps an unregistered identity on its result. */
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BackpackCraftingRecipe>> BACKPACK_CRAFTING =
+            SERIALIZERS.register("backpack_crafting", () -> new RecipeSerializer<>() {
+                @Override
+                public com.mojang.serialization.MapCodec<BackpackCraftingRecipe> codec() {
+                    return BackpackCraftingRecipe.CODEC;
+                }
+
+                @Override
+                public net.minecraft.network.codec.StreamCodec<
+                        net.minecraft.network.RegistryFriendlyByteBuf, BackpackCraftingRecipe> streamCodec() {
+                    return BackpackCraftingRecipe.STREAM_CODEC;
+                }
+            });
+
     private ModRecipes() {
     }
 

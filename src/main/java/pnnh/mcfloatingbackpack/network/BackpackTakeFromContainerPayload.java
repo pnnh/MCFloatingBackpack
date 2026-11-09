@@ -15,6 +15,7 @@ import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ContainerMenuAccess;
 import pnnh.mcfloatingbackpack.inventory.ContainerToBackpack;
@@ -82,7 +83,17 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
                 return;
             }
 
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+
+            if (backpack == null) {
+
+                BackpackNetwork.sendSession(player, false, null);
+
+                return;
+
+            }
             takeIntoBackpack(player, backpack, payload.menuSlots());
 
             ref.saveInventory(player, backpack);

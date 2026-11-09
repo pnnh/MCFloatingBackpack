@@ -75,5 +75,9 @@
   "overview.mcfloatingbackpack.detail.missing": "This item is no longer in the game; you can only remove its tags",
   "overview.mcfloatingbackpack.clear": "Clear",
   "overview.mcfloatingbackpack.clear.confirm": "Clear all?",
-  "overview.mcfloatingbackpack.clear.tooltip": "Clear all tags of this item"
+  "overview.mcfloatingbackpack.clear.tooltip": "Clear all tags of this item",
+  "tooltip.mcfloatingbackpack.id": "ID: %s",
+  "tooltip.mcfloatingbackpack.id.none": "Unregistered (registered on first use)",
+  "panel.mcfloatingbackpack.id.tooltip": "Backpack ID %s",
+  "message.mcfloatingbackpack.id.tombstone": "This backpack has been deleted by an administrator."
 }

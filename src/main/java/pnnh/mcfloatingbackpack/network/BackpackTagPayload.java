@@ -16,6 +16,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
@@ -77,7 +78,12 @@ public record BackpackTagPayload(byte op, int[] slots, String tag) implements Cu
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            if (backpack == null) {
+                BackpackNetwork.sendSession(player, false, null);
+                return;
+            }
             // The tag manager only works in the function area: no tool there, no request.
             if (!hasTagManager(backpack)) {
                 return;

@@ -5,6 +5,7 @@
 | 文档 | 用途 |
 |------|------|
 | [005-gameplay-item-tiers.md](./005-gameplay-item-tiers.md) | 远期游戏性演进参考（分级、侧栏、升级、Curios 等）；**不代表全部会实现** |
+| [perf-gui-model-cost.md](./perf-gui-model-cost.md) | 待办：背包高面数模型在 GUI（快捷栏）里把帧率从约 101 压到约 22 fps；已定位未修复 |
 
 ## 与现有文档关系
 

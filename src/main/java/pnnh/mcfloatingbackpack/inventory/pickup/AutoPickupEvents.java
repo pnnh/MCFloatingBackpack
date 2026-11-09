@@ -20,6 +20,7 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.pickup.AutoPickupDecision.Outcome;
 import pnnh.mcfloatingbackpack.network.BackpackSlotUpdatePayload;
 
@@ -95,7 +96,12 @@ public final class AutoPickupEvents {
             if (!ref.stillValid(player)) {
                 return;
             }
-            inventory = ref.loadInventory(player);
+            // 026: the registry decides first; a refused backpack (over the limit, deleted...) does not take pickups.
+            java.util.Optional<BackpackInventory> acquired = BackpackGate.acquire(player, ref);
+            if (acquired.isEmpty()) {
+                return;
+            }
+            inventory = acquired.get();
             result = PickupInsert.insert(
                     ItemStackTransferOps.INSTANCE,
                     stack,

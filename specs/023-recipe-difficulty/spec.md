@@ -153,3 +153,4 @@
 - 创造模式取物不受影响。
 - 已有的本模组测试里若有配方数据的断言，需要随新配方更新。
 - 文档（006 spec、`docs/MCFloatingBackpack.md`）要同步；不要修改 `docs/ideas`。
+- **026 补充**：皮革背包的工作台配方类型改为 `mcfloatingbackpack:backpack_crafting`（继承原版有序配方，图案与材料不变），用于在合成结果上先盖一个待登记的内部标识，详见 `specs/026-backpack-id/`。

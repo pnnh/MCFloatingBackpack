@@ -12,6 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 
 /**
  * Client asks to open or close the floating panel for a claimed backpack ref.
@@ -65,6 +66,11 @@ public record BackpackOpenRequestPayload(boolean wantOpen, int sourceOrdinal, in
             if (resolved == null) {
                 serverPlayer.displayClientMessage(
                         Component.translatable("message.mcfloatingbackpack.need_backpack"), true);
+                BackpackNetwork.sendSession(serverPlayer, false, null);
+                return;
+            }
+            // 026: opening is the use that registers a backpack (and the one the registry may refuse).
+            if (BackpackGate.acquire(serverPlayer, resolved).isEmpty()) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }

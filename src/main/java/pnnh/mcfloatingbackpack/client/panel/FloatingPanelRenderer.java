@@ -23,7 +23,10 @@ import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentity;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.ModItems;
 
@@ -70,6 +73,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_CLOSE_BUTTON = 0xFFB33A3A;
     private static final int COLOR_CLOSE_GLYPH = 0xFFFFFFFF;
     private static final int COLOR_RESIZE_GRIP = 0xFF555555;
+    /** 026: the backpack's number in the title bar. */
+    private static final int COLOR_TITLE_ID = 0xFF404040;
 
     private FloatingPanelRenderer() {
     }
@@ -173,6 +178,38 @@ public final class FloatingPanelRenderer {
         graphics.renderItem(icon, iconX, iconY);
         if (state.hitsTitleIcon(mouseX, mouseY)) {
             graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().slotCount()), mouseX, mouseY);
+        }
+        drawTitleId(graphics, state, minecraft, mouseX, mouseY);
+    }
+
+    /**
+     * 026: the backpack's number (from the identity the server put on the stack), right of the tier icon; cut off before the
+     * close button when the panel is narrow, and shown whole in a tooltip.
+     */
+    private static void drawTitleId(
+            GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
+        if (minecraft.player == null) {
+            return;
+        }
+        BackpackRef ref = ClientBackpackView.get().getActiveRef();
+        if (ref == null) {
+            return;
+        }
+        BackpackIdentity identity = ref.getStack(minecraft.player).get(ModDataComponents.BACKPACK_IDENTITY.get());
+        if (identity == null) {
+            return;
+        }
+        String id = identity.id();
+        int textWidth = minecraft.font.width(id);
+        TitleIdLayout layout = TitleIdLayout.of(state.getPosX(), state.closeButtonLeft(), textWidth);
+        if (layout.maxWidth() <= 0) {
+            return;
+        }
+        String shown = layout.truncated() ? minecraft.font.plainSubstrByWidth(id, layout.maxWidth()) : id;
+        graphics.drawString(minecraft.font, shown, layout.x(), state.getPosY() + 5, COLOR_TITLE_ID, false);
+        if (state.hitsTitleId(mouseX, mouseY, textWidth)) {
+            graphics.renderTooltip(
+                    minecraft.font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".id.tooltip", id), mouseX, mouseY);
         }
     }
 

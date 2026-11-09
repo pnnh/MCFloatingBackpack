@@ -17,6 +17,7 @@ import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
@@ -110,7 +111,17 @@ public record BackpackClickPayload(
                 ref = claimed;
             }
 
-            BackpackInventory inventory = ref.loadInventory(serverPlayer);
+            // 026: every request into a backpack goes through the registry first.
+
+            BackpackInventory inventory = BackpackGate.acquire(serverPlayer, ref).orElse(null);
+
+            if (inventory == null) {
+
+                BackpackNetwork.sendSession(serverPlayer, false, null);
+
+                return;
+
+            }
             if (payload.slotIndex() >= inventory.size(area)) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;

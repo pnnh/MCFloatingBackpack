@@ -75,5 +75,9 @@
   "overview.mcfloatingbackpack.detail.missing": "这个物品已不在游戏里，只能删除标签",
   "overview.mcfloatingbackpack.clear": "清空",
   "overview.mcfloatingbackpack.clear.confirm": "确认清空？",
-  "overview.mcfloatingbackpack.clear.tooltip": "清空这个物品的所有标签"
+  "overview.mcfloatingbackpack.clear.tooltip": "清空这个物品的所有标签",
+  "tooltip.mcfloatingbackpack.id": "编号：%s",
+  "tooltip.mcfloatingbackpack.id.none": "未登记（首次使用时登记）",
+  "panel.mcfloatingbackpack.id.tooltip": "背包编号 %s",
+  "message.mcfloatingbackpack.id.tombstone": "这个背包已被管理员删除"
 }

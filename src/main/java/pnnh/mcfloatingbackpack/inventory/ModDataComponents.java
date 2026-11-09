@@ -21,6 +21,14 @@ public final class ModDataComponents {
                             .persistent(BackpackContents.CODEC)
                             .networkSynchronized(BackpackContents.STREAM_CODEC));
 
+    /** 026: the identity of a registered backpack (internal id, number, revision). Not a default component: stacks start without. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentity>>
+            BACKPACK_IDENTITY = COMPONENTS.registerComponentType(
+                    "backpack_identity",
+                    (UnaryOperator<DataComponentType.Builder<pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentity>>) builder -> builder
+                            .persistent(pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentityCodecs.CODEC)
+                            .networkSynchronized(pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentityCodecs.STREAM_CODEC));
+
     private ModDataComponents() {
     }
 

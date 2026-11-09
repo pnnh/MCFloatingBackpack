@@ -13,7 +13,10 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
+import pnnh.mcfloatingbackpack.inventory.BackpackContents;
+import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 
@@ -48,7 +51,19 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
             if (ref == null || !ref.stillValid(serverPlayer)) {
                 return;
             }
-            BackpackInventory inventory = ref.loadInventory(serverPlayer);
+            // 027: opening any container screen sends this. With nothing on the panel's own cursor there is nothing to merge,
+            // so do not go through the registry (which could refuse and tell the player off for merely opening the
+            // inventory) and do not save (which would count the backpack's revision up and make its other copies stale).
+            BackpackContents stored = ref.getStack(serverPlayer).get(ModDataComponents.BACKPACK_CONTENTS.get());
+            if (stored == null || stored.cursor().isEmpty()) {
+                return;
+            }
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory inventory = BackpackGate.acquire(serverPlayer, ref).orElse(null);
+            if (inventory == null) {
+                BackpackNetwork.sendSession(serverPlayer, false, null);
+                return;
+            }
             BackpackMenuBridge.mergePanelCursorIntoCarried(inventory, menu);
             ref.saveInventory(serverPlayer, inventory);
             menu.broadcastChanges();

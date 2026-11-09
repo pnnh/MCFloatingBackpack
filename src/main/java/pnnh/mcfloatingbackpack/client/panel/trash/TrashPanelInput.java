@@ -9,6 +9,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import pnnh.mcfloatingbackpack.client.creative.CreativeCursorClient;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
@@ -141,6 +142,7 @@ public final class TrashPanelInput {
             return;
         }
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
+        CreativeCursorClient.flush(); // 027
         PacketDistributor.sendToServer(BackpackTrashPayload.of(action, slots, screenOpen));
     }
 }

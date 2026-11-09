@@ -20,6 +20,7 @@ import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
@@ -87,7 +88,12 @@ public record BackpackCursorGesturePayload(byte mode, int[] slots, boolean scree
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            if (backpack == null) {
+                BackpackNetwork.sendSession(player, false, null);
+                return;
+            }
             Mode mode = Mode.fromByte(payload.mode());
             if (!PanelCursorRequest.validate(mode, payload.slots(), backpack.size())) {
                 return;

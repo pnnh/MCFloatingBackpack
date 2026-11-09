@@ -10,6 +10,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist;
 import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklistRequest;
@@ -54,7 +55,12 @@ public record BackpackPickupBlacklistOpPayload(byte op, String tag) implements C
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
-            BackpackInventory backpack = ref.loadInventory(player);
+            // 026: every request into a backpack goes through the registry first.
+            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            if (backpack == null) {
+                BackpackNetwork.sendSession(player, false, null);
+                return;
+            }
             Op op = Op.fromByte(payload.op());
             // The blacklist only works with an auto pickup in the left area: no tool there, no request.
             if (!backpack.hasAutoPickup() || !PickupBlacklistRequest.validate(op, payload.tag())) {
