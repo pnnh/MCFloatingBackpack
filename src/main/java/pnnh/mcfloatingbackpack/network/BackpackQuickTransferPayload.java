@@ -22,6 +22,7 @@ import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.OpenContainerDelivery;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferLogic;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
+import pnnh.mcfloatingbackpack.inventory.creative.CreativeInventorySync;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Holder;
 
@@ -104,6 +105,8 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             ref.saveInventory(player, backpack);
             player.getInventory().setChanged();
             player.containerMenu.broadcastChanges();
+            // 029: the creative inventory's item tab ignores single-slot updates; send the whole inventory.
+            CreativeInventorySync.afterInventoryChange(player);
             BackpackNetwork.sendFullSync(player, ref);
         });
     }

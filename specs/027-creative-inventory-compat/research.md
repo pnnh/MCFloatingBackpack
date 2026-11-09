@@ -99,6 +99,8 @@
 
 后续 feature（编号待定）要做的事：①映射格子下标（读 `SlotWrapper.target`，类不是公开的，要用访问转换器或反射，或按格子内容对应）；②创造玩家转移后由服务端把变化的物品栏格子直接写进客户端（与本 feature 的 Phase B 条件同步包是同一类机制，可以共用）；③解除 `isInterceptableScreenClass` 的排除并补创造界面下的验证。建议在本 feature 的光标镜像与 Phase B 结论出来之后再做。**"`getContainerSlot()` 返回菜单序号"是读源码的推断，没有在游戏里验证。**
 
+**（2026-11-09 补充）已由 `specs/029-creative-quick-transfer/` 处理**：下标换算用 `inventoryMenu.getSlot(k).getContainerSlot()`；转移后的客户端显示不需要自家同步包——服务端调一次 `inventoryMenu.sendAllDataToRemote()`（整份同步，客户端无条件应用）即可。
+
 ## 待验证（实现阶段在客户端会话里做，验证前不得声称满足）
 
 | # | 内容 | 在哪验证 |

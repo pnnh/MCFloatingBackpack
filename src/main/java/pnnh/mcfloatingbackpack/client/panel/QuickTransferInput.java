@@ -8,6 +8,7 @@ import org.lwjgl.glfw.GLFW;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -77,8 +78,9 @@ public final class QuickTransferInput {
     /**
      * Ctrl+left-click on a slot of a container screen while the panel is visible: a slot of the player's
      * own inventory, or (when a container is open) one of the container's own slots. Anything else
-     * (creative inventory, armor/offhand/crafting slots, output-style slots, an item on the cursor, Shift
-     * held) is left to the game. @return true if the press was taken.
+     * (armor/offhand/crafting slots, the creative inventory's item list, output-style slots, an item on the cursor, Shift
+     * held) is left to the game. The creative inventory's own-inventory slots count since 029. @return true if the press was
+     * taken.
      */
     public static boolean beginFromScreen(Screen screen, int button, double mouseX, double mouseY) {
         if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT || !Screen.hasControlDown() || Screen.hasShiftDown()) {
@@ -190,10 +192,22 @@ public final class QuickTransferInput {
                 continue;
             }
             boolean own = slot.container == minecraft.player.getInventory();
+            boolean creative = screen instanceof CreativeModeInventoryScreen;
             if (own) {
-                return QuickTransferRules.isTransferableInventorySlot(true, slot.getContainerSlot(), true)
-                        ? new Hit(Side.INVENTORY, slot.getContainerSlot(), slot.hasItem())
+                // 029: the creative inventory tab numbers its slots by menu number, not by inventory index.
+                int index = creative
+                        ? QuickTransferRules.creativeInventoryIndex(
+                                ((CreativeModeInventoryScreen) screen).isInventoryOpen(),
+                                slot.getContainerSlot(),
+                                menuSlot -> inventoryIndexOfMenuSlot(minecraft.player, menuSlot))
+                        : slot.getContainerSlot();
+                return QuickTransferRules.isTransferableInventorySlot(true, index, true)
+                        ? new Hit(Side.INVENTORY, index, slot.hasItem())
                         : null;
+            }
+            // 029: what is left on the creative screen is the item list: virtual items, not a source.
+            if (creative) {
+                return null;
             }
             // A container's own slots only count while a container is open, not on the player's own inventory screen.
             if (screen.getMenu() == minecraft.player.inventoryMenu) {
@@ -205,6 +219,15 @@ public final class QuickTransferInput {
                     : null;
         }
         return null;
+    }
+
+    /** The inventory index of the player's inventory menu slot {@code menuSlot}, or -1 if it is not a slot of the inventory. */
+    private static int inventoryIndexOfMenuSlot(net.minecraft.world.entity.player.Player player, int menuSlot) {
+        if (menuSlot < 0 || menuSlot >= player.inventoryMenu.slots.size()) {
+            return -1;
+        }
+        Slot target = player.inventoryMenu.getSlot(menuSlot);
+        return target.container == player.getInventory() ? target.getContainerSlot() : -1;
     }
 
     /** Splits hits by where they live and sends one request per kind of source (at most 3 per frame). */

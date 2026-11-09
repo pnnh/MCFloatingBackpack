@@ -36,13 +36,13 @@
 - [x] T005 运行 `./gradlew compileJava test`，确认 T002 与全部既有测试通过
 - [x] T006 先 `pgrep`；确认没有游戏在跑后，跑 `design/demo/tools/check_atlas_budget.sh`（会启动客户端并触发资源重载）：记录图集宽高（改动后），并在 `run/logs/latest.log` 里找模型烘焙错误（`Unable to`、`Missing`、`Failed`、`separate_transforms`、`_floating_backpack` 相关的 ERROR/WARN）；**有错就走 research D4 的退化方案（把 3D 模型内容内联进 `base`）再测**；结果记到 DELIVERY.md；图集超 2048 或有模型错误则不得继续
 - [x] T007 [US1] 按 `quickstart.md` A（A1～A4）在 `./gradlew runClient` 验证（先 `pgrep`）：与 2026-11-08 完全相同条件的帧率对照；**记录数值**到 DELIVERY.md（由用户确认后才打勾）
-- [ ] T008 [US2] [US3] 按 `quickstart.md` B（B1～B7）在 `./gradlew runClient` 验证（先 `pgrep`）：五档外观、手持、背在背上、展示框、掉落物（仍是 3D）、标题栏与 JEI；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [x] T008 [US2] [US3] 按 `quickstart.md` B（B1～B7）在 `./gradlew runClient` 验证（先 `pgrep`）：五档外观、手持、背在背上、展示框、掉落物（仍是 3D）、标题栏与 JEI；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 ---
 
 ## Phase 4: User Story 4 - 不影响其它功能与预算 (Priority: P2)
 
-- [ ] T009 [US4] 按 `quickstart.md` C（C1、C3）在 `./gradlew runClient` 验证（先 `pgrep`）：011～027 的验证项回归；**ESC 菜单的 fps 复测并记录**；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [x] T009 [US4] 按 `quickstart.md` C（C1、C3）在 `./gradlew runClient` 验证（先 `pgrep`）：011～027 的验证项回归；**ESC 菜单的 fps 复测并记录**；结果记到 DELIVERY.md（由用户确认后才打勾）
 
 ---
 

@@ -76,6 +76,7 @@
 
 - [x] T019 [US6] 审阅（读代码，不改行为）：①`CreativeCursorBridge.onReport` 的每个非 `ACCEPT` 分支都不改菜单光标、不更新镜像、不回写；②`pushIfChanged` 对非创造玩家、`containerMenu != inventoryMenu` 的玩家永远不发；③所有对背包的修改仍走 `BackpackGate.acquire`（`git diff` 确认 7 处服务端光标处理文件**没有改动**）；④没有任何地方根据游戏模式或界面类型禁用面板的功能（`grep -rn "isCreative\|CreativeModeInventoryScreen" src/main/java` 只应命中本 feature 的桥接与客户端类、011 的 `QuickTransferRules` 与 `CreativeCursorClient`）；发现缺口就补并记录，没有缺口也记"已审阅，无缺口"
 - [x] T020 [US6] 按 `quickstart.md` D、G1 在 `./gradlew runClient` 验证（先 `pgrep`）：切到生存模式，生存物品栏界面与箱子界面下重跑 011～026 的验证项，结果与之前一致；非法报告靠 T002 的单元测试覆盖，客户端会话里不手工构造；结果记到 DELIVERY.md（由用户确认后才打勾）
+    没有问题
 
 ---
 
@@ -83,11 +84,11 @@
 
 **Goal**: 在创造界面里用面板改背包，背包内容与 026 的编号、修订号不被客户端旧栈覆盖。**机制只是推断（research D7），复现之前不做改动（FR-009）。**
 
-- [ ] T021 [US5] 按 `quickstart.md` E（E1～E5）在 `./gradlew runClient` 验证（先 `pgrep`）：背包放在物品栏中间、胸甲位、快捷栏三处，创造界面的物品标签页与物品栏标签页下各做一遍"用面板放入物品 → 在创造界面里把那只背包本身拿起再放下 → 关界面 → 重开面板"；每一步之后读 `run/saves/<世界>/data/mcfloatingbackpack_registry.dat` 与 `playerdata`（026 用过的脚本）对账**背包内容**（2026-11-09：026 已没有修订号，只看内容有没有回退，以及物品栏里有没有同一只背包的多份副本）；**结果只有两种：复现了（写下在哪种位置/标签页下复现、修订号如何变化）或没复现（写"未复现"）**；记到 DELIVERY.md（由用户确认后才打勾）
+- [x] T021 [US5] 按 `quickstart.md` E（E1～E5）在 `./gradlew runClient` 验证（先 `pgrep`）：背包放在物品栏中间、胸甲位、快捷栏三处，创造界面的物品标签页与物品栏标签页下各做一遍"用面板放入物品 → 在创造界面里把那只背包本身拿起再放下 → 关界面 → 重开面板"；每一步之后读 `run/saves/<世界>/data/mcfloatingbackpack_registry.dat` 与 `playerdata`（026 用过的脚本）对账**背包内容**（2026-11-09：026 已没有修订号，只看内容有没有回退，以及物品栏里有没有同一只背包的多份副本）；**结果只有两种：复现了（写下在哪种位置/标签页下复现、修订号如何变化）或没复现（写"未复现"）**；记到 DELIVERY.md（由用户确认后才打勾）
     未复现
-- [ ] T022 [US5] **（仅当 T021 复现了才做；否则标注"未复现，跳过"，不勾选为已实现）** 新增 `…/network/BackpackStackSyncPayload.java`（服务端 → 客户端，字段 `int inventorySlot`、`ItemStack stack`），处理器在客户端把 `player.getInventory().setItem(inventorySlot, stack)`；在 `BackpackRef.saveInventory` 末尾（仅创造模式玩家、仅服务端）发给该玩家，绕过原版"创造物品标签页忽略非快捷栏格子更新"（research F7）；协议版本是否再升由实现时判断（与 T006 的 `"15"` 同一次发布则不再升）；先写测试（槽号映射的纯逻辑部分），再实现
+- [ ] T022 [US5] **（跳过：T021 用户验证没有问题，旧栈覆盖未复现；不勾选为已实现）** 新增 `…/network/BackpackStackSyncPayload.java`（服务端 → 客户端，字段 `int inventorySlot`、`ItemStack stack`），处理器在客户端把 `player.getInventory().setItem(inventorySlot, stack)`；在 `BackpackRef.saveInventory` 末尾（仅创造模式玩家、仅服务端）发给该玩家，绕过原版"创造物品标签页忽略非快捷栏格子更新"（research F7）；协议版本是否再升由实现时判断（与 T006 的 `"15"` 同一次发布则不再升）；先写测试（槽号映射的纯逻辑部分），再实现
     未复现跳过
-- [ ] T023 [US5] **（仅当 T022 做了才做）** 按 `quickstart.md` E 重做 T021 的全部场景，确认背包内容 0 次回退、；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T023 [US5] **（跳过：T022 没有做）** 按 `quickstart.md` E 重做 T021 的全部场景，确认背包内容 0 次回退、；结果记到 DELIVERY.md（由用户确认后才打勾）
     未复现跳过
 
 ---
@@ -96,7 +97,8 @@
 
 - [x] T024 [P] 更新文档：`specs/011-ctrl-quick-transfer/spec.md` 与 `specs/013-panel-drag-split-gather/spec.md` 各加一句 027 说明（创造界面里面板的光标操作由 027 修复；Ctrl 快速转移在创造界面里的缺口仍在，线索见 027 research D8）；`docs/MCFloatingBackpack.md` 在 026 说明之后加 027 说明（创造界面里面板与生存界面一致、服务端菜单光标镜像客户端的创造光标、仅创造模式玩家被接受、关界面光标放回物品栏及其与原版创造模式的偏差、协议 15）；`docs/plan/manual-verification-checklist.md` 补 027 的验证项；**不要修改 `docs/ideas`**
 - [x] T025 按 `quickstart.md` G2：`./gradlew compileJava test` 退出码 0；先 `pgrep` 确认没有运行中的客户端，再跑 `design/demo/tools/check_atlas_budget.sh`，图集应仍为 2048×1024（宪法 VI；本 feature 不新增贴图），结果记到 DELIVERY.md——**跑不了就如实写"未度量"，不要写成通过**
-- [ ] T026 按 `quickstart.md` G3 做成本粗测（宪法 VI）：面板可见且在创造界面里连续操作 1 分钟，对比有无本 feature 的客户端帧率；面板不可见或非创造界面时应当零成本（审阅确认）；测不了就如实写"未测量"
+- [x] T026 按 `quickstart.md` G3 做成本粗测（宪法 VI）：面板可见且在创造界面里连续操作 1 分钟，对比有无本 feature 的客户端帧率；面板不可见或非创造界面时应当零成本（审阅确认）；测不了就如实写"未测量"
+    帧率变化不大
 - [x] T027 静态检查：`git diff --stat` 确认除"本 feature 新增文件、`BackpackNetwork`、`FloatingPanelEvents`、三处客户端发送点、`MCFloatingBackpack`、文档"外，011～026 的逻辑文件没有改动；`grep -rn "isCreative" src/main/java` 命中范围见 T019；确认没有新增设置项、贴图、命令
 - [x] T028 新建/补全 `specs/027-creative-inventory-compat/DELIVERY.md`（中文）：汇总自动化结果（T001 基线与各阶段编译与测试结果、新增测试类与用例数）、与 plan/tasks 的偏离（**含 research D4 的关界面偏差及用户的确认结论**）、**每个客户端验证项实际验证了什么 / 未验证什么**（尤其联机延迟、旧栈覆盖是否复现、关界面虚拟物品的去向）、图集度量结果或"未度量"、成本粗测结果或"未测量"、已知限制（Ctrl 快速转移在创造界面的缺口及 research D8 线索；Windows/Linux 未验证；断线时镜像光标上物品的去向待验证 U7）
 

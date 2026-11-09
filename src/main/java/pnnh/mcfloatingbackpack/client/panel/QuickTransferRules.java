@@ -5,19 +5,35 @@ package pnnh.mcfloatingbackpack.client.panel;
  * be unit-tested.
  */
 public final class QuickTransferRules {
-    private static final String CREATIVE_SCREEN =
-            "net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen";
-
     private QuickTransferRules() {
     }
 
     /**
      * Any container screen, vanilla or a mod's (Sophisticated Backpacks, Traveler's Backpack: 012 needs
-     * their container slots as a source). The creative inventory uses client-side fake slots whose
-     * numbering does not match the server, so it is excluded.
+     * their container slots as a source). The creative inventory is one of them since 029: its inventory-tab slots are numbered
+     * by menu (see {@link #creativeInventoryIndex}), which the caller translates.
      */
     public static boolean isInterceptableScreenClass(String className) {
-        return className != null && !className.isEmpty() && !className.equals(CREATIVE_SCREEN);
+        return className != null && !className.isEmpty();
+    }
+
+    /**
+     * The real index in the player's inventory of a slot of the creative inventory screen, or -1 if it is not one that can
+     * be transferred (armor, the crafting grid, the offhand, anything outside 0-35).
+     *
+     * <p>On the <em>inventory</em> tab the screen wraps the slots of the player's inventory menu and numbers each wrapper by its
+     * <em>menu</em> number (the hotbar is 36-44 there, but 0-8 in the inventory), so the number has to be translated. On the
+     * <em>item</em> tab the hotbar is made of real slots whose number is the inventory index.
+     *
+     * @param inventoryTab the creative screen shows its inventory tab
+     * @param containerSlot what {@code Slot.getContainerSlot()} says
+     * @param menuSlotToInventoryIndex the player's inventory menu: menu number to inventory index, or -1 if that slot is not in
+     *     the player's inventory
+     */
+    public static int creativeInventoryIndex(
+            boolean inventoryTab, int containerSlot, java.util.function.IntUnaryOperator menuSlotToInventoryIndex) {
+        int index = inventoryTab ? menuSlotToInventoryIndex.applyAsInt(containerSlot) : containerSlot;
+        return isTransferableInventorySlot(true, index, true) ? index : -1;
     }
 
     /**
