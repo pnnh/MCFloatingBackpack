@@ -1,0 +1,76 @@
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferRules.java
+  s_9aefe4a2760245::t_26856aed8c6cde 13-14,17-36
+specs/027-creative-inventory-compat/research.md
+  s_9aefe4a2760245::t_362cd6722ec8f8 102-103
+specs/029-creative-quick-transfer/plan.md
+  s_9aefe4a2760245::t_a228ed794fdcf6 1-59
+specs/029-creative-quick-transfer/tasks.md
+  s_9aefe4a2760245::t_362cd6722ec8f8 41-44
+  s_9aefe4a2760245::t_a228ed794fdcf6 1-29,34-36,38-40,45-56
+  h_6465a203f88bd5 32
+  s_9aefe4a2760245::t_f809a718f38769 30-31,33,37
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferInput.java
+  s_9aefe4a2760245::t_26856aed8c6cde 11,195,197-205,208-211,224-230
+  s_9aefe4a2760245::t_a228ed794fdcf6 81-83
+  s_9aefe4a2760245::t_be22aae1321ca4 231-232
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_362cd6722ec8f8 115-118,123-124,263-264
+  s_9aefe4a2760245::t_f809a718f38769 99-101,111-112,119-122
+specs/011-ctrl-quick-transfer/spec.md
+  s_9aefe4a2760245::t_362cd6722ec8f8 181-182
+specs/027-creative-inventory-compat/tasks.md
+  s_9aefe4a2760245::t_f809a718f38769 87,89,91
+  h_6465a203f88bd5 79,100-101
+.specify/feature.json
+  s_9aefe4a2760245::t_4919a4d1fdab6e 2
+specs/028-gui-flat-icons/tasks.md
+  s_9aefe4a2760245::t_f809a718f38769 39,45
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_362cd6722ec8f8 128
+specs/028-gui-flat-icons/DELIVERY.md
+  s_9aefe4a2760245::t_f809a718f38769 5,32-33,35
+specs/029-creative-quick-transfer/DELIVERY.md
+  s_9aefe4a2760245::t_362cd6722ec8f8 1-4,6-30,39-41,43-45
+  h_6465a203f88bd5 32,34,36,38
+  s_9aefe4a2760245::t_f809a718f38769 5,31,33,35,37,42
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackQuickTransferPayload.java
+  s_9aefe4a2760245::t_26856aed8c6cde 25,108-109
+specs/029-creative-quick-transfer/spec.md
+  s_9aefe4a2760245::t_4919a4d1fdab6e 1-141
+specs/029-creative-quick-transfer/checklists/requirements.md
+  s_9aefe4a2760245::t_4919a4d1fdab6e 1-37
+src/main/java/pnnh/mcfloatingbackpack/inventory/creative/CreativeInventorySync.java
+  s_9aefe4a2760245::t_26856aed8c6cde 1-28
+specs/029-creative-quick-transfer/research.md
+  s_9aefe4a2760245::t_a228ed794fdcf6 1-46
+src/test/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferRulesTest.java
+  s_9aefe4a2760245::t_26856aed8c6cde 3,11,24-26,28-31,64-115
+src/test/java/pnnh/mcfloatingbackpack/inventory/creative/CreativeInventorySyncTest.java
+  s_9aefe4a2760245::t_26856aed8c6cde 1-17
+specs/029-creative-quick-transfer/quickstart.md
+  s_9aefe4a2760245::t_a228ed794fdcf6 1-40
+specs/027-creative-inventory-compat/DELIVERY.md
+  s_9aefe4a2760245::t_f809a718f38769 5,29,42,44-45
+  h_6465a203f88bd5 43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a5f4f813dc4213b2f11060be608b091b6cc7b58d",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
