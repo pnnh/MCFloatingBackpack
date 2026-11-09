@@ -1,45 +1,12 @@
 {
-  "loader": "neoforge:obj",
-  "model": "mcfloatingbackpack:models/item/gold_backpack.obj",
-  "flip_v": true,
-  "emissive_ambient": false,
-  "textures": {
-    "particle": "mcfloatingbackpack:item/gold_floating_backpack",
-    "base": "mcfloatingbackpack:item/gold_floating_backpack"
+  "loader": "neoforge:separate_transforms",
+  "gui_light": "front",
+  "base": {
+    "parent": "mcfloatingbackpack:item/gold_floating_backpack_3d"
   },
-  "display": {
-    "thirdperson_righthand": {
-      "rotation": [0, 90, 0],
-      "translation": [0, 2.5, 1],
-      "scale": [0.55, 0.55, 0.55]
-    },
-    "thirdperson_lefthand": {
-      "rotation": [0, 90, 0],
-      "translation": [0, 2.5, 1],
-      "scale": [0.55, 0.55, 0.55]
-    },
-    "firstperson_righthand": {
-      "rotation": [0, 90, 25],
-      "translation": [1.5, 3.5, 0],
-      "scale": [0.7, 0.7, 0.7]
-    },
-    "firstperson_lefthand": {
-      "rotation": [0, 90, -25],
-      "translation": [1.5, 3.5, 0],
-      "scale": [0.7, 0.7, 0.7]
-    },
-    "ground": {
-      "translation": [0, 2, 0],
-      "scale": [0.5, 0.5, 0.5]
-    },
+  "perspectives": {
     "gui": {
-      "rotation": [30, 225, 0],
-      "translation": [0, 1, 0],
-      "scale": [0.95, 0.95, 0.95]
-    },
-    "fixed": {
-      "rotation": [0, 180, 0],
-      "scale": [1.1, 1.1, 1.1]
+      "parent": "mcfloatingbackpack:item/gold_floating_backpack_icon"
     }
   }
 }
