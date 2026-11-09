@@ -12,6 +12,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.client.creative.CreativeCursorClient;
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
+import pnnh.mcfloatingbackpack.client.snapshot.SnapshotClient;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
@@ -111,6 +112,11 @@ public final class FloatingPanelInput {
             }
             // Close button and resize handle sit on/inside the drag bar and body respectively, so
             // they must be checked before those broader hit tests claim the press first.
+            // 031: the snapshot button, left of the close button, opens the snapshot window (the panel is hidden meanwhile, then back as it was).
+            if (!isRight && state.hitsSnapshotButton(mouseX, mouseY)) {
+                SnapshotClient.open();
+                return true;
+            }
             if (!isRight && state.hitsCloseButton(mouseX, mouseY)) {
                 FloatingPanelEvents.closePanel();
                 return true;

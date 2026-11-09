@@ -39,11 +39,22 @@ public final class FloatingBackpackKeys {
                     Minecraft.ON_OSX ? GLFW.GLFW_KEY_BACKSPACE : GLFW.GLFW_KEY_DELETE),
             CATEGORY);
 
+    /**
+     * 031: opens the snapshot window. Not bound by default (a key that is not asked for would clash with another mod's); the
+     * player binds it in Controls.
+     */
+    public static final KeyMapping SNAPSHOTS = new KeyMapping(
+            "key." + MCFloatingBackpack.MOD_ID + ".snapshots",
+            KeyConflictContext.IN_GAME,
+            InputConstants.UNKNOWN,
+            CATEGORY);
+
     private FloatingBackpackKeys() {
     }
 
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(TOGGLE);
         event.register(DELETE_TO_TRASH);
+        event.register(SNAPSHOTS);
     }
 }

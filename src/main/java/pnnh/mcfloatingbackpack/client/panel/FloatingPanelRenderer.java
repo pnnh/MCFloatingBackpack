@@ -72,6 +72,7 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_SELECTED = 0xFFFFD34D;
     private static final int COLOR_CLOSE_BUTTON = 0xFFB33A3A;
     private static final int COLOR_CLOSE_GLYPH = 0xFFFFFFFF;
+    private static final int COLOR_SNAPSHOT_BUTTON = 0xFF3A6EA5;
     private static final int COLOR_RESIZE_GRIP = 0xFF555555;
     /** 026: the backpack's number in the title bar. */
     private static final int COLOR_TITLE_ID = 0xFF404040;
@@ -117,6 +118,7 @@ public final class FloatingPanelRenderer {
             PickupPanelRenderer.render(graphics, ClientBackpackView.get().layout().rect(PanelArea.MAIN), mouseX, mouseY);
         }
         drawCloseButton(graphics, state);
+        drawSnapshotButton(graphics, state, minecraft, mouseX, mouseY);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
         // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
@@ -201,7 +203,7 @@ public final class FloatingPanelRenderer {
         }
         String id = identity.id();
         int textWidth = minecraft.font.width(id);
-        TitleIdLayout layout = TitleIdLayout.of(state.getPosX(), state.closeButtonLeft(), textWidth);
+        TitleIdLayout layout = TitleIdLayout.of(state.getPosX(), state.titleButtons().textRightLimit(), textWidth);
         if (layout.maxWidth() <= 0) {
             return;
         }
@@ -377,6 +379,30 @@ public final class FloatingPanelRenderer {
         int textX = x1 + (size - minecraft.font.width(glyph)) / 2;
         int textY = y1 + (size - minecraft.font.lineHeight) / 2;
         graphics.drawString(minecraft.font, glyph, textX, textY, COLOR_CLOSE_GLYPH, false);
+    }
+
+    /**
+     * 031: the snapshot button, left of the close button, drawn in code (a small archive box on blue; no texture). Geometry must match
+     * {@link FloatingPanelState#hitsSnapshotButton}; it is not drawn when the title bar is too narrow.
+     */
+    private static void drawSnapshotButton(GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
+        TitleButtonsLayout buttons = state.titleButtons();
+        if (!buttons.hasSnapshot()) {
+            return;
+        }
+        int size = TitleButtonsLayout.BUTTON_SIZE;
+        int x1 = buttons.snapshotLeft();
+        int y1 = state.getPosY() + 2;
+        graphics.fill(x1, y1, x1 + size, y1 + size, COLOR_SNAPSHOT_BUTTON);
+        // the box: a lid across the top and an outline below it
+        graphics.fill(x1 + 2, y1 + 2, x1 + size - 2, y1 + 4, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 3, y1 + 4, x1 + 4, y1 + size - 2, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + size - 4, y1 + 4, x1 + size - 3, y1 + size - 2, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 3, y1 + size - 3, x1 + size - 3, y1 + size - 2, COLOR_CLOSE_GLYPH);
+        if (state.hitsSnapshotButton(mouseX, mouseY)) {
+            graphics.renderTooltip(
+                    minecraft.font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".snapshot.tooltip"), mouseX, mouseY);
+        }
     }
 
     /** Geometry anchored at the same corner as {@link FloatingPanelState#hitsResizeHandle}. */

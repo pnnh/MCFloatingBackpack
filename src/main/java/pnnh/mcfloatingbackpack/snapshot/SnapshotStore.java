@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.UUID;
 import java.util.stream.Stream;
 
@@ -41,6 +42,12 @@ public final class SnapshotStore {
     private static final String TEMP_EXTENSION = ".tmp";
 
     private final Path root;
+    /**
+     * What each snapshot file says about itself, so listing does not read every file again. A snapshot file is never changed
+     * after it is written and its name holds its time, so an entry cannot go stale; one for a file that is gone is dropped when
+     * the folder is next listed.
+     */
+    private final Map<Path, SnapshotMeta> metaCache = new ConcurrentHashMap<>();
 
     public SnapshotStore(Path root) {
         this.root = root;
@@ -97,12 +104,14 @@ public final class SnapshotStore {
     /** Every backpack that has at least one readable snapshot: its newest snapshot and how many it has. */
     public List<Group> groups() {
         List<Group> groups = new ArrayList<>();
+        Set<Path> present = new HashSet<>();
         for (Map.Entry<UUID, Path> folder : folders().entrySet()) {
-            List<SnapshotMeta> versions = versions(folder.getKey(), folder.getValue());
+            List<SnapshotMeta> versions = versions(folder.getKey(), folder.getValue(), present);
             if (!versions.isEmpty()) {
                 groups.add(new Group(versions.get(0), versions.size()));
             }
         }
+        metaCache.keySet().retainAll(present);
         return groups;
     }
 
@@ -154,23 +163,38 @@ public final class SnapshotStore {
     /** One backpack's readable snapshots, the newest first. */
     public List<SnapshotMeta> versions(UUID uuid) {
         Path dir = folders().get(uuid);
-        return dir == null ? new ArrayList<>() : versions(uuid, dir);
+        if (dir == null) {
+            return new ArrayList<>();
+        }
+        Set<Path> present = new HashSet<>();
+        List<SnapshotMeta> versions = versions(uuid, dir, present);
+        metaCache.keySet().removeIf(file -> dir.equals(file.getParent()) && !present.contains(file));
+        return versions;
     }
 
-    private List<SnapshotMeta> versions(UUID uuid, Path dir) {
+    private List<SnapshotMeta> versions(UUID uuid, Path dir, Set<Path> present) {
         List<Long> times = times(dir);
         times.sort(Comparator.reverseOrder());
         List<SnapshotMeta> versions = new ArrayList<>();
         for (long time : times) {
-            readTag(dir.resolve(SnapshotFiles.fileName(time))).ifPresent(tag -> {
+            Path file = dir.resolve(SnapshotFiles.fileName(time));
+            present.add(file);
+            SnapshotMeta cached = metaCache.get(file);
+            if (cached != null) {
+                versions.add(cached);
+                continue;
+            }
+            readTag(file).ifPresent(tag -> {
                 try {
-                    versions.add(new SnapshotMeta(
+                    SnapshotMeta meta = new SnapshotMeta(
                             tag.getUUID("uuid"),
                             tag.getUUID("owner"),
                             tag.getString("ownerName"),
                             tag.getInt("capacity"),
                             time,
-                            tag.getInt("slots")));
+                            tag.getInt("slots"));
+                    metaCache.put(file, meta);
+                    versions.add(meta);
                 } catch (RuntimeException e) {
                     MCFloatingBackpack.LOGGER.warn("Skipping an unreadable backpack snapshot {}/{}: {}", uuid, time, e.toString());
                 }
@@ -205,7 +229,12 @@ public final class SnapshotStore {
     public boolean delete(UUID uuid, long time) {
         try {
             Path dir = folders().get(uuid);
-            return dir != null && Files.deleteIfExists(dir.resolve(SnapshotFiles.fileName(time)));
+            if (dir == null) {
+                return false;
+            }
+            Path file = dir.resolve(SnapshotFiles.fileName(time));
+            metaCache.remove(file);
+            return Files.deleteIfExists(file);
         } catch (IOException e) {
             MCFloatingBackpack.LOGGER.warn("Could not delete the backpack snapshot {}/{}: {}", uuid, time, e.toString());
             return false;

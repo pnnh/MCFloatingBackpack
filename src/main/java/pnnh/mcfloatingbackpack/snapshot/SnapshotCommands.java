@@ -20,22 +20,15 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.GameProfileArgument;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 
-import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.inventory.BackpackContents;
-import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackIds;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
-import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotListing.Filter;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotListing.Group;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotListing.Page;
+import pnnh.mcfloatingbackpack.snapshot.net.ResultCode;
 
 /**
  * 030: {@code /mcfloatingbackpack snapshot ...} (alias {@code /mcfb}): look at the backpack snapshots, get a new backpack out of one, and
@@ -57,6 +50,8 @@ public final class SnapshotCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> snapshot = Commands.literal("snapshot")
+                // 031: the window; anyone may open it (what it shows and allows is the same as these commands)
+                .then(Commands.literal("gui").executes(SnapshotCommands::gui))
                 .then(Commands.literal("list")
                         .executes(ctx -> list(ctx, ListKind.MINE, null, -1, 1))
                         .then(Commands.argument("page", IntegerArgumentType.integer(1))
@@ -112,6 +107,15 @@ public final class SnapshotCommands {
         LiteralCommandNode<CommandSourceStack> root =
                 dispatcher.register(Commands.literal("mcfloatingbackpack").then(snapshot));
         dispatcher.register(Commands.literal("mcfb").redirect(root));
+    }
+
+    private static int gui(CommandContext<CommandSourceStack> ctx) {
+        ServerPlayer player = ctx.getSource().getPlayer();
+        if (player == null) {
+            return fail(ctx, msg("gui.console", "The snapshot window needs a player: from the console use 'list all'."));
+        }
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, new pnnh.mcfloatingbackpack.snapshot.net.SnapshotOpenPayload());
+        return 1;
     }
 
     private enum ListKind {
@@ -181,19 +185,12 @@ public final class SnapshotCommands {
 
     /** Writes what is waiting, then reads the files: what this source may see (everyone's for an op, one's own otherwise). */
     private static List<Group> visible(CommandContext<CommandSourceStack> ctx, SnapshotService service) {
-        service.flushAndWait();
-        List<Group> groups = service.store().groups();
-        if (isOp(ctx.getSource())) {
-            return groups;
-        }
-        ServerPlayer self = ctx.getSource().getPlayer();
-        List<Group> own = new ArrayList<>();
-        for (Group group : groups) {
-            if (self != null && group.newest().owner().equals(self.getUUID())) {
-                own.add(group);
-            }
-        }
-        return own;
+        return SnapshotOps.visibleGroups(service, requester(ctx.getSource()));
+    }
+
+    private static SnapshotOps.Requester requester(CommandSourceStack source) {
+        ServerPlayer player = source.getPlayer();
+        return new SnapshotOps.Requester(isOp(source), player == null ? null : player.getUUID());
     }
 
     /** The one backpack the argument names (among those this source may see), or null after saying why not. */
@@ -328,40 +325,19 @@ public final class SnapshotCommands {
             return fail(ctx, msg("restore.badversion", "Backpack %s has %s snapshot(s); there is no snapshot #%s.", id, versions.size(), version));
         }
         SnapshotMeta chosen = versions.get(version - 1);
-        BackpackTier tier = BackpackTier.byCapacity(chosen.capacity());
-        Item item = tier == null ? null : itemOf(tier);
-        if (item == null) {
+        ResultCode result = SnapshotOps.restore(ctx.getSource().getServer(), service.get(), chosen, target);
+        if (result == ResultCode.NO_TIER) {
             return fail(ctx, msg("restore.notier", "Backpack %s has a size that matches no tier (%s slots).", id, chosen.capacity()));
         }
-        Optional<Tag> tag = service.get().store().readContents(group.uuid(), chosen.time());
-        BackpackContents contents = tag.flatMap(t -> BackpackContents.CODEC
-                        .parse(ctx.getSource().getServer().registryAccess().createSerializationContext(NbtOps.INSTANCE), t)
-                        .resultOrPartial(error -> MCFloatingBackpack.LOGGER.warn(
-                                "Could not decode the snapshot {}/{}: {}", group.uuid(), chosen.time(), error)))
-                .orElse(null);
-        if (contents == null) {
+        if (result != ResultCode.RESTORED) {
             return fail(ctx, msg("restore.unreadable", "The snapshot could not be read (see the server log)."));
         }
-        ItemStack stack = new ItemStack(item);
-        stack.set(ModDataComponents.BACKPACK_CONTENTS.get(), contents);
-        // A new backpack with no identity yet: it gets one the first time it is used, so it never shares the original's.
-        target.getInventory().placeItemBackInInventory(stack);
         return ok(ctx, msg(
                 "restore.ok",
                 "Gave %s a new backpack with snapshot #%s of %s. The original backpack is unchanged.",
                 target.getGameProfile().getName(),
                 version,
                 id));
-    }
-
-    private static Item itemOf(BackpackTier tier) {
-        return switch (tier) {
-            case LEATHER -> ModItems.LEATHER_FLOATING_BACKPACK.get();
-            case IRON -> ModItems.IRON_FLOATING_BACKPACK.get();
-            case GOLD -> ModItems.GOLD_FLOATING_BACKPACK.get();
-            case DIAMOND -> ModItems.DIAMOND_FLOATING_BACKPACK.get();
-            case NETHERITE -> ModItems.NETHERITE_FLOATING_BACKPACK.get();
-        };
     }
 
     private static int deleteOne(CommandContext<CommandSourceStack> ctx) {
@@ -379,11 +355,10 @@ public final class SnapshotCommands {
         if (version > versions.size()) {
             return fail(ctx, msg("restore.badversion", "Backpack %s has %s snapshot(s); there is no snapshot #%s.", id, versions.size(), version));
         }
-        boolean deleted = service.get().store().delete(group.uuid(), versions.get(version - 1).time());
+        boolean deleted = SnapshotOps.deleteOne(service.get(), group.uuid(), versions.get(version - 1).time());
         if (!deleted) {
             return fail(ctx, msg("delete.failed", "Could not delete the snapshot (see the server log)."));
         }
-        service.get().forget(group.uuid());
         return ok(ctx, msg("delete.one", "Deleted snapshot #%s of backpack %s.", version, id));
     }
 
@@ -404,8 +379,7 @@ public final class SnapshotCommands {
                     id,
                     group.versions()));
         }
-        int deleted = service.get().store().deleteAll(group.uuid());
-        service.get().forget(group.uuid());
+        int deleted = SnapshotOps.deleteAll(service.get(), group.uuid());
         return ok(ctx, msg("delete.all", "Deleted %s snapshot(s) of backpack %s.", deleted, id));
     }
 
@@ -415,9 +389,7 @@ public final class SnapshotCommands {
             return 0;
         }
         int days = IntegerArgumentType.getInteger(ctx, "days");
-        service.get().flushAndWait();
-        List<Group> all = service.get().store().groups();
-        List<Group> candidates = SnapshotListing.trimCandidates(all, System.currentTimeMillis(), days);
+        List<Group> candidates = SnapshotOps.trimCandidates(service.get(), days);
         if (candidates.isEmpty()) {
             return ok(ctx, msg("trim.none", "No backpack's newest snapshot is older than %s days.", days));
         }
@@ -427,15 +399,11 @@ public final class SnapshotCommands {
                     "trim.preview",
                     "%s of %s backpacks (%s snapshots) have not been used for more than %s days. Nothing was deleted; add 'confirm' to delete them.",
                     candidates.size(),
-                    all.size(),
+                    SnapshotOps.backpackCount(service.get()),
                     files,
                     days));
         }
-        int deleted = 0;
-        for (Group group : candidates) {
-            deleted += service.get().store().deleteAll(group.uuid());
-            service.get().forget(group.uuid());
-        }
+        int deleted = SnapshotOps.trimDelete(service.get(), candidates);
         return ok(ctx, msg(
                 "trim.done",
                 "Deleted %s snapshot(s) of %s backpack(s). The backpacks themselves are untouched; a snapshot is written again when one is next used.",

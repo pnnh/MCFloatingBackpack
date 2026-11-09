@@ -27,6 +27,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.creative.CreativeCursorClient;
 import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
+import pnnh.mcfloatingbackpack.client.snapshot.SnapshotClient;
 import pnnh.mcfloatingbackpack.client.panel.DeleteKeyInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
@@ -274,6 +275,12 @@ public final class FloatingPanelEvents {
         if (minecraft.player != null && ConfigNotices.hasPending()) {
             for (ConfigNotices.Notice notice : ConfigNotices.drain()) {
                 chat(minecraft, Component.translatable(notice.key(), notice.arg()));
+            }
+        }
+        // 031: the snapshot key (not bound until the player binds it): with no screen open the game counts its presses.
+        while (FloatingBackpackKeys.SNAPSHOTS.consumeClick()) {
+            if (minecraft.player != null && minecraft.screen == null) {
+                SnapshotClient.open();
             }
         }
         QuickTransferInput.stopIfInvalid(minecraft);

@@ -232,14 +232,33 @@ public final class FloatingPanelState {
         return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
-    /** 026: the left edge of the close button, which is where the backpack's number must stop. */
+    /** 026: the left edge of the close button. */
     public int closeButtonLeft() {
         return posX + width - 3 - CLOSE_BUTTON_SIZE;
     }
 
+    /** 031: the title bar's right end: the close button, the snapshot button when there is room, and where the number must stop. */
+    public TitleButtonsLayout titleButtons() {
+        return TitleButtonsLayout.of(posX, width);
+    }
+
+    /** 031: the snapshot button, left of the close button; never hit when the bar is too narrow to show it. */
+    public boolean hitsSnapshotButton(double mouseX, double mouseY) {
+        TitleButtonsLayout buttons = titleButtons();
+        if (!buttons.hasSnapshot()) {
+            return false;
+        }
+        int x1 = buttons.snapshotLeft();
+        int y1 = posY + 2;
+        return mouseX >= x1
+                && mouseX < x1 + TitleButtonsLayout.BUTTON_SIZE
+                && mouseY >= y1
+                && mouseY < y1 + TitleButtonsLayout.BUTTON_SIZE;
+    }
+
     /** 026: the backpack's number in the title bar, to the right of the tier icon ({@code textWidth}: the whole number's width). */
     public boolean hitsTitleId(double mouseX, double mouseY, int textWidth) {
-        TitleIdLayout layout = TitleIdLayout.of(posX, closeButtonLeft(), textWidth);
+        TitleIdLayout layout = TitleIdLayout.of(posX, titleButtons().textRightLimit(), textWidth);
         int x1 = layout.x();
         int x2 = x1 + Math.min(textWidth, layout.maxWidth());
         int y1 = posY + 1;

@@ -12,6 +12,15 @@ import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorBridge;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotActionPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotListPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotListRequestPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotOpenPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotPreviewPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotPreviewRequestPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotResultPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotVersionsPayload;
+import pnnh.mcfloatingbackpack.snapshot.net.SnapshotVersionsRequestPayload;
 
 public final class BackpackNetwork {
     private BackpackNetwork() {
@@ -22,7 +31,7 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("15");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("16");
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(
                 CreativeCursorReportPayload.TYPE,
@@ -100,6 +109,25 @@ public final class BackpackNetwork {
                 BackpackOpenRequestPayload.TYPE,
                 BackpackOpenRequestPayload.STREAM_CODEC,
                 BackpackOpenRequestPayload::handleServer);
+        // 031: the snapshot window (protocol 16).
+        registrar.playToServer(
+                SnapshotListRequestPayload.TYPE, SnapshotListRequestPayload.STREAM_CODEC, SnapshotListRequestPayload::handleServer);
+        registrar.playToServer(
+                SnapshotVersionsRequestPayload.TYPE,
+                SnapshotVersionsRequestPayload.STREAM_CODEC,
+                SnapshotVersionsRequestPayload::handleServer);
+        registrar.playToServer(
+                SnapshotPreviewRequestPayload.TYPE,
+                SnapshotPreviewRequestPayload.STREAM_CODEC,
+                SnapshotPreviewRequestPayload::handleServer);
+        registrar.playToServer(SnapshotActionPayload.TYPE, SnapshotActionPayload.STREAM_CODEC, SnapshotActionPayload::handleServer);
+        registrar.playToClient(SnapshotListPayload.TYPE, SnapshotListPayload.STREAM_CODEC, SnapshotListPayload::handleClient);
+        registrar.playToClient(
+                SnapshotVersionsPayload.TYPE, SnapshotVersionsPayload.STREAM_CODEC, SnapshotVersionsPayload::handleClient);
+        registrar.playToClient(
+                SnapshotPreviewPayload.TYPE, SnapshotPreviewPayload.STREAM_CODEC, SnapshotPreviewPayload::handleClient);
+        registrar.playToClient(SnapshotResultPayload.TYPE, SnapshotResultPayload.STREAM_CODEC, SnapshotResultPayload::handleClient);
+        registrar.playToClient(SnapshotOpenPayload.TYPE, SnapshotOpenPayload.STREAM_CODEC, SnapshotOpenPayload::handleClient);
     }
 
     public static void sendSession(ServerPlayer player, boolean open, BackpackRef ref) {
