@@ -1,5 +1,16 @@
 <!--
 Sync Impact Report
+- Version change: 2.2.0 -> 2.2.1 (PATCH: the rule about development-only runtime dependencies is reworded)
+- Modified principles: none. Additional Constraints, the development-only dependencies bullet: it required them
+  to be "enabled by a Gradle switch" (-PcompatRuntime, -PshaderRuntime, -PnoJei). With one switch per mod set a
+  development world could be opened with different mods each time, so items came and went. The mods are now in the
+  development runs by default and a switch (-PcleanRuntime, -PnoJei) turns them off; they are still `localRuntime`
+  and never reach the published artifact.
+- Added principles: none. Added sections: none. Removed sections: none.
+- Templates reviewed, no change needed: .specify/templates/*, AGENTS.md, CLAUDE.md
+- Follow-up TODOs: none.
+
+Previous report (2.1.1 -> 2.2.0):
 - Version change: 2.1.1 -> 2.2.0 (MINOR: principle VII gains the three-tier support priority and the rule that
   a defect on vanilla is fixed, never restricted away)
 - Modified principles:
@@ -261,8 +272,9 @@ minimum plus an escape hatch for the player, not a promise of adapting to every 
   the jar (spec 009 known limitation 9). Because each re-export of a shipped large
   file grows repository history, the commit message MUST say when one was replaced.
 - Development-only runtime dependencies (JEI, compatibility-test mods, Iris and
-  Sodium) MUST be `localRuntime` and enabled by a Gradle switch (`-PcompatRuntime`,
-  `-PshaderRuntime`, `-PnoJei`). They MUST NOT reach the published artifact.
+  Sodium) MUST be `localRuntime`, present in the development runs by default so
+  every development world sees the same mods, and switchable off by a Gradle switch
+  (`-PcleanRuntime`, `-PnoJei`). They MUST NOT reach the published artifact.
 
 ## Development Workflow
 
@@ -294,4 +306,4 @@ Amendments change this file and bump the version:
 - MINOR: add a principle or a constraint.
 - PATCH: wording that does not change a rule.
 
-**Version**: 2.2.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-08
+**Version**: 2.2.1 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-09

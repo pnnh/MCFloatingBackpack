@@ -300,14 +300,14 @@ python3 design/demo/tools/check_brightness.py
 
 ### 开发期怎么开光影包
 
-默认的 `./gradlew runClient` 不带光影。要看 `_n` 法线贴图在光影包下的效果（010 的 T013）：
+开发运行时（`./gradlew runClient`）现在默认就带着 Iris 和 Sodium（连同精妙背包、旅行者背包、Curios、Accessories、JEI，见 `build.gradle`），不需要单独的光影任务；光影包本身要自己放。要看 `_n` 法线贴图在光影包下的效果（010 的 T013）：
 
 ```bash
 design/demo/tools/fetch_shaderpack.sh      # 一次性：下载 Complementary Reimagined 到 run/shaderpacks/，并写好 run/config/iris.properties
-./gradlew runClientShader                  # 带 Iris 1.8.12 + Sodium 0.6.13 起客户端（也可 -PshaderRuntime）
+./gradlew runClient                        # 默认带 Iris 1.8.12 + Sodium 0.6.13（2026-11-09 起 runClientShader 已合并进来）
 ```
 
-- 机制和 `runClientCompat` 一样，是 `build.gradle` 里按任务名/属性开启的 `localRuntime` 依赖，**只在开发运行时有效，不进发布 jar**。
+- 它们是 `build.gradle` 里的 `localRuntime` 依赖，**只在开发运行时有效，不进发布 jar**；要干净环境（图集度量、帧率对照）用 `-PcleanRuntime`。注意：带着 Sodium 时帧率与原版渲染不可比，帧率对照请用 `-PcleanRuntime`。
 - 版本选择的依据：Modrinth 上 Iris `1.8.12+1.21.1-neoforge`（正式版）声明的必需依赖就是 Sodium `mc1.21.1-0.6.13-neoforge`。
 - **实测（本机 Apple M1 Pro，OpenGL 4.1 Metal）**：Iris 与 Sodium 加载成功，日志 `Using shaderpack: ComplementaryReimagined_r5.9.3.zip`、`Creating pipeline for dimension minecraft:overworld`，没有着色器编译失败；共用图集仍是 **2048×1024**（Sodium/Iris 没有改变图集尺寸）。日志里有一批 `Failed to resolve uniform inPaleGarden` 之类的警告，是这个光影包比 Iris 1.8.12 新、引用了 1.21.1 没有的生物群系变量，与本模组无关。
 - **还没做的**：我无法从命令行看到游戏画面，所以"背包表面有没有法线凹凸"这件事**没有验证**，要你进游戏看（光影包里 PBR 设置要开 Normal/“PBR” 相关选项，Complementary 默认会读 LabPBR 法线）。

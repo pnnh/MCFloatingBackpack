@@ -1,23 +1,41 @@
 package pnnh.mcfloatingbackpack.inventory;
 
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.inventory.worn.BackpackSearch;
+import pnnh.mcfloatingbackpack.inventory.worn.WornBackpacks;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
  * Points at one floating-backpack stack on a player.
- * Resolve order: main hand → off hand → chest → inventory 0–35.
+ * Resolve order (032, one place for it: {@link WornBackpacks}): main hand, off hand, the first backpack worn, inventory 0-35.
+ *
+ * <p>On the wire a reference is (the source's ordinal, {@code invIndex}). For a worn source {@code invIndex} is the slot within it
+ * (0 for the chest); a source added later goes at the end of {@link Source}, so no ordinal ever changes.
  */
 public record BackpackRef(Source source, int invIndex) {
     public enum Source {
-        MAIN_HAND,
-        OFF_HAND,
-        CHEST,
-        INVENTORY
+        MAIN_HAND(false),
+        OFF_HAND(false),
+        /** Worn in the chest slot. */
+        CHEST(true),
+        INVENTORY(false),
+        /** 033: worn in the back slot of Curios. Added at the end, so no ordinal before it changes. */
+        CURIOS(true);
+
+        private final boolean worn;
+
+        Source(boolean worn) {
+            this.worn = worn;
+        }
+
+        /** Whether this is a place a backpack is worn (its stack is found through a worn source, see {@link WornBackpacks}). */
+        public boolean isWorn() {
+            return worn;
+        }
     }
 
     public static BackpackRef mainHand() {
@@ -28,50 +46,48 @@ public record BackpackRef(Source source, int invIndex) {
         if (player == null) {
             return null;
         }
-        if (FloatingBackpackItem.isBackpack(player.getMainHandItem())) {
-            return new BackpackRef(Source.MAIN_HAND, -1);
+        BackpackSearch.Hit hit = WornBackpacks.resolvePlayer(player);
+        if (hit == null) {
+            return null;
         }
-        if (FloatingBackpackItem.isBackpack(player.getOffhandItem())) {
-            return new BackpackRef(Source.OFF_HAND, -1);
-        }
-        if (FloatingBackpackItem.isBackpack(player.getItemBySlot(EquipmentSlot.CHEST))) {
-            return new BackpackRef(Source.CHEST, -1);
-        }
-        for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
-            // Skip armor/offhand ranges that Inventory uses beyond 0–35 main storage on some mappings;
-            // Player inventory items 0–35 are the standard main inventory + hotbar.
-            if (i >= 36) {
-                break;
-            }
-            if (FloatingBackpackItem.isBackpack(player.getInventory().getItem(i))) {
-                return new BackpackRef(Source.INVENTORY, i);
-            }
-        }
-        return null;
+        return switch (hit.kind()) {
+            case MAIN_HAND -> mainHand();
+            case OFF_HAND -> new BackpackRef(Source.OFF_HAND, -1);
+            case WORN -> new BackpackRef(Source.values()[hit.sourceId()], hit.slot());
+            case INVENTORY -> new BackpackRef(Source.INVENTORY, hit.slot());
+        };
     }
 
     public ItemStack getStack(Player player) {
+        if (source.isWorn()) {
+            return WornBackpacks.get(player, source.ordinal(), invIndex);
+        }
         return switch (source) {
             case MAIN_HAND -> player.getMainHandItem();
             case OFF_HAND -> player.getOffhandItem();
-            case CHEST -> player.getItemBySlot(EquipmentSlot.CHEST);
             case INVENTORY -> {
                 if (invIndex < 0 || invIndex >= 36) {
                     yield ItemStack.EMPTY;
                 }
                 yield player.getInventory().getItem(invIndex);
             }
+            default -> ItemStack.EMPTY;
         };
     }
 
     public void setStack(Player player, ItemStack stack) {
-        switch (source) {
-            case MAIN_HAND -> player.setItemInHand(InteractionHand.MAIN_HAND, stack);
-            case OFF_HAND -> player.setItemInHand(InteractionHand.OFF_HAND, stack);
-            case CHEST -> player.setItemSlot(EquipmentSlot.CHEST, stack);
-            case INVENTORY -> {
-                if (invIndex >= 0 && invIndex < 36) {
-                    player.getInventory().setItem(invIndex, stack);
+        if (source.isWorn()) {
+            WornBackpacks.set(player, source.ordinal(), invIndex, stack);
+        } else {
+            switch (source) {
+                case MAIN_HAND -> player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+                case OFF_HAND -> player.setItemInHand(InteractionHand.OFF_HAND, stack);
+                case INVENTORY -> {
+                    if (invIndex >= 0 && invIndex < 36) {
+                        player.getInventory().setItem(invIndex, stack);
+                    }
+                }
+                default -> {
                 }
             }
         }
@@ -92,7 +108,7 @@ public record BackpackRef(Source source, int invIndex) {
             return;
         }
         inventory.saveToItem(stack);
-        // 026: count the revision up and keep the registry's shadow copy current (nothing for an unregistered backpack).
+        // 030: tell the snapshot service the backpack changed (a snapshot of it is written a little later).
         BackpackGate.afterSave(player, stack);
         setStack(player, stack);
     }

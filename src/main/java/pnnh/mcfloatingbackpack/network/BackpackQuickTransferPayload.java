@@ -112,11 +112,14 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
     }
 
     private static Holder holderOf(BackpackRef ref) {
+        // 032: anything worn (the chest, later an accessories mod's back slot) is not in inventory 0-35, so there is no index to protect.
+        if (ref.source().isWorn()) {
+            return Holder.CHEST;
+        }
         return switch (ref.source()) {
             case MAIN_HAND -> Holder.MAIN_HAND;
             case OFF_HAND -> Holder.OFF_HAND;
-            case CHEST -> Holder.CHEST;
-            case INVENTORY -> Holder.INVENTORY;
+            default -> Holder.INVENTORY;
         };
     }
 

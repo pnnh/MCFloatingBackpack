@@ -33,6 +33,14 @@ repositories {
         url = "https://maven.blamejared.com"
     }
     maven {
+        // 033：Curios 的 API jar（只用来编译，见 dependencies 里的 compileOnly）。
+        name = "Curios"
+        url = "https://maven.theillusivec4.top/"
+        content {
+            includeGroup "top.theillusivec4.curios"
+        }
+    }
+    maven {
         name = "CurseMaven"
         url = "https://cursemaven.com"
         content {
@@ -96,15 +104,21 @@ configurations {
     runtimeClasspath.extendsFrom localRuntime
 }
 
-// Dependency resolution happens at configuration time, before any task runs, so "did the user
-// ask for a *Compat task" has to be read from the requested task names here rather than from
-// task execution. This lets `runClientCompat` / `runServerCompat` behave exactly like
-// `runClient` / `runServer -PcompatRuntime` without needing a nested Gradle invocation.
-def compatRequested = findProperty('compatRuntime') != null
-        || gradle.startParameter.taskNames.any { it.toLowerCase().endsWith('compat') }
-// 010: 同理，`runClientShader` / `-PshaderRuntime` 才会把 Iris + Sodium 放进开发运行时，用来查看 _n 法线贴图在光影包下的效果。
-def shaderRequested = findProperty('shaderRuntime') != null
-        || gradle.startParameter.taskNames.any { it.toLowerCase().endsWith('shader') }
+// 开发运行时（runClient / runServer）默认带上所有"别的模组"：精妙背包与旅行者背包（兼容对照）、Curios 与 Accessories（饰品槽，
+// 见 docs/plan/worn-backpack-compat.md）、Sodium 与 Iris（光影，仅客户端）、JEI。所有开发世界因此用同一套模组，
+// 不会因为模组缺失让物品时好时坏。它们都只在开发运行时有效，不进发布 jar。
+//
+// 需要干净一点的环境（共用图集度量、帧率对照，见 design/demo/tools/check_atlas_budget.sh）：
+//   ./gradlew runClient -PcleanRuntime         只留 JEI
+//   ./gradlew runClient -PcleanRuntime -PnoJei 连 JEI 也去掉
+// 要完全独立的全新环境，请用真实的游戏启动器手动建一个。
+def cleanRuntime = findProperty('cleanRuntime') != null
+// Sodium 与 Iris 是客户端模组，放进专用服务器会加载失败；依赖在配置期解析，所以按本次请求的任务名判断（含 server / gametest / data 的任务不带它们）。
+// （MDG 的 additionalRuntimeClasspathConfiguration 试过：那样放进去的 jar 不会被当成模组加载。）
+def serverOrDataRun = gradle.startParameter.taskNames.any {
+    def name = it.toLowerCase()
+    name.contains('server') || name.contains('gametest') || name.contains('data')
+}
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
@@ -117,46 +131,35 @@ dependencies {
     // JEI itself isn't present at runtime, the annotated class is simply never discovered/loaded.
     compileOnly "mezz.jei:jei-1.21.1-common-api:19.70.0.469"
 
-    // Optional popular backpack mods for M4 compatibility testing (dev runtime only).
-    // Enable with: ./gradlew runClientCompat / runServerCompat (or -PcompatRuntime).
-    if (compatRequested) {
+    // 033: compile-time-only Curios API (the -api jar) for compat/curios/. Not bundled and not a runtime dependency: the real Curios
+    // is the localRuntime jar below (dev runs only), and a player's game may or may not have it.
+    compileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"
+
+    if (!cleanRuntime) {
+        // 004：精妙背包与旅行者背包，用来对照面板的行数、滚动与尺寸；CurseMaven 的 file id 要与各自 mod 要求的 core 版本配套。
         localRuntime "curse.maven:sophisticated-core-618298:9385313"
         localRuntime "curse.maven:sophisticated-backpacks-422301:9385446"
         localRuntime "curse.maven:travelers-backpack-321117:9297032"
-    }
 
-    // 010: 开发期光影包支持（仅 dev 运行时，不会进入发布 jar）。Iris 1.8.12 声明依赖的正是 Sodium 0.6.13。
-    // 启用：./gradlew runClientShader（或 -PshaderRuntime）；光影包放在 run/shaderpacks/，见 design/demo/tools/fetch_shaderpack.sh。
-    if (shaderRequested) {
-        localRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
-        localRuntime "maven.modrinth:iris:1.8.12+1.21.1-neoforge"
+        // 规划 docs/plan/worn-backpack-compat.md：Curios（官方 9.x）与 Accessories（必需 owo-lib），看后背槽的行为。
+        localRuntime "maven.modrinth:curios:9.5.1+1.21.1"
+        localRuntime "maven.modrinth:accessories:1.1.0-beta.54+1.21.1"
+        localRuntime "maven.modrinth:owo-lib:0.12.15.6-beta.1+1.21"
+
+        // 010：光影（Iris 1.8.12 声明依赖的正是 Sodium 0.6.13）；光影包放在 run/shaderpacks/，见 design/demo/tools/fetch_shaderpack.sh。
+        if (!serverOrDataRun) {
+            localRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
+            localRuntime "maven.modrinth:iris:1.8.12+1.21.1-neoforge"
+        }
     }
 
     // JEI for creative/debug item browsing in runClient only (not a published dependency).
     // Disable with: ./gradlew runClient -PnoJei
-    // Must stay >= 19.32.0.359: that's the minimum sophisticated-core (M4 compatRuntime, above)
-    // declares support for; older JEI makes runClientCompat/runServerCompat fail to load mods.
+    // Must stay >= 19.32.0.359: that's the minimum sophisticated-core (above)
+    // declares support for; older JEI makes the dev run fail to load mods.
     if (findProperty('noJei') == null) {
         localRuntime "mezz.jei:jei-1.21.1-neoforge:19.70.0.469"
     }
-}
-
-tasks.register('runClientCompat') {
-    group = 'run'
-    description = "Runs the client with Sophisticated Backpacks + Traveler's Backpack loaded, for M4 compat testing."
-    dependsOn tasks.named('runClient')
-}
-
-tasks.register('runClientShader') {
-    group = 'run'
-    description = "Runs the client with Iris + Sodium loaded, for checking LabPBR normal maps under a shader pack."
-    dependsOn tasks.named('runClient')
-}
-
-tasks.register('runServerCompat') {
-    group = 'run'
-    description = "Runs the dedicated server with Sophisticated Backpacks + Traveler's Backpack loaded, for M4 compat testing."
-    dependsOn tasks.named('runServer')
 }
 
 tasks.named("test") {

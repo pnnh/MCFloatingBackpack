@@ -7,7 +7,7 @@
 #   design/demo/tools/fetch_shaderpack.sh                 # 默认
 #   PROJECT=bsl-shaders design/demo/tools/fetch_shaderpack.sh
 #
-# 之后：./gradlew runClientShader，游戏里 选项 → 视频设置 → 光影包 选择它。
+# 之后：./gradlew runClient（开发运行时已默认带 Iris + Sodium），游戏里 选项 → 视频设置 → 光影包 选择它。
 
 set -eu
 PROJECT="${PROJECT:-complementary-reimagined}"

@@ -11,14 +11,14 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
+import pnnh.mcfloatingbackpack.inventory.worn.WornBackpacks;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
- * Backpack worn on a player's back when equipped in the chest slot.
+ * Backpack worn on a player's back (032: the first one {@link WornBackpacks#first} finds: the chest slot now, an accessories mod's back slot later).
  *
  * <p>Renders the item's own baked model (the same one the GUI icon and held-in-hand views use)
  * via {@link ItemRenderer#renderStatic}, instead of approximating its shape with hand-drawn boxes
@@ -50,10 +50,13 @@ public class BackpackBackLayer
             float ageInTicks,
             float netHeadYaw,
             float headPitch) {
-        ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
-        if (!(chest.getItem() instanceof FloatingBackpackItem)) {
+        // 032: the first backpack the player wears (the chest slot, and later an accessories mod's back slot): the same rule that picks
+        // the one the panel key opens. Only one is ever drawn, and none when the player has switched drawing off for its slot.
+        WornBackpacks.Found worn = WornBackpacks.first(player);
+        if (worn == null || worn.hidden() || !(worn.stack().getItem() instanceof FloatingBackpackItem)) {
             return;
         }
+        ItemStack chest = worn.stack();
         poseStack.pushPose();
         getParentModel().body.translateAndRotate(poseStack);
         // Body local +Z points out of the chest. 180° X keeps the mesh upright and puts the

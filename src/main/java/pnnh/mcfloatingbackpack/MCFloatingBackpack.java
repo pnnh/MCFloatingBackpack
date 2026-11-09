@@ -8,6 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.loading.FMLEnvironment;
@@ -22,6 +23,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import pnnh.mcfloatingbackpack.client.ClientSetup;
 import pnnh.mcfloatingbackpack.compat.CompatConfig;
+import pnnh.mcfloatingbackpack.compat.curios.CuriosCompat;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorBridge;
 import pnnh.mcfloatingbackpack.inventory.pickup.AutoPickupEvents;
@@ -46,6 +48,10 @@ public class MCFloatingBackpack {
         ModItems.register(modEventBus);
         ModRecipes.register(modEventBus);
         BackpackNetwork.register(modEventBus);
+        // 033: a backpack can be worn in Curios' back slot, but only when Curios is there; nothing of it loads otherwise.
+        if (ModList.get().isLoaded("curios")) {
+            CuriosCompat.register();
+        }
         // 024: the auto pickup. Low priority, so Sophisticated Backpacks and Traveler's Backpack (normal) have run first.
         NeoForge.EVENT_BUS.addListener(
                 EventPriority.LOW, (ItemEntityPickupEvent.Pre event) -> AutoPickupEvents.onItemPickup(event));

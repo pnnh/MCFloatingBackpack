@@ -11,11 +11,16 @@
 #
 # 退出码：0 通过；1 超预算；2 没有测到（启动失败或超时）。
 #
-# 注意：图集尺寸由所有进入图集的精灵共同决定，要在"干净客户端"（原版 + 本模组，没有其它模组与资源包）
+# 注意：图集尺寸由所有进入图集的精灵共同决定，要在"干净客户端"（原版 + 本模组 + JEI，没有其它模组与资源包）
 # 下度量才有可比性。图集尺寸是实测值，显存是按尺寸推算的（W×H×4 字节 × 1.332，5 级 mipmap，1MB=10^6 字节，与 research.md 同口径），
 # 不是 GPU 直接读数。
 
 set -u
+# 开发运行时默认带着所有别的模组（精妙背包、Curios、Accessories、Sodium/Iris……），它们会改变共用图集；度量要在"干净客户端"
+# 下才有可比性，所以默认加 -PcleanRuntime（只留 JEI）。想看带全部模组时的数字：FULL_MODS=1 design/demo/tools/check_atlas_budget.sh
+if [ "${FULL_MODS:-0}" != "1" ]; then
+  export ORG_GRADLE_PROJECT_cleanRuntime=1
+fi
 BUDGET="${BUDGET:-2048}"
 WAIT_SECONDS="${WAIT_SECONDS:-60}"
 REPO="$(cd "$(dirname "$0")/../../.." && pwd)"

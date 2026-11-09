@@ -7,6 +7,7 @@
 | [005-gameplay-item-tiers.md](./005-gameplay-item-tiers.md) | 远期游戏性演进参考（分级、侧栏、升级、Curios 等）；**不代表全部会实现** |
 | [perf-gui-model-cost.md](./perf-gui-model-cost.md) | 待办：背包高面数模型在 GUI（快捷栏）里把帧率从约 101 压到约 22 fps；已定位未修复 |
 | [backup-admin-roadmap.md](./backup-admin-roadmap.md) | 备份与管理员命令的规划结论：去掉登记表，改为世界之外的单个背包快照（030）；管理员特殊功能不做 |
+| [worn-backpack-compat.md](./worn-backpack-compat.md) | 规划：背包可放进 Curios / Accessories 的后背槽；查找顺序 胸甲 → Curios → Accessories，按 B 与渲染共用；不拦截、不数数；拆成 032～034，先做验证步骤 |
 
 ## 与现有文档关系
 
