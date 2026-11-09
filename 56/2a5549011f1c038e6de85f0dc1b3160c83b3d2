@@ -1,0 +1,95 @@
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 2-5,7,9
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack_icon.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-6
+docs/plan/perf-gui-model-cost.md
+  s_9aefe4a2760245::t_d7b8c252d22382 4
+  s_9aefe4a2760245::t_138ca5707b70b4 3,5
+specs/028-gui-flat-icons/DELIVERY.md
+  s_9aefe4a2760245::t_d7b8c252d22382 1-4,6-11,13-18,20,22-30,33-34,36-43,45-46
+  s_9aefe4a2760245::t_f3d376cf0df733 5,12,19,21,31-32,35,44,47
+.specify/feature.json
+  s_9aefe4a2760245::t_af7d5fabf31eed 2
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack_icon.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-6
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack_3d.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-45
+specs/028-gui-flat-icons/spec.md
+  s_9aefe4a2760245::t_138ca5707b70b4 9,24,40,50,89,98,127-128,135,141,159
+  s_9aefe4a2760245::t_af7d5fabf31eed 1-8,10-23,25-39,41-49,51-88,90-97,99-126,129-134,136-140,142-158,160-164
+specs/028-gui-flat-icons/tasks.md
+  s_9aefe4a2760245::t_28d28062eef85b 1-19,21-25,27-31,33,40-50,54-75
+  s_9aefe4a2760245::t_d7b8c252d22382 20,34-37,52-53
+  s_9aefe4a2760245::t_f3d376cf0df733 38
+  s_9aefe4a2760245::t_138ca5707b70b4 26,32,39,51
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_138ca5707b70b4 128
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack_3d.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-45
+specs/027-creative-inventory-compat/tasks.md
+  h_6465a203f88bd5 68-69,78,87,89,91,144
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack_3d.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-45
+specs/028-gui-flat-icons/research.md
+  s_9aefe4a2760245::t_138ca5707b70b4 18,20,52
+  s_9aefe4a2760245::t_28d28062eef85b 1-17,19,21-51,53
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack_3d.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-45
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack_icon.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-6
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 2-5,7,9
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_d7b8c252d22382 106-109,112-114,252-253
+  s_9aefe4a2760245::t_f3d376cf0df733 110
+  s_9aefe4a2760245::t_138ca5707b70b4 111
+specs/009-sculpted-mesh-backpack-models/spec.md
+  s_9aefe4a2760245::t_d7b8c252d22382 170
+  s_9aefe4a2760245::t_138ca5707b70b4 171
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 2-5,7,9
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackIconResourcesTest.java
+  s_9aefe4a2760245::t_138ca5707b70b4 21,37,46,48
+  s_9aefe4a2760245::t_922740106e8616 1-20,22-36,38-45,47,49-110
+specs/028-gui-flat-icons/checklists/requirements.md
+  s_9aefe4a2760245::t_af7d5fabf31eed 1-38
+specs/028-gui-flat-icons/quickstart.md
+  s_9aefe4a2760245::t_138ca5707b70b4 30
+  s_9aefe4a2760245::t_28d28062eef85b 1-29,31-37
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 2-5,7,9
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack_icon.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-6
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack_3d.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-45
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack_icon.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 1-6
+design/demo/tools/render_backpack_icons.py
+  s_9aefe4a2760245::t_ad38057cd730b6 1-202
+specs/028-gui-flat-icons/plan.md
+  s_9aefe4a2760245::t_138ca5707b70b4 7,9,41
+  s_9aefe4a2760245::t_28d28062eef85b 1-6,8,10-40,42-62
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack.json
+  s_9aefe4a2760245::t_06e1b9a1305e42 2-5,7,9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "562a5549011f1c038e6de85f0dc1b3160c83b3d2",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
