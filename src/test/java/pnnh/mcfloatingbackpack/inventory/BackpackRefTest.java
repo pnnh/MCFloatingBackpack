@@ -67,6 +67,14 @@ class BackpackRefTest {
         // 033: the sources already in use keep their numbers; Curios comes after them
         assertEquals(4, BackpackRef.Source.CURIOS.ordinal());
         assertEquals(true, BackpackRef.Source.CURIOS.isWorn());
-        assertEquals(5, BackpackRef.Source.values().length);
+        assertEquals(6, BackpackRef.Source.values().length);
+    }
+
+    @Test
+    void accessoriesIsAWornSourceAddedAfterCurios() {
+        // 034: Curios keeps its number; Accessories comes after it
+        assertEquals(4, BackpackRef.Source.CURIOS.ordinal());
+        assertEquals(5, BackpackRef.Source.ACCESSORIES.ordinal());
+        assertEquals(true, BackpackRef.Source.ACCESSORIES.isWorn());
     }
 }

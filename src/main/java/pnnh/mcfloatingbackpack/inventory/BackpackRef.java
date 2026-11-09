@@ -24,7 +24,9 @@ public record BackpackRef(Source source, int invIndex) {
         CHEST(true),
         INVENTORY(false),
         /** 033: worn in the back slot of Curios. Added at the end, so no ordinal before it changes. */
-        CURIOS(true);
+        CURIOS(true),
+        /** 034: worn in the back slot of Accessories. Added at the end, so no ordinal before it changes. */
+        ACCESSORIES(true);
 
         private final boolean worn;
 

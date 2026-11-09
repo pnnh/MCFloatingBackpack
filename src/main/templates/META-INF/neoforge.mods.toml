@@ -59,6 +59,15 @@ and other container GUIs so items can be moved between them.
     ordering="NONE"
     side="BOTH"
 
+# 034: Accessories (Wisp Forest, a beta for 1.21.1): the floating backpack can be worn in its back slot. Never required; the compat code in
+# compat/accessories/ is only used when Accessories is loaded.
+[[dependencies.${mod_id}]]
+    modId="accessories"
+    type="optional"
+    versionRange="[1,)"
+    ordering="NONE"
+    side="BOTH"
+
 # Discovery-only: never required. Dev runClient may include JEI via localRuntime.
 [[dependencies.${mod_id}]]
     modId="jei"

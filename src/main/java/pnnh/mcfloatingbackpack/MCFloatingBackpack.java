@@ -23,6 +23,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import pnnh.mcfloatingbackpack.client.ClientSetup;
 import pnnh.mcfloatingbackpack.compat.CompatConfig;
+import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesCompat;
 import pnnh.mcfloatingbackpack.compat.curios.CuriosCompat;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorBridge;
@@ -51,6 +52,10 @@ public class MCFloatingBackpack {
         // 033: a backpack can be worn in Curios' back slot, but only when Curios is there; nothing of it loads otherwise.
         if (ModList.get().isLoaded("curios")) {
             CuriosCompat.register();
+        }
+        // 034: and in Accessories' back slot, after Curios' (the client also registers its renderers, in ClientSetup).
+        if (ModList.get().isLoaded("accessories")) {
+            AccessoriesCompat.register();
         }
         // 024: the auto pickup. Low priority, so Sophisticated Backpacks and Traveler's Backpack (normal) have run first.
         NeoForge.EVENT_BUS.addListener(

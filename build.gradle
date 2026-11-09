@@ -41,6 +41,14 @@ repositories {
         }
     }
     maven {
+        // 034：Accessories 的 API（只用来编译，见 dependencies 里的 compileOnly）。
+        name = "WispForest"
+        url = "https://maven.wispforest.io/releases"
+        content {
+            includeGroup "io.wispforest"
+        }
+    }
+    maven {
         name = "CurseMaven"
         url = "https://cursemaven.com"
         content {
@@ -134,6 +142,12 @@ dependencies {
     // 033: compile-time-only Curios API (the -api jar) for compat/curios/. Not bundled and not a runtime dependency: the real Curios
     // is the localRuntime jar below (dev runs only), and a player's game may or may not have it.
     compileOnly "top.theillusivec4.curios:curios-neoforge:9.5.1+1.21.1:api"
+
+    // 034: compile-time-only Accessories (a beta) for compat/accessories/. transitive = false: its POM would pull owo-lib, forgified
+    // fabric-api and the endec libraries, which this mod does not compile against (the dev runs have the real ones as localRuntime below).
+    compileOnly("io.wispforest:accessories-neoforge:1.1.0-beta.54+1.21.1") {
+        transitive = false
+    }
 
     if (!cleanRuntime) {
         // 004：精妙背包与旅行者背包，用来对照面板的行数、滚动与尺寸；CurseMaven 的 file id 要与各自 mod 要求的 core 版本配套。

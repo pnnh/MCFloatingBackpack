@@ -77,7 +77,7 @@
 |---|---|
 | 032 worn-backpack | **已实现**（2026-11-09，待游戏内验证）：`BackpackSearch`/`WornSource`/`WornBackpacks`，`BackpackRef.resolve` 与渲染改用它；先只接胸甲槽，行为不变 |
 | 033 curios-back | **已实现**（2026-11-09，待游戏内验证）：`curios:back` 标签、无条件的玩家后背槽分配、`compat/curios/` 的来源（读写、隐藏渲染、`modLevels`）；Curios 一侧不需要渲染抑制 |
-| 034 accessories-back | Accessories `back` 槽：同上，加上 owo-lib 依赖与 `registerNoRenderer` |
+| 034 accessories-back | **已实现**（2026-11-09，待游戏内验证）：`accessories:back` 标签、`compat/accessories/` 的来源（读写、隐藏渲染、`modLevels`）与**自己写的空渲染器**（不用 `registerNoRenderer`，避开 `forceNullRenderReplacement`）；三个来源全部完成 |
 
 ## 验证步骤的结果（2026-11-09）
 

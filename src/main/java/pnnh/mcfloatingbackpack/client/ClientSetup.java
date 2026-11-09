@@ -4,10 +4,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesClientCompat;
 import pnnh.mcfloatingbackpack.compat.ConfigFileWatch;
 import pnnh.mcfloatingbackpack.client.render.BackpackRenderEvents;
 
@@ -22,6 +25,13 @@ public final class ClientSetup {
     public static void register(IEventBus modEventBus, ModContainer modContainer) {
         MCFloatingBackpack.LOGGER.info("MCFloatingBackpack client setup");
         modEventBus.addListener(FloatingBackpackKeys::registerKeys);
+        // 034: Accessories draws a default look for an item it has no renderer for; ours draws nothing (the backpack is drawn by our own
+        // layer). Accessories keeps the registered renderers until its first resource reload, so they are registered here, in the setup.
+        modEventBus.addListener((FMLClientSetupEvent event) -> event.enqueueWork(() -> {
+            if (ModList.get().isLoaded("accessories")) {
+                AccessoriesClientCompat.registerRenderers();
+            }
+        }));
         BackpackRenderEvents.register(modEventBus);
         FloatingPanelEvents.init();
         // 020: tell the player in chat when NeoForge had to set a broken config file aside.

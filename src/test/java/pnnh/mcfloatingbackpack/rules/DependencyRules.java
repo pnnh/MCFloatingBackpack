@@ -31,7 +31,7 @@ final class DependencyRules {
     private static final Pattern IMPORT = Pattern.compile("^\\s*import\\s+(?:static\\s+)?([A-Za-z0-9_.]+)");
     private static final Pattern DEPENDENCY_DECLARATION =
             Pattern.compile("^\\s*(\\w+)\\s+[\"']([^\"':]+):([^\"':]+):([^\"']+)[\"']");
-    private static final Set<String> THIRD_PARTY_GROUPS = Set.of("curse.maven", "maven.modrinth", "mezz.jei", "top.theillusivec4.curios");
+    private static final Set<String> THIRD_PARTY_GROUPS = Set.of("curse.maven", "maven.modrinth", "mezz.jei", "top.theillusivec4.curios", "io.wispforest");
     private static final Set<String> ALLOWED_CONFIGURATIONS = Set.of("compileOnly", "localRuntime");
 
     private DependencyRules() {

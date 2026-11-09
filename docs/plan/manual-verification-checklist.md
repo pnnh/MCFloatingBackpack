@@ -158,6 +158,15 @@ E（选区）、F（工具区与合法尺寸）、G（标签管理器）、H（�
 - [x] **033-C**（US4）`modLevels` 里 `curios=GENERIC`：槽里的背包不画、按 B 不打开、仍能放进槽位，改回 FULL 立刻恢复；**没装 Curios**（`-PcleanRuntime`）：日志无任何与 Curios 有关的错误（D）。自动检查已在 2026-11-09 做过：干净环境启动无错误。
 - [x] **033-D**（Polish）图集度量已于 2026-11-09 跑过：2048×1024，通过（干净环境，以及带全部模组都是 2048×1024）。
 
+### 034 Accessories 后背槽兼容（T012～T014）
+
+对应 `specs/034-accessories-back/quickstart.md`。`./gradlew runClient` 默认带 Accessories（和 owo-lib）。
+
+- [x] **034-A**（US1、US2）Accessories 界面有"后背"槽；背包放得进去、背上画出**且只有我们的模型（没有飘着的默认外观）**、按 B 打开、面板各功能照常、保存重进内容不丢；取出后立刻不背着；顺序 胸甲 → Curios → Accessories，手里最优先；（可选）打开 `forceNullRenderReplacement` 后背上仍只有我们的模型（A、B）。
+- [x] **034-B**（US3）隐藏渲染：在 Accessories 界面把后背槽设为不渲染，背上不画、按 B 仍打开；打开后立刻画出（C）。
+- [x] **034-C**（US4）`modLevels` 里 `accessories=GENERIC`：槽里的背包不算背着、按 B 不打开、仍能放进槽位，此时背包在 Accessories 里按默认外观显示，改回 FULL 立刻恢复；**没装 Accessories**（`-PcleanRuntime`）：日志无任何与 Accessories 有关的错误（D）。自动检查已在 2026-11-09 做过：干净环境启动无错误。
+- [x] **034-D**（Polish）图集度量已于 2026-11-09 跑过：2048×1024，通过。
+
 ### I. 垃圾桶本体（021 T045）
 
 T020、T028 已勾选，Q36～Q48 除下面几项外都已验证；006-JEI 也已确认（023-10/11/12 同时覆盖）。还剩：
@@ -301,6 +310,7 @@ JEI 三档（T014）：
 | 031-* | `specs/031-snapshot-gui/DELIVERY.md` | T028～T031 |
 | 032-* | `specs/032-worn-backpack/DELIVERY.md` | T011 |
 | 033-* | `specs/033-curios-back/DELIVERY.md` | T011～T013 |
+| 034-* | `specs/034-accessories-back/DELIVERY.md` | T012～T014 |
 | 盲测、文档走查 | 006、009、010 的 DELIVERY.md | 006 T027（D3/D4 已过，只差盲测）、009 T020、010 T012、T022 |
 
 全部做完后，009 的 T025（汇总，等盲测）、010 的 T026（收尾，等 T012/T022）才能完成。发现的缺陷按"已知限制"登记。
