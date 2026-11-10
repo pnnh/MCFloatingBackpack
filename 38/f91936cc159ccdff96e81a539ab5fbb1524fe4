@@ -1,0 +1,111 @@
+docs/plan/release-process.md
+  s_9aefe4a2760245::t_52099d3e5c0623 42,51-52
+  s_9aefe4a2760245::t_b8a3c34455fefa 1-35
+  s_9aefe4a2760245::t_56868a20c33482 36-41,43-50,53-57
+.specify/feature.json
+  s_9aefe4a2760245::t_71d0e6b8c1d844 2
+specs/039-version-check/data-model.md
+  s_9aefe4a2760245::t_8f02be362a4c28 1-41
+src/main/java/pnnh/mcfloatingbackpack/version/PlayerVersions.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 1-48
+.github/workflows/release.yml
+  s_9aefe4a2760245::t_a7aa92cf63d525 1-173
+src/main/java/pnnh/mcfloatingbackpack/version/VersionNotices.java
+  s_9aefe4a2760245::t_69f8d6b9837740 1-37
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_52099d3e5c0623 213-227
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_52099d3e5c0623 128
+specs/039-version-check/plan.md
+  s_9aefe4a2760245::t_0f335d78be8bbd 2,4-6,8,17,19,21,23,25,27,29,31,33,35-37,47,49,53-57,68-72,93-94,96-98
+  s_9aefe4a2760245::t_bcc9a8ec6d4461 1,3,7,9-16,18,20,22,24,26,28,30,32,34,38-46,48,50-52,58-67,73-92,95,99
+specs/039-version-check/contracts/texts.md
+  s_9aefe4a2760245::t_8f02be362a4c28 1-33
+src/main/java/pnnh/mcfloatingbackpack/version/ModVersions.java
+  s_9aefe4a2760245::t_69f8d6b9837740 1-159
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 35-36,92-97,100
+src/main/java/pnnh/mcfloatingbackpack/version/VersionNetwork.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 1-91
+src/main/java/pnnh/mcfloatingbackpack/network/VersionHelloPayload.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 1-40
+src/main/java/pnnh/mcfloatingbackpack/client/VersionClient.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 1-67
+gradle.properties
+  s_9aefe4a2760245::t_fc5ad20d23d4b8 27
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 40-47
+specs/039-version-check/spec.md
+  s_9aefe4a2760245::t_1cb0973fd17c58 1-213
+.github/release-notes/_footer.md
+  s_9aefe4a2760245::t_52099d3e5c0623 7-8
+  s_9aefe4a2760245::t_fc5ad20d23d4b8 1-6,9-21
+specs/039-version-check/DELIVERY.md
+  s_9aefe4a2760245::t_52099d3e5c0623 1-45
+specs/039-version-check/checklists/requirements.md
+  s_9aefe4a2760245::t_c40c3edaed3cb5 1-35
+src/test/java/pnnh/mcfloatingbackpack/resources/VersionCheckResourcesTest.java
+  s_9aefe4a2760245::t_799cae3b0f7d8c 1-140
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_fe4630fc488390 82-84
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/RowLayout.java
+  s_9aefe4a2760245::t_69f8d6b9837740 78-86,88
+build.gradle
+  s_9aefe4a2760245::t_7aebad5f4ca733 79-85
+specs/039-version-check/tasks.md
+  s_9aefe4a2760245::t_74584d1f095e2d 1-17,19-23,29-37,40-44,56-60,66-90
+  s_9aefe4a2760245::t_52099d3e5c0623 18,24-28,38-39,45-55,61-65
+README_CN.md
+  s_9aefe4a2760245::t_b8a3c34455fefa 1-47,49-92
+  s_9aefe4a2760245::t_52099d3e5c0623 48
+src/main/java/pnnh/mcfloatingbackpack/network/VersionReportPayload.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 1-43
+specs/039-version-check/quickstart.md
+  s_9aefe4a2760245::t_8f02be362a4c28 1-36
+src/main/java/pnnh/mcfloatingbackpack/diag/BackpackWatchService.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 110,115-116
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_fe4630fc488390 82-84
+README.md
+  s_9aefe4a2760245::t_b8a3c34455fefa 1,3-6,8,10,12-14,17,19-47,49-58,60-63,65-67,70,73-74,76-79,81-84,86,88,90,92
+  s_9aefe4a2760245::t_8ea661c8cc1a58 2,7,9,11,15-16,18,59,64,68-69,71-72,75,80,85,87,89,91
+  s_9aefe4a2760245::t_52099d3e5c0623 48
+specs/039-version-check/research.md
+  s_9aefe4a2760245::t_8f02be362a4c28 1-75
+.github/release-notes/v0.1.0.md
+  s_9aefe4a2760245::t_fc5ad20d23d4b8 1-31
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/RowLayoutTest.java
+  s_9aefe4a2760245::t_69f8d6b9837740 139-160,162
+src/test/java/pnnh/mcfloatingbackpack/version/ModVersionsTest.java
+  s_9aefe4a2760245::t_fe4630fc488390 1-131
+src/test/java/pnnh/mcfloatingbackpack/version/VersionNoticesTest.java
+  s_9aefe4a2760245::t_fe4630fc488390 1-43
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientPlacement.java
+  s_9aefe4a2760245::t_1271d4c32193e6 16,27-28,44-45
+  s_9aefe4a2760245::t_7aefd36fc85450 46-47
+specs/039-version-check/contracts/handshake.md
+  s_9aefe4a2760245::t_8f02be362a4c28 1-35
+src/main/java/pnnh/mcfloatingbackpack/version/VersionDebug.java
+  s_9aefe4a2760245::t_7aebad5f4ca733 1-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "38f91936cc159ccdff96e81a539ab5fbb1524fe4",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
