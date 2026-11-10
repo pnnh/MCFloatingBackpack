@@ -1,0 +1,140 @@
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ItemCategoryMatcher.java
+  s_9aefe4a2760245::t_654ddeee679500 46-49
+specs/038-universal-extension/checklists/requirements.md
+  s_9aefe4a2760245::t_e978fead7c83ec 1-33,37
+  s_9aefe4a2760245::t_b98a4aadba8c47 34-36
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-6
+docs/plan/category-extensions.md
+  s_9aefe4a2760245::t_e978fead7c83ec 139-140,148
+  s_9aefe4a2760245::t_a52c1ae3622913 147
+  s_9aefe4a2760245::t_b98a4aadba8c47 141-146
+src/main/resources/data/mcfloatingbackpack/recipe/diamond_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-27
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/iron_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-24
+src/main/resources/data/mcfloatingbackpack/recipe/netherite_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-30
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_9aefe4a2760245::t_0dbc394ab9a705 54-56,73-75,91-100
+  s_9aefe4a2760245::t_8fef976fdade61 101-102
+specs/038-universal-extension/data-model.md
+  s_9aefe4a2760245::t_d185b051e8e1ca 1-63
+specs/038-universal-extension/DELIVERY.md
+  s_9aefe4a2760245::t_d67811d0122a46 23,51
+  s_9aefe4a2760245::t_a52c1ae3622913 1-22,24-50
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 82-94
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_a52c1ae3622913 203-212
+specs/038-universal-extension/tasks.md
+  s_9aefe4a2760245::t_a52c1ae3622913 18,24-29,37-44,52-57,63-65,69-72,81-82
+  s_9aefe4a2760245::t_c8d0d9e17e6657 1-17,19-23,30-36,45-51,58-62,66-68,73-80,83-100
+specs/038-universal-extension/contracts/items.md
+  s_9aefe4a2760245::t_d185b051e8e1ca 1-69,73-74
+  s_9aefe4a2760245::t_d67811d0122a46 71-72
+  s_9aefe4a2760245::t_c07bc6d810428f 70
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/CategoryNamesTest.java
+  s_9aefe4a2760245::t_5b4913971e227d 1-27
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRules.java
+  s_9aefe4a2760245::t_9bb51f08f61156 52-57,68,70-71,73,75,84-85
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionPackRules.java
+  s_9aefe4a2760245::t_654ddeee679500 14-15,31-34
+  s_9aefe4a2760245::t_ed1f1e4d5ef764 35-36
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/RowReconciler.java
+  s_9aefe4a2760245::t_9bb51f08f61156 78
+design/demo/tools/make_universal_extension_icons.py
+  s_9aefe4a2760245::t_1d994517ed1428 1-99
+src/main/resources/data/mcfloatingbackpack/recipe/leather_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-30
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_9aefe4a2760245::t_0dbc394ab9a705 112-114
+  s_9aefe4a2760245::t_654ddeee679500 10,15,122,171-175,177,180-184,187,191-204
+specs/038-universal-extension/research.md
+  s_9aefe4a2760245::t_d124efade5cac9 1-82
+src/main/java/pnnh/mcfloatingbackpack/item/CategoryExtensionItem.java
+  s_9aefe4a2760245::t_0dbc394ab9a705 18,21
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_9015d88ffa9241 377-380,382-383,390-398
+  s_9aefe4a2760245::t_221720624694ef 32-33,232,416-421
+  s_9aefe4a2760245::t_2b70c72df116e0 399-400
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionCategories.java
+  s_9aefe4a2760245::t_9bb51f08f61156 16-23,25,41,44,46-47
+  s_9aefe4a2760245::t_5b4913971e227d 24
+specs/038-universal-extension/quickstart.md
+  s_9aefe4a2760245::t_c07bc6d810428f 1-62
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRulesTest.java
+  s_9aefe4a2760245::t_5b4913971e227d 85-87,90,110-171
+  s_9aefe4a2760245::t_e33a7196215461 172
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/PlacedPacksTest.java
+  s_9aefe4a2760245::t_5b4913971e227d 1-121
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-6
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 82-94
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_a52c1ae3622913 128
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/RowReconcilerTest.java
+  s_9aefe4a2760245::t_d3beac0e0bb807 225-286,288
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionPacks.java
+  s_9aefe4a2760245::t_654ddeee679500 20-21,31-51
+  s_9aefe4a2760245::t_52c03b89473b66 52
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-6
+src/test/java/pnnh/mcfloatingbackpack/client/panel/CategoryStyleTest.java
+  s_9aefe4a2760245::t_221720624694ef 58-68,75,77
+  s_9aefe4a2760245::t_9015d88ffa9241 69-74
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-6
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/CategoryNames.java
+  s_9aefe4a2760245::t_9bb51f08f61156 1-19
+src/main/java/pnnh/mcfloatingbackpack/item/UniversalExtensionItem.java
+  s_9aefe4a2760245::t_0dbc394ab9a705 1-44
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionCategoriesTest.java
+  s_9aefe4a2760245::t_5b4913971e227d 1-37
+specs/038-universal-extension/contracts/rules.md
+  s_9aefe4a2760245::t_d185b051e8e1ca 1-35
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_0dbc394ab9a705 34,66-68
+src/test/java/pnnh/mcfloatingbackpack/resources/UniversalExtensionResourcesTest.java
+  s_9aefe4a2760245::t_17b587a67c2c99 1-227
+src/main/java/pnnh/mcfloatingbackpack/client/panel/CategoryStyle.java
+  s_9aefe4a2760245::t_9015d88ffa9241 16-17,48,53-54
+  s_9aefe4a2760245::t_221720624694ef 5-6,20-32,51-52,55,57
+specs/038-universal-extension/spec.md
+  s_9aefe4a2760245::t_4d6c28af5b7867 9,17-23,25-40,43,45,50-57,61-63,65-68,72,74,78,82-87,91,93,97,101-102,105-107,111,113,115,117,121-130,159,168-169,175,177,179,181,185-191,198,200-204,212-215,217,221-226,231,233,239,243,245,252-256,258-259,263-268,270
+  s_9aefe4a2760245::t_72d2704bbe7aa7 1-8,10-16,24,41-42,44,46-49,58-60,64,69-71,73,75-77,79-81,88-90,92,94-96,98-100,103-104,108-110,112,114,116,118-120,131-158,160-167,170-174,176,178,180,182-184,192-197,199,205-211,216,218-220,227-230,232,234-238,240-242,244,246-251,257,260-262,269
+src/main/resources/data/mcfloatingbackpack/recipe/gold_general_extension.json
+  s_9aefe4a2760245::t_4c4e29563b55d5 1-27
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/PlacedPacks.java
+  s_9aefe4a2760245::t_9bb51f08f61156 1-73
+specs/038-universal-extension/plan.md
+  s_9aefe4a2760245::t_d124efade5cac9 38
+  s_9aefe4a2760245::t_e7d5a91dc30d46 1,3,5,7,9-16,18,22,24,26,28,30,32,34,36,42-50,52,54-56,62-71,77-100,103,107
+  s_9aefe4a2760245::t_2c0eb7e907c931 2,4,6,8,17,19-21,23,25,27,29,31,33,35,37,39-41,51,53,57-61,72-76,101-102,104-106
+.specify/feature.json
+  s_9aefe4a2760245::t_2fe7f63414f515 2
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "23d478a9de2f8c8a4b7dc82525971dfe68f7b00d",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
