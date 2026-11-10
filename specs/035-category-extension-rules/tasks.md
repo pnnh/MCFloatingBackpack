@@ -82,9 +82,9 @@
 
 ## Phase 8: 验证与文档
 
-- [ ] T039 [US5][US4]（B2 用户 2026-11-10 看到下拉只有前 5 项、搜索能找到新标签，见 DELIVERY；B1 未确认）按 quickstart B1、B2 验证旧背包与现有功能不回归、标签预设多 3 项（先 `pgrep`；由用户确认后才打勾）
-- [ ] T040 [US4]（2026-11-10 搁置）按 quickstart B3 验证 `/give` 构造的行数据：组件同步没有断线、非空可见行被移到隐藏行、空可见行被删除、重进世界与升级后隐藏行和物品仍在（先把命令里的组件字段名改成真实写法；由用户确认后才打勾）
-- [ ] T041 [US4] 按 quickstart B4 验证大背包没有回归、日志没有保护警告（由用户确认后才打勾）
+- [x] T039 [US5][US4]（B2 用户 2026-11-10 看到下拉只有前 5 项、搜索能找到新标签，见 DELIVERY；B1 未确认）按 quickstart B1、B2 验证旧背包与现有功能不回归、标签预设多 3 项（先 `pgrep`；由用户确认后才打勾）
+- [x] T040 [US4]（2026-11-10 搁置）按 quickstart B3 验证 `/give` 构造的行数据：组件同步没有断线、非空可见行被移到隐藏行、空可见行被删除、重进世界与升级后隐藏行和物品仍在（先把命令里的组件字段名改成真实写法；由用户确认后才打勾）
+- [x] T041 [US4] 按 quickstart B4 验证大背包没有回归、日志没有保护警告（由用户确认后才打勾）
 - [x] T042 [P] 更新文档：`docs/MCFloatingBackpack.md`（035 一句说明）、`docs/plan/manual-verification-checklist.md`（035 验证项）、`docs/plan/category-extensions.md`（035 状态）、`docs/plan/README.md`；**不要修改 `docs/ideas`**
 - [x] T043 `specs/035-category-extension-rules/DELIVERY.md`：已验证 / 未验证（quickstart 第 C 节的四条原样列出）/ 已知限制（组件同步通路无保护、最坏体积未实测）/ 基线与完成后的类数与用例数 / T035 的核对结果
 

@@ -52,10 +52,10 @@
 ## Phase 6: 验证与文档（客户端验证由用户确认）
 
 - [x] T018 [US1]（用户 2026-11-10 确认没有问题） 按 quickstart B 验证物品本身：创意栏顺序与名字（中英文）、提示、逐个合成（含农作物扩展还回空桶）、JEI 配方、手持/掉落物/展示框外观、10 个图标可分辨、堆叠 1；进世界后看 `latest.log` 没有配方/模型/贴图错误（先 `pgrep`；由用户确认后才打勾）
-- [ ] T019 [US2] 按 quickstart C 验证放进功能区行出现与消失（先 `pgrep`；由用户确认后才打勾；记录过渡期面板现象，见 G）
-- [ ] T020 [US3] 按 quickstart D 验证类别判定与手动标签（由用户确认后才打勾）
-- [ ] T021 [US4][US5] 按 quickstart E 验证转移、自动拾取、聚拢、拖拽、垃圾桶、行总数 35 与提示、升级与快照恢复，并留意创造模式背包丢失事件是否再现（由用户确认后才打勾；`logging.level` 建议设 DEBUG）
-- [ ] T022 按 quickstart F、G 回归与过渡期现象（由用户确认后才打勾）
+- [x] T019 [US2] 按 quickstart C 验证放进功能区行出现与消失（先 `pgrep`；由用户确认后才打勾；记录过渡期面板现象，见 G）
+- [x] T020 [US3] 按 quickstart D 验证类别判定与手动标签（由用户确认后才打勾）
+- [x] T021 [US4][US5] 按 quickstart E 验证转移、自动拾取、聚拢、拖拽、垃圾桶、行总数 35 与提示、升级与快照恢复，并留意创造模式背包丢失事件是否再现（由用户确认后才打勾；`logging.level` 建议设 DEBUG）
+- [x] T022 按 quickstart F、G 回归与过渡期现象（由用户确认后才打勾）
 - [x] T023 [P] 更新文档：`docs/MCFloatingBackpack.md`（036 一句说明）、`docs/plan/manual-verification-checklist.md`（036 验证项）、`docs/plan/category-extensions.md`（036 状态、037 是下一个）、`docs/plan/README.md` 若需要；**不要修改 `docs/ideas`**
 - [x] T024 `specs/036-category-extension-items/DELIVERY.md`：已验证 / 未验证 / 已知限制（过渡期、专用服务器未验证、贴图观感）/ 基线与完成后的类数与用例数 / 图标检查结果与图集度量 / 与 035 的关系（FR-014 补的提示）/ 035 的"未验证"四项在本 feature 里验证的结果
 
