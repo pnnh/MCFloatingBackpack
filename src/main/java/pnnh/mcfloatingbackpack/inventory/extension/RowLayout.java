@@ -75,4 +75,14 @@ public final class RowLayout {
         int c = Math.max(1, cols);
         return index % c != 0 && groupOf(index - 1) != group;
     }
+
+    /**
+     * 039: whether the index is in a visible row whose category this version does not know (a row made by a newer version). The panel
+     * guesses generously for such a row and leaves the decision to the server.
+     */
+    public boolean isUnknownRow(int index) {
+        int group = groupOf(index);
+        return group >= 0 && !ExtensionCategories.isKnown(visibleCategories.get(group));
+    }
 }
+

@@ -37,6 +37,14 @@ public final class BackpackNetwork {
     }
 
     private static void onRegisterPayloads(RegisterPayloadHandlersEvent event) {
+        // 039: the version check's two payloads are optional and registered apart from everything below (a registrar is a copy that
+        // keeps its own version and flag), so the protocol number 17 and the checks of the other payloads are not touched. A client
+        // that does not have them can still log in. The version "1" must never change: a client and a server that both have the
+        // payload and differ in its version cannot connect; if it ever has to change, add another payload instead.
+        PayloadRegistrar versionCheck = event.registrar(MCFloatingBackpack.MOD_ID).versioned("1").optional();
+        versionCheck.playToClient(VersionHelloPayload.TYPE, VersionHelloPayload.STREAM_CODEC, VersionHelloPayload::handleClient);
+        versionCheck.playToServer(VersionReportPayload.TYPE, VersionReportPayload.STREAM_CODEC, VersionReportPayload::handleServer);
+
         PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("17");
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(

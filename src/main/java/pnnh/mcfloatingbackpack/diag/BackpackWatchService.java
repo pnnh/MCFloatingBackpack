@@ -107,12 +107,13 @@ public final class BackpackWatchService {
                     Side.SERVER,
                     LogLevel.WARN,
                     "Backpack #{} of {} (was at {}) is gone: not in the inventory, on a cursor, in the open container, worn, or lying within 16 blocks."
-                            + " Game mode {}, open menu {}.",
+                            + " Game mode {}, open menu {}. Client mod version: {}.",
                     shortId(backpack.id()),
                     name,
                     backpack.lastSeenAt(),
                     player.gameMode.getGameModeForPlayer(),
-                    player.containerMenu.getClass().getSimpleName());
+                    player.containerMenu.getClass().getSimpleName(),
+                    pnnh.mcfloatingbackpack.version.PlayerVersions.describe(player.getUUID()));
             List<String> events = DiagLog.dump(player.getUUID());
             DiagLog.log(Side.SERVER, LogLevel.WARN, "  The last {} panel actions of {}, oldest first:", events.size(), name);
             for (String event : events) {

@@ -13,6 +13,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionRules;
 import pnnh.mcfloatingbackpack.inventory.extension.ItemCategoryMatcher;
+import pnnh.mcfloatingbackpack.inventory.extension.RowLayout;
 import pnnh.mcfloatingbackpack.inventory.extension.RowView;
 
 /**
@@ -23,7 +24,8 @@ import pnnh.mcfloatingbackpack.inventory.extension.RowView;
  * <p>A guess may only be too generous, never too strict: a stack the server would take must never be called unfit, or the player
  * would think the feature broke. So the answer is "yes" whenever the guess cannot be sure: there are no rows, the cell is one of
  * the tier capacity's, the stack is empty, the category tags have not reached the client yet (just after joining a world or a data
- * pack change), or the list of cells does not match the rows the client was told about (a sync is on its way).
+ * pack change), the list of cells does not match the rows the client was told about (a sync is on its way), or the row is of a
+ * category this version does not know (039: a client older than the server).
  */
 @OnlyIn(Dist.CLIENT)
 public final class ClientPlacement {
@@ -37,6 +39,10 @@ public final class ClientPlacement {
             return true;
         }
         if (view.slotCount() != rows.baseCapacity() + rows.visibleCategories().size() * ExtensionCategories.ROW_CELLS) {
+            return true;
+        }
+        // 039: a row of a category this version does not know (it was made by a newer version): say yes and let the server decide.
+        if (new RowLayout(rows.baseCapacity(), rows.visibleCategories()).isUnknownRow(slot)) {
             return true;
         }
         if (!categoryTagsBound()) {

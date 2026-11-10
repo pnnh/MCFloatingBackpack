@@ -136,4 +136,27 @@ class RowLayoutTest {
         assertEquals(TWO.topEdge(45, 1), TWO.topEdge(45, 0));
         assertEquals(TWO.leftEdge(45, 1), TWO.leftEdge(45, -3));
     }
+
+    // ---- 039: a row of a category this version does not know ----
+
+    @Test
+    void knownCategoriesAreNeverUnknownRows() {
+        RowLayout layout = new RowLayout(36, List.of("food", "general", "disc"));
+        for (int i = 0; i < 36 + 27; i++) {
+            assertFalse(layout.isUnknownRow(i), "index " + i);
+        }
+    }
+
+    @Test
+    void aCategoryThisVersionDoesNotKnowMakesItsCellsUnknown() {
+        RowLayout layout = new RowLayout(36, List.of("food", "zzz", ""));
+        assertFalse(layout.isUnknownRow(36)); // food
+        assertTrue(layout.isUnknownRow(45)); // zzz
+        assertTrue(layout.isUnknownRow(53));
+        assertTrue(layout.isUnknownRow(54)); // the empty category
+        assertFalse(layout.isUnknownRow(10)); // the tier capacity
+        assertFalse(layout.isUnknownRow(63)); // past every row
+        assertFalse(layout.isUnknownRow(-1));
+    }
 }
+

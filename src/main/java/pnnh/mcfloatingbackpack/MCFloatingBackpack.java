@@ -32,6 +32,8 @@ import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPacks;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.item.CategoryExtensionItem;
 import pnnh.mcfloatingbackpack.item.UniversalExtensionItem;
+import pnnh.mcfloatingbackpack.version.PlayerVersions;
+import pnnh.mcfloatingbackpack.version.VersionNetwork;
 import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesCompat;
 import pnnh.mcfloatingbackpack.compat.curios.CuriosCompat;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
@@ -87,8 +89,15 @@ public class MCFloatingBackpack {
                 CreativeCursorBridge.onClose(player);
             }
         });
+        // 039: at login the server tells the player which version of this mod it runs (see VersionNetwork).
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                VersionNetwork.onLogin(player);
+            }
+        });
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
+                PlayerVersions.forget(player.getUUID());
                 CreativeCursorBridge.onLogout(player);
                 BackpackWatchService.forget(player.getUUID());
                 SERVER_MAIN_HAND.forget(player.getUUID());

@@ -76,6 +76,13 @@ neoForge {
         client {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            // 039: ./gradlew runClient -Pmcfb.<name>=<value> reaches the game as -Dmcfloatingbackpack.debug.<name>=<value>, the switches for
+            // trying the version check out (see VersionDebug); nothing is added when none is given.
+            project.properties.each { key, value ->
+                if (key.toString().startsWith('mcfb.') && value != null) {
+                    systemProperty 'mcfloatingbackpack.debug.' + key.toString().substring('mcfb.'.length()), value.toString()
+                }
+            }
         }
 
         server {
