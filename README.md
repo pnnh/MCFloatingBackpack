@@ -49,6 +49,10 @@ A floating backpack mod for **Minecraft 1.21.1 + NeoForge**. Like the bag window
 - To check whether the mod versions on your client and server match, you can additionally install [MCompatIssues](https://github.com/pnnh/MCompatIssues) (optional; it is not a dependency of this mod).
 - The server stores and validates the contents; a client cannot create items.
 
+## Updating and downgrading
+
+Back up your world before updating the mod, and especially before **downgrading** it. A backpack remembers the data revision it was last saved with; if you go back to an older version, a backpack saved by a newer one is protected: it will not open at first and a message tells you why, and opening it again within 60 seconds means you accept that what the older version does not know may be lost. (Protection starts with the first version that stamps the revision; older versions cannot protect.)
+
 ## Releases
 
 Releases are published on [GitHub Releases](https://github.com/pnnh/MCFloatingBackpack/releases) from semantic-version tags (`vMAJOR.MINOR.PATCH`) by a GitHub Actions workflow; every asset carries a GitHub artifact attestation that you can verify:

@@ -10,7 +10,9 @@ package pnnh.mcfloatingbackpack.version;
  *       single player world too;
  *   <li>{@code serverVersion=X}: the server says its version is X;
  *   <li>{@code clientVersion=X}: the client takes its own version to be X (in the comparison and in what it reports);
- *   <li>{@code legacyClient=true}: the server treats every player as a client without the version check (the plain text for them).
+ *   <li>{@code legacyClient=true}: the server treats every player as a client without the version check (the plain text for them);
+ *   <li>{@code stampRevision=N}: 040, every backpack save stamps the data revision N instead of the current one (99 makes a backpack
+ *       that looks as if a newer version had saved it, to try the downgrade protection out).
  * </ul>
  */
 public final class VersionDebug {
@@ -35,5 +37,18 @@ public final class VersionDebug {
     /** The version the client says it has, or null when it is not overridden. */
     public static String clientVersionOverride() {
         return System.getProperty(PREFIX + "clientVersion");
+    }
+
+    /** 040: the data revision every save stamps instead of the current one, or null when it is not overridden (or not a number). */
+    public static Integer stampRevisionOverride() {
+        String value = System.getProperty(PREFIX + "stampRevision");
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(value.trim());
+        } catch (NumberFormatException notANumber) {
+            return null;
+        }
     }
 }

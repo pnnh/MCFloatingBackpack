@@ -79,6 +79,8 @@
   "item.mcfloatingbackpack.redstone_extension": "Redstone Extension",
   "item.mcfloatingbackpack.disc_extension": "Disc Extension",
   "item.mcfloatingbackpack.category_extension.tooltip": "Put it in a function area of the floating backpack to add a row that only stores %s",
+  "message.mcfloatingbackpack.revision.protected": "This backpack was saved by a newer version of MCFloatingBackpack (data revision %1$s; this version is %2$s). Using it may lose data: please update the mod, or back up your world first. If you really want to go on, open it again within 60 seconds, which means you accept the risk.",
+  "message.mcfloatingbackpack.revision.accepted": "Risk accepted: this backpack is now used as this version (data revision %2$s) sees it.",
   "message.mcfloatingbackpack.version.older": "Your MCFloatingBackpack (%1$s) is older than the server's (%2$s): please update to the server's version. A big gap between versions may cause unknown problems; back up your world before updating.",
   "message.mcfloatingbackpack.version.newer": "Your MCFloatingBackpack (%1$s) is newer than the server's (%2$s): please downgrade to the server's version, or ask the server owner to update the server. A big gap between versions may cause unknown problems; back up your world before downgrading.",
   "message.mcfloatingbackpack.version.unknown": "Cannot compare the MCFloatingBackpack versions (yours: %1$s, server: %2$s). Make sure both use the same version; a mismatch may cause unknown problems, so back up your world before changing versions.",

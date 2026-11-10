@@ -388,8 +388,12 @@ public final class BackpackInventory {
         for (int i = 0; i < baseCapacity; i++) {
             list.add(getStackInSlot(i).copy());
         }
+        // 040: every save stamps the revision of the data it writes (a development switch can stamp another, to make a backpack that
+        // looks as if a newer version had saved it).
+        Integer stamp = pnnh.mcfloatingbackpack.version.VersionDebug.stampRevisionOverride();
         return BackpackContents.fit(
-                list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, reconciledRows(), baseCapacity);
+                        list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, reconciledRows(), baseCapacity)
+                .withDataRevision(stamp != null ? stamp : pnnh.mcfloatingbackpack.inventory.revision.DataRevision.CURRENT);
     }
 
     public static int capacityOf(ItemStack backpack) {

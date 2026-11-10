@@ -40,7 +40,8 @@ public record BackpackContents(
         ItemTags tags,
         TrashContents trash,
         PickupBlacklist pickupBlacklist,
-        RowSet<ItemStack> rows) {
+        RowSet<ItemStack> rows,
+        int dataRevision) {
     public static final Codec<BackpackContents> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     ItemStack.OPTIONAL_CODEC
@@ -64,7 +65,12 @@ public record BackpackContents(
                             .forGetter(BackpackContents::pickupBlacklist),
                     ExtensionRowsCodecs.CODEC
                             .optionalFieldOf("extension_rows", RowSet.<ItemStack>empty())
-                            .forGetter(BackpackContents::rows))
+                            .forGetter(BackpackContents::rows),
+                    // 040: the revision of the stored data this backpack was last saved with; an older version leaves the field out
+                    // (it ignores what it does not know), so it reads as 0. It is on disk only: the wire codec below does not carry it.
+                    Codec.INT
+                            .optionalFieldOf("data_revision", 0)
+                            .forGetter(BackpackContents::dataRevision))
             .apply(instance, BackpackContents::normalize));
 
     private static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStack>> ITEMS_STREAM_CODEC =
@@ -101,7 +107,7 @@ public record BackpackContents(
                 items, cursor, ToolAreaContents.EMPTY, ItemTags.EMPTY, TrashContents.EMPTY, PickupBlacklist.EMPTY, RowSet.empty());
     }
 
-    /** Copies stacks and clamps the lists without padding. */
+    /** Copies stacks and clamps the lists without padding; the data revision is 0 (no stamp): saving stamps it. */
     public static BackpackContents normalize(
             List<ItemStack> items,
             ItemStack cursor,
@@ -110,6 +116,19 @@ public record BackpackContents(
             TrashContents trash,
             PickupBlacklist pickupBlacklist,
             RowSet<ItemStack> rows) {
+        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, 0);
+    }
+
+    /** Copies stacks and clamps the lists without padding; a negative revision reads as 0. */
+    public static BackpackContents normalize(
+            List<ItemStack> items,
+            ItemStack cursor,
+            ToolAreaContents tools,
+            ItemTags tags,
+            TrashContents trash,
+            PickupBlacklist pickupBlacklist,
+            RowSet<ItemStack> rows,
+            int dataRevision) {
         int size = items == null ? 0 : Math.min(items.size(), BackpackInventory.MAX_TIER_CAPACITY);
         NonNullList<ItemStack> slots = NonNullList.create();
         for (int i = 0; i < size; i++) {
@@ -127,7 +146,8 @@ public record BackpackContents(
                 tags == null ? ItemTags.EMPTY : tags,
                 trash == null ? TrashContents.EMPTY : new TrashContents(trash.groups()),
                 pickupBlacklist == null ? PickupBlacklist.EMPTY : pickupBlacklist,
-                rows == null ? RowSet.empty() : rows);
+                rows == null ? RowSet.empty() : rows,
+                pnnh.mcfloatingbackpack.inventory.revision.DataRevision.readStored(dataRevision));
     }
 
     /** Main slots fitted to {@code capacity}, tool areas empty (padded to their capacities), no tags, no trash, no blacklist, no rows. */
@@ -166,16 +186,22 @@ public record BackpackContents(
                 tags == null ? ItemTags.EMPTY : tags,
                 trash == null ? TrashContents.EMPTY : new TrashContents(trash.groups()),
                 pickupBlacklist == null ? PickupBlacklist.EMPTY : pickupBlacklist,
-                rows == null ? RowSet.empty() : rows);
+                rows == null ? RowSet.empty() : rows,
+                0);
     }
 
-    /** The main list fitted to the tier capacity; the rows do not depend on the capacity and stay as they are. */
+    /** The main list fitted to the tier capacity; the rows do not depend on the capacity and stay as they are; the revision stays too. */
     public BackpackContents fit(int capacity) {
-        return fit(items, cursor, tools, tags, trash, pickupBlacklist, rows, capacity);
+        return fit(items, cursor, tools, tags, trash, pickupBlacklist, rows, capacity).withDataRevision(dataRevision);
     }
 
     public BackpackContents copy() {
-        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows);
+        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, dataRevision);
+    }
+
+    /** 040: the same contents stamped with another data revision. */
+    public BackpackContents withDataRevision(int revision) {
+        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, revision);
     }
 
     /**

@@ -75,7 +75,8 @@ public record BackpackOpenRequestPayload(boolean wantOpen, int sourceOrdinal, in
                 return;
             }
             // 026: opening is the use that registers a backpack (and the one the registry may refuse).
-            if (BackpackGate.acquire(serverPlayer, resolved).isEmpty()) {
+            // 040: and the only one that can confirm the use of a backpack saved by a newer version (see BackpackGate.acquireForOpen).
+            if (BackpackGate.acquireForOpen(serverPlayer, resolved).isEmpty()) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }

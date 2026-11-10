@@ -49,6 +49,10 @@
 - 想检查客户端与服务器的模组版本是否一致，可以另外安装 [MCompatIssues](https://github.com/pnnh/MCompatIssues)（可选，不是本模组的依赖）。
 - 背包内容由服务器保存和校验，客户端不能凭空产生物品。
 
+## 升级与降级
+
+升级模组之前，尤其是**降级**之前，请先备份存档。背包会记住最后一次保存它时的数据修订；如果你回到旧版本，被更新版本保存过的背包会受到保护：第一次打开不会成功，聊天里会告诉你原因，60 秒内再次打开表示你接受"旧版本不认识的数据可能丢失"的风险。（保护从第一个会盖章的版本开始生效，更早的版本无法保护。）
+
 ## 发布版本
 
 版本由 GitHub Actions 根据语义化版本的 tag（`vMAJOR.MINOR.PATCH`）发布到 [GitHub Releases](https://github.com/pnnh/MCFloatingBackpack/releases)，每个附件都带 GitHub 构建溯源证明，可以验证：

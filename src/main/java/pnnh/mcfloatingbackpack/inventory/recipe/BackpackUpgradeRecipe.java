@@ -66,7 +66,18 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
 
     @Override
     public boolean matches(SmithingRecipeInput input, Level level) {
-        return template.test(input.template()) && base.test(input.base()) && addition.test(input.addition());
+        return template.test(input.template())
+                && base.test(input.base())
+                && addition.test(input.addition())
+                // 040: a backpack saved by a newer version is protected: upgrading it would rewrite it (and drop what this version does
+                // not know), so there is no recipe for it until its owner has accepted the risk by opening it again.
+                && !isProtected(input.base());
+    }
+
+    /** 040: whether the backpack was saved by a newer version (read only: nothing is changed). */
+    private static boolean isProtected(ItemStack base) {
+        BackpackContents contents = base.get(ModDataComponents.BACKPACK_CONTENTS.get());
+        return contents != null && pnnh.mcfloatingbackpack.inventory.revision.DataRevision.isNewer(contents.dataRevision());
     }
 
     @Override
@@ -78,7 +89,7 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
                 ModDataComponents.BACKPACK_CONTENTS.get(), BackpackContents.empty(capacity));
         upgraded.set(
                 ModDataComponents.BACKPACK_CONTENTS.get(),
-                BackpackContents.fit(current.items(), current.cursor(), current.tools(), current.tags(), current.trash(), current.pickupBlacklist(), current.rows(), capacity));
+                BackpackContents.fit(current.items(), current.cursor(), current.tools(), current.tags(), current.trash(), current.pickupBlacklist(), current.rows(), capacity).withDataRevision(current.dataRevision()));
         return upgraded;
     }
 

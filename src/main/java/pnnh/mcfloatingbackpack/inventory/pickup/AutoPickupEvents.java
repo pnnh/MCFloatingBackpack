@@ -99,6 +99,8 @@ public final class AutoPickupEvents {
             // 026: the registry decides first; a refused backpack (over the limit, deleted...) does not take pickups.
             java.util.Optional<BackpackInventory> acquired = BackpackGate.acquire(player, ref);
             if (acquired.isEmpty()) {
+                // 040: a backpack saved by a newer version takes no pickups; the item goes the vanilla way. Only a line in the log.
+                BackpackGate.noteAutoPickupSkipped(player, ref);
                 return;
             }
             inventory = acquired.get();

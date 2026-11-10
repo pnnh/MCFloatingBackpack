@@ -79,6 +79,8 @@
   "item.mcfloatingbackpack.redstone_extension": "红石扩展",
   "item.mcfloatingbackpack.disc_extension": "唱片扩展",
   "item.mcfloatingbackpack.category_extension.tooltip": "放进浮动背包的功能区，增加一行只能存 %s 的格子",
+  "message.mcfloatingbackpack.revision.protected": "这只背包是用更新版本的浮动背包保存的（数据修订 %1$s，当前版本是 %2$s）。继续使用可能丢失数据：建议升级模组，或先备份存档。如果确实要继续，请在 60 秒内再次打开它，这表示你接受风险。",
+  "message.mcfloatingbackpack.revision.accepted": "已接受风险：这只背包现在按当前版本（数据修订 %2$s）使用。",
   "message.mcfloatingbackpack.version.older": "你的浮动背包版本（%1$s）比服务器（%2$s）旧：请升级到与服务器相同的版本。版本差异不宜过大，否则可能出现未知问题；升级前请先备份存档。",
   "message.mcfloatingbackpack.version.newer": "你的浮动背包版本（%1$s）比服务器（%2$s）新：请降级到与服务器相同的版本，或联系服主把服务器升级。版本差异不宜过大，否则可能出现未知问题；降级前请先备份存档。",
   "message.mcfloatingbackpack.version.unknown": "无法比较浮动背包的版本（你的：%1$s，服务器：%2$s）。请确认两端使用同一个版本；版本不一致可能出现未知问题，改版本前请先备份存档。",
