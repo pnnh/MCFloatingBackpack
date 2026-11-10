@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "B": {
+      "item": "minecraft:ender_chest"
+    },
+    "C": {
+      "item": "minecraft:shulker_shell"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BCB",
+    "IDI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:netherite_general_extension"
+  }
+}

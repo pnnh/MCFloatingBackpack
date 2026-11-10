@@ -29,6 +29,8 @@ import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.extension.CategoryNames;
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
 import pnnh.mcfloatingbackpack.inventory.extension.HiddenHint;
 import pnnh.mcfloatingbackpack.inventory.extension.RowLayout;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentity;
@@ -227,7 +229,7 @@ public final class FloatingPanelRenderer {
         List<FormattedCharSequence> out = new ArrayList<>();
         out.addAll(minecraft.font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.title"), 220));
         for (HiddenHint.Line line : lines) {
-            Component name = Component.translatable(pnnh.mcfloatingbackpack.inventory.tags.PresetTags.langKey(line.category()));
+            Component name = Component.translatable(CategoryNames.langKey(line.category()));
             out.addAll(minecraft.font.split(
                     Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", name, line.cells()), 220));
         }
@@ -372,16 +374,28 @@ public final class FloatingPanelRenderer {
         }
     }
 
-    /** 037: a faint picture of the category's extension item in an empty cell of its row (what goes here). Nothing for an unknown category. */
+    /**
+     * 037: a faint picture of the category's extension item in an empty cell of its row (what goes here). 038: for a universal row it
+     * is the universal extension of the backpack's own tier. Nothing for an unknown category.
+     */
     private static void drawGhost(GuiGraphics graphics, String category, int sx, int sy) {
-        String id = CategoryStyle.ghostItemId(category);
-        var holder = id == null ? null : ModItems.CATEGORY_EXTENSIONS.get(category);
-        if (holder == null) {
+        Item item = ghostItem(category);
+        if (item == null) {
             return;
         }
-        Item item = holder.get();
         TextureAtlasSprite sprite = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(item).getParticleIcon();
         graphics.blit(sx + 1, sy + 1, 0, 16, 16, sprite, 1.0F, 1.0F, 1.0F, GHOST_ALPHA);
+    }
+
+    private static Item ghostItem(String category) {
+        if (ExtensionCategories.GENERAL.equals(category)) {
+            BackpackTier tier = BackpackTier.byCapacity(ClientBackpackView.get().baseCapacity());
+            var holder = tier == null ? null : ModItems.UNIVERSAL_EXTENSIONS.get(tier);
+            return holder == null ? null : holder.get();
+        }
+        String id = CategoryStyle.ghostItemId(category);
+        var holder = id == null ? null : ModItems.CATEGORY_EXTENSIONS.get(category);
+        return holder == null ? null : holder.get();
     }
 
     /** 037: the tooltip of the extension row cell under the mouse: which category the row is and what it takes. */
@@ -399,9 +413,12 @@ public final class FloatingPanelRenderer {
             return;
         }
         String category = rows.categoryOf(hit.index());
-        Component name = Component.translatable(pnnh.mcfloatingbackpack.inventory.tags.PresetTags.langKey(category));
-        List<FormattedCharSequence> lines = new ArrayList<>(
-                minecraft.font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip", name), 200));
+        // 038: the universal row takes anything, so it says that instead of "only takes X"
+        Component description = ExtensionCategories.GENERAL.equals(category)
+                ? Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip.general")
+                : Component.translatable(
+                        "panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip", Component.translatable(CategoryNames.langKey(category)));
+        List<FormattedCharSequence> lines = new ArrayList<>(minecraft.font.split(description, 200));
         ItemStack held = cursorStack(minecraft);
         if (!held.isEmpty() && !ClientPlacement.canPlace(view, hit.index(), held)) {
             lines.addAll(minecraft.font.split(

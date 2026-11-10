@@ -15,10 +15,10 @@ import pnnh.mcfloatingbackpack.inventory.tags.PresetTags;
  * three tool areas of the floating panel it adds a row of nine cells to that backpack, which only takes items of its
  * category (035). Which item is a pack of which category is what {@code ExtensionPacks} is told at start-up.
  */
-public final class CategoryExtensionItem extends Item {
+public class CategoryExtensionItem extends Item {
     private final String category;
 
-    /** @param category one of {@code ExtensionCategories.IDS} */
+    /** @param category one of {@code ExtensionCategories.IDS} (a universal extension, 038, passes {@code ExtensionCategories.GENERAL}) */
     public CategoryExtensionItem(String category, Properties properties) {
         super(properties.stacksTo(1));
         this.category = category;

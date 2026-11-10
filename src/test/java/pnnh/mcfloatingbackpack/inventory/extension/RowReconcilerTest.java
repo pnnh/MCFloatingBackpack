@@ -222,4 +222,67 @@ class RowReconcilerTest {
             }
         }
     }
+
+    // ---- 038: the universal category goes through the same rules (the reconciler is not told about areas or tiers) ----
+
+    @Test
+    void universalRowsComeAndGoLikeAnyOther() {
+        RowReconciler.Result<String> one = run(RowSet.empty(), placed("general", 1));
+        assertEquals(List.of("general"), one.rows().visibleCategories());
+        RowReconciler.Result<String> two = run(one.rows(), placed("general", 2));
+        assertEquals(List.of("general", "general"), two.rows().visibleCategories());
+        RowReconciler.Result<String> none = run(two.rows(), placed());
+        assertEquals(List.of(), none.rows().visibleCategories());
+        assertTrue(none.rows().hidden().isEmpty()); // both were empty: deleted, not hidden
+    }
+
+    @Test
+    void aUniversalRowWithItemsIsHiddenWhenItsPackStopsCounting() {
+        // for instance the backpack was upgraded and the pack is of the old tier: the count goes to 0
+        RowReconciler.Result<String> r = run(rows(List.of(row("general", "stone", "dirt")), List.of()), placed());
+        assertEquals(List.of(), r.rows().visibleCategories());
+        assertEquals(1, r.rows().hidden().size());
+        assertEquals("stone", r.rows().hidden().get(0).cells().get(0));
+        assertTrue(r.layoutChanged());
+    }
+
+    @Test
+    void theHiddenUniversalRowComesBackWithItsItems() {
+        RowSet<String> hidden = rows(List.of(), List.of(row("general", "stone", "dirt")));
+        RowReconciler.Result<String> r = run(hidden, placed("general", 1));
+        assertEquals(List.of("general"), r.rows().visibleCategories());
+        assertEquals("stone", r.rows().visible().get(0).cells().get(0));
+        assertTrue(r.rows().hidden().isEmpty());
+    }
+
+    @Test
+    void universalAndCategoryRowsDoNotDisturbEachOther() {
+        RowReconciler.Result<String> r = run(
+                rows(List.of(row("food", "bread"), row("general", "stone")), List.of()), placed("food", 1, "general", 1));
+        assertEquals(List.of("food", "general"), r.rows().visibleCategories());
+        assertFalse(r.layoutChanged());
+        RowReconciler.Result<String> takeUniversal = run(r.rows(), placed("food", 1));
+        assertEquals(List.of("food"), takeUniversal.rows().visibleCategories());
+        assertEquals("bread", takeUniversal.rows().visible().get(0).cells().get(0));
+        assertEquals(1, takeUniversal.rows().hidden().size());
+    }
+
+    @Test
+    void atTheMostRowsAUniversalPackAddsNoRowAndIsReported() {
+        List<Row<String>> full = new ArrayList<>();
+        for (int i = 0; i < ExtensionCategories.MAX_ROWS; i++) {
+            full.add(row("food", "bread"));
+        }
+        RowReconciler.Result<String> r = run(rows(full, List.of()), placed("food", ExtensionCategories.MAX_ROWS, "general", 1));
+        assertEquals(ExtensionCategories.MAX_ROWS, r.rows().visible().size());
+        assertEquals(List.of("general"), r.refused());
+    }
+
+    @Test
+    void theUniversalCategoryIsProcessedAfterTheTen() {
+        // two new rows added in one reconcile come out in the fixed order: a category first, the universal one last
+        RowReconciler.Result<String> r = run(RowSet.empty(), placed("general", 1, "disc", 1));
+        assertEquals(List.of("disc", "general"), r.rows().visibleCategories());
+    }
 }
+

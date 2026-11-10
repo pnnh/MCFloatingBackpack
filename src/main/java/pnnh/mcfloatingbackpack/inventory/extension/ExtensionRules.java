@@ -49,10 +49,12 @@ public final class ExtensionRules {
     }
 
     /**
-     * Where a stack goes when it is moved into the backpack, in two segments to be tried one after the other (each with the
-     * "top up the matching stacks, then fill the empty cells" rule of {@code QuickTransferLogic.moveInto}, what is left of the
-     * first going on to the second): first the cells of the visible rows whose category the stack fits, row by row, then the
-     * tier capacity's cells. With no matching row the first segment is empty, which is how things were before the rows.
+     * Where a stack goes when it is moved into the backpack, in three segments to be tried one after the other (each with the
+     * "top up the matching stacks, then fill the empty cells" rule of {@code QuickTransferLogic.moveInto}, what is left of one
+     * going on to the next): first the cells of the visible rows of a category the stack fits, row by row; then the tier
+     * capacity's cells; and last the cells of the universal rows (038), which are the overflow: they take whatever the main
+     * area had no room for, so that a universal row does not swallow everything before the main grid is used. With no matching
+     * row the first segment is empty, with no universal row the last is, which is how things were before the rows.
      */
     public static <T> List<int[]> targetSegments(
             RowSet<T> rows, int baseCapacity, T stack, CategoryMatcher<T> matcher) {
@@ -63,11 +65,14 @@ public final class ExtensionRules {
     public static <T> List<int[]> targetSegments(
             List<String> visibleCategories, int baseCapacity, T stack, CategoryMatcher<T> matcher) {
         List<Integer> matching = new ArrayList<>();
+        List<Integer> universal = new ArrayList<>();
         for (int row = 0; row < visibleCategories.size(); row++) {
-            if (matcher.matches(visibleCategories.get(row), stack)) {
+            String category = visibleCategories.get(row);
+            if (matcher.matches(category, stack)) {
                 int first = baseCapacity + row * ExtensionCategories.ROW_CELLS;
+                List<Integer> into = ExtensionCategories.GENERAL.equals(category) ? universal : matching;
                 for (int cell = 0; cell < ExtensionCategories.ROW_CELLS; cell++) {
-                    matching.add(first + cell);
+                    into.add(first + cell);
                 }
             }
         }
@@ -76,7 +81,8 @@ public final class ExtensionRules {
         for (int i = 0; i < baseCapacity; i++) {
             main[i] = i;
         }
-        return List.of(rowCells, main);
+        int[] universalCells = universal.stream().mapToInt(Integer::intValue).toArray();
+        return List.of(rowCells, main, universalCells);
     }
 
     /** How many rows must be added for the packs placed to all have one: what exceeds the rows of each category already there. */

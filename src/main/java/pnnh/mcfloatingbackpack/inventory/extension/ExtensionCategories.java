@@ -13,6 +13,16 @@ public final class ExtensionCategories {
     public static final List<String> IDS =
             List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc");
 
+    /**
+     * 038: the category of the universal extensions: a row that takes any item. It is deliberately not in {@link #IDS}: the ten
+     * there each have a data tag, an {@code <id>_extension} item and a preset tag name, and the code that walks {@code IDS} relies
+     * on that. {@link #ALL} is the ten and then this one, in the fixed order (the last place is part of what is released).
+     */
+    public static final String GENERAL = "general";
+
+    /** 038: every category a row can have, in the fixed order: the ten of {@link #IDS}, then {@link #GENERAL}. */
+    public static final List<String> ALL = java.util.stream.Stream.concat(IDS.stream(), java.util.stream.Stream.of(GENERAL)).toList();
+
     /** One row is nine cells, whatever the backpack's tier. */
     public static final int ROW_CELLS = 9;
     /** Most rows (visible and hidden together) one backpack can hold; the same as the most tool cells of any tier. */
@@ -28,12 +38,12 @@ public final class ExtensionCategories {
     }
 
     public static boolean isKnown(String id) {
-        return id != null && IDS.contains(id);
+        return id != null && ALL.contains(id);
     }
 
-    /** Position of the id in {@link #IDS}; unknown ids come last. */
+    /** Position of the id in {@link #ALL}; unknown ids come last. */
     public static int orderOf(String id) {
-        int index = id == null ? -1 : IDS.indexOf(id);
-        return index < 0 ? IDS.size() : index;
+        int index = id == null ? -1 : ALL.indexOf(id);
+        return index < 0 ? ALL.size() : index;
     }
 }

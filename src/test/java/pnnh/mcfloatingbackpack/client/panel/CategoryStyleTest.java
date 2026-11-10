@@ -55,4 +55,23 @@ class CategoryStyleTest {
         assertNull(CategoryStyle.ghostItemId("zzz"));
         assertNull(CategoryStyle.ghostItemId(null));
     }
+
+    @Test
+    void theUniversalCategoryHasAStyleOfItsOwnAndNoGhost() {
+        assertTrue(CategoryStyle.known("general"));
+        assertNull(CategoryStyle.ghostItemId("general"));
+        for (String id : ExtensionCategories.IDS) {
+            assertNotEquals(CategoryStyle.edge(id), CategoryStyle.edge("general"), id);
+        }
+        assertNotEquals(0xFF8B8B8B, CategoryStyle.edge("general"));
+        assertEquals(0xFF, CategoryStyle.edge("general") >>> 24);
+        assertEquals(CategoryStyle.edge("general") & 0xFFFFFF, CategoryStyle.fill("general") & 0xFFFFFF);
+        // a near white at the alpha of the ten could not be seen on the slot's grey: the universal fill is the stronger of the eleven
+        int generalAlpha = CategoryStyle.fill("general") >>> 24;
+        for (String id : ExtensionCategories.IDS) {
+            assertTrue(generalAlpha > (CategoryStyle.fill(id) >>> 24), id);
+        }
+        assertTrue(generalAlpha < 0xC0);
+    }
 }
+

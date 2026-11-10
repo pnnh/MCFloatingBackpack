@@ -43,6 +43,10 @@ public final class ItemCategoryMatcher implements CategoryMatcher<ItemStack> {
         if (stack == null || stack.isEmpty()) {
             return false;
         }
+        // 038: a universal row takes anything that is not empty: no tag, no manual tag.
+        if (ExtensionCategories.GENERAL.equals(category)) {
+            return true;
+        }
         TagKey<Item> key = KEYS.get(category);
         if (key == null) {
             return false;

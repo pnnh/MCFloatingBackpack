@@ -82,9 +82,12 @@ class ExtensionRulesTest {
     @Test
     void withoutRowsTheSegmentsAreTheOldOrder() {
         List<int[]> segments = ExtensionRules.targetSegments(RowSet.empty(), 4, "food:bread", MATCHER);
-        assertEquals(2, segments.size());
+        // 038, a change of the rule: there are three segments now (category rows, the main area, the universal rows). With no rows
+        // the first and the last are empty, so the two that mattered are as they were.
+        assertEquals(3, segments.size());
         assertEquals(0, segments.get(0).length);
         assertArrayEquals(new int[] {0, 1, 2, 3}, segments.get(1));
+        assertEquals(0, segments.get(2).length);
     }
 
     @Test
@@ -102,6 +105,69 @@ class ExtensionRulesTest {
         assertEquals(4 + 27 - 1, segments.get(0)[17]);
         assertEquals(4 + 18, segments.get(0)[9]);
         assertArrayEquals(new int[] {0, 1, 2, 3}, segments.get(1));
+    }
+
+    /** 038: like MATCHER, and a universal row takes any item that is not empty (as the game's matcher does). */
+    private static final CategoryMatcher<String> WITH_UNIVERSAL =
+            (category, stack) -> category.equals("general") ? !stack.isEmpty() : MATCHER.matches(category, stack);
+
+    @Test
+    void theUniversalRowIsTheLastSegment() {
+        // base 4, rows: food, general, tool
+        List<int[]> segments = ExtensionRules.targetSegments(rows("food", "general", "tool"), 4, "food:bread", WITH_UNIVERSAL);
+        assertEquals(3, segments.size());
+        assertEquals(9, segments.get(0).length);
+        assertEquals(4, segments.get(0)[0]); // the food row
+        assertArrayEquals(new int[] {0, 1, 2, 3}, segments.get(1));
+        assertEquals(9, segments.get(2).length);
+        assertEquals(4 + 9, segments.get(2)[0]); // the universal row, second in the list
+        assertEquals(4 + 17, segments.get(2)[8]);
+    }
+
+    @Test
+    void anItemOfNoCategoryGoesToTheMainAreaThenTheUniversalRows() {
+        List<int[]> segments = ExtensionRules.targetSegments(rows("food", "general", "general"), 4, "cobblestone", WITH_UNIVERSAL);
+        assertEquals(0, segments.get(0).length);
+        assertArrayEquals(new int[] {0, 1, 2, 3}, segments.get(1));
+        assertEquals(18, segments.get(2).length);
+        assertEquals(4 + 9, segments.get(2)[0]);
+        assertEquals(4 + 27 - 1, segments.get(2)[17]);
+    }
+
+    @Test
+    void theMainAreaIsFilledBeforeTheUniversalRow() {
+        RowSet<String> set = rows("general");
+        String[] cells = new String[4 + 9];
+        java.util.Arrays.fill(cells, "");
+        List<int[]> segments = ExtensionRules.targetSegments(set, 4, "stone", WITH_UNIVERSAL);
+        String rest = QuickTransferLogic.moveIntoSegments(
+                OPS, "stone*64", segments, i -> cells[i], (stack, i) -> cells[i] = stack);
+        assertEquals("", rest);
+        assertEquals("stone*64", cells[0]); // the main area first
+        assertEquals("", cells[4]); // the universal row untouched
+        for (int i = 0; i < 4; i++) {
+            cells[i] = "dirt*64";
+        }
+        rest = QuickTransferLogic.moveIntoSegments(
+                OPS, "stone*64", segments, i -> cells[i], (stack, i) -> cells[i] = stack);
+        assertEquals("", rest);
+        assertEquals("stone*64", cells[4]); // the main area is full: now the universal row
+    }
+
+    @Test
+    void aCategoryRowStillComesBeforeTheMainAreaAndTheUniversalRow() {
+        RowSet<String> set = rows("general", "food");
+        List<int[]> segments = ExtensionRules.targetSegments(set, 4, "food:bread", WITH_UNIVERSAL);
+        assertEquals(4 + 9, segments.get(0)[0]); // the food row is the second row, but it is the first segment
+        assertEquals(4, segments.get(2)[0]);
+    }
+
+    @Test
+    void theUniversalRowTakesAnythingNotEmpty() {
+        RowSet<String> set = rows("general");
+        assertTrue(ExtensionRules.canPlace(set, 4, 4, "cobblestone", WITH_UNIVERSAL));
+        assertTrue(ExtensionRules.canPlace(set, 4, 12, "food:bread", WITH_UNIVERSAL));
+        assertFalse(ExtensionRules.canPlace(set, 4, 13, "cobblestone", WITH_UNIVERSAL)); // past the row
     }
 
     private static final QuickTransferLogic.StackOps<String> OPS = new QuickTransferLogic.StackOps<>() {

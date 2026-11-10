@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:chest"
+    },
+    "B": {
+      "item": "minecraft:leather"
+    },
+    "C": {
+      "item": "minecraft:hopper"
+    },
+    "D": {
+      "item": "minecraft:string"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BCB",
+    "IDI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:leather_general_extension"
+  }
+}

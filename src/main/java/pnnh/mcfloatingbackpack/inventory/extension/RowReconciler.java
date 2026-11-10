@@ -75,7 +75,7 @@ public final class RowReconciler {
 
     /** The known categories in their fixed order, then any other id that appears, in the order it appears. */
     private static <T> List<String> categoriesOf(RowSet<T> rows, Map<String, Integer> placed) {
-        List<String> out = new ArrayList<>(ExtensionCategories.IDS);
+        List<String> out = new ArrayList<>(ExtensionCategories.ALL);
         for (Row<T> row : rows.visible()) {
             if (!out.contains(row.category())) {
                 out.add(row.category());

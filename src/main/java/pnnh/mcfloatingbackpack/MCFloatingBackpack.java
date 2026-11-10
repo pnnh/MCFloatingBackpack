@@ -31,6 +31,7 @@ import pnnh.mcfloatingbackpack.diag.MainHandTrace;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPacks;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.item.CategoryExtensionItem;
+import pnnh.mcfloatingbackpack.item.UniversalExtensionItem;
 import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesCompat;
 import pnnh.mcfloatingbackpack.compat.curios.CuriosCompat;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
@@ -62,6 +63,9 @@ public class MCFloatingBackpack {
         // Both sides run this, so the server's rules and the client agree.
         ExtensionPacks.register(
                 stack -> stack.getItem() instanceof CategoryExtensionItem extension ? extension.category() : null);
+        // 038: a universal extension counts only in a backpack of its own tier; both sides need to know which tier it is.
+        ExtensionPacks.registerTier(
+                stack -> stack.getItem() instanceof UniversalExtensionItem universal ? universal.tierId() : null);
         BackpackNetwork.register(modEventBus);
         // 033: a backpack can be worn in Curios' back slot, but only when Curios is there; nothing of it loads otherwise.
         if (ModList.get().isLoaded("curios")) {

@@ -51,6 +51,9 @@ public final class ModItems {
     /** 036: the ten category extensions, in the fixed order of the categories; ids are {@code <category>_extension}. */
     public static final Map<String, DeferredHolder<Item, CategoryExtensionItem>> CATEGORY_EXTENSIONS = registerCategoryExtensions();
 
+    /** 038: the five universal extensions, one for each backpack tier, in the order of the tiers; ids are {@code <tier>_general_extension}. */
+    public static final Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> UNIVERSAL_EXTENSIONS = registerUniversalExtensions();
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -67,6 +70,9 @@ public final class ModItems {
                                 for (DeferredHolder<Item, CategoryExtensionItem> extension : CATEGORY_EXTENSIONS.values()) {
                                     output.accept(extension.get());
                                 }
+                                for (DeferredHolder<Item, UniversalExtensionItem> extension : UNIVERSAL_EXTENSIONS.values()) {
+                                    output.accept(extension.get());
+                                }
                             })
                             .build());
 
@@ -80,6 +86,18 @@ public final class ModItems {
                     category,
                     ITEMS.register(
                             category + "_extension", () -> new CategoryExtensionItem(category, new Item.Properties())));
+        }
+        return Collections.unmodifiableMap(extensions);
+    }
+
+    private static Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> registerUniversalExtensions() {
+        Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> extensions = new LinkedHashMap<>();
+        for (BackpackTier tier : BackpackTier.values()) {
+            extensions.put(
+                    tier,
+                    ITEMS.register(
+                            tier.name().toLowerCase() + "_general_extension",
+                            () -> new UniversalExtensionItem(tier, new Item.Properties())));
         }
         return Collections.unmodifiableMap(extensions);
     }

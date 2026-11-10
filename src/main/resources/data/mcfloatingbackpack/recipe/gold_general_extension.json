@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:chest"
+    },
+    "B": {
+      "item": "minecraft:gold_ingot"
+    },
+    "C": {
+      "item": "minecraft:hopper"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BCB",
+    "IBI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:gold_general_extension"
+  }
+}

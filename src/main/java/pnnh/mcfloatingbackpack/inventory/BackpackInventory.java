@@ -7,10 +7,12 @@ import java.util.Map;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPacks;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionRules;
 import pnnh.mcfloatingbackpack.inventory.extension.ItemCategoryMatcher;
+import pnnh.mcfloatingbackpack.inventory.extension.PlacedPacks;
 import pnnh.mcfloatingbackpack.inventory.extension.Row;
 import pnnh.mcfloatingbackpack.inventory.extension.RowReconciler;
 import pnnh.mcfloatingbackpack.inventory.extension.RowSet;
@@ -107,8 +109,9 @@ public final class BackpackInventory {
 
     /**
      * Where a stack is put when it is moved into the main area, as segments to try one after the other (the first is the cells
-     * of the visible rows it fits, the second the tier capacity's cells); see {@link ExtensionRules#targetSegments}. With no
-     * rows the first segment is empty and the second is {@code 0..size()-1}, as it always was.
+     * of the visible category rows it fits, the second the tier capacity's cells, the third the cells of the universal rows, 038:
+     * the overflow); see {@link ExtensionRules#targetSegments}. With no rows the first and the last segment are empty and the
+     * second is {@code 0..size()-1}, as it always was.
      */
     public List<int[]> mainTargetOrder(ItemStack stack) {
         if (visibleCategories.isEmpty()) {
@@ -116,7 +119,7 @@ public final class BackpackInventory {
             for (int i = 0; i < all.length; i++) {
                 all[i] = i;
             }
-            return List.of(new int[0], all);
+            return List.of(new int[0], all, new int[0]);
         }
         return ExtensionRules.targetSegments(rowSet(), baseCapacity, stack, new ItemCategoryMatcher(tags));
     }
@@ -165,19 +168,40 @@ public final class BackpackInventory {
         hiddenRows = List.copyOf(hidden);
     }
 
-    /** The packs placed: the stacks of the three tool areas and the cursor, counted by category. */
+    /**
+     * The packs placed, counted by category: a category extension counts wherever it is (the three tool areas and the cursor); a
+     * universal extension (038) only in the left or right area of a backpack of its own tier, once per area (see
+     * {@link PlacedPacks}).
+     */
     public Map<String, Integer> placedPacks() {
-        List<ItemStack> stacks = new ArrayList<>();
+        List<PlacedPacks.Pack> packs = new ArrayList<>();
         for (PanelArea area : PanelArea.values()) {
             if (area.isTool()) {
+                PlacedPacks.Place place = switch (area) {
+                    case LEFT -> PlacedPacks.Place.LEFT;
+                    case RIGHT -> PlacedPacks.Place.RIGHT;
+                    default -> PlacedPacks.Place.BOTTOM;
+                };
                 ItemStackHandler handler = handler(area);
                 for (int i = 0; i < handler.getSlots(); i++) {
-                    stacks.add(handler.getStackInSlot(i));
+                    notePack(packs, handler.getStackInSlot(i), place);
                 }
             }
         }
-        stacks.add(cursor);
-        return ExtensionPacks.countPlaced(stacks);
+        notePack(packs, cursor, PlacedPacks.Place.CURSOR);
+        BackpackTier tier = BackpackTier.byCapacity(baseCapacity);
+        return PlacedPacks.count(packs, tier == null ? null : tier.name().toLowerCase());
+    }
+
+    private static void notePack(List<PlacedPacks.Pack> packs, ItemStack stack, PlacedPacks.Place place) {
+        String category = ExtensionPacks.categoryOf(stack);
+        if (category == null) {
+            return;
+        }
+        if (stack.getCount() > 1) {
+            MCFloatingBackpack.LOGGER.warn("An extension pack stack of {} holds {} items; counted as one", category, stack.getCount());
+        }
+        packs.add(new PlacedPacks.Pack(category, ExtensionPacks.tierOf(stack), place));
     }
 
     /** The rows brought in line with the packs placed (035). */
