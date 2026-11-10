@@ -1,0 +1,100 @@
+specs/040-downgrade-protection/DELIVERY.md
+  s_9aefe4a2760245::t_a4648e72055cc0 1-46
+README_CN.md
+  s_9aefe4a2760245::t_a4648e72055cc0 52-55
+specs/040-downgrade-protection/quickstart.md
+  s_9aefe4a2760245::t_d6e26cea026260 1-37,39-49
+  s_9aefe4a2760245::t_b291341898ccf3 38
+src/main/java/pnnh/mcfloatingbackpack/inventory/identity/BackpackGate.java
+  s_9aefe4a2760245::t_2ffe951c317ada 6-7,15-17,19-21,42-44,48-61,80,136-222,229-231,233
+  s_9aefe4a2760245::t_d0af21dec6dbf8 232
+specs/040-downgrade-protection/tasks.md
+  s_9aefe4a2760245::t_a4648e72055cc0 18,22-26,36-40,46-51,57-62
+  s_9aefe4a2760245::t_3315549656e342 1-17,19-21,27-35,41-45,52-56,63-67,69-86
+  s_9aefe4a2760245::t_b291341898ccf3 68
+src/main/java/pnnh/mcfloatingbackpack/inventory/recipe/BackpackUpgradeRecipe.java
+  s_9aefe4a2760245::t_8bbbe9914db5a3 69-80,92
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_51ca106c38b4d4 82-83
+specs/040-downgrade-protection/contracts/texts.md
+  s_9aefe4a2760245::t_82228cea3a225c 1-4,6-20
+  s_9aefe4a2760245::t_d6e26cea026260 5
+src/main/java/pnnh/mcfloatingbackpack/inventory/revision/ProtectionWindows.java
+  s_9aefe4a2760245::t_51ca106c38b4d4 1-53
+src/test/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevisionTest.java
+  s_9aefe4a2760245::t_51ca106c38b4d4 1-32
+src/test/java/pnnh/mcfloatingbackpack/inventory/revision/RevisionGuardTest.java
+  s_9aefe4a2760245::t_51ca106c38b4d4 1-44
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackOpenRequestPayload.java
+  s_9aefe4a2760245::t_2ffe951c317ada 78-79
+src/main/java/pnnh/mcfloatingbackpack/inventory/pickup/AutoPickupEvents.java
+  s_9aefe4a2760245::t_2ffe951c317ada 102-103
+design/demo/tools/downgrade_experiment.sh
+  s_9aefe4a2760245::t_47606f1b6ab0c9 57-58,64
+  s_9aefe4a2760245::t_65dc5947019dbf 1-8,10-25,27,29-56,59-63,65-89
+  s_9aefe4a2760245::t_b291341898ccf3 9,26,28
+README.md
+  s_9aefe4a2760245::t_a4648e72055cc0 52-55
+src/main/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevision.java
+  s_9aefe4a2760245::t_51ca106c38b4d4 1-29
+src/main/java/pnnh/mcfloatingbackpack/inventory/revision/RevisionGuard.java
+  s_9aefe4a2760245::t_51ca106c38b4d4 1-33
+specs/040-downgrade-protection/spec.md
+  s_9aefe4a2760245::t_a0b4a59758431c 1-211
+specs/040-downgrade-protection/checklists/requirements.md
+  s_9aefe4a2760245::t_b6352e8fd0b1d5 1-35
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_9aefe4a2760245::t_c82126e48b647d 391-393,395-396
+src/main/java/pnnh/mcfloatingbackpack/version/VersionDebug.java
+  s_9aefe4a2760245::t_c82126e48b647d 13-15,41-52
+  s_9aefe4a2760245::t_a38e5db0b23b75 53
+src/test/java/pnnh/mcfloatingbackpack/resources/DowngradeProtectionResourcesTest.java
+  s_9aefe4a2760245::t_08b3f9a95baac4 1-148
+specs/040-downgrade-protection/contracts/protection.md
+  s_9aefe4a2760245::t_82228cea3a225c 1-34
+src/test/java/pnnh/mcfloatingbackpack/inventory/revision/ProtectionWindowsTest.java
+  s_9aefe4a2760245::t_51ca106c38b4d4 1-83
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackContentsRevisionTest.java
+  s_9aefe4a2760245::t_8bbbe9914db5a3 1-58
+specs/040-downgrade-protection/plan.md
+  s_9aefe4a2760245::t_92feb8bf4b62aa 1,3,7-21,25,27,29,31,33,35,37,41-57,64-73,79-96,99,103
+  s_9aefe4a2760245::t_11dade658d4aec 2,4-6,22-24,26,28,30,32,34,36,38-40,58-63,74-78,97-98,100-102
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_51ca106c38b4d4 82-83
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_a4648e72055cc0 128
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_a4648e72055cc0 228-242
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackContents.java
+  s_9aefe4a2760245::t_ccbf929fe114d9 43-44,68-73,110,119-131,149-150,189-190,193,195,199-204
+specs/040-downgrade-protection/data-model.md
+  s_9aefe4a2760245::t_82228cea3a225c 1-54
+specs/040-downgrade-protection/research.md
+  s_9aefe4a2760245::t_82228cea3a225c 1-85
+  s_9aefe4a2760245::t_b291341898ccf3 86
+.specify/feature.json
+  s_9aefe4a2760245::t_307b37a71f7bf0 2
+docs/plan/release-process.md
+  s_9aefe4a2760245::t_a4648e72055cc0 38-48,58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3b4f57eeba11b6d004fbf211d842ef632963a060",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
