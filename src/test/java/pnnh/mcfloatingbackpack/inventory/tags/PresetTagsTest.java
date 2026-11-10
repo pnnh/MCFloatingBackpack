@@ -11,9 +11,10 @@ import org.junit.jupiter.api.Test;
 
 class PresetTagsTest {
     @Test
-    void theTenPresetsInOrder() {
+    void theThirteenPresetsInOrder() {
         assertEquals(
-                List.of("stone", "wood", "food", "ore", "trash", "tool", "weapon", "armor", "plant", "redstone"),
+                List.of("stone", "wood", "food", "ore", "trash", "tool", "weapon", "armor", "plant", "redstone",
+                        "crop", "potion", "disc"),
                 PresetTags.ids());
     }
 

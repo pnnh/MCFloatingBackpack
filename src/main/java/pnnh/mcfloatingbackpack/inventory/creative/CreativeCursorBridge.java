@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorRules.Verdict;
 import pnnh.mcfloatingbackpack.network.CreativeCursorPushPayload;
 
@@ -49,8 +50,11 @@ public final class CreativeCursorBridge {
         if (verdict != Verdict.ACCEPT) {
             MCFloatingBackpack.LOGGER.debug(
                     "Ignored a creative cursor report from {}: {}", player.getGameProfile().getName(), verdict);
+            DiagLog.record(player.getUUID(), "creative cursor report ignored (" + verdict + "): " + DiagLog.stack(stack));
             return;
         }
+        DiagLog.record(player.getUUID(), "creative cursor report: client says " + DiagLog.stack(stack) + ", server menu had "
+                + DiagLog.stack(player.inventoryMenu.getCarried()));
         player.inventoryMenu.setCarried(stack.copy());
         mirrorOf(player).received(stack);
     }
@@ -70,6 +74,7 @@ public final class CreativeCursorBridge {
         CursorMirror<ItemStack> mirror = mirrorOf(player);
         ItemStack carried = menu.getCarried();
         if (mirror.shouldSend(carried)) {
+            DiagLog.record(player.getUUID(), "creative cursor push: tells the client " + DiagLog.stack(carried));
             PacketDistributor.sendToPlayer(player, new CreativeCursorPushPayload(carried.copy()));
             mirror.sent(carried);
         }

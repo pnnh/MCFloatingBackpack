@@ -48,16 +48,16 @@ class TrashSendRequestTest {
             tooMany[i] = i;
         }
         assertFalse(TrashSendRequest.validate(Source.MAIN_SLOTS, tooMany, 0, 27));
-        int[] all = new int[108];
+        int[] all = new int[423];
         for (int i = 0; i < all.length; i++) {
             all[i] = i;
         }
-        assertTrue(TrashSendRequest.validate(Source.MAIN_SLOTS, all, 0, 108));
-        int[] over = new int[109];
+        assertTrue(TrashSendRequest.validate(Source.MAIN_SLOTS, all, 0, 423));
+        int[] over = new int[424];
         for (int i = 0; i < over.length; i++) {
             over[i] = i;
         }
-        assertFalse(TrashSendRequest.validate(Source.MAIN_SLOTS, over, 0, 200));
+        assertFalse(TrashSendRequest.validate(Source.MAIN_SLOTS, over, 0, 500));
     }
 
     @Test

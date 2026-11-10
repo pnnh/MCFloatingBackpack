@@ -1,6 +1,7 @@
 package pnnh.mcfloatingbackpack.inventory.pickup;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.function.IntFunction;
 import java.util.function.ObjIntConsumer;
@@ -27,13 +28,22 @@ public final class PickupInsert {
 
     public static <T> Result<T> insert(
             QuickTransferLogic.StackOps<T> ops, T stack, int size, IntFunction<T> get, ObjIntConsumer<T> set) {
+        int[] order = new int[size];
+        Arrays.setAll(order, i -> i);
+        return insert(ops, stack, List.of(order), get, set);
+    }
+
+    /**
+     * 035: the same, over segments of slots tried one after the other (the rows of the category extensions that take the stack
+     * first, then the tier capacity's cells).
+     */
+    public static <T> Result<T> insert(
+            QuickTransferLogic.StackOps<T> ops, T stack, List<int[]> segments, IntFunction<T> get, ObjIntConsumer<T> set) {
         if (ops.isEmpty(stack)) {
             return new Result<>(ops.empty(), 0, new int[0]);
         }
-        int[] order = new int[size];
-        Arrays.setAll(order, i -> i);
         TreeSet<Integer> changed = new TreeSet<>();
-        T rest = QuickTransferLogic.moveInto(ops, stack, order, get, (written, index) -> {
+        T rest = QuickTransferLogic.moveIntoSegments(ops, stack, segments, get, (written, index) -> {
             set.accept(written, index);
             changed.add(index);
         });

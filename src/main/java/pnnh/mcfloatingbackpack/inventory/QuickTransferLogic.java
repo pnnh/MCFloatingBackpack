@@ -1,5 +1,6 @@
 package pnnh.mcfloatingbackpack.inventory;
 
+import java.util.List;
 import java.util.function.IntFunction;
 import java.util.function.ObjIntConsumer;
 
@@ -70,5 +71,23 @@ public final class QuickTransferLogic {
         }
 
         return remaining <= 0 ? ops.empty() : ops.withCount(source, remaining);
+    }
+
+    /**
+     * 035: {@link #moveInto} over several segments of target slots, tried one after the other: what one segment could not take
+     * goes on to the next. Each segment has the rule of {@code moveInto} (top up the same kind first, then fill empty slots), so
+     * with the matching rows of the category extensions as the first segment and the tier capacity's cells as the second a stack
+     * goes to a row that takes it before the main cells.
+     */
+    public static <T> T moveIntoSegments(
+            StackOps<T> ops, T source, List<int[]> segments, IntFunction<T> getTarget, ObjIntConsumer<T> setTarget) {
+        T rest = source;
+        for (int[] segment : segments) {
+            if (ops.isEmpty(rest)) {
+                break;
+            }
+            rest = moveInto(ops, rest, segment, getTarget, setTarget);
+        }
+        return ops.isEmpty(rest) ? ops.empty() : rest;
     }
 }

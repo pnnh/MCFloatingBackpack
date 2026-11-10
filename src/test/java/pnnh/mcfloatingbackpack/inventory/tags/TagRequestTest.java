@@ -36,16 +36,16 @@ class TagRequestTest {
 
     @Test
     void rejectsTooManySlots() {
-        int[] all = new int[109];
+        int[] all = new int[424];
         for (int i = 0; i < all.length; i++) {
             all[i] = i;
         }
-        assertFalse(TagRequest.validate(Op.ADD, all, "wood", 200));
-        int[] ok = new int[108];
+        assertFalse(TagRequest.validate(Op.ADD, all, "wood", 500));
+        int[] ok = new int[423];
         for (int i = 0; i < ok.length; i++) {
             ok[i] = i;
         }
-        assertTrue(TagRequest.validate(Op.ADD, ok, "wood", 108));
+        assertTrue(TagRequest.validate(Op.ADD, ok, "wood", 423));
     }
 
     @Test

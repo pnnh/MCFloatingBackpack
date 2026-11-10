@@ -104,4 +104,13 @@ class ToolAreaRulesTest {
         assertTrue(can(PanelArea.LEFT, "tags", 2, "tags", E, E));
         assertTrue(can(PanelArea.LEFT, "dirt", 1, "auto", E));
     }
+
+    /** 035: an extension pack is not one of the limited tools, so any number of them goes into any area. */
+    @Test
+    void extensionPacksAreNotLimitedPerArea() {
+        for (PanelArea area : new PanelArea[] {PanelArea.LEFT, PanelArea.RIGHT, PanelArea.BOTTOM}) {
+            assertTrue(can(area, "food_pack", 2, "food_pack", "food_pack", E));
+            assertTrue(can(area, "food_pack", 0, "food_pack", "tool_pack", "food_pack"));
+        }
+    }
 }

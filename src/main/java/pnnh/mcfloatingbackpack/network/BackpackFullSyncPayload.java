@@ -16,27 +16,42 @@ import pnnh.mcfloatingbackpack.client.panel.ClientBackpackView;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
+import pnnh.mcfloatingbackpack.inventory.extension.RowView;
 
 public record BackpackFullSyncPayload(
-        int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor, ToolAreaContents tools)
+        int sourceOrdinal,
+        int invIndex,
+        List<ItemStack> slots,
+        ItemStack cursor,
+        ToolAreaContents tools,
+        RowView rows)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackFullSyncPayload> TYPE =
             new CustomPacketPayload.Type<>(
                     ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, "full_sync"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, BackpackFullSyncPayload> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.VAR_INT,
-                    BackpackFullSyncPayload::sourceOrdinal,
-                    ByteBufCodecs.VAR_INT,
-                    BackpackFullSyncPayload::invIndex,
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_SIZE)),
-                    BackpackFullSyncPayload::slots,
-                    ItemStack.OPTIONAL_STREAM_CODEC,
-                    BackpackFullSyncPayload::cursor,
-                    ToolAreaContents.STREAM_CODEC,
-                    BackpackFullSyncPayload::tools,
-                    BackpackFullSyncPayload::new);
+    private static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStack>> SLOTS_CODEC =
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_MAIN_SLOTS));
+
+    /** Written by hand: with the rows (035) it has more fields than {@code StreamCodec.composite} takes. */
+    public static final StreamCodec<RegistryFriendlyByteBuf, BackpackFullSyncPayload> STREAM_CODEC = StreamCodec.of(
+            (buf, payload) -> {
+                ByteBufCodecs.VAR_INT.encode(buf, payload.sourceOrdinal());
+                ByteBufCodecs.VAR_INT.encode(buf, payload.invIndex());
+                SLOTS_CODEC.encode(buf, payload.slots());
+                ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, payload.cursor());
+                ToolAreaContents.STREAM_CODEC.encode(buf, payload.tools());
+                RowView.STREAM_CODEC.encode(buf, payload.rows());
+            },
+            buf -> {
+                int sourceOrdinal = ByteBufCodecs.VAR_INT.decode(buf);
+                int invIndex = ByteBufCodecs.VAR_INT.decode(buf);
+                List<ItemStack> slots = SLOTS_CODEC.decode(buf);
+                ItemStack cursor = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+                ToolAreaContents tools = ToolAreaContents.STREAM_CODEC.decode(buf);
+                RowView rows = RowView.STREAM_CODEC.decode(buf);
+                return new BackpackFullSyncPayload(sourceOrdinal, invIndex, slots, cursor, tools, rows);
+            });
 
     public static BackpackFullSyncPayload from(BackpackRef ref, BackpackInventory inventory) {
         List<ItemStack> slots = new ArrayList<>(inventory.size());
@@ -48,7 +63,8 @@ public record BackpackFullSyncPayload(
                 ref.invIndex(),
                 slots,
                 inventory.getCursor().copy(),
-                inventory.toolContents());
+                inventory.toolContents(),
+                inventory.rowView());
     }
 
     @Override
@@ -58,7 +74,7 @@ public record BackpackFullSyncPayload(
 
     public static void handleClient(BackpackFullSyncPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
-            ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor());
+            ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor(), payload.rows());
             BackpackRef.Source[] sources = BackpackRef.Source.values();
             int ord = payload.sourceOrdinal();
             BackpackRef.Source source =

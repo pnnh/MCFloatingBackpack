@@ -11,6 +11,7 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaCapacity;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
+import pnnh.mcfloatingbackpack.inventory.extension.RowView;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 
 /**
@@ -24,6 +25,8 @@ public final class ClientBackpackView {
     /** The three tool areas (016); a list's length is the area's slot count. */
     private final Map<PanelArea, NonNullList<ItemStack>> tools = new EnumMap<>(PanelArea.class);
     private ItemStack cursor = ItemStack.EMPTY;
+    /** 035: the tier capacity, the visible rows' categories and the hidden items' summary; the layout does not read it yet (036). */
+    private RowView rowView = RowView.none(BackpackTier.LEATHER.capacity());
     private pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
     private pnnh.mcfloatingbackpack.inventory.trash.TrashContents trash =
             pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
@@ -168,11 +171,19 @@ public final class ClientBackpackView {
         this.activeRef = null;
     }
 
-    public void applyFull(List<ItemStack> synced, ToolAreaContents syncedTools, ItemStack syncedCursor) {
+    /** 035: what the server said about the rows (where they start, their categories, what is hidden). */
+    public RowView rowView() {
+        return rowView;
+    }
+
+    public void applyFull(List<ItemStack> synced, ToolAreaContents syncedTools, ItemStack syncedCursor, RowView syncedRows) {
         int count = synced == null ? 0 : synced.size();
         if (count <= 0) {
             count = BackpackTier.LEATHER.capacity();
         }
+        rowView = syncedRows == null ? RowView.none(count) : syncedRows;
+        // The tool areas are sized by the tier capacity, not by the main area, which the rows make bigger.
+        int base = rowView.baseCapacity() > 0 ? rowView.baseCapacity() : count;
         boolean sizeChanged = count != slots.size();
         NonNullList<ItemStack> next = NonNullList.withSize(count, ItemStack.EMPTY);
         for (int i = 0; i < count; i++) {
@@ -185,7 +196,7 @@ public final class ClientBackpackView {
                 continue;
             }
             List<ItemStack> source = syncedTools == null ? List.of() : syncedTools.list(area);
-            int toolSize = source.isEmpty() ? ToolAreaCapacity.of(area, count) : source.size();
+            int toolSize = source.isEmpty() ? ToolAreaCapacity.of(area, base) : source.size();
             NonNullList<ItemStack> toolNext = NonNullList.withSize(toolSize, ItemStack.EMPTY);
             for (int i = 0; i < toolSize && i < source.size(); i++) {
                 ItemStack stack = source.get(i);
@@ -213,6 +224,7 @@ public final class ClientBackpackView {
         slots = NonNullList.withSize(BackpackTier.LEATHER.capacity(), ItemStack.EMPTY);
         resetTools(BackpackTier.LEATHER.capacity());
         cursor = ItemStack.EMPTY;
+        rowView = RowView.none(BackpackTier.LEATHER.capacity());
         tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
         trash = pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
         pickupBlacklist = pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY;

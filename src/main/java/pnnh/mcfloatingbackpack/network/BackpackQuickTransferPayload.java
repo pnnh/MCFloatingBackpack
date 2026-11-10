@@ -12,6 +12,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.MenuOwner;
+import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
@@ -90,6 +91,8 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                 return;
             }
             Direction direction = Direction.fromByte(payload.direction());
+            DiagLog.record(player.getUUID(), "quick transfer " + direction + " slots=" + (payload.slots() == null ? 0 : payload.slots().length)
+                    + " hand=" + DiagLog.stack(player.getMainHandItem()));
             if (!QuickTransferRequest.validate(direction, payload.slots(), backpack.size())) {
                 return;
             }
@@ -133,7 +136,6 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
 
     /** Player inventory indices -> backpack slots. The backpack item itself is never moved. */
     static void inventoryToBackpack(Inventory inventory, BackpackInventory backpack, int[] sources, int protectedIndex) {
-        int[] targets = ascending(backpack.size());
         for (int index : sources) {
             if (index == protectedIndex) {
                 continue;
@@ -142,13 +144,8 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             if (stack.isEmpty()) {
                 continue;
             }
-            ItemStack rest = QuickTransferLogic.moveInto(
-                    ItemStackTransferOps.INSTANCE,
-                    stack,
-                    targets,
-                    backpack::getStackInSlot,
-                    (s, i) -> backpack.setStackInSlot(i, s));
-            inventory.setItem(index, rest);
+            // 035: into the rows that take the stack first, then into the tier capacity's cells.
+            inventory.setItem(index, backpack.insertIntoMain(stack));
         }
     }
 

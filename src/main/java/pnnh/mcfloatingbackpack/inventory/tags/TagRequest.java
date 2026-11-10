@@ -3,13 +3,15 @@ package pnnh.mcfloatingbackpack.inventory.tags;
 import java.util.HashSet;
 import java.util.Set;
 
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
+
 /**
  * 018: the part of a tag request that can be checked without looking at the backpack. The server then resolves the
  * slots to item ids with the real contents, so the client is never trusted to say what an item is.
  */
 public final class TagRequest {
     /** The most slots one request may name (the biggest main area). */
-    public static final int MAX_SLOTS = 108;
+    public static final int MAX_SLOTS = ExtensionCategories.MAX_MAIN_SLOTS;
 
     public enum Op {
         ADD,

@@ -1,0 +1,29 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:logs",
+      "required": false
+    },
+    {
+      "id": "#minecraft:planks",
+      "required": false
+    },
+    {
+      "id": "#c:stripped_logs",
+      "required": false
+    },
+    {
+      "id": "#c:stripped_woods",
+      "required": false
+    },
+    {
+      "id": "#c:rods/wooden",
+      "required": false
+    },
+    {
+      "id": "#minecraft:bamboo_blocks",
+      "required": false
+    }
+  ]
+}

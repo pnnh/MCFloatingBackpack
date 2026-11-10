@@ -3,6 +3,8 @@ package pnnh.mcfloatingbackpack.inventory;
 import java.util.HashSet;
 import java.util.Set;
 
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
+
 /**
  * Rules for a client's quick-transfer request, kept free of Minecraft types so they can be
  * unit-tested. The server runs {@link #validate} before touching any item.
@@ -10,8 +12,8 @@ import java.util.Set;
 public final class QuickTransferRequest {
     /** Size of the player's main inventory plus hotbar (indices 0-35). */
     public static final int INVENTORY_SLOTS = 36;
-    /** Largest backpack (netherite). */
-    public static final int MAX_BACKPACK_SLOTS = 108;
+    /** Largest main area: the netherite capacity and the most rows of the category extensions (035). */
+    public static final int MAX_BACKPACK_SLOTS = ExtensionCategories.MAX_MAIN_SLOTS;
     /** Cap on menu-slot indices in one reverse (container -> backpack) request. */
     public static final int MAX_MENU_SLOTS = 256;
 

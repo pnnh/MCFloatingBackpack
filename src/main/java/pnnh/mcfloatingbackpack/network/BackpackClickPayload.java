@@ -18,7 +18,9 @@ import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPackRules;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
@@ -92,13 +94,16 @@ public record BackpackClickPayload(
             if (area == null
                     || !payload.panelOpen()
                     || payload.slotIndex() < 0
-                    || payload.slotIndex() >= (area.isTool() ? ToolAreaContents.MAX_TOOL_SLOTS : BackpackInventory.MAX_SIZE)) {
+                    || payload.slotIndex() >= (area.isTool() ? ToolAreaContents.MAX_TOOL_SLOTS : BackpackInventory.MAX_MAIN_SLOTS)) {
+                DiagLog.record(serverPlayer.getUUID(), "click ignored: bad request area=" + payload.area() + " slot=" + payload.slotIndex()
+                        + " panelOpen=" + payload.panelOpen());
                 return;
             }
 
             BackpackRef claimed = decodeRef(payload.sourceOrdinal(), payload.invIndex());
             BackpackRef resolved = BackpackRef.resolve(serverPlayer);
             if (resolved == null || !resolved.stillValid(serverPlayer)) {
+                DiagLog.record(serverPlayer.getUUID(), "click ignored: no backpack to resolve (claimed " + claimed + "); the panel is told to close");
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }
@@ -116,7 +121,7 @@ public record BackpackClickPayload(
             BackpackInventory inventory = BackpackGate.acquire(serverPlayer, ref).orElse(null);
 
             if (inventory == null) {
-
+                DiagLog.record(serverPlayer.getUUID(), "click ignored: the backpack gate refused " + ref + "; the panel is told to close");
                 BackpackNetwork.sendSession(serverPlayer, false, null);
 
                 return;
@@ -128,6 +133,9 @@ public record BackpackClickPayload(
             }
             AbstractContainerMenu menu = serverPlayer.containerMenu;
             boolean viaMenu = payload.screenOpen() && menu != null;
+            DiagLog.record(serverPlayer.getUUID(), "click " + area + "#" + payload.slotIndex() + (payload.rightClick() ? " right" : " left")
+                    + (payload.swapHand() ? " swapHand" : "") + (viaMenu ? " viaMenu(" + menu.getClass().getSimpleName() + ")" : "")
+                    + " ref=" + ref + " | " + state(serverPlayer, menu, inventory, area, payload.slotIndex()));
             if (viaMenu && !ServerCompatGate.allows(Action.USE_MENU_CURSOR, MenuOwner.ownerOf(menu))) {
                 return;
             }
@@ -138,6 +146,13 @@ public record BackpackClickPayload(
                 ItemStack held = viaMenu
                         ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
                         : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+                // 035: a pack from the panel's own cursor is already counted among the placed packs; one from the hand or the menu is not.
+                boolean heldIsCursor = viaMenu ? menu.getCarried().isEmpty() : !payload.swapHand();
+                if (!held.isEmpty()
+                        && !ExtensionPackRules.canPlace(inventory, held, heldIsCursor)) {
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                    return;
+                }
                 if (!held.isEmpty()
                         && !ToolAreaRules.canPlace(
                                 area,
@@ -147,6 +162,18 @@ public record BackpackClickPayload(
                                 stack -> stack.is(ModItems.TRASH_CAN.get()),
                                 stack -> stack.is(ModItems.TAG_MANAGER.get()),
                                 stack -> stack.is(ModItems.AUTO_PICKUP.get()))) {
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                    return;
+                }
+            }
+
+            // 035: a cell of a category extension row only takes what fits its category (and a hidden row's or a missing cell takes
+            // nothing); taking out is always allowed. A refused click changes nothing.
+            if (!area.isTool()) {
+                ItemStack held = viaMenu
+                        ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
+                        : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+                if (!held.isEmpty() && !inventory.canPlaceMain(payload.slotIndex(), held)) {
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                     return;
                 }
@@ -179,8 +206,17 @@ public record BackpackClickPayload(
             }
 
             ref.saveInventory(serverPlayer, inventory);
+            DiagLog.record(serverPlayer.getUUID(), "  -> saved | " + state(serverPlayer, menu, inventory, area, payload.slotIndex()));
             BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
         });
+    }
+
+    /** The things a click moves, in a few words: the slot, the panel's cursor, the menu's carried stack and the hand. */
+    private static String state(
+            ServerPlayer player, AbstractContainerMenu menu, BackpackInventory inventory, PanelArea area, int slot) {
+        return "slot=" + DiagLog.stack(inventory.getStackInSlot(area, slot)) + " panelCursor=" + DiagLog.stack(inventory.getCursor())
+                + " carried=" + DiagLog.stack(menu == null ? net.minecraft.world.item.ItemStack.EMPTY : menu.getCarried())
+                + " hand=" + DiagLog.stack(player.getMainHandItem());
     }
 
     private static BackpackRef decodeRef(int sourceOrdinal, int invIndex) {

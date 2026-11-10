@@ -8,6 +8,7 @@ import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.worn.BackpackSearch;
 import pnnh.mcfloatingbackpack.inventory.worn.WornBackpacks;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
+import pnnh.mcfloatingbackpack.network.BackpackNetwork;
 
 /**
  * Points at one floating-backpack stack on a player.
@@ -110,8 +111,15 @@ public record BackpackRef(Source source, int invIndex) {
             return;
         }
         inventory.saveToItem(stack);
+        // 035: saving reconciles the rows with the extension packs placed; if the visible rows are not the ones the working copy
+        // was loaded with, the numbering of the main area has changed and the client needs the whole picture again.
+        BackpackContents saved = stack.get(ModDataComponents.BACKPACK_CONTENTS.get());
+        boolean layoutChanged = saved != null && !saved.rows().visibleCategories().equals(inventory.visibleRowCategories());
         // 030: tell the snapshot service the backpack changed (a snapshot of it is written a little later).
         BackpackGate.afterSave(player, stack);
         setStack(player, stack);
+        if (layoutChanged) {
+            BackpackNetwork.sendFullSyncIfServer(player, this);
+        }
     }
 }

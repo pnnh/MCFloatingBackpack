@@ -105,7 +105,7 @@ public final class AutoPickupEvents {
             result = PickupInsert.insert(
                     ItemStackTransferOps.INSTANCE,
                     stack,
-                    inventory.size(),
+                    inventory.mainTargetOrder(stack),
                     index -> inventory.getStackInSlot(index),
                     (written, index) -> inventory.setStackInSlot(index, written));
             if (result.moved() == 0) {

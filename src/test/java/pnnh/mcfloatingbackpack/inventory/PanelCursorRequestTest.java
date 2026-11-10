@@ -62,10 +62,13 @@ class PanelCursorRequestTest {
     }
 
     @Test
-    void neverMoreThanTheLargestBackpack() {
+    void neverMoreThanTheLargestMainArea() {
         assertTrue(PanelCursorRequest.validate(Mode.DISTRIBUTE_LEFT, range(0, 107), 108));
         assertFalse(PanelCursorRequest.validate(Mode.DISTRIBUTE_LEFT, range(0, 108), 108));
-        // a claimed size above the largest backpack does not raise the cap
-        assertFalse(PanelCursorRequest.validate(Mode.DISTRIBUTE_LEFT, range(0, 108), 500));
+        // 035: the main area can be the biggest tier plus 35 rows of nine
+        assertTrue(PanelCursorRequest.validate(Mode.DISTRIBUTE_LEFT, range(0, 422), 423));
+        assertFalse(PanelCursorRequest.validate(Mode.DISTRIBUTE_LEFT, range(0, 423), 423));
+        // a claimed size above that does not raise the cap
+        assertFalse(PanelCursorRequest.validate(Mode.DISTRIBUTE_LEFT, range(0, 423), 500));
     }
 }

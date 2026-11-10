@@ -66,6 +66,17 @@ public final class TrashBin {
             int[] targets,
             IntFunction<T> getTarget,
             ObjIntConsumer<T> setTarget) {
+        return restore(ops, groups, indices, group -> List.<int[]>of(targets), getTarget, setTarget);
+    }
+
+    /** 035: the target slots come in segments, chosen per group (the rows of the category extensions that take it first). */
+    public static <T> List<T> restore(
+            StackOps<T> ops,
+            List<T> groups,
+            int[] indices,
+            java.util.function.Function<T, List<int[]>> targets,
+            IntFunction<T> getTarget,
+            ObjIntConsumer<T> setTarget) {
         List<T> next = new ArrayList<>(groups == null ? List.of() : groups);
         TreeSet<Integer> order = new TreeSet<>();
         if (indices != null) {
@@ -78,7 +89,7 @@ public final class TrashBin {
                 kept.add(group);
                 continue;
             }
-            T rest = QuickTransferLogic.moveInto(ops, group, targets, getTarget, setTarget);
+            T rest = QuickTransferLogic.moveIntoSegments(ops, group, targets.apply(group), getTarget, setTarget);
             if (!ops.isEmpty(rest)) {
                 kept.add(rest);
             }

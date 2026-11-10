@@ -17,6 +17,7 @@ import pnnh.mcfloatingbackpack.inventory.BackpackContents;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 
@@ -64,6 +65,8 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }
+            DiagLog.record(serverPlayer.getUUID(), "merge panel cursor: panelCursor=" + DiagLog.stack(inventory.getCursor())
+                    + " carried=" + DiagLog.stack(menu.getCarried()) + " menu=" + menu.getClass().getSimpleName());
             BackpackMenuBridge.mergePanelCursorIntoCarried(inventory, menu);
             ref.saveInventory(serverPlayer, inventory);
             menu.broadcastChanges();

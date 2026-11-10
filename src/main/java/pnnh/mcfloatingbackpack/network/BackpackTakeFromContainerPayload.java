@@ -105,10 +105,6 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
 
     static void takeIntoBackpack(ServerPlayer player, BackpackInventory backpack, int[] menuSlots) {
         ContainerMenuAccess access = new ContainerMenuAccess(player);
-        int[] targets = new int[backpack.size()];
-        for (int i = 0; i < targets.length; i++) {
-            targets[i] = i;
-        }
         for (int menuIndex : menuSlots) {
             // Slots of the player's own inventory go through 011's request; here only the container's slots.
             if (!access.isExternalSlot(menuIndex)) {
@@ -118,7 +114,7 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
             ContainerToBackpack.Result result = ContainerToBackpack.take(
                     ItemStackTransferOps.INSTANCE,
                     access.slotAccess(menuIndex),
-                    targets,
+                    backpack::mainTargetOrder,
                     backpack::getStackInSlot,
                     (s, i) -> backpack.setStackInSlot(i, s),
                     access.fallback());

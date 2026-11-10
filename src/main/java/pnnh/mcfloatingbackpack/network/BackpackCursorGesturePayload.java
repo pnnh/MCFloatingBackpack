@@ -18,6 +18,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
+import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
@@ -114,6 +115,8 @@ public record BackpackCursorGesturePayload(byte mode, int[] slots, boolean scree
             }
 
             int before = total(backpack, held);
+            DiagLog.record(player.getUUID(), "cursor gesture " + mode + " slots=" + payload.slots().length + " held=" + DiagLog.stack(held)
+                    + " viaMenu=" + cursor.usesMenu() + " hand=" + DiagLog.stack(player.getMainHandItem()));
             switch (mode) {
                 case DISTRIBUTE_LEFT -> distribute(backpack, cursor, held, payload.slots(), DragMode.LEFT);
                 case DISTRIBUTE_RIGHT -> distribute(backpack, cursor, held, payload.slots(), DragMode.RIGHT);
@@ -151,7 +154,9 @@ public record BackpackCursorGesturePayload(byte mode, int[] slots, boolean scree
         // does when the drag ends; only the remaining ones share the stack.
         List<Integer> slots = new ArrayList<>();
         for (int slot : requested) {
-            if (PanelCursorLogic.canQuickReplace(ops, backpack.getStackInSlot(slot), held)) {
+            // 035: a row of the category extensions only takes what fits its category.
+            if (backpack.canPlaceMain(slot, held)
+                    && PanelCursorLogic.canQuickReplace(ops, backpack.getStackInSlot(slot), held)) {
                 slots.add(slot);
             }
         }

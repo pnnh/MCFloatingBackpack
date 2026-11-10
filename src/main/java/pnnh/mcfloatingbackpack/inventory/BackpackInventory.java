@@ -2,10 +2,19 @@ package pnnh.mcfloatingbackpack.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPacks;
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionRules;
+import pnnh.mcfloatingbackpack.inventory.extension.ItemCategoryMatcher;
+import pnnh.mcfloatingbackpack.inventory.extension.Row;
+import pnnh.mcfloatingbackpack.inventory.extension.RowReconciler;
+import pnnh.mcfloatingbackpack.inventory.extension.RowSet;
+import pnnh.mcfloatingbackpack.inventory.extension.RowView;
 import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist;
 import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
@@ -15,11 +24,23 @@ import pnnh.mcfloatingbackpack.item.ModItems;
 
 /**
  * Mutable working copy of one backpack item. Capacity follows that item's tier.
+ *
+ * <p>035: the main area is the cells of the tier capacity followed by the cells of the visible rows of the category
+ * extensions (nine per row, in the order of the rows); {@link #size()} counts all of them, {@link #baseCapacity()} only the
+ * first part. The hidden rows are not in the main area at all; they are only carried along. The rows are reconciled with
+ * the extension packs placed in the tool areas (and on the cursor) when the backpack is loaded and when it is saved.
  */
 public final class BackpackInventory {
-    public static final int MAX_SIZE = 108;
+    /** Most cells the capacity of a tier can have (the netherite backpack). */
+    public static final int MAX_TIER_CAPACITY = ExtensionCategories.MAX_TIER_CAPACITY;
+    /** Most cells the main area can have: the capacity of the tier and every row of the category extensions (035). */
+    public static final int MAX_MAIN_SLOTS = ExtensionCategories.MAX_MAIN_SLOTS;
 
+    private final int baseCapacity;
     private final ItemStackHandler items;
+    /** The categories of the visible rows, in order; the cells of row {@code i} are the nine after the base capacity plus {@code 9 * i}. */
+    private List<String> visibleCategories = List.of();
+    private List<Row<ItemStack>> hiddenRows = List.of();
     /** The three tool areas (016), indexed by {@link PanelArea#ordinal()}; the MAIN slot of the array is unused. */
     private final ItemStackHandler[] tools = new ItemStackHandler[PanelArea.values().length];
     private ItemStack cursor = ItemStack.EMPTY;
@@ -28,7 +49,8 @@ public final class BackpackInventory {
     private PickupBlacklist pickupBlacklist = PickupBlacklist.EMPTY;
 
     public BackpackInventory(int capacity) {
-        int size = Math.max(1, Math.min(MAX_SIZE, capacity));
+        int size = Math.max(1, Math.min(MAX_TIER_CAPACITY, capacity));
+        this.baseCapacity = size;
         this.items = new ItemStackHandler(size);
         for (PanelArea area : PanelArea.values()) {
             if (area.isTool()) {
@@ -37,8 +59,136 @@ public final class BackpackInventory {
         }
     }
 
+    /** The main area's cells: the tier capacity and the cells of the visible rows. */
     public int size() {
         return items.getSlots();
+    }
+
+    /** The tier capacity: the cells before the rows of the category extensions, which is what sizes the tool areas. */
+    public int baseCapacity() {
+        return baseCapacity;
+    }
+
+    /** The categories of the visible rows, in order. */
+    public List<String> visibleRowCategories() {
+        return visibleCategories;
+    }
+
+    /** The hidden rows, in the order they were hidden. */
+    public List<Row<ItemStack>> hiddenRows() {
+        return hiddenRows;
+    }
+
+    /** The rows as they are in the working copy now (not reconciled). */
+    public RowSet<ItemStack> rowSet() {
+        List<Row<ItemStack>> visible = new ArrayList<>(visibleCategories.size());
+        for (int row = 0; row < visibleCategories.size(); row++) {
+            List<ItemStack> cells = new ArrayList<>(ExtensionCategories.ROW_CELLS);
+            for (int cell = 0; cell < ExtensionCategories.ROW_CELLS; cell++) {
+                cells.add(items.getStackInSlot(baseCapacity + row * ExtensionCategories.ROW_CELLS + cell).copy());
+            }
+            visible.add(new Row<>(visibleCategories.get(row), cells));
+        }
+        return new RowSet<>(visible, hiddenRows);
+    }
+
+    /** What the client is told about the rows besides their cells. */
+    public RowView rowView() {
+        return new RowView(baseCapacity, visibleCategories, new RowSet<>(List.of(), hiddenRows).hiddenSummary(ItemStack::isEmpty));
+    }
+
+    /** Whether a stack fits what {@code slot} of the main area takes: anything in the tier capacity, a row's category in a row. */
+    public boolean canPlaceMain(int slot, ItemStack stack) {
+        if (slot < baseCapacity) {
+            return slot >= 0;
+        }
+        return ExtensionRules.canPlace(rowSet(), baseCapacity, slot, stack, new ItemCategoryMatcher(tags));
+    }
+
+    /**
+     * Where a stack is put when it is moved into the main area, as segments to try one after the other (the first is the cells
+     * of the visible rows it fits, the second the tier capacity's cells); see {@link ExtensionRules#targetSegments}. With no
+     * rows the first segment is empty and the second is {@code 0..size()-1}, as it always was.
+     */
+    public List<int[]> mainTargetOrder(ItemStack stack) {
+        if (visibleCategories.isEmpty()) {
+            int[] all = new int[size()];
+            for (int i = 0; i < all.length; i++) {
+                all[i] = i;
+            }
+            return List.of(new int[0], all);
+        }
+        return ExtensionRules.targetSegments(rowSet(), baseCapacity, stack, new ItemCategoryMatcher(tags));
+    }
+
+    /**
+     * Moves a stack into the main area: into the visible rows that take it first, then into the tier capacity's cells, each time
+     * onto same-kind stacks before empty cells. Returns what did not fit.
+     */
+    public ItemStack insertIntoMain(ItemStack stack) {
+        return QuickTransferLogic.moveIntoSegments(
+                ItemStackTransferOps.INSTANCE,
+                stack,
+                mainTargetOrder(stack),
+                this::getStackInSlot,
+                (written, index) -> setStackInSlot(index, written));
+    }
+
+    /** Replaces the rows: resizes the main area to the tier capacity plus the visible rows and fills their cells. */
+    private void applyRows(RowSet<ItemStack> rows) {
+        List<ItemStack> base = new ArrayList<>(baseCapacity);
+        for (int i = 0; i < baseCapacity; i++) {
+            base.add(items.getStackInSlot(i));
+        }
+        items.setSize(baseCapacity + rows.visibleCells());
+        for (int i = 0; i < baseCapacity; i++) {
+            items.setStackInSlot(i, base.get(i));
+        }
+        List<String> categories = new ArrayList<>(rows.visible().size());
+        for (int row = 0; row < rows.visible().size(); row++) {
+            categories.add(rows.visible().get(row).category());
+            List<ItemStack> cells = rows.visible().get(row).cells();
+            for (int cell = 0; cell < ExtensionCategories.ROW_CELLS; cell++) {
+                items.setStackInSlot(
+                        baseCapacity + row * ExtensionCategories.ROW_CELLS + cell, cells.get(cell).copy());
+            }
+        }
+        visibleCategories = List.copyOf(categories);
+        List<Row<ItemStack>> hidden = new ArrayList<>(rows.hidden().size());
+        for (Row<ItemStack> row : rows.hidden()) {
+            List<ItemStack> cells = new ArrayList<>(row.cells().size());
+            for (ItemStack cell : row.cells()) {
+                cells.add(cell.copy());
+            }
+            hidden.add(new Row<>(row.category(), cells));
+        }
+        hiddenRows = List.copyOf(hidden);
+    }
+
+    /** The packs placed: the stacks of the three tool areas and the cursor, counted by category. */
+    public Map<String, Integer> placedPacks() {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (PanelArea area : PanelArea.values()) {
+            if (area.isTool()) {
+                ItemStackHandler handler = handler(area);
+                for (int i = 0; i < handler.getSlots(); i++) {
+                    stacks.add(handler.getStackInSlot(i));
+                }
+            }
+        }
+        stacks.add(cursor);
+        return ExtensionPacks.countPlaced(stacks);
+    }
+
+    /** The rows brought in line with the packs placed (035). */
+    private RowSet<ItemStack> reconciledRows() {
+        return RowReconciler.reconcile(
+                        rowSet(),
+                        placedPacks(),
+                        ItemStack::isEmpty,
+                        () -> ItemStack.EMPTY,
+                        ExtensionCategories.MAX_ROWS)
+                .rows();
     }
 
     public ItemStackHandler items() {
@@ -184,8 +334,8 @@ public final class BackpackInventory {
         if (contents == null) {
             return inventory;
         }
-        BackpackContents fitted = contents.fit(inventory.size());
-        for (int i = 0; i < inventory.size(); i++) {
+        BackpackContents fitted = contents.fit(inventory.baseCapacity());
+        for (int i = 0; i < inventory.baseCapacity(); i++) {
             inventory.setStackInSlot(i, fitted.items().get(i).copy());
         }
         inventory.setCursor(fitted.cursor());
@@ -203,15 +353,19 @@ public final class BackpackInventory {
                 handler.setStackInSlot(i, stored.get(i).copy());
             }
         }
+        // 035: the rows, reconciled with the packs that are placed now.
+        inventory.applyRows(fitted.rows());
+        inventory.applyRows(inventory.reconciledRows());
         return inventory;
     }
 
     public BackpackContents toContents() {
-        List<ItemStack> list = new ArrayList<>(size());
-        for (int i = 0; i < size(); i++) {
+        List<ItemStack> list = new ArrayList<>(baseCapacity);
+        for (int i = 0; i < baseCapacity; i++) {
             list.add(getStackInSlot(i).copy());
         }
-        return BackpackContents.fit(list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, size());
+        return BackpackContents.fit(
+                list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, reconciledRows(), baseCapacity);
     }
 
     public static int capacityOf(ItemStack backpack) {

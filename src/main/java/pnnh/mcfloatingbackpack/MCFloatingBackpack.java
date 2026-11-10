@@ -23,6 +23,8 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import pnnh.mcfloatingbackpack.client.ClientSetup;
 import pnnh.mcfloatingbackpack.compat.CompatConfig;
+import pnnh.mcfloatingbackpack.diag.BackpackWatchService;
+import pnnh.mcfloatingbackpack.diag.DiagConfig;
 import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesCompat;
 import pnnh.mcfloatingbackpack.compat.curios.CuriosCompat;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
@@ -69,6 +71,7 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
                 CreativeCursorBridge.onLogout(player);
+                BackpackWatchService.forget(player.getUUID());
                 // 030: what the player changed last is written as a snapshot now.
                 SnapshotService.get().ifPresent(service -> service.onLogout(player.getUUID()));
             }
@@ -79,11 +82,14 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post event) -> {
             if (event.getServer().getTickCount() % 20 == 0) {
                 SnapshotService.get().ifPresent(SnapshotService::tick);
+                BackpackWatchService.tick(event.getServer());
             }
         });
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> SnapshotCommands.register(event.getDispatcher()));
         // 020: client-only settings; a dedicated server never loads a CLIENT config.
         modContainer.registerConfig(ModConfig.Type.CLIENT, CompatConfig.SPEC);
+        // The server's own log level (the world's serverconfig folder); on a dedicated server this is its only config.
+        modContainer.registerConfig(ModConfig.Type.SERVER, DiagConfig.SERVER_SPEC);
         if (FMLEnvironment.dist.isClient()) {
             ClientSetup.register(modEventBus, modContainer);
         }

@@ -1,5 +1,7 @@
 package pnnh.mcfloatingbackpack.inventory;
 
+import java.util.List;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.ObjIntConsumer;
 
@@ -61,6 +63,17 @@ public final class ContainerToBackpack {
             IntFunction<T> getBackpack,
             ObjIntConsumer<T> setBackpack,
             Fallback<T> fallback) {
+        return take(ops, slot, stack -> List.<int[]>of(backpackTargets), getBackpack, setBackpack, fallback);
+    }
+
+    /** 035: the target slots come in segments, chosen per stack (the rows of the category extensions that take it first). */
+    public static <T> Result take(
+            QuickTransferLogic.StackOps<T> ops,
+            SlotAccess<T> slot,
+            Function<T, List<int[]>> backpackTargets,
+            IntFunction<T> getBackpack,
+            ObjIntConsumer<T> setBackpack,
+            Fallback<T> fallback) {
         T current = slot.get();
         if (ops.isEmpty(current) || !slot.canTakeAndPlaceBack()) {
             return new Result(0, true, false, false);
@@ -70,7 +83,7 @@ public final class ContainerToBackpack {
             return new Result(0, true, false, false);
         }
         int removedCount = ops.count(removed);
-        T rest = QuickTransferLogic.moveInto(ops, removed, backpackTargets, getBackpack, setBackpack);
+        T rest = QuickTransferLogic.moveIntoSegments(ops, removed, backpackTargets.apply(removed), getBackpack, setBackpack);
         int moved = removedCount - ops.count(rest);
 
         boolean usedFallback = false;

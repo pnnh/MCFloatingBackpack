@@ -7,10 +7,12 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.CompatPolicy.Parsed;
+import pnnh.mcfloatingbackpack.diag.DiagConfig;
+import pnnh.mcfloatingbackpack.diag.LogLevel;
 
 /**
  * 020: the client config (config/mcfloatingbackpack-client.toml): one list, {@code modLevels}, of {@code modid=LEVEL}
- * entries. Its element validator accepts any string on purpose: {@code ModConfigSpec} throws a whole list back to
+ * entries (and, since the diagnostics, the client's {@code logging.level}). Its element validator accepts any string on purpose: {@code ModConfigSpec} throws a whole list back to
  * its default if one element fails validation, which would let a typo wipe every setting. {@link CompatPolicy} reads
  * the entries one by one instead.
  */
@@ -18,6 +20,8 @@ public final class CompatConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     public static final ModConfigSpec.ConfigValue<List<? extends String>> MOD_LEVELS;
+    /** The log level of the client's diagnostics (the server has its own, see {@code DiagConfig}). */
+    public static final ModConfigSpec.EnumValue<LogLevel> LOG_LEVEL;
 
     public static final ModConfigSpec SPEC;
 
@@ -40,6 +44,9 @@ public final class CompatConfig {
                         "Example: modLevels = [\"sophisticatedbackpacks=OFF\", \"jei=GENERIC\"]")
                 .translation("config.mcfloatingbackpack.modLevels")
                 .defineListAllowEmpty("modLevels", List.of(), () -> "modid=FULL", element -> element instanceof String);
+        BUILDER.pop();
+        BUILDER.push("logging");
+        LOG_LEVEL = DiagConfig.defineLevel(BUILDER, "client", LogLevel.WARN);
         BUILDER.pop();
         SPEC = BUILDER.build();
     }

@@ -197,16 +197,12 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
 
     /** The groups in the named trash slots go into the main area, onto same-kind stacks first; what does not fit stays. */
     private static void restore(ServerPlayer player, BackpackRef ref, BackpackInventory backpack, int[] slots) {
-        int[] targets = new int[backpack.size()];
-        for (int i = 0; i < targets.length; i++) {
-            targets[i] = i;
-        }
         int before = total(backpack, ItemStack.EMPTY);
         List<ItemStack> left = TrashBin.restore(
                 ItemStackTransferOps.INSTANCE,
                 backpack.trash().groups(),
                 slots,
-                targets,
+                backpack::mainTargetOrder,
                 backpack::getStackInSlot,
                 (stack, index) -> backpack.setStackInSlot(index, stack));
         backpack.setTrash(new TrashContents(left));

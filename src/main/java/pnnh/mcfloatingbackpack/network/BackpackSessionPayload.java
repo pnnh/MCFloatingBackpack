@@ -19,36 +19,52 @@ import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
+import pnnh.mcfloatingbackpack.inventory.extension.RowView;
 
 /**
  * Server tells client whether the panel may be open and pushes a full contents mirror.
  */
 public record BackpackSessionPayload(
-        boolean open, int sourceOrdinal, int invIndex, List<ItemStack> slots, ItemStack cursor, ToolAreaContents tools)
+        boolean open,
+        int sourceOrdinal,
+        int invIndex,
+        List<ItemStack> slots,
+        ItemStack cursor,
+        ToolAreaContents tools,
+        RowView rows)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackSessionPayload> TYPE =
             new CustomPacketPayload.Type<>(
                     ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, "session"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, BackpackSessionPayload> STREAM_CODEC =
-            StreamCodec.composite(
-                    ByteBufCodecs.BOOL,
-                    BackpackSessionPayload::open,
-                    ByteBufCodecs.VAR_INT,
-                    BackpackSessionPayload::sourceOrdinal,
-                    ByteBufCodecs.VAR_INT,
-                    BackpackSessionPayload::invIndex,
-                    ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_SIZE)),
-                    BackpackSessionPayload::slots,
-                    ItemStack.OPTIONAL_STREAM_CODEC,
-                    BackpackSessionPayload::cursor,
-                    ToolAreaContents.STREAM_CODEC,
-                    BackpackSessionPayload::tools,
-                    BackpackSessionPayload::new);
+    private static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStack>> SLOTS_CODEC =
+            ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list(BackpackInventory.MAX_MAIN_SLOTS));
+
+    /** Written by hand: with the rows (035) it has more fields than {@code StreamCodec.composite} takes. */
+    public static final StreamCodec<RegistryFriendlyByteBuf, BackpackSessionPayload> STREAM_CODEC = StreamCodec.of(
+            (buf, payload) -> {
+                ByteBufCodecs.BOOL.encode(buf, payload.open());
+                ByteBufCodecs.VAR_INT.encode(buf, payload.sourceOrdinal());
+                ByteBufCodecs.VAR_INT.encode(buf, payload.invIndex());
+                SLOTS_CODEC.encode(buf, payload.slots());
+                ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, payload.cursor());
+                ToolAreaContents.STREAM_CODEC.encode(buf, payload.tools());
+                RowView.STREAM_CODEC.encode(buf, payload.rows());
+            },
+            buf -> {
+                boolean open = ByteBufCodecs.BOOL.decode(buf);
+                int sourceOrdinal = ByteBufCodecs.VAR_INT.decode(buf);
+                int invIndex = ByteBufCodecs.VAR_INT.decode(buf);
+                List<ItemStack> slots = SLOTS_CODEC.decode(buf);
+                ItemStack cursor = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+                ToolAreaContents tools = ToolAreaContents.STREAM_CODEC.decode(buf);
+                RowView rows = RowView.STREAM_CODEC.decode(buf);
+                return new BackpackSessionPayload(open, sourceOrdinal, invIndex, slots, cursor, tools, rows);
+            });
 
     public static BackpackSessionPayload closed() {
         return new BackpackSessionPayload(
-                false, 0, -1, List.of(), ItemStack.EMPTY, ToolAreaContents.EMPTY);
+                false, 0, -1, List.of(), ItemStack.EMPTY, ToolAreaContents.EMPTY, RowView.none(0));
     }
 
     public static BackpackSessionPayload open(BackpackRef ref, BackpackInventory inventory) {
@@ -62,7 +78,8 @@ public record BackpackSessionPayload(
                 ref.invIndex(),
                 slots,
                 inventory.getCursor().copy(),
-                inventory.toolContents());
+                inventory.toolContents(),
+                inventory.rowView());
     }
 
     @Override
@@ -83,7 +100,7 @@ public record BackpackSessionPayload(
                 HostScreenManager.ensure();
                 return;
             }
-            ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor());
+            ClientBackpackView.get().applyFull(payload.slots(), payload.tools(), payload.cursor(), payload.rows());
             BackpackRef.Source[] sources = BackpackRef.Source.values();
             int ord = payload.sourceOrdinal();
             BackpackRef.Source source =
