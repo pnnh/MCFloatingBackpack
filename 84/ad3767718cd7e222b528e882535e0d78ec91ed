@@ -1,0 +1,122 @@
+specs/037-category-extension-ui/spec.md
+  s_9aefe4a2760245::t_9f87db34e369fe 76-77,181,218
+  s_9aefe4a2760245::t_a9e0beef54492d 188,194,196,205,210
+  s_9aefe4a2760245::t_aaf72fc128a145 1-54,56-75,78-180,182-187,189-193,195,197-204,206-209,211-217,219-234
+  s_9aefe4a2760245::t_5b5f2f7eadafb9 55
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackIconSizeTest.java
+  s_9aefe4a2760245::t_a897795a3d4d2f 1-34
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRulesCategoriesTest.java
+  s_9aefe4a2760245::t_5ed0fb64c83b18 1-72
+src/main/resources/assets/mcfloatingbackpack/models/item/gold_floating_backpack_icon.json
+  s_9aefe4a2760245::t_a897795a3d4d2f 5-9
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_4517dddba321d0 103-107
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionUiResourcesTest.java
+  s_9aefe4a2760245::t_dedeab92bb5b15 1-127
+.specify/feature.json
+  s_9aefe4a2760245::t_726d862fcc5d63 2
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_635b661b3ae2b3 192-202
+src/main/java/pnnh/mcfloatingbackpack/client/panel/CategoryStyle.java
+  s_9aefe4a2760245::t_01c8547ae30b54 1-11,14-31,33-36,38-49
+  s_9aefe4a2760245::t_db6a211680d8e0 12-13
+  s_9aefe4a2760245::t_9e2af0602b021d 32,37
+src/main/resources/assets/mcfloatingbackpack/models/item/netherite_floating_backpack_icon.json
+  s_9aefe4a2760245::t_a897795a3d4d2f 5-9
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRules.java
+  s_9aefe4a2760245::t_01c8547ae30b54 20-28,36,59-64,66-67
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelDragInput.java
+  s_9aefe4a2760245::t_e6ff40f2f48b8c 73-80,165,190-192
+  s_9aefe4a2760245::t_1fb55bf200a6db 193-194
+specs/037-category-extension-ui/contracts/ui.md
+  s_9aefe4a2760245::t_db6a211680d8e0 20
+  s_9aefe4a2760245::t_d121ddba45edf3 1-19,21-55,57-61,63-66
+  s_9aefe4a2760245::t_0b48002b576f04 56,62
+specs/037-category-extension-ui/research.md
+  s_9aefe4a2760245::t_4b8f41787df03b 1-103
+specs/037-category-extension-ui/quickstart.md
+  s_9aefe4a2760245::t_0b48002b576f04 1-62
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/RowLayoutTest.java
+  s_9aefe4a2760245::t_5ed0fb64c83b18 1-139
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_4517dddba321d0 103-107
+specs/037-category-extension-ui/checklists/requirements.md
+  s_9aefe4a2760245::t_a9e0beef54492d 1-35
+src/main/resources/assets/mcfloatingbackpack/models/item/diamond_floating_backpack_icon.json
+  s_9aefe4a2760245::t_a897795a3d4d2f 5-9
+docs/plan/category-extensions.md
+  s_9aefe4a2760245::t_b28502f282f6ef 139-140
+  s_9aefe4a2760245::t_e9a7030fa4443d 141
+  s_9aefe4a2760245::t_f7f9ebe6b4838d 138
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_a4a9817a66dac0 8,10-11,32-33,38-40,81-85,139,237,295-297,313-316,319-321,341-342,348-411
+  s_9aefe4a2760245::t_b37da4554189cc 86-87,198-206,212-236
+  s_9aefe4a2760245::t_59faeb59ce4fb0 238,412
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/HiddenHint.java
+  s_9aefe4a2760245::t_01c8547ae30b54 1-36
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientPlacement.java
+  s_9aefe4a2760245::t_14d2b3830b4963 1-70
+specs/037-category-extension-ui/contracts/prediction.md
+  s_9aefe4a2760245::t_d121ddba45edf3 1-37
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelDragGestureAcceptTest.java
+  s_9aefe4a2760245::t_5ed0fb64c83b18 1-121
+src/main/java/pnnh/mcfloatingbackpack/client/panel/PanelDragGesture.java
+  s_9aefe4a2760245::t_9425442644999b 59-64,111-116,131,149-153,168
+src/test/java/pnnh/mcfloatingbackpack/client/panel/CategoryStyleTest.java
+  s_9aefe4a2760245::t_db6a211680d8e0 40
+  s_9aefe4a2760245::t_5ed0fb64c83b18 1-39,41-58
+src/main/resources/assets/mcfloatingbackpack/models/item/iron_floating_backpack_icon.json
+  s_9aefe4a2760245::t_a897795a3d4d2f 5-9
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_9aefe4a2760245::t_965bfb3696fba2 192-193,197,252-254
+specs/037-category-extension-ui/data-model.md
+  s_9aefe4a2760245::t_d121ddba45edf3 1-58
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_9aefe4a2760245::t_e6ff40f2f48b8c 306-320,326
+  s_9aefe4a2760245::t_5c5f2e11a35d78 327-328
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_e9a7030fa4443d 128
+src/test/java/pnnh/mcfloatingbackpack/client/panel/TitleDotLayoutTest.java
+  s_9aefe4a2760245::t_b37da4554189cc 1-52
+src/test/java/pnnh/mcfloatingbackpack/client/panel/PanelShapeTest.java
+  s_9aefe4a2760245::t_bea065608949bd 33-39
+  s_9aefe4a2760245::t_d0d4e997ce320f 32
+src/main/java/pnnh/mcfloatingbackpack/client/panel/TitleDotLayout.java
+  s_9aefe4a2760245::t_b37da4554189cc 1-38
+specs/037-category-extension-ui/tasks.md
+  s_9aefe4a2760245::t_44aae6c9df047a 1-17,19-23,32-38,43-47,52-58,63-67,71-73,78-85,88-104
+  s_9aefe4a2760245::t_ab8e1ff2c4aae2 18,24-31,39-42,48-51,59-62,68-70,74-77,86-87
+src/main/resources/assets/mcfloatingbackpack/models/item/leather_floating_backpack_icon.json
+  s_9aefe4a2760245::t_a897795a3d4d2f 5-9
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/RowLayout.java
+  s_9aefe4a2760245::t_01c8547ae30b54 1-78
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/HiddenHintTest.java
+  s_9aefe4a2760245::t_5ed0fb64c83b18 1-49
+specs/037-category-extension-ui/DELIVERY.md
+  s_9aefe4a2760245::t_ab8e1ff2c4aae2 1-53
+  s_9aefe4a2760245::t_3e9b6733871a90 54-57
+specs/037-category-extension-ui/plan.md
+  s_9aefe4a2760245::t_e2265b00d0bb81 2,4-6,22-24,26,28,30,32,34,36,38,40,42-44,54,56,60-64,75-79,98-99,101-103
+  s_9aefe4a2760245::t_9a7f866fcb36e3 1,3,7-21,25,27,29,31,33,35,37,39,41,45-53,55,57-59,65-74,80-97,100,104
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "84ad3767718cd7e222b528e882535e0d78ec91ed",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
