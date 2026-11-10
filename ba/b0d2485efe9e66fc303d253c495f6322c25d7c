@@ -1,0 +1,37 @@
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_58dfad95f54db2 184-188,196-201
+  s_9aefe4a2760245::t_1b5094419d3afe 174-175
+specs/036-category-extension-items/DELIVERY.md
+  s_9aefe4a2760245::t_58dfad95f54db2 3
+specs/037-category-extension-ui/DELIVERY.md
+  s_9aefe4a2760245::t_58dfad95f54db2 3,44-46
+docs/plan/category-extensions.md
+  s_9aefe4a2760245::t_58dfad95f54db2 141
+specs/035-category-extension-rules/tasks.md
+  h_6465a203f88bd5 85-87
+specs/036-category-extension-items/tasks.md
+  h_6465a203f88bd5 55-58
+specs/037-category-extension-ui/tasks.md
+  s_9aefe4a2760245::t_58dfad95f54db2 81-85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bab0d2485efe9e66fc303d253c495f6322c25d7c",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
