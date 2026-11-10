@@ -45,7 +45,7 @@ repo/
 thirdpart/
 
 ### Accidental jar extracts / scratch ###
-net/
+/net/
 .tmp-extract/
 .tmp-src/
 
