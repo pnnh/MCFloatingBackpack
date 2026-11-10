@@ -2,5 +2,10 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "mcfloatingbackpack:item/diamond_floating_backpack_icon"
+  },
+  "display": {
+    "gui": {
+      "scale": [1.2, 1.2, 1.2]
+    }
   }
 }

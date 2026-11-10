@@ -70,7 +70,14 @@ public final class PanelDragInput {
         activeScreen = minecraft.screen;
         ClientBackpackView view = ClientBackpackView.get();
         boolean taken = gesture.beginPress(
-                slot, right, FloatingPanelRenderer.cursorStack(minecraft), view::getStackInSlot, mouseX, mouseY, Util.getMillis());
+                slot,
+                right,
+                FloatingPanelRenderer.cursorStack(minecraft),
+                view::getStackInSlot,
+                PanelDragInput::accepts,
+                mouseX,
+                mouseY,
+                Util.getMillis());
         if (!gesture.isActive()) {
             activeButton = -1;
         }
@@ -155,6 +162,7 @@ public final class PanelDragInput {
         return gesture.advance(
                 PanelDragInput::slotAt,
                 ClientBackpackView.get()::getStackInSlot,
+                PanelDragInput::accepts,
                 FloatingPanelRenderer.cursorStack(minecraft),
                 mouseX,
                 mouseY);
@@ -177,6 +185,11 @@ public final class PanelDragInput {
         // is still on its way back from the server, so only the distributing state checks it.
         return gesture.state() == PanelDragGesture.State.DISTRIBUTING
                 && FloatingPanelRenderer.cursorStack(minecraft).isEmpty();
+    }
+
+    /** 037: a cell of a category extension row only takes what fits its category (the server's rule, see ClientPlacement). */
+    private static boolean accepts(int slot, ItemStack cursor) {
+        return ClientPlacement.canPlace(ClientBackpackView.get(), slot, cursor);
     }
 
     private static int slotAt(double x, double y) {

@@ -17,6 +17,15 @@ public final class ExtensionRules {
     /** The cells of the tier capacity take anything; a visible row's cell takes what fits its category; the rest takes nothing. */
     public static <T> boolean canPlace(
             RowSet<T> rows, int baseCapacity, int slot, T stack, CategoryMatcher<T> matcher) {
+        return canPlace(rows.visibleCategories(), baseCapacity, slot, stack, matcher);
+    }
+
+    /**
+     * 037: the same rule from the categories of the visible rows alone, which is all the client is told (it has no cells of the
+     * hidden rows). The version above delegates here, so the server and the panel's prediction run the same code.
+     */
+    public static <T> boolean canPlace(
+            List<String> visibleCategories, int baseCapacity, int slot, T stack, CategoryMatcher<T> matcher) {
         if (slot < 0) {
             return false;
         }
@@ -24,7 +33,7 @@ public final class ExtensionRules {
             return true;
         }
         int row = (slot - baseCapacity) / ExtensionCategories.ROW_CELLS;
-        return row < rows.visible().size() && matcher.matches(rows.visible().get(row).category(), stack);
+        return row < visibleCategories.size() && matcher.matches(visibleCategories.get(row), stack);
     }
 
     /** Which visible row a main-area slot is in: -1 for the tier capacity's cells, -2 for a slot that is in no visible row. */
@@ -47,9 +56,15 @@ public final class ExtensionRules {
      */
     public static <T> List<int[]> targetSegments(
             RowSet<T> rows, int baseCapacity, T stack, CategoryMatcher<T> matcher) {
+        return targetSegments(rows.visibleCategories(), baseCapacity, stack, matcher);
+    }
+
+    /** 037: {@link #targetSegments(RowSet, int, Object, CategoryMatcher)} from the categories of the visible rows alone. */
+    public static <T> List<int[]> targetSegments(
+            List<String> visibleCategories, int baseCapacity, T stack, CategoryMatcher<T> matcher) {
         List<Integer> matching = new ArrayList<>();
-        for (int row = 0; row < rows.visible().size(); row++) {
-            if (matcher.matches(rows.visible().get(row).category(), stack)) {
+        for (int row = 0; row < visibleCategories.size(); row++) {
+            if (matcher.matches(visibleCategories.get(row), stack)) {
                 int first = baseCapacity + row * ExtensionCategories.ROW_CELLS;
                 for (int cell = 0; cell < ExtensionCategories.ROW_CELLS; cell++) {
                     matching.add(first + cell);

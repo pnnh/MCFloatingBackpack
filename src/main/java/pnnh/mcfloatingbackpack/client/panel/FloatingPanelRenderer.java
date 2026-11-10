@@ -5,7 +5,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -26,9 +29,14 @@ import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.extension.HiddenHint;
+import pnnh.mcfloatingbackpack.inventory.extension.RowLayout;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentity;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.ModItems;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Floating panel chrome in vanilla inventory gray, with synced item stacks.
@@ -70,6 +78,13 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_DRAG_SLOT = 0x80FFFFFF;
     /** Border of a selected slot (014): golden, so it differs from the white hover and drag-preview fills. */
     private static final int COLOR_SELECTED = 0xFFFFD34D;
+    /** 037: the hover over a cell of an extension row that cannot take what is on the cursor. */
+    private static final int COLOR_SLOT_DENIED = 0x60FF3030;
+    /** 037: how opaque the faint picture of an extension row's category is in its empty cells. */
+    private static final float GHOST_ALPHA = 0.16F;
+    private static final int COLOR_DENIED_TEXT = 0xFFFF6060;
+    private static final int COLOR_HIDDEN_DOT = 0xFFFFD34D;
+    private static final int COLOR_HIDDEN_DOT_OUTLINE = 0xFF3A2E00;
     private static final int COLOR_CLOSE_BUTTON = 0xFFB33A3A;
     private static final int COLOR_CLOSE_GLYPH = 0xFFFFFFFF;
     private static final int COLOR_SNAPSHOT_BUTTON = 0xFF3A6EA5;
@@ -121,6 +136,7 @@ public final class FloatingPanelRenderer {
         drawSnapshotButton(graphics, state, minecraft, mouseX, mouseY);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
+        drawRowTooltip(graphics, minecraft, mouseX, mouseY);
         // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
         if (TrashPanelState.get().isOpen()) {
             TrashPanelRenderer.render(graphics, mouseX, mouseY);
@@ -179,10 +195,45 @@ public final class FloatingPanelRenderer {
         int iconX = state.getPosX() + 4;
         int iconY = state.getPosY() + 1;
         graphics.renderItem(icon, iconX, iconY);
-        if (state.hitsTitleIcon(mouseX, mouseY)) {
+        // 037: some items are hidden (the rows they were in are not shown): a small yellow dot on the icon's corner and its hint.
+        List<HiddenHint.Line> hidden = HiddenHint.lines(ClientBackpackView.get().rowView().hidden());
+        boolean overDot = !hidden.isEmpty() && TitleDotLayout.hits(state.getPosX(), state.getPosY(), mouseX, mouseY);
+        if (!hidden.isEmpty()) {
+            drawHiddenDot(graphics, state);
+        }
+        if (overDot) {
+            drawHiddenHint(graphics, minecraft, hidden, mouseX, mouseY);
+        } else if (state.hitsTitleIcon(mouseX, mouseY)) {
             graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().baseCapacity()), mouseX, mouseY);
         }
         drawTitleId(graphics, state, minecraft, mouseX, mouseY);
+    }
+
+    /** 037: the yellow dot: a 5 by 5 square without its corners, with a dark outline so it shows on the icon and on the title bar. */
+    private static void drawHiddenDot(GuiGraphics graphics, FloatingPanelState state) {
+        int x = TitleDotLayout.left(state.getPosX());
+        int y = TitleDotLayout.top(state.getPosY());
+        int size = TitleDotLayout.SIZE;
+        // outline: the 5 by 5 square less its corners; fill: the 3 by 3 inside it
+        graphics.fill(x + 1, y, x + size - 1, y + 1, COLOR_HIDDEN_DOT_OUTLINE);
+        graphics.fill(x + 1, y + size - 1, x + size - 1, y + size, COLOR_HIDDEN_DOT_OUTLINE);
+        graphics.fill(x, y + 1, x + 1, y + size - 1, COLOR_HIDDEN_DOT_OUTLINE);
+        graphics.fill(x + size - 1, y + 1, x + size, y + size - 1, COLOR_HIDDEN_DOT_OUTLINE);
+        graphics.fill(x + 1, y + 1, x + size - 1, y + size - 1, COLOR_HIDDEN_DOT);
+    }
+
+    /** 037: which categories have something hidden and in how many cells, and where to get it back. */
+    private static void drawHiddenHint(GuiGraphics graphics, Minecraft minecraft, List<HiddenHint.Line> lines, int mouseX, int mouseY) {
+        List<FormattedCharSequence> out = new ArrayList<>();
+        out.addAll(minecraft.font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.title"), 220));
+        for (HiddenHint.Line line : lines) {
+            Component name = Component.translatable(pnnh.mcfloatingbackpack.inventory.tags.PresetTags.langKey(line.category()));
+            out.addAll(minecraft.font.split(
+                    Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", name, line.cells()), 220));
+        }
+        out.addAll(minecraft.font.split(
+                Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.hint").withStyle(ChatFormatting.GRAY), 220));
+        graphics.renderTooltip(minecraft.font, out, mouseX, mouseY);
     }
 
     /**
@@ -241,6 +292,9 @@ public final class FloatingPanelRenderer {
         PanelLayout.Hit hovered = layout.hit(mouseX, mouseY);
         Preview<ItemStack> preview = PanelDragInput.preview();
         PanelSelection selection = PanelSelection.get();
+        // 037: the rows of the category extensions, once per frame; without rows none of the code that uses it runs.
+        RowLayout rows = rowLayout(view);
+        ItemStack held = rows.hasRows() ? cursorStack(minecraft) : ItemStack.EMPTY;
         for (PanelArea area : PanelArea.values()) {
             if (area == PanelArea.MAIN && (TagPanelState.get().isOpen() || PickupPanelState.get().isOpen())) {
                 continue;
@@ -256,8 +310,15 @@ public final class FloatingPanelRenderer {
                 int sy = layout.cellY(area, ordinal);
                 drawSlotWell(graphics, sx, sy, wellColor(area));
                 ItemStack stack = area == PanelArea.MAIN ? view.getStackInSlot(index) : view.getToolStack(area, index);
+                boolean ofARow = area == PanelArea.MAIN && rows.groupOf(index) >= 0;
+                if (ofARow) {
+                    drawRowDecor(graphics, rows, index, layout.cols(), sx, sy);
+                }
                 // 013 drag preview and 014 selection only exist in the main area.
                 int previewIndex = area == PanelArea.MAIN && preview != null ? preview.slots().indexOf(index) : -1;
+                if (ofARow && stack.isEmpty() && previewIndex < 0) {
+                    drawGhost(graphics, rows.categoryOf(index), sx, sy);
+                }
                 if (previewIndex >= 0) {
                     // 013: the slot is part of the drag; show what it would hold after the release.
                     graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_DRAG_SLOT);
@@ -277,10 +338,76 @@ public final class FloatingPanelRenderer {
                     drawSelectionBorder(graphics, sx, sy);
                 }
                 if (hovered != null && hovered.area() == area && hovered.index() == index) {
-                    graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, COLOR_SLOT_HOVER);
+                    boolean denied = ofARow && !held.isEmpty() && !ClientPlacement.canPlace(view, index, held);
+                    graphics.fill(sx, sy, sx + PanelSlots.SLOT_SIZE, sy + PanelSlots.SLOT_SIZE, denied ? COLOR_SLOT_DENIED : COLOR_SLOT_HOVER);
                 }
             }
         }
+    }
+
+    /** 037: the layout of the extension rows from what the server last said; an empty one when the backpack has none. */
+    private static RowLayout rowLayout(ClientBackpackView view) {
+        return new RowLayout(view.baseCapacity(), view.rowView().visibleCategories());
+    }
+
+    /**
+     * 037: what makes a cell of an extension row look like one: the category's colour over the well, a one pixel line where the
+     * cell above or to its left is in another group (so a row that wraps over the columns gets a staircase), and a small square in
+     * the corner of the row's first cell. The colour alone does not carry the category: the corner, the faint picture in an empty
+     * cell and the tooltip say it too.
+     */
+    private static void drawRowDecor(GuiGraphics graphics, RowLayout rows, int index, int cols, int sx, int sy) {
+        String category = rows.categoryOf(index);
+        int size = PanelSlots.SLOT_SIZE;
+        graphics.fill(sx + 1, sy + 1, sx + size - 1, sy + size - 1, CategoryStyle.fill(category));
+        int edge = CategoryStyle.edge(category);
+        if (rows.topEdge(index, cols)) {
+            graphics.fill(sx, sy, sx + size, sy + 1, edge);
+        }
+        if (rows.leftEdge(index, cols)) {
+            graphics.fill(sx, sy, sx + 1, sy + size, edge);
+        }
+        if (rows.isRowStart(index)) {
+            graphics.fill(sx + 1, sy + 1, sx + 4, sy + 4, edge);
+        }
+    }
+
+    /** 037: a faint picture of the category's extension item in an empty cell of its row (what goes here). Nothing for an unknown category. */
+    private static void drawGhost(GuiGraphics graphics, String category, int sx, int sy) {
+        String id = CategoryStyle.ghostItemId(category);
+        var holder = id == null ? null : ModItems.CATEGORY_EXTENSIONS.get(category);
+        if (holder == null) {
+            return;
+        }
+        Item item = holder.get();
+        TextureAtlasSprite sprite = Minecraft.getInstance().getItemRenderer().getItemModelShaper().getItemModel(item).getParticleIcon();
+        graphics.blit(sx + 1, sy + 1, 0, 16, 16, sprite, 1.0F, 1.0F, 1.0F, GHOST_ALPHA);
+    }
+
+    /** 037: the tooltip of the extension row cell under the mouse: which category the row is and what it takes. */
+    private static void drawRowTooltip(GuiGraphics graphics, Minecraft minecraft, int mouseX, int mouseY) {
+        if (TagPanelState.get().isOpen() || PickupPanelState.get().isOpen()) {
+            return;
+        }
+        ClientBackpackView view = ClientBackpackView.get();
+        RowLayout rows = rowLayout(view);
+        if (!rows.hasRows()) {
+            return;
+        }
+        PanelLayout.Hit hit = view.layout().hit(mouseX, mouseY);
+        if (hit == null || hit.area() != PanelArea.MAIN || rows.groupOf(hit.index()) < 0) {
+            return;
+        }
+        String category = rows.categoryOf(hit.index());
+        Component name = Component.translatable(pnnh.mcfloatingbackpack.inventory.tags.PresetTags.langKey(category));
+        List<FormattedCharSequence> lines = new ArrayList<>(
+                minecraft.font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip", name), 200));
+        ItemStack held = cursorStack(minecraft);
+        if (!held.isEmpty() && !ClientPlacement.canPlace(view, hit.index(), held)) {
+            lines.addAll(minecraft.font.split(
+                    Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".row.denied").withColor(COLOR_DENIED_TEXT), 200));
+        }
+        graphics.renderTooltip(minecraft.font, lines, mouseX, mouseY);
     }
 
     public static int wellColor(PanelArea area) {

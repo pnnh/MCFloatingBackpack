@@ -56,6 +56,12 @@ public final class PanelDragGesture<T> {
         T get(int slotIndex);
     }
 
+    /** 037: whether a slot may take part in a distribution of the cursor's stack (a row of the category extensions only takes its category). */
+    @FunctionalInterface
+    public interface Acceptor<T> {
+        boolean accepts(int slotIndex, T cursor);
+    }
+
     /** Sampling step along the mouse path, in GUI pixels (a slot is 18 px apart). */
     static final double SAMPLE_STEP = 4.0;
     /** Vanilla's double-click window. */
@@ -102,6 +108,12 @@ public final class PanelDragGesture<T> {
      *     release); false when the caller should send the ordinary click right away (empty cursor)
      */
     public boolean beginPress(int slot, boolean rightButton, T cursor, SlotStacks<T> stacks, double x, double y, long nowMs) {
+        return beginPress(slot, rightButton, cursor, stacks, (s, c) -> true, x, y, nowMs);
+    }
+
+    /** {@link #beginPress(int, boolean, Object, SlotStacks, double, double, long)} where only the slots {@code accepts} says yes to can be selected. */
+    public boolean beginPress(
+            int slot, boolean rightButton, T cursor, SlotStacks<T> stacks, Acceptor<T> accepts, double x, double y, long nowMs) {
         boolean dbl = slot == lastClickSlot && nowMs - lastClickTime < DOUBLE_CLICK_MS && rightButton == lastClickRight;
         lastClickSlot = slot;
         lastClickTime = nowMs;
@@ -116,7 +128,7 @@ public final class PanelDragGesture<T> {
         if (!ops.isEmpty(cursor)) {
             state = State.DISTRIBUTING;
             doubleClick = dbl && !rightButton;
-            if (PanelCursorLogic.isValidDragSlot(ops, stacks.get(slot), cursor, 0)) {
+            if (accepts.accepts(slot, cursor) && PanelCursorLogic.isValidDragSlot(ops, stacks.get(slot), cursor, 0)) {
                 selected.add(slot);
             }
             return true;
@@ -134,6 +146,11 @@ public final class PanelDragGesture<T> {
      * While gathering, the newly passed slots holding the gathered kind are returned.
      */
     public List<Integer> advance(Resolver resolver, SlotStacks<T> stacks, T cursor, double x, double y) {
+        return advance(resolver, stacks, (s, c) -> true, cursor, x, y);
+    }
+
+    /** {@link #advance(Resolver, SlotStacks, Object, double, double)} where only the slots {@code accepts} says yes to can be selected. */
+    public List<Integer> advance(Resolver resolver, SlotStacks<T> stacks, Acceptor<T> accepts, T cursor, double x, double y) {
         List<Integer> gathered = new ArrayList<>();
         if (state == State.IDLE) {
             return gathered;
@@ -148,7 +165,7 @@ public final class PanelDragGesture<T> {
             }
             T stack = stacks.get(slot);
             if (state == State.DISTRIBUTING) {
-                if (PanelCursorLogic.isValidDragSlot(ops, stack, cursor, selected.size())) {
+                if (accepts.accepts(slot, cursor) && PanelCursorLogic.isValidDragSlot(ops, stack, cursor, selected.size())) {
                     selected.add(slot);
                 }
             } else if (!ops.isEmpty(stack) && ops.sameKind(stack, gatherKind)) {

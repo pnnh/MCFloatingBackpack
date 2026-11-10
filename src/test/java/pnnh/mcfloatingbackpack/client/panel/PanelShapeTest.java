@@ -30,6 +30,14 @@ class PanelShapeTest {
     }
 
     @Test
+    void theShapeIsJudgedOnTheTierCapacityNotOnTheCellsTheExtensionRowsAdd() {
+        // 037: leather (36 cells) with one extension row is 45 cells. The panel reports 36 (the tier capacity), so the choices stay
+        // 3, 4, 6, 9; had it reported 45 they would have become 3, 5, 9 and the shape the player chose could be taken away.
+        assertEquals(List.of(3, 4, 6, 9), PanelShape.validCols(new Counts(36, 4, 4, 11)));
+        assertEquals(List.of(3, 5, 9), PanelShape.validCols(new Counts(45, 4, 4, 11)));
+    }
+
+    @Test
     void theRowLimitIsTheSideColumnsCapacityNotTheMainAreasTotalRows() {
         assertEquals(4, PanelShape.maxRows(LEATHER, 3)); // 12 total rows, but the side columns have 4 slots
         assertEquals(4, PanelShape.maxRows(LEATHER, 9));

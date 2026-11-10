@@ -189,10 +189,12 @@ public final class ClientBackpackView {
         if (count <= 0) {
             count = BackpackTier.LEATHER.capacity();
         }
+        // 037: whether the backpack itself changed size (another tier or backpack); the rows coming and going does not count.
+        int previousBase = baseCapacity();
         rowView = syncedRows == null ? RowView.none(count) : syncedRows;
         // The tool areas are sized by the tier capacity, not by the main area, which the rows make bigger.
         int base = rowView.baseCapacity() > 0 ? rowView.baseCapacity() : count;
-        boolean sizeChanged = count != slots.size();
+        boolean sizeChanged = base != previousBase;
         NonNullList<ItemStack> next = NonNullList.withSize(count, ItemStack.EMPTY);
         for (int i = 0; i < count; i++) {
             ItemStack stack = synced != null && i < synced.size() ? synced.get(i) : ItemStack.EMPTY;
@@ -247,7 +249,9 @@ public final class ClientBackpackView {
      * area) and decides which panel sizes are valid from all the counts (017).
      */
     private void reportCounts() {
-        FloatingPanelState.get().setMainCount(slots.size());
+        // 037: the panel's valid sizes (017) follow the tier capacity alone, so putting extension packs in or out never changes the
+        // shapes the player can choose; the rows are only more lines to scroll to (the total rows are still counted over every cell).
+        FloatingPanelState.get().setMainCount(baseCapacity());
         for (PanelArea area : PanelArea.values()) {
             if (area.isTool()) {
                 FloatingPanelState.get().setToolCount(area, toolCount(area));

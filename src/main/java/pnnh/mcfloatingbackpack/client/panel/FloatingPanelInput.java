@@ -303,9 +303,27 @@ public final class FloatingPanelInput {
         sendClick(PanelArea.MAIN, slotIndex, rightClick);
     }
 
+    /**
+     * 037: whether what the player holds cannot go into this cell of the main area because it is in a category extension row that
+     * takes something else. Reads the same stack the server will (the cursor, or with Alt and no container screen the main-hand
+     * item). Taking out is never refused. Only the server decides; this spares a request that is certain to change nothing, and the
+     * guess is generous when it cannot be sure (see {@link ClientPlacement}).
+     */
+    private static boolean refusedByRow(int slotIndex) {
+        Minecraft minecraft = Minecraft.getInstance();
+        boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(minecraft.screen);
+        ItemStack held = !screenOpen && Screen.hasAltDown() && minecraft.player != null
+                ? minecraft.player.getMainHandItem()
+                : FloatingPanelRenderer.cursorStack(minecraft);
+        return !held.isEmpty() && !ClientPlacement.canPlace(ClientBackpackView.get(), slotIndex, held);
+    }
+
     static void sendClick(PanelArea area, int slotIndex, boolean rightClick) {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player == null) {
+            return;
+        }
+        if (area == PanelArea.MAIN && refusedByRow(slotIndex)) {
             return;
         }
         BackpackRef ref = ClientBackpackView.get().getActiveRef();
