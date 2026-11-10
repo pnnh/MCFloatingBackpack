@@ -60,7 +60,7 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
                 return;
             }
             // 026: every request into a backpack goes through the registry first.
-            BackpackInventory inventory = BackpackGate.acquire(serverPlayer, ref).orElse(null);
+            BackpackInventory inventory = BackpackGate.acquireForPanel(serverPlayer, ref).orElse(null);
             if (inventory == null) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;

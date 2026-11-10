@@ -25,6 +25,7 @@ public final class DiagLog {
     }
 
     private static final int RING_SIZE = 40;
+    private static final java.time.format.DateTimeFormatter TIME = java.time.format.DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
     private static final Map<UUID, EventRing> RINGS = new ConcurrentHashMap<>();
 
     private DiagLog() {
@@ -59,8 +60,10 @@ public final class DiagLog {
 
     /** Notes a panel action of a player: kept in memory, and written when the server level is DEBUG. */
     public static void record(UUID player, String event) {
-        RINGS.computeIfAbsent(player, id -> new EventRing(RING_SIZE)).add(event);
-        log(Side.SERVER, LogLevel.DEBUG, "{} {}", shortId(player), event);
+        // The time is part of the entry: the ring is written out much later (when something has gone), and the order alone does not say how fast it went.
+        String stamped = TIME.format(java.time.LocalTime.now()) + " " + event;
+        RINGS.computeIfAbsent(player, id -> new EventRing(RING_SIZE)).add(stamped);
+        log(Side.SERVER, LogLevel.DEBUG, "{} {}", shortId(player), stamped);
     }
 
     /** The player's last recorded actions, oldest first. */

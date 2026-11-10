@@ -1,6 +1,7 @@
 package pnnh.mcfloatingbackpack.network;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
@@ -118,7 +119,7 @@ public record BackpackClickPayload(
 
             // 026: every request into a backpack goes through the registry first.
 
-            BackpackInventory inventory = BackpackGate.acquire(serverPlayer, ref).orElse(null);
+            BackpackInventory inventory = BackpackGate.acquireForPanel(serverPlayer, ref).orElse(null);
 
             if (inventory == null) {
                 DiagLog.record(serverPlayer.getUUID(), "click ignored: the backpack gate refused " + ref + "; the panel is told to close");
@@ -150,6 +151,8 @@ public record BackpackClickPayload(
                 boolean heldIsCursor = viaMenu ? menu.getCarried().isEmpty() : !payload.swapHand();
                 if (!held.isEmpty()
                         && !ExtensionPackRules.canPlace(inventory, held, heldIsCursor)) {
+                    // 036: say why nothing happened (the backpack already has the most rows).
+                    serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.limit.extension_rows"), true);
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                     return;
                 }

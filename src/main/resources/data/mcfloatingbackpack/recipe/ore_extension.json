@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:diamond"
+    },
+    "B": {
+      "item": "minecraft:copper_ingot"
+    },
+    "D": {
+      "item": "minecraft:blast_furnace"
+    },
+    "E": {
+      "item": "minecraft:gold_ingot"
+    },
+    "F": {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDE",
+    "IFI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:ore_extension"
+  }
+}

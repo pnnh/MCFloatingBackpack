@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:iron_sword"
+    },
+    "B": {
+      "item": "minecraft:arrow"
+    },
+    "D": {
+      "item": "minecraft:shield"
+    },
+    "E": {
+      "item": "minecraft:bow"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:weapon_extension"
+  }
+}

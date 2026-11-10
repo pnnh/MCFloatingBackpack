@@ -25,6 +25,12 @@ import pnnh.mcfloatingbackpack.client.ClientSetup;
 import pnnh.mcfloatingbackpack.compat.CompatConfig;
 import pnnh.mcfloatingbackpack.diag.BackpackWatchService;
 import pnnh.mcfloatingbackpack.diag.DiagConfig;
+import pnnh.mcfloatingbackpack.diag.DiagLog;
+import pnnh.mcfloatingbackpack.diag.LogLevel;
+import pnnh.mcfloatingbackpack.diag.MainHandTrace;
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPacks;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.item.CategoryExtensionItem;
 import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesCompat;
 import pnnh.mcfloatingbackpack.compat.curios.CuriosCompat;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
@@ -44,12 +50,18 @@ import pnnh.mcfloatingbackpack.snapshot.SnapshotService;
 public class MCFloatingBackpack {
     public static final String MOD_ID = "mcfloatingbackpack";
     public static final Logger LOGGER = LogUtils.getLogger();
+    /** Diagnostics: the server's look at every player's main hand, once a tick. */
+    private static final MainHandTrace SERVER_MAIN_HAND = new MainHandTrace();
 
     public MCFloatingBackpack(IEventBus modEventBus, ModContainer modContainer) {
         LOGGER.info("MCFloatingBackpack loading");
         ModDataComponents.register(modEventBus);
         ModItems.register(modEventBus);
         ModRecipes.register(modEventBus);
+        // 036: the category extensions are what 035's rows are made of: tell the rules which item is a pack of which category.
+        // Both sides run this, so the server's rules and the client agree.
+        ExtensionPacks.register(
+                stack -> stack.getItem() instanceof CategoryExtensionItem extension ? extension.category() : null);
         BackpackNetwork.register(modEventBus);
         // 033: a backpack can be worn in Curios' back slot, but only when Curios is there; nothing of it loads otherwise.
         if (ModList.get().isLoaded("curios")) {
@@ -58,6 +70,9 @@ public class MCFloatingBackpack {
         // 034: and in Accessories' back slot, after Curios' (the client also registers its renderers, in ClientSetup).
         if (ModList.get().isLoaded("accessories")) {
             AccessoriesCompat.register();
+            // 036: and not equipped by the right click that opens the panel (Accessories does that by default; see BackpackAccessory).
+            modEventBus.addListener(
+                    (net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) -> event.enqueueWork(AccessoriesCompat::registerAccessories));
         }
         // 024: the auto pickup. Low priority, so Sophisticated Backpacks and Traveler's Backpack (normal) have run first.
         NeoForge.EVENT_BUS.addListener(
@@ -72,6 +87,8 @@ public class MCFloatingBackpack {
             if (event.getEntity() instanceof ServerPlayer player) {
                 CreativeCursorBridge.onLogout(player);
                 BackpackWatchService.forget(player.getUUID());
+                SERVER_MAIN_HAND.forget(player.getUUID());
+                BackpackGate.forget(player.getUUID());
                 // 030: what the player changed last is written as a snapshot now.
                 SnapshotService.get().ifPresent(service -> service.onLogout(player.getUUID()));
             }
@@ -80,9 +97,28 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent event) -> SnapshotService.start(event.getServer()));
         NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> SnapshotService.stop());
         NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post event) -> {
+            // Every tick: a backpack coming into or going out of a main hand, with the time (see MainHandTrace).
+            for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+                var change = SERVER_MAIN_HAND.observe(player.getUUID(), player.getInventory().selected, player.getMainHandItem());
+                if (change != null) {
+                    DiagLog.record(player.getUUID(), change.text());
+                    DiagLog.log(
+                            DiagLog.Side.SERVER,
+                            change.sameSlot() ? LogLevel.WARN : LogLevel.INFO,
+                            "{} of {} (tick {}); backpacks now: {}",
+                            change.text(),
+                            player.getGameProfile().getName(),
+                            event.getServer().getTickCount(),
+                            MainHandTrace.backpacks(player.getInventory()));
+                }
+            }
             if (event.getServer().getTickCount() % 20 == 0) {
                 SnapshotService.get().ifPresent(SnapshotService::tick);
                 BackpackWatchService.tick(event.getServer());
+                // The panel follows the backpack: if another one is where it looked, show that one (or close if none is left).
+                for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+                    BackpackGate.tickOpenSession(player);
+                }
             }
         });
         NeoForge.EVENT_BUS.addListener((RegisterCommandsEvent event) -> SnapshotCommands.register(event.getDispatcher()));

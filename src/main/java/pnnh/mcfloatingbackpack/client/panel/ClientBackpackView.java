@@ -111,6 +111,14 @@ public final class ClientBackpackView {
     }
 
     /**
+     * 036: the tier's own capacity, without the cells of the extension rows. {@link #slotCount()} is that plus the visible rows,
+     * so it no longer names a tier (the title icon and the tooltip look the tier up by this one).
+     */
+    public int baseCapacity() {
+        return rowView.baseCapacity() > 0 ? rowView.baseCapacity() : slots.size();
+    }
+
+    /**
      * Virtual row count after reflowing the backpack's real slots across the player's current
      * column setting (007): {@code ceil(capacity / visibleCols)}, not a fixed 9-wide division.
      */

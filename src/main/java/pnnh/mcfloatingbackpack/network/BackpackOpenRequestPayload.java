@@ -58,6 +58,11 @@ public record BackpackOpenRequestPayload(boolean wantOpen, int sourceOrdinal, in
             if (!(player instanceof ServerPlayer serverPlayer)) {
                 return;
             }
+            pnnh.mcfloatingbackpack.diag.DiagLog.record(
+                    serverPlayer.getUUID(),
+                    "open request: " + (payload.wantOpen() ? "open" : "close") + ", selected slot " + serverPlayer.getInventory().selected
+                            + ", main hand " + pnnh.mcfloatingbackpack.diag.DiagLog.stack(serverPlayer.getMainHandItem())
+                            + "; backpacks: " + pnnh.mcfloatingbackpack.diag.MainHandTrace.backpacks(serverPlayer.getInventory()));
             if (!payload.wantOpen()) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;

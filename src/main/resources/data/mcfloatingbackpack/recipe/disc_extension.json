@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:diamond"
+    },
+    "B": {
+      "item": "minecraft:note_block"
+    },
+    "D": {
+      "item": "minecraft:jukebox"
+    },
+    "E": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "F": {
+      "tag": "c:music_discs"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDE",
+    "IFI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:disc_extension"
+  }
+}

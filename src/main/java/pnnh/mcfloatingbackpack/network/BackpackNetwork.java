@@ -16,6 +16,7 @@ import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorBridge;
+import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotRequestRules;
 import pnnh.mcfloatingbackpack.snapshot.net.SnapshotActionPayload;
 import pnnh.mcfloatingbackpack.snapshot.net.SnapshotListPayload;
@@ -170,16 +171,23 @@ public final class BackpackNetwork {
 
     public static void sendSession(ServerPlayer player, boolean open, BackpackRef ref) {
         if (!open || ref == null || !ref.stillValid(player)) {
+            // A stale view was just re-synced (see BackpackGate.acquireForPanel): the panel shows the new backpack, do not close it.
+            if (BackpackGate.justResynced(player)) {
+                return;
+            }
+            BackpackGate.noteClosed(player.getUUID());
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;
         }
         BackpackInventory inventory = ref.loadInventory(player);
         BackpackSessionPayload session = BackpackSessionPayload.open(ref, inventory);
         if (!withinLimit(player, BackpackSessionPayload.STREAM_CODEC, session, "backpack session")) {
+            BackpackGate.noteClosed(player.getUUID());
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;
         }
         PacketDistributor.sendToPlayer(player, session);
+        BackpackGate.noteOpened(player, ref.getStack(player));
         // 018: the tags travel in their own packet (the session payload has no room for another field).
         PacketDistributor.sendToPlayer(player, new BackpackTagsPayload(inventory.tags()));
         // 021: and so does the trash can's content.

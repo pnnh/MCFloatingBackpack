@@ -254,6 +254,28 @@ public final class FloatingPanelEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onClientTickLast(ClientTickEvent.Post event) {
         HostScreenManager.afterTick();
+        traceMainHand();
+    }
+
+    /** Diagnostics: the client's own look at its main hand, the server has one too (see MainHandTrace). */
+    private static final pnnh.mcfloatingbackpack.diag.MainHandTrace CLIENT_MAIN_HAND = new pnnh.mcfloatingbackpack.diag.MainHandTrace();
+
+    private static void traceMainHand() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player == null) {
+            return;
+        }
+        var change = CLIENT_MAIN_HAND.observe(
+                minecraft.player.getUUID(), minecraft.player.getInventory().selected, minecraft.player.getMainHandItem());
+        if (change != null) {
+            pnnh.mcfloatingbackpack.diag.DiagLog.log(
+                    pnnh.mcfloatingbackpack.diag.DiagLog.Side.CLIENT,
+                    change.sameSlot() ? pnnh.mcfloatingbackpack.diag.LogLevel.WARN : pnnh.mcfloatingbackpack.diag.LogLevel.INFO,
+                    "{}; panel visible: {}; backpacks now: {}",
+                    change.text(),
+                    FloatingPanelState.get().isVisible(),
+                    pnnh.mcfloatingbackpack.diag.MainHandTrace.backpacks(minecraft.player.getInventory()));
+        }
     }
 
     /** A line in this player's own chat, led by the mod's name; nothing is sent to the server or anyone else. */

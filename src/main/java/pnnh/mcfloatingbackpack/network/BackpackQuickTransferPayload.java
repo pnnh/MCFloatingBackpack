@@ -85,7 +85,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                 return;
             }
             // 026: every request into a backpack goes through the registry first.
-            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            BackpackInventory backpack = BackpackGate.acquireForPanel(player, ref).orElse(null);
             if (backpack == null) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

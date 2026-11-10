@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "B": {
+      "item": "minecraft:iron_axe"
+    },
+    "D": {
+      "item": "minecraft:grindstone"
+    },
+    "E": {
+      "item": "minecraft:iron_shovel"
+    },
+    "F": {
+      "item": "minecraft:iron_hoe"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDE",
+    "IFI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:tool_extension"
+  }
+}

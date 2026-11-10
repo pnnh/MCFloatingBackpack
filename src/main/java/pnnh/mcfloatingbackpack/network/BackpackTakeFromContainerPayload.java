@@ -85,7 +85,7 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
 
             // 026: every request into a backpack goes through the registry first.
 
-            BackpackInventory backpack = BackpackGate.acquire(player, ref).orElse(null);
+            BackpackInventory backpack = BackpackGate.acquireForPanel(player, ref).orElse(null);
 
             if (backpack == null) {
 

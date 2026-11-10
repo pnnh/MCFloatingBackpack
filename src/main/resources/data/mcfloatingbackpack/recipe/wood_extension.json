@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:iron_axe"
+    },
+    "B": {
+      "tag": "minecraft:logs"
+    },
+    "D": {
+      "item": "minecraft:stonecutter"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IBI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:wood_extension"
+  }
+}

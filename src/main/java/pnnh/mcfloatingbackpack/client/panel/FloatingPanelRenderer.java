@@ -170,7 +170,8 @@ public final class FloatingPanelRenderer {
      */
     private static void drawTitleIcon(
             GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
-        BackpackTier tier = BackpackTier.byCapacity(ClientBackpackView.get().slotCount());
+        // 036: by the tier's own capacity; the main area is bigger than that once extension rows are placed.
+        BackpackTier tier = BackpackTier.byCapacity(ClientBackpackView.get().baseCapacity());
         if (tier == null) {
             return;
         }
@@ -179,7 +180,7 @@ public final class FloatingPanelRenderer {
         int iconY = state.getPosY() + 1;
         graphics.renderItem(icon, iconX, iconY);
         if (state.hitsTitleIcon(mouseX, mouseY)) {
-            graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().slotCount()), mouseX, mouseY);
+            graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().baseCapacity()), mouseX, mouseY);
         }
         drawTitleId(graphics, state, minecraft, mouseX, mouseY);
     }

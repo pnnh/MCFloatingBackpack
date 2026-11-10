@@ -1,5 +1,9 @@
 package pnnh.mcfloatingbackpack.item;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
@@ -12,6 +16,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
+import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
 
 public final class ModItems {
     public static final DeferredRegister.Items ITEMS =
@@ -43,6 +48,9 @@ public final class ModItems {
     public static final DeferredHolder<Item, AutoPickupItem> AUTO_PICKUP =
             ITEMS.register("auto_pickup", () -> new AutoPickupItem(new Item.Properties()));
 
+    /** 036: the ten category extensions, in the fixed order of the categories; ids are {@code <category>_extension}. */
+    public static final Map<String, DeferredHolder<Item, CategoryExtensionItem>> CATEGORY_EXTENSIONS = registerCategoryExtensions();
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -56,10 +64,24 @@ public final class ModItems {
                                 output.accept(TAG_MANAGER.get());
                                 output.accept(TRASH_CAN.get());
                                 output.accept(AUTO_PICKUP.get());
+                                for (DeferredHolder<Item, CategoryExtensionItem> extension : CATEGORY_EXTENSIONS.values()) {
+                                    output.accept(extension.get());
+                                }
                             })
                             .build());
 
     private ModItems() {
+    }
+
+    private static Map<String, DeferredHolder<Item, CategoryExtensionItem>> registerCategoryExtensions() {
+        Map<String, DeferredHolder<Item, CategoryExtensionItem>> extensions = new LinkedHashMap<>();
+        for (String category : ExtensionCategories.IDS) {
+            extensions.put(
+                    category,
+                    ITEMS.register(
+                            category + "_extension", () -> new CategoryExtensionItem(category, new Item.Properties())));
+        }
+        return Collections.unmodifiableMap(extensions);
     }
 
     private static DeferredHolder<Item, FloatingBackpackItem> register(BackpackTier tier) {
