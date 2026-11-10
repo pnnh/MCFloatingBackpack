@@ -1,0 +1,221 @@
+docs/plan/category-extensions.md
+  s_9aefe4a2760245::t_8395403a83e535 1-119
+  s_9aefe4a2760245::t_c6d959295cea03 127-130
+  s_9aefe4a2760245::t_20a8a447a73ffd 120-126,135-136
+  s_9aefe4a2760245::t_2dda964fac494d 131-134
+  s_9aefe4a2760245::t_6cbc7064e477fe 137
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackRef.java
+  s_9aefe4a2760245::t_17b553b2f0a3c1 114-117,123
+  s_9aefe4a2760245::t_94ef90c1192b0c 11,121-122
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/wood.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-29
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/tool.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-41
+specs/035-category-extension-rules/tasks.md
+  s_9aefe4a2760245::t_06830b5625d4c1 85-86
+  s_9aefe4a2760245::t_c28d3bb1c8c6bf 1-17,19-21,27-31,36-40,50-54,65-69,77-79,82-84,87,90-106
+  s_9aefe4a2760245::t_a0a501890cd9e0 18,22-26,32-35,41-49,55-64,70-76,80-81,88-89
+src/main/java/pnnh/mcfloatingbackpack/diag/BackpackWatchService.java
+  s_9aefe4a2760245::t_420053613f5798 1-127
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_9aefe4a2760245::t_92c35e251b96a7 5,11-17,27-31,39,41-43,53,62,67-123,137-168,170-193,337-338,356-358,363-364,367-368
+  s_9aefe4a2760245::t_70d6e62d2b56f5 124-136
+  s_9aefe4a2760245::t_494a590c89e7e7 169
+  s_9aefe4a2760245::t_4ab2884758639b 10,34-37,52
+specs/035-category-extension-rules/research.md
+  s_9aefe4a2760245::t_94ece4ea474568 1-81,83-95,97-100
+  s_9aefe4a2760245::t_a9ea3a94be427f 82,96
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionPackRules.java
+  s_9aefe4a2760245::t_494a590c89e7e7 1-36
+specs/035-category-extension-rules/contracts/wire.md
+  s_9aefe4a2760245::t_76cef6fd3a9b21 1-78
+specs/035-category-extension-rules/data-model.md
+  s_9aefe4a2760245::t_3cc8b1dea0c836 1-29,31-145
+  s_9aefe4a2760245::t_d35701a3533b99 30
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_06830b5625d4c1 175-176
+  s_9aefe4a2760245::t_2dda964fac494d 170-174,177-178
+src/main/java/pnnh/mcfloatingbackpack/inventory/creative/CreativeCursorBridge.java
+  s_9aefe4a2760245::t_fdd3523b90fd00 13,53,56-57,77
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackFullSyncPayload.java
+  s_9aefe4a2760245::t_70a17af2172300 19,22-27,33-54,66-67,77
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackQuickTransferPayload.java
+  s_9aefe4a2760245::t_70d6e62d2b56f5 147-148
+  s_9aefe4a2760245::t_067e0c0e2afb8e 15
+  s_9aefe4a2760245::t_27e32f8661a98c 94-95
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/potion.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-9
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/CategoryMatcherTest.java
+  s_9aefe4a2760245::t_fca9017a544a08 1-73
+src/test/java/pnnh/mcfloatingbackpack/inventory/trash/TrashSendRequestTest.java
+  s_9aefe4a2760245::t_a8c099bc705d6d 51,55-56,60
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/disc.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-9
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/RowReconciler.java
+  s_9aefe4a2760245::t_bb38322c24c518 1-134
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/ore.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-33
+src/test/java/pnnh/mcfloatingbackpack/inventory/ToolAreaRulesTest.java
+  s_9aefe4a2760245::t_494a590c89e7e7 107-115
+src/main/java/pnnh/mcfloatingbackpack/inventory/tags/TagRequest.java
+  s_9aefe4a2760245::t_4ab2884758639b 6-7,14
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/crop.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-17
+src/main/java/pnnh/mcfloatingbackpack/inventory/ContainerToBackpack.java
+  s_9aefe4a2760245::t_db4c6d2fe18da0 3-4
+  s_9aefe4a2760245::t_47787004cc2185 66-76,86
+src/test/java/pnnh/mcfloatingbackpack/inventory/PanelCursorRequestTest.java
+  s_9aefe4a2760245::t_a8c099bc705d6d 65,68-72
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/food.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-9
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_f0e9cd0d163072 27,91-92
+  s_9aefe4a2760245::t_420053613f5798 26,74,85
+docs/plan/README.md
+  s_9aefe4a2760245::t_8395403a83e535 11
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackCursorGesturePayload.java
+  s_9aefe4a2760245::t_27e32f8661a98c 21,118-119
+  s_9aefe4a2760245::t_7ac33d550d801d 157-159
+src/main/java/pnnh/mcfloatingbackpack/diag/EventRing.java
+  s_9aefe4a2760245::t_96103b982bbf08 1-35
+src/main/java/pnnh/mcfloatingbackpack/inventory/pickup/AutoPickupEvents.java
+  s_9aefe4a2760245::t_70d6e62d2b56f5 108
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackSessionPayload.java
+  s_9aefe4a2760245::t_70a17af2172300 22,28-34,40-63,67,81-82,103
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashPayload.java
+  s_9aefe4a2760245::t_70d6e62d2b56f5 205
+src/main/java/pnnh/mcfloatingbackpack/diag/DiagConfig.java
+  s_9aefe4a2760245::t_f0e9cd0d163072 1-40
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/RowSetTest.java
+  s_9aefe4a2760245::t_fca9017a544a08 1-124
+specs/035-category-extension-rules/plan.md
+  s_9aefe4a2760245::t_2d8eea2da6bd91 1,3,7,9-15,17,19,21,23,25,27,29,31,33,37-45,52-61,67-104,107,111,113-116
+  s_9aefe4a2760245::t_21f820763280b4 2,4-6,8,16,18,20,22,24,26,28,30,32,34-36,46-51,62-66,105-106,108-110,112
+specs/035-category-extension-rules/checklists/requirements.md
+  s_9aefe4a2760245::t_137f3fdd766839 1-35
+src/test/java/pnnh/mcfloatingbackpack/inventory/tags/PresetTagsTest.java
+  s_9aefe4a2760245::t_fd1e0f91f99880 14,16-17
+src/test/java/pnnh/mcfloatingbackpack/diag/DiagLogicTest.java
+  s_9aefe4a2760245::t_96103b982bbf08 1-65
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/armor.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-9
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/Row.java
+  s_9aefe4a2760245::t_3630d74c13bf25 1-14
+src/main/java/pnnh/mcfloatingbackpack/network/MergePanelCursorPayload.java
+  s_9aefe4a2760245::t_27e32f8661a98c 20,68-69
+src/main/java/pnnh/mcfloatingbackpack/compat/CompatConfig.java
+  s_9aefe4a2760245::t_f0e9cd0d163072 10-11,15,23-24,48-49
+  s_9aefe4a2760245::t_943b47f98a4f13 50
+specs/035-category-extension-rules/quickstart.md
+  s_9aefe4a2760245::t_571e22b96ca89b 43-44
+  s_9aefe4a2760245::t_315dc61e6c07ae 1-39,41-42,45-65
+  s_9aefe4a2760245::t_2dda964fac494d 40
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 29-31
+  s_9aefe4a2760245::t_f21ae95f685032 38-43
+src/main/java/pnnh/mcfloatingbackpack/inventory/tags/PresetTags.java
+  s_9aefe4a2760245::t_fd1e0f91f99880 7-9,13-15
+src/main/java/pnnh/mcfloatingbackpack/inventory/QuickTransferRequest.java
+  s_9aefe4a2760245::t_4ab2884758639b 6-7,15-16
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_9aefe4a2760245::t_a7edbef5c5ba41 14,28-29,174-179,184-186,199,227
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/weapon.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-37
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_9aefe4a2760245::t_94ef90c1192b0c 39,138-170,177-182,209-214
+  s_9aefe4a2760245::t_d124c75a96ea60 3-5,7,19
+src/main/java/pnnh/mcfloatingbackpack/inventory/QuickTransferLogic.java
+  s_9aefe4a2760245::t_47787004cc2185 3,75-91
+  s_9aefe4a2760245::t_2aa03ab05d485b 92
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRowsCodecs.java
+  s_9aefe4a2760245::t_f66637d9d1163f 1-89
+src/test/java/pnnh/mcfloatingbackpack/resources/ExtensionTagsResourcesTest.java
+  s_9aefe4a2760245::t_a3bf8f2de1f060 1-117
+src/main/java/pnnh/mcfloatingbackpack/inventory/recipe/BackpackUpgradeRecipe.java
+  s_9aefe4a2760245::t_92c35e251b96a7 81
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRules.java
+  s_9aefe4a2760245::t_bb38322c24c518 1-81
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/RowView.java
+  s_9aefe4a2760245::t_f66637d9d1163f 1-63
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTakeFromContainerPayload.java
+  s_9aefe4a2760245::t_70d6e62d2b56f5 117
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashBin.java
+  s_9aefe4a2760245::t_db4c6d2fe18da0 69-79,92
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRulesTest.java
+  s_9aefe4a2760245::t_1926d037735e8a 139,149-150,167-168
+  s_9aefe4a2760245::t_8edda18dbb0345 190-191
+  s_9aefe4a2760245::t_fca9017a544a08 1-138,140-148,151-166,169-189,192-212
+docs/MCFloatingBackpack.md
+  s_9aefe4a2760245::t_2dda964fac494d 128
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackContents.java
+  s_9aefe4a2760245::t_4ab2884758639b 113,152
+  s_9aefe4a2760245::t_abeb3d22d702c1 14-15,24,29-34,42-43,64-67,70-92,95,111-112,129-130,133,135-136,150,168-169,172,174,178
+  s_9aefe4a2760245::t_acf4ec3d44b1a7 98,100-101
+.specify/feature.json
+  s_9aefe4a2760245::t_cb73829d4c99e1 2
+src/main/java/pnnh/mcfloatingbackpack/diag/BackpackWatch.java
+  s_9aefe4a2760245::t_96103b982bbf08 1-39
+src/main/java/pnnh/mcfloatingbackpack/diag/LogLevel.java
+  s_9aefe4a2760245::t_96103b982bbf08 1-18
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/redstone.json
+  s_9aefe4a2760245::t_fd1e0f91f99880 1-26
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/RowSet.java
+  s_9aefe4a2760245::t_3630d74c13bf25 1-153
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionCategories.java
+  s_9aefe4a2760245::t_3630d74c13bf25 1-39
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionPacks.java
+  s_9aefe4a2760245::t_f5c9c9ad821886 1-66
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/RowReconcilerTest.java
+  s_9aefe4a2760245::t_fca9017a544a08 1-225
+src/test/java/pnnh/mcfloatingbackpack/inventory/tags/TagRequestTest.java
+  s_9aefe4a2760245::t_a8c099bc705d6d 39,43-44,48
+specs/035-category-extension-rules/spec.md
+  s_9aefe4a2760245::t_21f820763280b4 60,227
+  s_9aefe4a2760245::t_f217baa8558f27 209-210
+  s_9aefe4a2760245::t_cb73829d4c99e1 2,4,6-8,94-96,98,100,102,104,114,116,118,120,122,134,136,138,140-142,149-151,153,155-157,164-166,168,170,172,176,178,180,189,191,193,222-226,233-235
+  s_9aefe4a2760245::t_c6d959295cea03 46-47,49-57,79,92,129-133,185-186,211-212,219
+  s_9aefe4a2760245::t_d947c3301bc6bc 1,3,5,9-45,48,58-59,61-78,80-91,93,97,99,101,103,105-113,115,117,119,121,123-128,135,137,139,143-148,152,154,158-163,167,169,171,173-175,177,179,181-184,187-188,190,192,194-208,213-218,220-221,228-232,236-239
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_9aefe4a2760245::t_494a590c89e7e7 23,149-155
+  s_9aefe4a2760245::t_4ab2884758639b 97
+  s_9aefe4a2760245::t_fdd3523b90fd00 21,98-99,106,124,136-138,209,214-219
+  s_9aefe4a2760245::t_7ac33d550d801d 170-181
+  s_9aefe4a2760245::t_962f55320f2dbf 220-221
+specs/035-category-extension-rules/contracts/rules.md
+  s_9aefe4a2760245::t_ac74d8651f4a41 1-91
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ItemCategoryMatcher.java
+  s_9aefe4a2760245::t_f5c9c9ad821886 1-62
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/CategoryMatcher.java
+  s_9aefe4a2760245::t_3630d74c13bf25 1-11
+specs/035-category-extension-rules/DELIVERY.md
+  s_9aefe4a2760245::t_06830b5625d4c1 40-58
+  s_9aefe4a2760245::t_a0a501890cd9e0 1-39,59-74
+src/main/java/pnnh/mcfloatingbackpack/diag/DiagLog.java
+  s_9aefe4a2760245::t_f0e9cd0d163072 1-94
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_f21ae95f685032 38-43
+  s_9aefe4a2760245::t_fd1e0f91f99880 29-31
+src/main/java/pnnh/mcfloatingbackpack/inventory/pickup/PickupInsert.java
+  s_9aefe4a2760245::t_db4c6d2fe18da0 4,31-41,46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "9cd5a29cb2e654152172473255f43317c46b9ea7",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
