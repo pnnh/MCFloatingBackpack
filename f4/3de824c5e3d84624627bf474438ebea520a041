@@ -1,0 +1,54 @@
+.gitignore
+  s_9aefe4a2760245::t_a393827f795adf 48
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/ActionKind.java
+  s_9aefe4a2760245::t_1d58b2abe40efd 1-30
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/ResultCode.java
+  s_9aefe4a2760245::t_2bf9023e5eb4cf 1-50
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/Row.java
+  s_9aefe4a2760245::t_d3ae75e1cc4e1a 1-7
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/Scope.java
+  s_9aefe4a2760245::t_50de12783ed09a 1-27
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotActionPayload.java
+  s_9aefe4a2760245::t_3653d0fda57377 1-70
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotCodecs.java
+  s_9aefe4a2760245::t_098b66c77e0cf6 1-80
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotListPayload.java
+  s_9aefe4a2760245::t_e5e8e137c34cdc 1-48
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotListRequestPayload.java
+  s_9aefe4a2760245::t_b2a63343da5329 1-50
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotOpenPayload.java
+  s_9aefe4a2760245::t_fff0eb0c44ccf7 1-28
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotPreviewPayload.java
+  s_9aefe4a2760245::t_a0a02dccbaae63 1-67
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotPreviewRequestPayload.java
+  s_9aefe4a2760245::t_2a082f6d57f99b 1-39
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotResultPayload.java
+  s_9aefe4a2760245::t_503c14488c21e7 1-47
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotVersionsPayload.java
+  s_9aefe4a2760245::t_d829a000da804f 1-35
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotVersionsRequestPayload.java
+  s_9aefe4a2760245::t_bd1fa3bc29390a 1-36
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/VersionRow.java
+  s_9aefe4a2760245::t_1670c9f13ebbb9 1-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f43de824c5e3d84624627bf474438ebea520a041",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
