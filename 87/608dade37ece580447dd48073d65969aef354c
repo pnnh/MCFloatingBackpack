@@ -1,0 +1,26 @@
+specs/039-version-check/DELIVERY.md
+  s_9aefe4a2760245::t_7166c619ce5b4b 88-95
+specs/039-version-check/tasks.md
+  s_9aefe4a2760245::t_d3930424eb6ad2 72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "87608dade37ece580447dd48073d65969aef354c",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
