@@ -154,7 +154,7 @@
 **Independent Test**: quickstart H（Q39～Q42）。
 
 - [X] T057 [US6] 审阅（读代码，不改行为）：①`PanelHostScreen.boundMappings` 对 `DELETE_TO_TRASH`（GUI 上下文）在"无界面"检查里不活动，所以 Delete 在宿主上是 `PASS`、`Post` 会触发；②所有 Delete/ESC 处理都挂在 `hostsPanel(screen)` 之后，020 的 OFF 界面不生效；③`DeleteKeyRules` 返回 `NONE` 的所有路径都**没有** `setCanceled`；④服务端三种来源的非法请求（越界下标、菜单 id 不匹配、格子不在允许范围、`mayPickup` 为假、菜单不是原版、垃圾桶不在右侧区、没带 `confirmed` 却销毁超过 9 组、体积超限、给含受保护物品的选区加 trash）都整个丢弃且零变化，只补发同步；⑤菜单分支过 `ServerCompatGate`；⑥`BackpackTrashPayload`（021）与确认弹窗不互相干扰；发现缺口就补并记录，没有缺口也记"已审阅，无缺口"
-- [ ] T058（2026-11-07 部分：Q39、Q40、Q42 用户验证通过（Q42 的 021/018 回归并入清单 K 组）；统一回归 REG-1～REG-9 已于 2026-11-07 由用户验证通过；**Q41（OFF 的模组界面，会话 S2）仍未做**） [US6] 按 `quickstart.md` H（Q39～Q42）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：控制设置里有"删除到垃圾桶"（中英文名），macOS 默认 Backspace；改成 X 后 X 触发、Backspace 不触发也不被吞；改成 W 时宿主上的表现（记录到已知限制，不要求修复）；OFF 的模组界面上面板、垃圾桶面板、Delete 都不生效；**重跑 021 的垃圾桶本体（点击丢入、拖放、拿回、Ctrl 恢复、限放 1 个）与 011～020 的验证项**；联机无条件则写"未验证"；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T058（2026-11-07 部分：Q39、Q40、Q42 用户验证通过（Q42 的 021/018 回归并入清单 K 组）；统一回归 REG-1～REG-9 已于 2026-11-07 由用户验证通过；**Q41（OFF 的模组界面，会话 S2）仍未做**） [US6] 按 `quickstart.md` H（Q39～Q42）在 `./gradlew runClient` 逐项验证（先 `pgrep`）：控制设置里有"删除到垃圾桶"（中英文名），macOS 默认 Backspace；改成 X 后 X 触发、Backspace 不触发也不被吞；改成 W 时宿主上的表现（记录到已知限制，不要求修复）；OFF 的模组界面上面板、垃圾桶面板、Delete 都不生效；**重跑 021 的垃圾桶本体（点击丢入、拖放、拿回、Ctrl 恢复、限放 1 个）与 011～020 的验证项**；联机无条件则写"未验证"；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI：Q41 的 Delete 在 OFF 界面上不生效、面板与垃圾桶面板不画、热键有聊天提示，已验证；"面板开着时切到 OFF 界面"的状态保留没验证，仍未勾
 
 ---
 
