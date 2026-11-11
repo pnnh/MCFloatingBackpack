@@ -69,7 +69,7 @@
   - **实现说明**：`getGuiExtraAreas` 先判断 `specificAdaptation("jei")`，为假返回空列表；JEI 每次布局都会询问，所以改配置不需要重启
 - [X] T013 [US2] 运行 `./gradlew compileJava test`，确认通过；`grep -rn "mezz.jei" src/main/java` 确认第三方类型仍只在 `compat/jei/`
   - **结果**：测试通过；`grep -rln "mezz.jei" src/main/java` 只命中 `compat/jei/FloatingBackpackJeiPlugin.java`
-- [ ] T014 [US2] 按 `quickstart.md` 三（9–11）在 `./gradlew runClientCompat` 验证（先 `pgrep`）：默认避让；`jei=GENERIC` 后不再避让并**记录多久之后生效**；`jei=OFF` 与 GENERIC 相同；删除条目/改回 FULL 又避让；来回切换 5 次无需重启；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：9～11 全部通过：GENERIC 约 1～2 秒生效、无需重开界面，OFF 与 GENERIC 相同，来回切换 5 次无需重启；可由你确认后勾；详见 DELIVERY.md，未勾
+- [X] T014 [US2] 按 `quickstart.md` 三（9–11）在 `./gradlew runClientCompat` 验证（先 `pgrep`）：默认避让；`jei=GENERIC` 后不再避让并**记录多久之后生效**；`jei=OFF` 与 GENERIC 相同；删除条目/改回 FULL 又避让；来回切换 5 次无需重启；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：9～11 全部通过：GENERIC 约 1～2 秒生效、无需重开界面，OFF 与 GENERIC 相同，来回切换 5 次无需重启；可由你确认后勾；详见 DELIVERY.md；用户 2026-11-11 确认，已勾
   - **状态（2026-11-05）**：客户端验证**未做**，等用户确认后才打勾（需用户的客户端先退出）
 
 **Checkpoint**: US2 达成 FR-008、SC-003。
@@ -155,7 +155,7 @@
 - [X] T033 （已撤销）第一版曾把 `ContainerScreenCompat` 拆成 `usesMenuCursor`/`blocksItemExchange` 并让 GENERIC 不交换物品；用户补充说明后**全部回退**到原设计：`isOpenContainerScreen`（OFF 为假）仍是唯一的显示判断，光标来源、`screenOpen`、合并光标、Alt 让路、`QuickTransferInput.supports` 都用它，`grep` 确认代码里不再有 `usesMenuCursor`/`blocksItemExchange`/`exchangesItems`
 - [X] T034 聊天提示：`FloatingPanelEvents.chat(...)`（只写进本机聊天，前缀 `[浮动背包]`）；OFF 的界面上按热键改为聊天；`onClientTick` 在玩家进入世界后排空 `ConfigNotices`；`CompatConfig.policy()` 重新解析时把警告放进队列；新增 `…/compat/ConfigFileWatch.java`（`ModConfigEvent.Loading/Reloading` 里发现刚生成的 `.bak` 就加一条"文件有错误"）并在 `ClientSetup` 注册；中英文语言键
 - [X] T035 运行 `./gradlew compileJava test` 通过；读 FML `ConfigTracker.loadConfig` 与第一轮验证的日志、`run/config/*.bak` 确认"配置被重置"的原因（见 research Decision 12）
-- [ ] T036 按 `quickstart.md` 六 12b–12c 在 `./gradlew runClientCompat` 验证（先 `pgrep`，**不要有运行中的客户端**）：OFF 的界面上按热键聊天里有提示且按 T 可再看；各种坏配置进入世界后聊天里有提示；游戏运行时存一个写了一半的文件，聊天里提示备份；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：12b/12c 主要点通过（热键提示、坏条目聊天提示、写了一半的文件备份并提示；发现该提示出现两次）；"一次最多 5 条"没测；详见 DELIVERY.md，未勾
+- [ ] T036 按 `quickstart.md` 六 12b–12c 在 `./gradlew runClientCompat` 验证（先 `pgrep`，**不要有运行中的客户端**）：OFF 的界面上按热键聊天里有提示且按 T 可再看；各种坏配置进入世界后聊天里有提示；游戏运行时存一个写了一半的文件，聊天里提示备份；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：12b/12c 主要点通过（热键提示、坏条目聊天提示、写了一半的文件备份并提示；发现该提示出现两次）；"一次最多 5 条"没测；详见 DELIVERY.md，未勾 ——2026-11-11 第二轮：启动时 10 条坏配置进得了世界，"一次最多 5 条，多的合并"通过（5 条加 "... and 3 more"）；T036 的 12b/12c 已齐，**可由你确认后勾**
 
 ---
 

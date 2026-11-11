@@ -20,7 +20,7 @@ A floating backpack mod for **Minecraft 1.21.1 + NeoForge**. Like the bag window
 
 ## Features
 
-- **Floating panel**: toggle it with `B` (rebindable in Controls), or by right-clicking with the backpack in hand. The panel can be dragged and resized; its position and size are remembered.
+- **Floating panel**: toggle it with `B` (rebindable in Controls), or by right-clicking with the backpack in hand. The panel can be dragged and resized; its position and size are remembered. Sophisticated Backpacks and Traveler's Backpack also default to `B` for their own backpack screens; if you use them together, rebind whichever key you like in Controls.
 - **Lives with other screens**: it stays visible and clickable over the vanilla inventory, chests and other container screens; when no other screen is open it sits on a transparent screen of its own.
 - **Five tiers**: leather 36 slots, iron 54, gold 72, diamond 90, netherite 108. The leather backpack is crafted from leather, string, a chest and iron ingots; higher tiers are upgraded at the **smithing table** with the matching material block and trim template. Upgrading keeps all contents.
 - **Three tool areas**: a column on each side of the main area and a row below it hold "tools":
