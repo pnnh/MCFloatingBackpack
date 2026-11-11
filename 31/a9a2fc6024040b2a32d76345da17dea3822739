@@ -1,0 +1,145 @@
+specs/040-downgrade-protection/DELIVERY.md
+  s_9aefe4a2760245::t_2eb98db9b391e0 44
+  s_9aefe4a2760245::t_c8633ecebba0e6 37
+  s_9aefe4a2760245::t_e76f3071b35311 45
+specs/040-downgrade-protection/tasks.md
+  s_9aefe4a2760245::t_8deee48c74362b 68
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerCheck.java
+  s_9aefe4a2760245::t_c74ed9c02b7022 48
+  s_9aefe4a2760245::t_e675a7a1552a53 1-47,49-76
+.github/release-notes/v0.1.0.md
+  s_9aefe4a2760245::t_c52f5aa5c21e56 21
+  s_9aefe4a2760245::t_4e1de37163337b 5
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/MarkerRead.java
+  s_9aefe4a2760245::t_e675a7a1552a53 1-25
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-89
+specs/041-world-downgrade-guard/spec.md
+  s_9aefe4a2760245::t_693b83fa7b8200 1,3,5,9,11-43,46-52,54-57,59,61,63-66,70-73,75,77,79,83-86,90,92,94,96,100-107,111,113,115,117,121-125,129,131,133,135,137,139-141,143,145,147-153,155,157,159-161,164-165,167-168,170-179,187-192,196-202
+  s_9aefe4a2760245::t_a11b6552d6f860 2,4,6-8,10,53,58,60,62,74,76,78,80-82,87-89,91,93,95,97-99,108-110,112,114,116,118-120,126-128,130,132,134,136,138,142,144,146,154,156,158,180-184,193-195
+  s_9aefe4a2760245::t_daf5b61b2f1e93 45,68-69,162-163,166,169,185
+  s_9aefe4a2760245::t_43f91815f72ade 44,67,186
+specs/041-world-downgrade-guard/data-model.md
+  s_9aefe4a2760245::t_8b2bf39f2339bf 1-43
+specs/041-world-downgrade-guard/plan.md
+  s_9aefe4a2760245::t_16141800f80c20 2,4-6,8,18,20,22,24,26,28,30,32,34,36-38,56-61,72-76,98-99,101-103
+  s_9aefe4a2760245::t_12912697755703 11-12,15,35,79,83,94,97
+  s_9aefe4a2760245::t_ca5c737a0f2be6 1,3,7,9-10,13-14,16-17,19,21,23,25,27,29,33,39-40,42-44,46-50,52-55,62-65,67-71,77-78,80-82,84-93,95-96,100,104
+  s_9aefe4a2760245::t_7b70c4c374deb6 31,45,66
+  s_9aefe4a2760245::t_43f91815f72ade 41,51
+specs/041-world-downgrade-guard/DELIVERY.md
+  s_9aefe4a2760245::t_360150343dabf7 37-38,40
+  s_9aefe4a2760245::t_437183cef659a2 10,14-19,22-23,56,66,74-75
+  s_9aefe4a2760245::t_a5a9bb2eb98a21 1-2,4-9,11-13,41-55,57-65,67,70-73,76-80
+  s_9aefe4a2760245::t_19b871dc8ad7c8 20-21
+  s_9aefe4a2760245::t_ef1697a69394d7 24-36,68-69
+  s_9aefe4a2760245::t_6faea5506329f9 3,39
+specs/041-world-downgrade-guard/tasks.md
+  s_9aefe4a2760245::t_a5a9bb2eb98a21 18,22-27,37-40,50-52,58-61,63,67-68,92-95
+  s_9aefe4a2760245::t_6faea5506329f9 69
+  s_9aefe4a2760245::t_43f91815f72ade 62
+  s_9aefe4a2760245::t_ef1697a69394d7 9,70
+  s_9aefe4a2760245::t_52abe5b5b1967a 1-8,10-17,19-21,28-36,41-49,53-57,64-66,71-91
+docs/plan/manual-verification-checklist.md
+  s_9aefe4a2760245::t_6faea5506329f9 253
+  s_9aefe4a2760245::t_360150343dabf7 247-252
+  s_9aefe4a2760245::t_43f91815f72ade 256
+  s_9aefe4a2760245::t_cfdfcc9cb5dc1e 241
+  s_9aefe4a2760245::t_ef1697a69394d7 215,230,245,255
+  s_9aefe4a2760245::t_a74f11585f0162 244,246,254
+  s_9aefe4a2760245::t_a5a9bb2eb98a21 243
+  s_9aefe4a2760245::t_4eab4c398feef4 242
+src/test/java/pnnh/mcfloatingbackpack/version/VersionDebugTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-53
+README.md
+  s_9aefe4a2760245::t_43f91815f72ade 56
+  s_9aefe4a2760245::t_0038d75e461da1 54
+  s_9aefe4a2760245::t_efff964a040a47 55
+specs/041-world-downgrade-guard/contracts/marker.md
+  s_9aefe4a2760245::t_12912697755703 6-11
+  s_9aefe4a2760245::t_d855b92db6f3a2 1-5,12-33
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_d02414e9902a1f 45,110-111
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerEvents.java
+  s_9aefe4a2760245::t_e675a7a1552a53 1-5,7-17,20-40,42,65-74
+  s_9aefe4a2760245::t_c74ed9c02b7022 6,18-19,41,43-64
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerGuard.java
+  s_9aefe4a2760245::t_e675a7a1552a53 1-53
+build.gradle
+  s_9aefe4a2760245::t_d02414e9902a1f 80-81,84-85
+src/main/java/pnnh/mcfloatingbackpack/version/VersionDebug.java
+  s_9aefe4a2760245::t_d02414e9902a1f 15-17,19-22,48-67
+  s_9aefe4a2760245::t_743cc0229733f5 68
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerStoreTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-79
+specs/041-world-downgrade-guard/contracts/texts.md
+  s_9aefe4a2760245::t_43f91815f72ade 7
+  s_9aefe4a2760245::t_825864cacc9dc3 1-6,8-56
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerCheckTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-96,106-206
+  s_9aefe4a2760245::t_c74ed9c02b7022 97-105
+specs/041-world-downgrade-guard/checklists/requirements.md
+  s_9aefe4a2760245::t_fdd4a675c8c3c1 1-36
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldGuardTextsTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-40
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarker.java
+  s_9aefe4a2760245::t_e675a7a1552a53 1-73
+.specify/feature.json
+  s_9aefe4a2760245::t_a11b6552d6f860 2
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerWiringTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-62,75-129
+  s_9aefe4a2760245::t_c74ed9c02b7022 63-74
+README_CN.md
+  s_9aefe4a2760245::t_43f91815f72ade 56
+  s_9aefe4a2760245::t_057fb7e7ef674e 54
+  s_9aefe4a2760245::t_db8781d5bc95db 55
+specs/040-downgrade-protection/research.md
+  s_9aefe4a2760245::t_1d79d2dd2062e3 113-142
+  h_6465a203f88bd5 87-112
+  s_9aefe4a2760245::t_9a3e535163d0c3 79-80
+specs/041-world-downgrade-guard/quickstart.md
+  s_9aefe4a2760245::t_43f91815f72ade 20,23-24,27
+  s_9aefe4a2760245::t_356fde875240c5 1-2,4-18,21-22,25-26,28-49,51,58-61
+  s_9aefe4a2760245::t_19b871dc8ad7c8 19
+  s_9aefe4a2760245::t_7b70c4c374deb6 3,50,52-57
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldGuardTexts.java
+  s_9aefe4a2760245::t_e675a7a1552a53 1-65
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerStore.java
+  s_9aefe4a2760245::t_e675a7a1552a53 1-55
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerGuardTest.java
+  s_9aefe4a2760245::t_9880d76f9efeb6 1-114
+docs/plan/release-process.md
+  s_9aefe4a2760245::t_43f91815f72ade 57
+  s_9aefe4a2760245::t_b0b6a43cf83e41 47-50,52
+  s_9aefe4a2760245::t_5abb9ad6352d77 51,53-56,58-60,62
+  s_9aefe4a2760245::t_2ea9d908c60dad 82
+  s_9aefe4a2760245::t_7b70c4c374deb6 61
+  s_9aefe4a2760245::t_1b69ad79b79a57 74-75
+specs/041-world-downgrade-guard/research.md
+  s_9aefe4a2760245::t_43f91815f72ade 18-19,32-33,86
+  s_9aefe4a2760245::t_7b70c4c374deb6 88
+  s_9aefe4a2760245::t_bd667df4eb63ae 1-17,20-31,34-85,87,89
+specs/040-downgrade-protection/spec.md
+  s_9aefe4a2760245::t_6ce69e344fb284 11-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "31a9a2fc6024040b2a32d76345da17dea3822739",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
