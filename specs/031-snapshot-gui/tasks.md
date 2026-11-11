@@ -60,7 +60,7 @@
 
 - [x] T027 语言键（中英文）：`gui.mcfloatingbackpack.snapshot.*`（标题、按钮、列表行、状态码）、`key.mcfloatingbackpack.snapshots`、`panel.mcfloatingbackpack.snapshot.tooltip`、`command.mcfloatingbackpack.gui.console`（带英文后备）；测试 `SnapshotGuiResourcesTest`（两种语言键一致、结果码都有键、`gui` 命令消息的英文后备一致）；若 `SnapshotCommandResourcesTest` 的正则要容纳新键则一并更新
 - [x] T028 [US1] 按 quickstart A 验证三个入口、面板状态不变、手里没背包也能开（先 `pgrep`；由用户确认后才打勾）。用户 2026-11-09 验证没有问题
-- [ ] T029 [US1][US2][US6] 按 quickstart B 验证非 op 视图与隔离（没有第二个账号写"未验证"；由用户确认后才打勾）。**搁置，未测**：需要第二个账号（用户 2026-11-09）；非 op 的界面由纯逻辑测试与服务端权限检查覆盖，但没有在游戏里验证过
+- [ ] T029 [US1][US2][US6] 按 quickstart B 验证非 op 视图与隔离（没有第二个账号写"未验证"；由用户确认后才打勾）。**搁置，未测**：需要第二个账号（用户 2026-11-09）；非 op 的界面由纯逻辑测试与服务端权限检查覆盖，但没有在游戏里验证过 ——2026-11-11 AI 自动验证：专用服务器 + 两个客户端容器，非 op 玩家只看到自己的背包、没有 op 控件、预览正常，对照 op 视图明确；翻页、悬停提示、点击预览无反应、带附魔物品没测，所以未勾（详见 DELIVERY.md）
 - [x] T030 [US3][US4][US5] 按 quickstart C 验证 op 视图与动作、权限变化（由用户确认后才打勾）。用户 2026-11-09 验证没有问题
 - [x] T031 布局与回归：quickstart D、E（GUI 缩放 1～4、很小的窗口、108 格预览滚动；030 命令与浮动面板回归；由用户确认后才打勾）。用户 2026-11-09 验证没有问题
 - [x] T032 [P] 更新文档：`docs/MCFloatingBackpack.md`（031 的说明）、`docs/plan/manual-verification-checklist.md`（031 验证项）、`docs/plan/backup-admin-roadmap.md`（"玩家可用的快照面板"从暂缓移到已做）、`specs/030-backpack-snapshots/spec.md` 的一句说明；**不要修改 `docs/ideas`**

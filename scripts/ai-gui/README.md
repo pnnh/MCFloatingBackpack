@@ -48,6 +48,18 @@ docker rm -f mcfb-gui                        # 用完删容器（卷和镜像保
 - **右键**：`docker exec -e DISPLAY=:99 <容器> sh -c 'xdotool mousemove X Y; sleep 0.3; xdotool click 3'`；`gui.sh rclick` 不移动鼠标，只点当前位置。
 - **缩小窗口**：`docker exec -e DISPLAY=:99 <容器> sh -c 'xdotool windowsize $(xdotool search --name Minecraft | tail -1) 200 150'`，用来测面板自动收缩。
 
+## 联机：一个服务端加两个客户端（多容器）
+
+`multi-setup.sh` 建三个容器 `mcfb-srv`（专用服务器）、`mcfb-c1`、`mcfb-c2`（客户端，各有自己的虚拟屏幕），同一个 Docker 网络 `mcfb-net`，客户端用主机名 `mcfb-srv:25565` 直连。用环境变量选容器：`AIGUI_CONTAINER=mcfb-c1 ./gui.sh shot a`、`AIGUI_CONTAINER=mcfb-srv ./server.sh M1`。
+
+2026-11-11 实测：三个容器同时运行，服务端约 1.4 GB、每个客户端约 2 GB，Docker 总内存 8 GB 够用（合计约 5.5 GB）；每个客户端在游戏时吃 3～4 个核。要点：
+
+- **Gradle 缓存卷不能共用**：三个容器挂同一个卷会报 `Timeout waiting to lock journal cache`（缓存锁靠本机进程互相通信，跨容器无效）。`multi-setup.sh` 让服务端用原来的 `mcfb-gradle`，两个客户端各用一份复制出来的卷（`mcfb-gradle-c1`、`-c2`，各约 1.5 GB，只复制一次）。
+- **服务端要 `online-mode=false`**：往 `mcfb-srv:/work/run/server.properties` 写 `online-mode=false`，否则开发环境的客户端（没有正版登录）进不来。想让某人是 op，先停服，往 `ops.json` 写条目（离线 UUID 看 `usercache.json`）再启动；`/deop` 可以在游戏里由 op 执行。
+- **两个客户端的玩家名不能相同**，否则服务端按离线 UUID 当成同一个人。用 `game-args.init.gradle` 给客户端追加游戏参数（JavaExec 的 `--args` 在 ModDevGradle 里会顶掉主类，不能用）：`AIGUI_GAME_ARGS="--username P1 --quickPlayMultiplayer mcfb-srv:25565" AIGUI_CONTAINER=mcfb-c1 ./launch.sh C1`。`--quickPlayMultiplayer` 启动后直接连服务器，不用在界面里点；全新的 `options.txt` 会先出现"欢迎/无障碍"界面，要点一次 Continue (638,567) 才开始连。
+- **启动要从 `scripts/ai-gui/` 目录里调 `./launch.sh`**（或用绝对路径），在别的目录里相对路径找不到脚本会静默失败。
+- 服务端世界默认出生在平地上，夜里会有史莱姆把玩家打死：用 op 执行 `difficulty peaceful`、`gamerule keepInventory true`。
+
 ## arm64 的原生库
 
 Apple Silicon 上 Docker 跑的是 arm64 容器，Gradle 却会解析出 x64 的 LWJGL 原生库，`runClient` 会报 `UnsatisfiedLinkError: liblwjgl.so`。`setup.sh` 会从 Maven Central 下载 `natives-linux-arm64` 的七个包（缓存在 `$AIGUI_CACHE`，默认 `~/.cache/mcfb-ai-gui`），放进容器的 `/natives`，并用环境变量 `JAVA_TOOL_OPTIONS=-Dorg.lwjgl.librarypath=/natives` 指过去。**不改项目文件。** x86_64 机器上不需要，脚本会自动跳过。

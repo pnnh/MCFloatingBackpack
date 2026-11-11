@@ -1,0 +1,12 @@
+// 给 runClient 追加游戏程序参数（Minecraft 的命令行参数），不改项目的 build.gradle。
+// 用法：AIGUI_GAME_ARGS="--username P1 --quickPlayMultiplayer mcfb-srv:25565" ./gradlew -I scripts/ai-gui/game-args.init.gradle runClient
+// （JavaExec 的 --args 在 ModDevGradle 里会顶掉主类，不能用。）
+allprojects {
+    afterEvaluate { p ->
+        def extra = System.getenv('AIGUI_GAME_ARGS')
+        def nf = p.extensions.findByName('neoForge')
+        if (extra && nf) {
+            nf.runs.named('client') { programArguments.addAll(extra.trim().split(/\s+/) as List) }
+        }
+    }
+}

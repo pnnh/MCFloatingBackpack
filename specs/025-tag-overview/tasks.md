@@ -65,7 +65,7 @@
 - [X] T024 [US1] 修改 `…/client/panel/FloatingPanelRenderer.java`：`TagPanelState.get().isOpen()` 时，`TagOverviewState.get().view() == SELECTION` 画 `TagPanelRenderer`，否则画 `TagOverviewRenderer`（两处"跳过主区域格子绘制"判断因为仍是面板展开而不变）。依赖 T022
 - [X] T025 [US1] 修改 `…/client/FloatingPanelEvents.java`：①`onClientTick` 里现有的"标签面板需要标签管理器与可见面板"的 `collapse()` 分支同时调用 `TagOverviewState.get().resetView()`；②`onLoggingIn`、`onLoggingOut` 里与 `TagPanelState.get().reset()` 并排加 `TagOverviewState.get().reset()`；修改 `…/network/BackpackSessionPayload.java` 的 `handleClient`（开会话、关会话两个分支）调用 `TagOverviewState.get().resetView()`（一行，换背包回到选区视图）。依赖 T016
 - [X] T026 [US1] 运行 `./gradlew compileJava test`，确认全部测试通过
-- [ ] T027 [US1] 按 `quickstart.md` A（Q1～Q6）在 `./gradlew runClient` 验证（先 `pgrep`）：状态行右端有菜单图标与悬停提示；点图标进入总览、再点回到选区视图且选区没变（切换 10 次）；收起再展开保留视图；拿走标签管理器/关闭面板/退出世界/再按 B 打开都回到选区视图；与 024 黑名单页互斥；OFF 界面上随面板隐藏；018 选区视图的增删标签行为不变；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T027 [US1] 按 `quickstart.md` A（Q1～Q6）在 `./gradlew runClient` 验证（先 `pgrep`）：状态行右端有菜单图标与悬停提示；点图标进入总览、再点回到选区视图且选区没变（切换 10 次）；收起再展开保留视图；拿走标签管理器/关闭面板/退出世界/再按 B 打开都回到选区视图；与 024 黑名单页互斥；OFF 界面上随面板隐藏；018 选区视图的增删标签行为不变；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：Q1～Q3 通过、Q4 部分、Q5 部分、Q6 没测；详见 DELIVERY.md，未勾
 
 **Checkpoint**: 能切换视图；总览还只是空壳。
 
@@ -81,7 +81,7 @@
 - [X] T029 [US2] 扩展 `…/tags/TagOverviewRenderer.java`：列表页内容区只画**可见行**（按滚动算起止，`enableScissor` 裁到内容区）：行底色（隔行略不同）、物品图标（`graphics.renderItem(stack, x, y)`；已不在游戏里的画灰底方块加"?"占位）、名称（`font.plainSubstrByWidth` 按名称位宽截断）、标签数量；空书时显示 `overview.mcfloatingbackpack.empty`；悬停某一行时 `graphics.renderComponentTooltip`：第一行物品名（或注册 id），其后每行一个标签（`TagPanelContext.label`）。本阶段不画"清空"按钮与筛选行。依赖 T028
 - [X] T030 [US2] 扩展 `…/tags/TagOverviewInput.java`：`onMainScroll`——在 `LIST` 视图 `TagOverviewState.setListScroll(scroll + (scrollDeltaY > 0 ? -1 : 1))`（布局会夹范围），始终返回 `true`；`onMainPress`——`LIST` 视图左键点行本阶段只消费（进入明细在 US4）。依赖 T028
 - [X] T031 [US2] 运行 `./gradlew compileJava test`，确认全部测试通过
-- [ ] T032 [US2] 按 `quickstart.md` B（Q7～Q11）在 `./gradlew runClient` 验证（先 `pgrep`）：有标签的物品全部列出且数量正确；物品从背包拿走后仍在列表；没打过标签的背包显示空状态；悬停显示完整标签；40 种以上物品可滚动、滚轮不穿透；切换语言后按新显示名重排；**造 200 个以上分类看滚动手感**（research 不确定项 1）；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T032 [US2] 按 `quickstart.md` B（Q7～Q11）在 `./gradlew runClient` 验证（先 `pgrep`）：有标签的物品全部列出且数量正确；物品从背包拿走后仍在列表；没打过标签的背包显示空状态；悬停显示完整标签；40 种以上物品可滚动、滚轮不穿透；切换语言后按新显示名重排；**造 200 个以上分类看滚动手感**（research 不确定项 1）；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：Q9、Q10 通过，Q7 部分，Q8、Q11 没测，"手感/200 个以上分类"没测；详见 DELIVERY.md，未勾
 
 **Checkpoint**: 能看到全部有标签的物品；还不能筛选、不能点进去。
 
@@ -98,7 +98,7 @@
 - [X] T035 [US3] 扩展 `…/tags/TagOverviewInput.java`：`LIST` 视图的 `onMainPress`——`FILTER` → `startFilterEditing()`（并取消其它瞬时状态）；`FILTER_CLEAR` → `clearFilter()` 并 `setListScroll(0)`；`DROPDOWN i` → `setFilter(候选 i)`、`stopFilterEditing()`、清文本、`setListScroll(0)`；点其它位置 → `stopFilterEditing()`；新增 `onKeyPressed(keyCode, scanCode, modifiers)` / `onCharTyped(c)`（只处理筛选框：ESC 停止编辑不改筛选、Enter 选定高亮候选或输入文本（合法标签才选定）、Backspace/Delete/左右/Home/End、上下选下拉、粘贴走 `TagRules.filter`；字符走 `TagTextInput.type`），写法照 `PickupPanelInput`/`TagPanelInput`。依赖 T033
 - [X] T036 [US3] 修改 `…/client/FloatingPanelEvents.java` 的键盘三事件（`KeyPressed.Pre`、`KeyReleased.Pre`、`CharacterTyped.Pre`）：在现有 `hostsPanel(screen) && TagPanelState.get().isEditing()` 旁加 `|| TagOverviewState.get().isFilterEditing()`，并在处理处按视图分支（`TagOverviewState.view() == LIST` 且 `isFilterEditing()` → `TagOverviewInput`；否则走原有 `TagPanelInput`）；修改 `…/client/panel/FloatingPanelInput.java`：现有"编辑中点面板以外失焦"分支旁加 `TagOverviewState.get().stopFilterEditing()`；修改 `…/client/panel/DeleteKeyInput.java`：传给 `DeleteKeyRules.Inputs` 的 `tagPanelEditing` 改为 `TagPanelState.get().isEditing() || PickupPanelState.get().isEditing() || TagOverviewState.get().isFilterEditing()`。依赖 T035
 - [X] T037 [US3] 运行 `./gradlew compileJava test`，确认全部测试通过（含 `DeleteKeyRulesTest`）
-- [ ] T038 [US3] 按 `quickstart.md` C（Q12～Q15）在 `./gradlew runClient` 验证（先 `pgrep`）：下拉候选与模糊匹配；选定 `trash` 只剩带 `trash` 的物品、标签块与 `×` 显示；清除恢复；筛选无结果的空状态；文本框焦点下打字不触发快捷键（含 Delete）、ESC 只取消编辑、没有焦点不拦截键盘；非法字符被过滤；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T038 [US3] 按 `quickstart.md` C（Q12～Q15）在 `./gradlew runClient` 验证（先 `pgrep`）：下拉候选与模糊匹配；选定 `trash` 只剩带 `trash` 的物品、标签块与 `×` 显示；清除恢复；筛选无结果的空状态；文本框焦点下打字不触发快捷键（含 Delete）、ESC 只取消编辑、没有焦点不拦截键盘；非法字符被过滤；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：Q12、Q13、Q15 通过，Q14 部分（Delete、数字、Esc 不清除已应用筛选没测）；**发现下拉被物品图标压住、未应用文字残留两个问题**；详见 DELIVERY.md，未勾
 
 **Checkpoint**: 能按标签筛选出所有"垃圾"物品。
 
@@ -116,7 +116,7 @@
 - [X] T042 [US4] 扩展 `…/tags/TagOverviewInput.java`：`LIST` 的 `ROW i` → `enterDetail(行的注册 id)`；`DETAIL` 的 `onMainPress`——返回按钮 → `backToList()`；菜单图标 → `toSelection()`；`TAG` → `stopEditing` + `setPendingDelete`；`DELETE` → `setPendingDelete(null)` 并发 `REMOVE`；`PLUS` → `model.canAdd()` 才 `TagPanelState.startEditing()`；`TEXTBOX` → 放置插入点；`DROPDOWN i` → 发 `ADD`；其余 `cancelTransient`；`DETAIL` 的键盘（用 `TagPanelState` 的 `input/editing/dropdownIndex`，写法照 `TagPanelInput`，提交时 `add(tag)` 先 `TagRules.isValid`、`model.blocks(tag)` 为真则发聊天提示 `protectedMessage` 且不发请求、`!model.canAdd()` 则关闭文本框、否则发 `ADD`）；发送一律 `PacketDistributor.sendToServer(BackpackTagOverviewPayload.of(op, key, tag))`，**不改本地数据**（等 `BackpackTagsPayload`）；`onMainScroll` 在 `DETAIL` 视图用 `TagPanelState.setScroll`。依赖 T039、T040
 - [X] T043 [US4] 修改 `…/client/FloatingPanelEvents.java` 的键盘三事件分支：`TagPanelState.get().isEditing()` 且 `TagOverviewState.view() == DETAIL` → 转给 `TagOverviewInput`（添加走按 id 的请求），`view == SELECTION` 仍转给 `TagPanelInput`；`KeyReleased/CharacterTyped` 同。依赖 T042
 - [X] T044 [US4] 运行 `./gradlew compileJava test`，确认全部测试通过；`grep -rn "versioned(" …/network/BackpackNetwork.java` 为 `"13"`；`BackpackTagPayload`、`TagPanelState`、`TagPanelLayout`、`TagPanelModel`、`TagPanelContext` 没有改动（`git diff --stat`）
-- [ ] T045 [US4] 按 `quickstart.md` D（Q16～Q22）在 `./gradlew runClient` 验证（先 `pgrep`）：点行进入明细、返回保持滚动与筛选；增删标签；物品不在背包里也能增删；加到 10 个加号灰且服务端拒绝；受保护物品加 `trash` 被拒绝（下拉灰、提示）；删掉最后一个标签自动回列表；明细页添加框键盘规则；（可选）已不在游戏里的物品的显示与限制；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T045 [US4] 按 `quickstart.md` D（Q16～Q22）在 `./gradlew runClient` 验证（先 `pgrep`）：点行进入明细、返回保持滚动与筛选；增删标签；物品不在背包里也能增删；加到 10 个加号灰且服务端拒绝；受保护物品加 `trash` 被拒绝（下拉灰、提示）；删掉最后一个标签自动回列表；明细页添加框键盘规则；（可选）已不在游戏里的物品的显示与限制；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：Q16、Q17（Esc 取消没测）、Q18、Q20、Q21 通过，Q19、Q22 没测；详见 DELIVERY.md，未勾
 
 **Checkpoint**: 总览的查看、筛选、编辑都能用；还不能清空。
 
@@ -131,7 +131,7 @@
 - [X] T046 [US5] 扩展 `…/tags/TagOverviewRenderer.java`：每行右端画"清空"按钮（`overview.mcfloatingbackpack.clear`，灰底、悬停提亮，悬停提示 `clear.tooltip`）；`TagOverviewState.confirm().isArmed(行 key, now)` 时该行按钮变红底、文字 `clear.confirm`；按钮宽度 = 文本宽 + 8，并把这些宽度喂给 `TagOverviewLayout`（`clearLabelWidths`）。依赖 T017、T029
 - [X] T047 [US5] 扩展 `…/tags/TagOverviewInput.java`：`LIST` 的 `CLEAR i`——`confirm().confirm(key, now)` 为真则发 `CLEAR`（`BackpackTagOverviewPayload.of(Op.CLEAR, key, "")`）；否则 `confirm().arm(key, now)`；所有其它按下（点别处含筛选框、行、图标、面板外）、`onMainScroll`、切换视图都先 `confirm().cancel()`（`TagOverviewState` 的视图转移方法已 cancel；这里补按下/滚动）；`now` 用 `System.currentTimeMillis()`。依赖 T039、T046
 - [X] T048 [US5] 运行 `./gradlew compileJava test`，确认全部测试通过
-- [ ] T049 [US5] 按 `quickstart.md` E（Q23～Q26）在 `./gradlew runClient` 验证（先 `pgrep`）：第一次点"清空"只变成"确认清空？"；点别处/滚动/切换视图/等 3 秒/点另一行的"清空"都取消或取代，数据不变；第二次点后该分类标签清空、行消失；清空后选区视图里该物品共同标签为"无"、022 的倾倒不再倾倒它、024 黑名单不再命中；对受保护物品与已移除模组的物品同样成功；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T049 [US5] 按 `quickstart.md` E（Q23～Q26）在 `./gradlew runClient` 验证（先 `pgrep`）：第一次点"清空"只变成"确认清空？"；点别处/滚动/切换视图/等 3 秒/点另一行的"清空"都取消或取代，数据不变；第二次点后该分类标签清空、行消失；清空后选区视图里该物品共同标签为"无"、022 的倾倒不再倾倒它、024 黑名单不再命中；对受保护物品与已移除模组的物品同样成功；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：Q23（点别处/滚动/切换视图没测）、Q24、Q26 通过，Q25 没测；详见 DELIVERY.md，未勾
 
 ---
 

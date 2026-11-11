@@ -54,7 +54,7 @@ class TagOverviewStateTest {
     }
 
     @Test
-    void resetViewForgetsTheViewButNotTheTypedFilterText() {
+    void resetViewForgetsTheViewAndTheTypedFilterText() {
         TagOverviewState state = TagOverviewState.get();
         state.enterList();
         state.setListScroll(7);
@@ -68,7 +68,7 @@ class TagOverviewStateTest {
         assertNull(state.filter());
         assertFalse(state.isFilterEditing());
         assertFalse(state.confirm().isArmed("a", 0));
-        assertEquals("abc", state.filterInput().text());
+        assertEquals("", state.filterInput().text());
     }
 
     @Test
@@ -96,8 +96,21 @@ class TagOverviewStateTest {
         state.enterList();
         state.startFilterEditing();
         assertTrue(state.isFilterEditing());
+        state.filterInput().paste("abc");
         state.stopFilterEditing();
         assertFalse(state.isFilterEditing());
+        assertEquals("", state.filterInput().text());
+    }
+
+    @Test
+    void leavingTheListDropsTheUnchosenFilterText() {
+        TagOverviewState state = TagOverviewState.get();
+        state.enterList();
+        state.startFilterEditing();
+        state.filterInput().paste("abc");
+        state.enterDetail("minecraft:stone");
+        state.backToList();
+        assertEquals("", state.filterInput().text());
     }
 
     @Test

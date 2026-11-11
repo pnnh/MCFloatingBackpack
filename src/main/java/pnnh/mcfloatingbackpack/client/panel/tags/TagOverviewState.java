@@ -62,7 +62,7 @@ public final class TagOverviewState {
         leaveTransient();
     }
 
-    /** Back to the selection view with nothing remembered of the overview, except the text left in the filter box. */
+    /** Back to the selection view with nothing remembered of the overview. */
     public void resetView() {
         view = View.SELECTION;
         detailItem = null;
@@ -82,8 +82,7 @@ public final class TagOverviewState {
         TagPanelState tags = TagPanelState.get();
         tags.cancelTransient();
         tags.setScroll(0);
-        filterEditing = false;
-        filterDropdownIndex = -1;
+        stopFilterEditing();
         confirm.cancel();
     }
 
@@ -112,7 +111,7 @@ public final class TagOverviewState {
         this.listScroll = Math.max(0, scroll);
     }
 
-    /** The filter box's buffer; it survives switching view and is cleared when leaving the world. */
+    /** The filter box's buffer: only what is being typed; leaving the box without choosing a tag throws it away. */
     public TagTextInput filterInput() {
         return filterInput;
     }
@@ -130,9 +129,11 @@ public final class TagOverviewState {
         }
     }
 
+    /** Esc, a click elsewhere or leaving the page: whatever was typed but not chosen is dropped, so the box never shows a stale buffer. */
     public void stopFilterEditing() {
         filterEditing = false;
         filterDropdownIndex = -1;
+        filterInput.clear();
     }
 
     public int filterDropdownIndex() {

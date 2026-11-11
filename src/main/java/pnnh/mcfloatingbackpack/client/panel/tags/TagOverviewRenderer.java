@@ -22,6 +22,8 @@ import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelLayout.Rect;
  */
 @OnlyIn(Dist.CLIENT)
 public final class TagOverviewRenderer {
+    /** The filter dropdown sits above the rows' item icons (which renderItem lifts by about 150). */
+    private static final float DROPDOWN_Z = 250.0F;
     private static final int COLOR_BACKGROUND = 0xFFDCDCDC;
     private static final int COLOR_EDGE_DARK = 0xFF555555;
     private static final int COLOR_EDGE_LIGHT = 0xFFFFFFFF;
@@ -113,7 +115,11 @@ public final class TagOverviewRenderer {
 
         drawRows(graphics, font, area, rows, layout, mouseX, mouseY, now);
         drawFilterRow(graphics, font, area, layout, mouseX, mouseY);
+        // The icons drawn by renderItem sit about 150 layers above the plane they are drawn on; the dropdown has to be above them.
+        graphics.pose().pushPose();
+        graphics.pose().translate(0.0F, 0.0F, DROPDOWN_Z);
         drawDropdown(graphics, font, area, layout, mouseX, mouseY);
+        graphics.pose().popPose();
 
         // tooltips: the hovered row lists the item's tags; the clear button and the filter mark say what they do
         TagOverviewLayout.Hit hit = layout.hit(mouseX - ox, mouseY - oy);

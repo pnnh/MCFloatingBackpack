@@ -28,11 +28,24 @@
 | 任务 | 内容 | 状态 |
 |---|---|---|
 | T028 | 三个入口、面板状态不变、手里没背包也能开（quickstart A） | 用户验证，没有问题 |
-| T029 | 非 op 视图与隔离（quickstart B） | **搁置未测**（需要第二个账号）；纯逻辑测试与服务端权限检查覆盖了规则，但没有在游戏里验证 |
+| T029 | 非 op 视图与隔离（quickstart B） | 2026-11-11 AI 自动验证：B1～B4 主要点通过（两个客户端连同一专用服务器）；翻页、悬停、点击预览、附魔物品未测，**未勾** |
 | T030 | op 视图与动作、权限变化（quickstart C） | 用户验证，没有问题 |
 | T031 | 布局与回归（quickstart D、E，含 030 命令与浮动面板回归） | 用户验证，没有问题 |
 
-步骤见 [quickstart.md](./quickstart.md)；清单见 `docs/plan/manual-verification-checklist.md` 的 031-A～E。T029 做之前需要第二个账号（或用关闭作弊的方式再开一个玩家）。
+步骤见 [quickstart.md](./quickstart.md)；清单见 `docs/plan/manual-verification-checklist.md` 的 031-A～E（该清单已于 2026-11-11 删除，进度只看 tasks.md）。
+
+### 2026-11-11 AI 自动验证：quickstart B（非 op 视图与隔离，部分）
+
+环境：三个容器（一个专用服务器、两个客户端 P1/P2，见 `scripts/ai-gui/README.md` 的"联机"一节）。`ops.json` 只有 P1；P1 与 P2 各拿一只皮革背包，放入物品（P1 放 5 个石头、P2 放 3 个钻石），关面板后各出现 2 份快照。
+
+| 步骤 | 结果 |
+|---|---|
+| B1 列表只含自己的背包，每行有编号、档位、版本数、所有者、距今 | **通过**：P2（非 op）打开 `/mcfb snapshot gui`，只有 `HPD7 leather ×2 P2 <1m ago`；P1 的 `GCDX` 不在列表里。翻页（超过一页）**没测** |
+| B2 选背包列版本，选版本显示预览 | **通过**：版本 `#1 <1m ago 1 items`、`#2 2m ago 0 items`；预览显示 3 个钻石在左上格。悬停提示、点击预览无反应、带附魔的物品**没测** |
+| B3 没有"全部"切换、过滤框、恢复、删除、清理 | **通过**：非 op 的界面里这些控件不存在（不是灰色）；同一时刻 op（P1）的界面有 Mine/Owner/Idle days/Restore/To: yourself/Delete this one/Delete all/Days/Clean up，对照明确 |
+| B4 别的玩家的背包不出现 | **通过**：同上，P2 看不到 P1 的 `GCDX`，P1 的"Mine"视图也只有 `GCDX` |
+
+没有勾 T029（翻页、悬停、点击预览、附魔物品没测）。截图在 `$TMPDIR/mcfb-ai-gui/shots/`（`nonop4.png`、`op1.png`，不进仓库）。
 
 ## 验证中确认的风险点（用户验证通过：快捷键与宿主界面、030 命令回归、布局）
 
