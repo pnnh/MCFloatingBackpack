@@ -1,0 +1,31 @@
+README_CN.md
+  s_9aefe4a2760245::t_e2e4cc0879d1e3 23
+README.md
+  s_9aefe4a2760245::t_e2e4cc0879d1e3 23
+specs/020-compat-switches/tasks.md
+  s_9aefe4a2760245::t_e2e4cc0879d1e3 72
+  s_9aefe4a2760245::t_5e9b4277b9fc23 158
+specs/020-compat-switches/DELIVERY.md
+  s_9aefe4a2760245::t_6271b4495a2da9 110-122
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "098f22681a8ebb30e3143bb6b0c21f38f1521987",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
