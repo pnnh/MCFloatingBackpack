@@ -1,0 +1,32 @@
+specs/021-trash-can/tasks.md
+  s_9aefe4a2760245::t_71da123cf98120 146
+specs/022-trash-delete-tools/tasks.md
+  s_9aefe4a2760245::t_71da123cf98120 157
+specs/038-universal-extension/DELIVERY.md
+  s_9aefe4a2760245::t_561a71b88ff199 52-72
+specs/038-universal-extension/tasks.md
+  s_9aefe4a2760245::t_85f59cd63c4aaa 78-79
+specs/040-downgrade-protection/tasks.md
+  s_9aefe4a2760245::t_0799b78115d56f 67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "262e68e287b25758caacb2323eee7d57f59c3644",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
