@@ -1,0 +1,36 @@
+specs/022-trash-delete-tools/tasks.md
+  s_9aefe4a2760245::t_232b3c1bdfa7a6 90
+specs/030-backpack-snapshots/tasks.md
+  s_9aefe4a2760245::t_232b3c1bdfa7a6 53
+specs/030-backpack-snapshots/DELIVERY.md
+  s_9aefe4a2760245::t_232b3c1bdfa7a6 65-74
+specs/022-trash-delete-tools/DELIVERY.md
+  s_9aefe4a2760245::t_232b3c1bdfa7a6 124-132
+specs/024-auto-pickup/DELIVERY.md
+  s_9aefe4a2760245::t_232b3c1bdfa7a6 66-72
+scripts/ai-gui/README.md
+  s_9aefe4a2760245::t_d971cd75f539de 40-50
+specs/024-auto-pickup/tasks.md
+  s_9aefe4a2760245::t_232b3c1bdfa7a6 126,137
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f36dc78b15cd6c0415302c57ae6c8e48be4dc558",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
