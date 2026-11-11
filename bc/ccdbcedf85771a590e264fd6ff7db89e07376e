@@ -1,0 +1,84 @@
+scripts/ai-gui/try.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-12
+docs/plan/README.md
+  s_9aefe4a2760245::t_ade1e26c1230bf 12
+scripts/ai-gui/README.md
+  s_9aefe4a2760245::t_10e41bfbc49428 1-42
+scripts/ai-gui/server.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-13
+scripts/ai-gui/bp_dump.py
+  s_9aefe4a2760245::t_8407d732b97b82 1-106
+specs/041-world-downgrade-guard/DELIVERY.md
+  s_9aefe4a2760245::t_9dcdce120b132a 81-87
+specs/041-world-downgrade-guard/tasks.md
+  s_9aefe4a2760245::t_a929904b9ed01b 70
+scripts/ai-gui/common.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-13
+specs/039-version-check/DELIVERY.md
+  s_9aefe4a2760245::t_9dcdce120b132a 46-66
+docs/plan/release-process.md
+  s_9aefe4a2760245::t_4f652e5f5ca470 16
+specs/041-world-downgrade-guard/quickstart.md
+  s_9aefe4a2760245::t_9dcdce120b132a 56
+scripts/ai-gui/sync.sh
+  s_9aefe4a2760245::t_9d5abfb5127da0 8
+  s_9aefe4a2760245::t_8407d732b97b82 1-7,9
+scripts/ai-gui/setup.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-36
+scripts/ai-gui/gui.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-23
+docs/plan/ai-gui-verification.md
+  s_9aefe4a2760245::t_78bd59867146fb 51-68,70-74
+  s_9aefe4a2760245::t_eeda2148982cc2 98
+  s_9aefe4a2760245::t_3643f015148c0a 3
+  s_9aefe4a2760245::t_cec0dc569ca3a2 85-97,99-118,120-139,148
+  s_9aefe4a2760245::t_5300c00bd8413c 1-2,4-6,8-50,75-83,149-170
+  s_9aefe4a2760245::t_9a5b9712f29de9 119
+  s_9aefe4a2760245::t_58dcac315500fe 7,84,140-147
+  s_9aefe4a2760245::t_62d2eb6962f31d 69
+specs/035-category-extension-rules/tasks.md
+  s_9aefe4a2760245::t_a929904b9ed01b 86-87
+specs/023-recipe-difficulty/tasks.md
+  s_9aefe4a2760245::t_a929904b9ed01b 98
+scripts/ai-gui/launch.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-21
+scripts/ai-gui/stop-server.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-10
+specs/039-version-check/tasks.md
+  s_9aefe4a2760245::t_a929904b9ed01b 69-70
+specs/040-downgrade-protection/tasks.md
+  s_9aefe4a2760245::t_a929904b9ed01b 66-67
+README_CN.md
+  s_9aefe4a2760245::t_58dcac315500fe 88
+README.md
+  s_9aefe4a2760245::t_58dcac315500fe 88
+specs/040-downgrade-protection/DELIVERY.md
+  s_9aefe4a2760245::t_9dcdce120b132a 47-70
+specs/025-tag-overview/tasks.md
+  s_9aefe4a2760245::t_a929904b9ed01b 152
+scripts/ai-gui/Dockerfile
+  s_9aefe4a2760245::t_8407d732b97b82 1-11
+scripts/ai-gui/enter.sh
+  s_9aefe4a2760245::t_8407d732b97b82 1-8
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "bcccdbcedf85771a590e264fd6ff7db89e07376e",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
