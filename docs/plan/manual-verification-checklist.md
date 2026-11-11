@@ -212,7 +212,7 @@ E（选区）、F（工具区与合法尺寸）、G（标签管理器）、H（�
 
 ### 039. 版本一致性提示（2026-11-10 实现，等用户在游戏里确认）
 
-对应 `specs/039-version-check/quickstart.md`。先 `pgrep -f "fml.modFolders=mcfloatingbackpack"`；不运行专用服务器；A～J 用调试开关在一个客户端的单人游戏里验证（`./gradlew runClient -Pmcfb.checkOwner=true -Pmcfb.serverVersion=<版本>`）。
+对应 `specs/039-version-check/quickstart.md`。先 `pgrep -f "fml.modFolders=mcfloatingbackpack"`；A～J 用调试开关在一个客户端的单人游戏里验证（`./gradlew runClient -Pmcfb.checkOwner=true -Pmcfb.serverVersion=<版本>`）。
 
 - [ ] **039-A** 客户端更旧（`serverVersion=0.2.0`）：聊天里一条"比服务器旧……升级……备份存档"，只有自己看得到，日志 WARN。
 - [ ] **039-B** 客户端更新（`serverVersion=0.0.9`）：一条"比服务器新……降级或联系服主升级服务器……"。
@@ -227,7 +227,7 @@ E（选区）、F（工具区与合法尺寸）、G（标签管理器）、H（�
 
 ### 040. 降级保护（2026-11-10 实现，等用户在游戏里确认）
 
-对应 `specs/040-downgrade-protection/quickstart.md`。先 `pgrep -f "fml.modFolders=mcfloatingbackpack"`；不运行专用服务器；**改世界前先备份**。A～I 用调试开关在一个客户端里验证：`./gradlew runClient -Pmcfb.stampRevision=99`，进世界、拿一只背包、点一个格子保存、退出；然后**不带开关**重启。
+对应 `specs/040-downgrade-protection/quickstart.md`。先 `pgrep -f "fml.modFolders=mcfloatingbackpack"`；**改世界前先备份**。A～I 用调试开关在一个客户端里验证：`./gradlew runClient -Pmcfb.stampRevision=99`，进世界、拿一只背包、点一个格子保存、退出；然后**不带开关**重启。
 
 - [ ] **040-A** 被保护的背包第一次打开：面板不打开，聊天里一条提示（修订 99 与当前 1、建议升级或备份、60 秒内再次打开表示接受风险），只有自己看得到，日志有 WARN。
 - [ ] **040-B** 被拒后背包零变化：`/data get entity @s SelectedItem` 里 `data_revision` 仍是 99，没有被分配新身份。
@@ -238,7 +238,22 @@ E（选区）、F（工具区与合法尺寸）、G（标签管理器）、H（�
 - [ ] **040-G** 锻造台：被保护的背包没有升级结果；确认放行后可以升级。
 - [ ] **040-H** 不读写内容的操作：被保护的背包仍可丢弃、放进箱子再取出、创造复制（副本修订仍是 99）。
 - [ ] **040-I** 正常情形：没有标记的旧背包、修订相同或更低的、新合成的都照常，不提示，保存后修订是 1；035～039 的功能与协议号 17 不受影响；创造模式写回的局限（记录结果）。
-- [ ] **040-J**（降级实验，**由你做**）用 `design/demo/tools/downgrade_experiment.sh` 准备，用 030 的构建在备份过的世界副本上观察：背包还在吗？日志里有没有 `Tried to load invalid item`？背包里少了什么？存档里 `extension_rows` 还在吗？把结果写进 `specs/040-downgrade-protection/research.md` 的"实验结果"一节；背包整只消失则建议另开 041。
+- [ ] **040-J**（降级实验，**由你做**）用 `design/demo/tools/downgrade_experiment.sh` 准备，用 030 的构建在备份过的世界副本上观察：背包还在吗？日志里有没有 `Tried to load invalid item`？背包里少了什么？存档里 `extension_rows` 还在吗？把结果写进 `specs/040-downgrade-protection/research.md` 的"实验结果"一节；背包整只消失则建议另开 041。（已做：H1、H2 成立、H3 未出现，分析见 research"实验分析"；待你确认后勾选，并建议补一次"不点格子直接退出"的对照。）
+
+### 041. 存档级降级拦截（2026-11-10 实现，等用户在游戏里确认）
+
+对应 `specs/041-world-downgrade-guard/quickstart.md`（代码与自动化已完成）。先 `pgrep -f "fml.modFolders=mcfloatingbackpack"`；专用服务器可以运行（`./gradlew runServer`）；**改世界前先备份**。开发里用 `-Pmcfb.worldMarkerRevision=99` 造"更高修订的存档"。
+
+- [x] **041-A** 无标记的旧存档照常进入、不提示；退出后存档里有标记，值等于当前修订。（用户 2026-11-11 已验证，日志 09:23 写入 1）
+- [x] **041-B** 标记等于或小于当前修订的存档照常进入，标记写成当前修订；模组版本号变而修订不变不拦。（用户 2026-11-11 已验证，日志 09:56 写入 1（原为 0）；"模组版本号变而修订不变不拦"只有单元测试，游戏里没做）
+- [x] **041-C** 标记更高：单人游戏打开存档被拦，**游戏窗口在几秒内关闭、不卡在加载界面**（第一版在这里卡死过，已修，要再测），`crash-reports/…-server.txt` 的 `Description:` 是双语说明（记录实际呈现，是否清楚）；日志 ERROR 含两个修订、两种接受风险的办法、标记文件路径、备份建议；日志里会多一条 `Exception stopping the server` + NPE（预期）；`playerdata`、`region`、标记文件前后指纹不变（**指纹要在第 1 步退出之后、第 3 步之前记**；level.dat、session.lock 由原版动，不算）。（用户 2026-11-11 已验证：第一版卡死、修复后复测游戏直接退出，崩溃报告双语、路径无 `./`，指纹与标记不变；专用服务器的拒绝路径 Claude 也实测过）
+- [x] **041-D** 用 `-Dmcfloatingbackpack.acceptDowngrade=true` 放行：存档正常进入，日志 WARN；退出后标记仍是更高值；不带参数再启动再次被拦。（用户 2026-11-11 已验证：WARN 出现、D 的日志没有写标记那行；"不带参数再启动再次被拦"未单独做，C 里看到过重复被拦）
+- [x] **041-E** 删除标记文件或改低修订：存档正常进入，标记之后写成当前修订。（用户 2026-11-11 已验证，无标记日志，符合"等于当前不写"）
+- [x] **041-F** 标记损坏（写入乱码）：当作 0、WARN、不阻止进入。（用户 2026-11-11 已验证，WARN 无法读取 + 重写）
+- [x] **041-G** 放行后 040 的物品级保护仍然工作；035～040 的功能与协议号 17 不受影响。（用户 2026-11-11：只验证了几个基本功能，**未全部回归**，后续继续做；勾选只表示"暂时测到这里"。）
+- [ ] **041-H** 对照实验（可选）：带保护的构建在更高修订的存档上，不带放行参数时玩家数据不被读取，对比前后 `playerdata` 无变化。
+- [ ] **041-J** 专用服务器（`./gradlew runServer`）：通过路径（标记写入）用户已见到；拒绝路径（标记 99 → ERROR、崩溃报告、进程退出、指纹不变）Claude 已实测；放行路径（`-Dmcfloatingbackpack.acceptDowngrade=true`，需手工给 JVM 加参数并用 `stop` 停服）未做。
+- [ ] **041-I** 文档与实际行为一致：README 两份、`release-process.md` 的"存档级降级拦截"一节已按实现写好（代码与测试已核对）；做完 C～H 后，如果实际呈现（尤其是单人游戏被拦时游戏的关闭方式）与文档描述不符，回头改文档再勾。
 
 ### I. 垃圾桶本体（021 T045）
 

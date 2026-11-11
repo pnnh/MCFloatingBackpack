@@ -12,8 +12,14 @@ package pnnh.mcfloatingbackpack.version;
  *   <li>{@code clientVersion=X}: the client takes its own version to be X (in the comparison and in what it reports);
  *   <li>{@code legacyClient=true}: the server treats every player as a client without the version check (the plain text for them);
  *   <li>{@code stampRevision=N}: 040, every backpack save stamps the data revision N instead of the current one (99 makes a backpack
- *       that looks as if a newer version had saved it, to try the downgrade protection out).
+ *       that looks as if a newer version had saved it, to try the downgrade protection out);
+ *   <li>{@code worldMarkerRevision=N}: 041, the world marker is written with the data revision N instead of the current one (99 makes a
+ *       world that the next start without the switch refuses); only when N is higher than the marker already is.
  * </ul>
+ *
+ * <p>{@link #acceptDowngrade()} is not a debug switch but the parameter a player gives, {@code -Dmcfloatingbackpack.acceptDowngrade=true},
+ * to start a world whose marker is higher than this version (so it has no {@code debug.} in its name); in a development run it is
+ * {@code -Pmcfb.acceptDowngrade=true}, which build.gradle turns into that property.
  */
 public final class VersionDebug {
     private static final String PREFIX = "mcfloatingbackpack.debug.";
@@ -37,6 +43,27 @@ public final class VersionDebug {
     /** The version the client says it has, or null when it is not overridden. */
     public static String clientVersionOverride() {
         return System.getProperty(PREFIX + "clientVersion");
+    }
+
+    /** 041: whether the player accepted the risk of starting a world that a newer data revision saved (for this run only). */
+    public static boolean acceptDowngrade() {
+        return Boolean.getBoolean("mcfloatingbackpack.acceptDowngrade");
+    }
+
+    /** 041: the data revision the world marker is written with instead of the current one, or null when it is not overridden (or not a number). */
+    public static Integer worldMarkerRevisionOverride() {
+        return parseInt(System.getProperty(PREFIX + "worldMarkerRevision"));
+    }
+
+    private static Integer parseInt(String value) {
+        if (value == null) {
+            return null;
+        }
+        try {
+            return Integer.valueOf(value.trim());
+        } catch (NumberFormatException notANumber) {
+            return null;
+        }
     }
 
     /** 040: the data revision every save stamps instead of the current one, or null when it is not overridden (or not a number). */

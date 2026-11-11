@@ -42,6 +42,7 @@ import pnnh.mcfloatingbackpack.inventory.pickup.AutoPickupEvents;
 import pnnh.mcfloatingbackpack.inventory.recipe.ModRecipes;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.network.BackpackNetwork;
+import pnnh.mcfloatingbackpack.worldmarker.WorldMarkerEvents;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotCommands;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotService;
 
@@ -106,6 +107,8 @@ public class MCFloatingBackpack {
                 SnapshotService.get().ifPresent(service -> service.onLogout(player.getUUID()));
             }
         });
+        // 041: before the world is loaded, and so before any player data is read, a world that a newer data revision saved is refused.
+        NeoForge.EVENT_BUS.addListener(WorldMarkerEvents::onServerAboutToStart);
         // 030: backpack snapshots, kept outside the world: started with the server, checked once a second, written out when it stops.
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent event) -> SnapshotService.start(event.getServer()));
         NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> SnapshotService.stop());

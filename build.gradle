@@ -77,10 +77,12 @@ neoForge {
             client()
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
             // 039: ./gradlew runClient -Pmcfb.<name>=<value> reaches the game as -Dmcfloatingbackpack.debug.<name>=<value>, the switches for
-            // trying the version check out (see VersionDebug); nothing is added when none is given.
+            // trying the version check out (see VersionDebug); nothing is added when none is given. 041: acceptDowngrade is the one that
+            // is a player's parameter, not a debug switch, so it reaches the game as -Dmcfloatingbackpack.acceptDowngrade=<value>.
             project.properties.each { key, value ->
                 if (key.toString().startsWith('mcfb.') && value != null) {
-                    systemProperty 'mcfloatingbackpack.debug.' + key.toString().substring('mcfb.'.length()), value.toString()
+                    String name = key.toString().substring('mcfb.'.length())
+                    systemProperty name == 'acceptDowngrade' ? 'mcfloatingbackpack.acceptDowngrade' : 'mcfloatingbackpack.debug.' + name, value.toString()
                 }
             }
         }
