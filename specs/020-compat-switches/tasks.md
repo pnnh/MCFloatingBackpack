@@ -52,7 +52,7 @@
 - [X] T009 [US1] 修改 `…/client/FloatingPanelEvents.java` 的 `onKey`：在 `!allowsPanel(minecraft.screen)` 即将 `return` 之前，若当前界面是 `AbstractContainerScreen` 但 `!ContainerScreenCompat.isOpenContainerScreen(screen)`（即被配置为 OFF），用 `minecraft.player.displayClientMessage(Component.translatable("message.mcfloatingbackpack.panel_off", owner), true)` 给 action bar 提示；修改 `src/main/resources/assets/mcfloatingbackpack/lang/en_us.json` 与 `zh_cn.json` 增加 `message.mcfloatingbackpack.panel_off`（英文如 "Floating panel is turned off for %s's screens in the config"；中文如"配置里已关闭浮动面板在 %s 的界面上显示"）。依赖 T007
 - [X] T010 [US1] 运行 `./gradlew compileJava test`，确认全部测试通过；`grep -rn "ContainerScreenCompat.isOpenContainerScreen\|hostsPanel" src/main/java` 核对 OFF 的落点只有 `isOpenContainerScreen` 与 `QuickTransferInput.supports`（contracts §2）
   - **结果**：测试通过（39 个测试类、332 个用例）；`isOpenContainerScreen` 的使用点（`hostsPanel`、`HostScreenManager.kindOf`、渲染光标来源、`screenOpen` 标志）都经过同一判断，`QuickTransferInput.supports` 另加同一判断，与 contracts §2 一致
-- [ ] T011 [US1] 按 `quickstart.md` 一（1–3）、二（4–8）在 `./gradlew runClientCompat` 逐项验证（先 `pgrep`，**用改配置文件的方式**添加条目；改后用游戏内重载或重进世界即可，实际要不要重启也如实记录）：默认挂载与 Ctrl 转移回归、日志里的模组 id（**如实记下精妙背包、旅行者背包界面的命名空间**，核对是不是 `sophisticatedbackpacks`/`travelersbackpack`/`sophisticatedcore`）、OFF 后面板隐藏/不转移/关闭后恢复、热键提示、原版容器与旅行者背包不受影响、运行中改成 OFF 时手势取消且物品守恒；结果记到 DELIVERY.md（没做的项记"未验证"，**由用户确认后才打勾**）
+- [ ] T011 [US1] 按 `quickstart.md` 一（1–3）、二（4–8）在 `./gradlew runClientCompat` 逐项验证（先 `pgrep`，**用改配置文件的方式**添加条目；改后用游戏内重载或重进世界即可，实际要不要重启也如实记录）：默认挂载与 Ctrl 转移回归、日志里的模组 id（**如实记下精妙背包、旅行者背包界面的命名空间**，核对是不是 `sophisticatedbackpacks`/`travelersbackpack`/`sophisticatedcore`）、OFF 后面板隐藏/不转移/关闭后恢复、热键提示、原版容器与旅行者背包不受影响、运行中改成 OFF 时手势取消且物品守恒；结果记到 DELIVERY.md（没做的项记"未验证"，**由用户确认后才打勾**） ——2026-11-11 AI 自动验证：1（精妙背包与旅行者背包界面）、2（模组 id：`sophisticatedbackpacks`、`travelersbackpack`）、4、5（面板回来）、6、8（面板隐藏）通过；箱子/工作台、Ctrl 转移、手势取消、GENERIC 没测；详见 DELIVERY.md，未勾
   - **状态（2026-11-05）**：客户端验证**未做**，等用户确认后才打勾（注意：做之前需要用户的客户端已退出，我不会启动或终止它）
 
 **Checkpoint**: US1 达成 FR-001～FR-007、FR-009、FR-018、SC-001、SC-002、SC-009（FR-002 的坏配置容错由 US3 验证）。
@@ -69,7 +69,7 @@
   - **实现说明**：`getGuiExtraAreas` 先判断 `specificAdaptation("jei")`，为假返回空列表；JEI 每次布局都会询问，所以改配置不需要重启
 - [X] T013 [US2] 运行 `./gradlew compileJava test`，确认通过；`grep -rn "mezz.jei" src/main/java` 确认第三方类型仍只在 `compat/jei/`
   - **结果**：测试通过；`grep -rln "mezz.jei" src/main/java` 只命中 `compat/jei/FloatingBackpackJeiPlugin.java`
-- [ ] T014 [US2] 按 `quickstart.md` 三（9–11）在 `./gradlew runClientCompat` 验证（先 `pgrep`）：默认避让；`jei=GENERIC` 后不再避让并**记录多久之后生效**；`jei=OFF` 与 GENERIC 相同；删除条目/改回 FULL 又避让；来回切换 5 次无需重启；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T014 [US2] 按 `quickstart.md` 三（9–11）在 `./gradlew runClientCompat` 验证（先 `pgrep`）：默认避让；`jei=GENERIC` 后不再避让并**记录多久之后生效**；`jei=OFF` 与 GENERIC 相同；删除条目/改回 FULL 又避让；来回切换 5 次无需重启；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：9～11 全部通过：GENERIC 约 1～2 秒生效、无需重开界面，OFF 与 GENERIC 相同，来回切换 5 次无需重启；可由你确认后勾；详见 DELIVERY.md，未勾
   - **状态（2026-11-05）**：客户端验证**未做**，等用户确认后才打勾（需用户的客户端先退出）
 
 **Checkpoint**: US2 达成 FR-008、SC-003。
@@ -86,7 +86,7 @@
   - **实现说明**：读 `ConfigurationScreen` 源码确认键名：标题 `<modid>.configuration.title`、客户端文件分区 `<modid>.configuration.section.mcfloatingbackpack.client.toml`、子分区 `<modid>.configuration.<key>`、值的标签 `translation()` 指定的键、提示 `<键>.tooltip`；新增 `mcfloatingbackpack.configuration.*` 与 `config.mcfloatingbackpack.modLevels(.tooltip)` 中英文
 - [X] T016 [US3] 更新 `src/test/java/pnnh/mcfloatingbackpack/resources/TagManagerResourcesTest.java` 或新建 `ConfigResourcesTest.java`：两份语言文件都含 T015 新增的全部键且键集合相同（沿用现有文本检查方式）；运行 `./gradlew compileJava test`
   - **结果**：新建 `CompatConfigResourcesTest`（2 个用例）：两份语言文件含全部新键且键集合相同；配置项的 `translation` 键存在。`./gradlew compileJava test` 通过
-- [ ] T017 [US3] 按 `quickstart.md` 四（12–13）在 `./gradlew runClientCompat` 验证（先 `pgrep`）：逐个写入 10 种坏配置（`HALF`、`Bad Id=OFF`、`=OFF`、`abc`、`minecraft=OFF`、小写 `off`、同一 id 两条、一条合法一条非法、没装的模组 id、整个文件乱码）并启动，**每种都要进得了世界**，核对 `latest.log` 的 WARN；配置界面里三档说明（中英文）可见，列表项能否新增/修改/删除（**不能就如实记为已知限制**，改文件仍可用）；保存后是否立即生效；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T017 [US3] 按 `quickstart.md` 四（12–13）在 `./gradlew runClientCompat` 验证（先 `pgrep`）：逐个写入 10 种坏配置（`HALF`、`Bad Id=OFF`、`=OFF`、`abc`、`minecraft=OFF`、小写 `off`、同一 id 两条、一条合法一条非法、没装的模组 id、整个文件乱码）并启动，**每种都要进得了世界**，核对 `latest.log` 的 WARN；配置界面里三档说明（中英文）可见，列表项能否新增/修改/删除（**不能就如实记为已知限制**，改文件仍可用）；保存后是否立即生效；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：12 的各种坏写法（运行中改文件）与启动时整个文件乱码通过，13 的配置界面没测，启动时其它坏配置没测；详见 DELIVERY.md，未勾
   - **状态（2026-11-05）**：客户端验证**未做**，等用户确认后才打勾（需用户的客户端先退出）
 
 **Checkpoint**: US3 达成 FR-001～FR-002（含容错）、FR-010、FR-011、SC-004、SC-007。
@@ -155,7 +155,7 @@
 - [X] T033 （已撤销）第一版曾把 `ContainerScreenCompat` 拆成 `usesMenuCursor`/`blocksItemExchange` 并让 GENERIC 不交换物品；用户补充说明后**全部回退**到原设计：`isOpenContainerScreen`（OFF 为假）仍是唯一的显示判断，光标来源、`screenOpen`、合并光标、Alt 让路、`QuickTransferInput.supports` 都用它，`grep` 确认代码里不再有 `usesMenuCursor`/`blocksItemExchange`/`exchangesItems`
 - [X] T034 聊天提示：`FloatingPanelEvents.chat(...)`（只写进本机聊天，前缀 `[浮动背包]`）；OFF 的界面上按热键改为聊天；`onClientTick` 在玩家进入世界后排空 `ConfigNotices`；`CompatConfig.policy()` 重新解析时把警告放进队列；新增 `…/compat/ConfigFileWatch.java`（`ModConfigEvent.Loading/Reloading` 里发现刚生成的 `.bak` 就加一条"文件有错误"）并在 `ClientSetup` 注册；中英文语言键
 - [X] T035 运行 `./gradlew compileJava test` 通过；读 FML `ConfigTracker.loadConfig` 与第一轮验证的日志、`run/config/*.bak` 确认"配置被重置"的原因（见 research Decision 12）
-- [ ] T036 按 `quickstart.md` 六 12b–12c 在 `./gradlew runClientCompat` 验证（先 `pgrep`，**不要有运行中的客户端**）：OFF 的界面上按热键聊天里有提示且按 T 可再看；各种坏配置进入世界后聊天里有提示；游戏运行时存一个写了一半的文件，聊天里提示备份；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T036 按 `quickstart.md` 六 12b–12c 在 `./gradlew runClientCompat` 验证（先 `pgrep`，**不要有运行中的客户端**）：OFF 的界面上按热键聊天里有提示且按 T 可再看；各种坏配置进入世界后聊天里有提示；游戏运行时存一个写了一半的文件，聊天里提示备份；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证：12b/12c 主要点通过（热键提示、坏条目聊天提示、写了一半的文件备份并提示；发现该提示出现两次）；"一次最多 5 条"没测；详见 DELIVERY.md，未勾
 
 ---
 
