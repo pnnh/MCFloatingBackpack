@@ -1,0 +1,36 @@
+scripts/ai-gui/bp_dump.py
+  s_9aefe4a2760245::t_defa395e4bc30d 100
+specs/017-panel-valid-sizes/DELIVERY.md
+  s_9aefe4a2760245::t_7cf655a4d025a8 72-81
+specs/017-panel-valid-sizes/tasks.md
+  s_9aefe4a2760245::t_7cf655a4d025a8 71
+specs/035-category-extension-rules/DELIVERY.md
+  s_9aefe4a2760245::t_7cf655a4d025a8 75-88
+specs/019-fallback-host-screen/DELIVERY.md
+  s_9aefe4a2760245::t_7cf655a4d025a8 188-194
+scripts/ai-gui/.gitignore
+  s_9aefe4a2760245::t_0047b6b0ff4edd 1
+specs/035-category-extension-rules/tasks.md
+  s_9aefe4a2760245::t_7cf655a4d025a8 86-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6cb857e67e13883f8772409dad81ebd3d065d0ce",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
