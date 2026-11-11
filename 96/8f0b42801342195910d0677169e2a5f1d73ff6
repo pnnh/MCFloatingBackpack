@@ -1,0 +1,52 @@
+specs/025-tag-overview/DELIVERY.md
+  s_9aefe4a2760245::t_075cf98354e2f2 70
+  s_9aefe4a2760245::t_9e5d28496725cf 30
+  s_9aefe4a2760245::t_d4a391cc086b7f 35-69,71-75
+  s_9aefe4a2760245::t_e0a0dae9c25783 76-77
+scripts/ai-gui/launch.sh
+  s_9aefe4a2760245::t_80a79013995c13 4,15
+specs/031-snapshot-gui/tasks.md
+  s_9aefe4a2760245::t_15c24b53b0dbf7 63
+specs/025-tag-overview/tasks.md
+  s_9aefe4a2760245::t_d4a391cc086b7f 68,84,101,119,134
+src/main/java/pnnh/mcfloatingbackpack/client/panel/tags/TagOverviewRenderer.java
+  s_9aefe4a2760245::t_b9cc984c1472ca 25-26
+  s_9aefe4a2760245::t_bd78219fbb4fa4 118-120,122
+src/test/java/pnnh/mcfloatingbackpack/client/panel/tags/TagOverviewStateTest.java
+  s_9aefe4a2760245::t_bd78219fbb4fa4 57,71,99,102-113
+src/main/java/pnnh/mcfloatingbackpack/client/panel/tags/TagOverviewState.java
+  s_9aefe4a2760245::t_bd78219fbb4fa4 65,85,114,132,136
+specs/031-snapshot-gui/DELIVERY.md
+  s_9aefe4a2760245::t_15c24b53b0dbf7 31,35-48
+scripts/ai-gui/multi-setup.sh
+  s_9aefe4a2760245::t_534ab2395c3435 2-4,17-20,23
+  s_9aefe4a2760245::t_c203695e5dfafc 1,5,7-14,16,21-22,24-29
+  s_9aefe4a2760245::t_9666b804eb64a6 6,15
+scripts/ai-gui/README.md
+  s_9aefe4a2760245::t_4ba5ca1baaca5d 51-62
+docs/plan/ai-gui-verification.md
+  s_9aefe4a2760245::t_4ba5ca1baaca5d 71,122,124-133
+scripts/ai-gui/game-args.init.gradle
+  s_9aefe4a2760245::t_80a79013995c13 1-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "968f0b42801342195910d0677169e2a5f1d73ff6",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
