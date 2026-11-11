@@ -37,6 +37,17 @@ docker rm -f mcfb-gui                        # 用完删容器（卷和镜像保
 - `runServer` 里 Gradle 不转发标准输入，`stop` 打不进去，用 `stop-server.sh`。
 - 带 `-Pmcfb.stampRevision=99` 的会话里，每只背包第一次打开就被盖章 99，同一会话第二次打开会被拒（预期）；每只背包只开一次面板。
 
+## 其它经验（第 3 步补充）
+
+- **聊天命令最长 256 个字符**。要给长的物品组件（整只背包内容、几十个潜影盒），写成数据包函数：在世界的 `datapacks/<名>/data/<名>/function/x.mcfunction` 里放一行 `give …`，加 `pack.mcmeta`（`pack_format: 48`），进世界后 `/reload`、`/function <名>:x`。背包内容的字段格式（`items`、`tools.left/bottom/right`、`extension_rows`）用 `bp_dump.py` 看存档里的真实结构；`tools` 的列表可以写短，会自动补齐。
+- **面板开关会错位**：宿主界面在聊天关闭后会自己重新打开，所以按 B 是"开"还是"关"取决于当时状态。看容器里 `latest.log` 最后一条 `019 host:` 是 `open` 还是 `close`，或者直接点面板右上角的 X 关掉。
+- **文本框有焦点时按键会被吃掉**（标签面板、黑名单页的输入框）：先点面板 X 关掉面板，再继续输命令。
+- **快捷栏在物品栏界面里的位置**：y≈494（第 n 格 x≈494+36×(n−1)）；面板打开时面板底边约 490，所以点快捷栏要用 y≈504。
+- **聊天命令前先确认没有界面开着**；生存模式下别站在岩壁里（会窒息死亡）。
+- **工具区坐标**（面板 9 列时）：左区 x≈245，右区 x≈604；下区在面板最底下一行，面板是 4 行主区域时 y≈315，是 8 行时 y≈460。
+- **右键**：`docker exec -e DISPLAY=:99 <容器> sh -c 'xdotool mousemove X Y; sleep 0.3; xdotool click 3'`；`gui.sh rclick` 不移动鼠标，只点当前位置。
+- **缩小窗口**：`docker exec -e DISPLAY=:99 <容器> sh -c 'xdotool windowsize $(xdotool search --name Minecraft | tail -1) 200 150'`，用来测面板自动收缩。
+
 ## arm64 的原生库
 
 Apple Silicon 上 Docker 跑的是 arm64 容器，Gradle 却会解析出 x64 的 LWJGL 原生库，`runClient` 会报 `UnsatisfiedLinkError: liblwjgl.so`。`setup.sh` 会从 Maven Central 下载 `natives-linux-arm64` 的七个包（缓存在 `$AIGUI_CACHE`，默认 `~/.cache/mcfb-ai-gui`），放进容器的 `/natives`，并用环境变量 `JAVA_TOOL_OPTIONS=-Dorg.lwjgl.librarypath=/natives` 指过去。**不改项目文件。** x86_64 机器上不需要，脚本会自动跳过。

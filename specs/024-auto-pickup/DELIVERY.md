@@ -63,3 +63,10 @@
 - `BackpackContents` 的 `StreamCodec.composite` **已用满 6 个字段**；再加字段必须先改成手写编码，或把几个小字段合并成一个子记录。
 - `TagPanel*` 与 `PickupPanel*` 结构重复（复用了纯布局/输入/匹配组件，状态/输入/渲染各写了一套）；第三处需要同类面板时再抽象，本 feature 不顺手做。
 - 两个第三方背包模组的内部类不是公开 API；如果将来要做主动避让，必须接受"随它们的版本失效"的代价（本 feature 评估后放弃，见 research Decision 6）。
+
+## AI 自动验证（2026-11-11，Linux 容器内 `runClient`）：Q19、Q35 的一部分
+
+环境与方法见 `docs/plan/ai-gui-verification.md`。
+
+- **Q19（左侧区限放 1 个）**：左区已有一个自动拾取时，用光标往左区空格放第二个：被拒，聊天 `Only one Auto Pickup fits in this area`，光标上的物品不变；与自己的格子交换：没有提示；往右区放：允许。"别的物品的格子"被拒、Alt 交换主手被拒**没测**。
+- **Q35（黑名单持久）部分通过**：给黑名单加 `stone`（页面显示 `1/64`），Save and Quit 后的 `playerdata` NBT 里该背包有 `pickup_blacklist: ['stone']`；重新进入世界，页面仍显示 `stone 1/64`；右键取走自动拾取、放回（换了左区的另一格），页面仍是 `stone 1/64`。**没测**：锻造台升级保留、两只背包黑名单互不共享、024 之前的旧背包黑名单为空无报错、Q36 多人、Q37 重跑 011～023。

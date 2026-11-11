@@ -62,3 +62,13 @@
 ## 验证后的改动：目录名带编号
 
 用户验证 T020～T022 后提出：存档目录用的是背包 UUID，玩家在游戏里看不到 UUID，没法对照着游戏里的背包操作快照文件。现在目录名是 `<UUID>-<4位编号>`；程序只认开头的 UUID，分割线后面的内容忽略；旧的纯 UUID 目录仍认，并在这只背包下次写快照时改名。自动化：`SnapshotFilesTest` 新增 3 个用例，全部 93 个类、658 个用例通过。**客户端验证（quickstart E）未做。**
+
+## AI 自动验证（2026-11-11，Linux 容器内 `runClient`）：quickstart D 回档
+
+环境与方法见 `docs/plan/ai-gui-verification.md`。步骤：备份世界文件夹 → 合成一只金背包（编号 C8K8）放进物品、等快照写出（快照目录里该背包有 2 份）→ 退出 → 用备份替换世界文件夹 → 重新进入。
+
+- 世界正常加载，没有登记表一类的错误。
+- `/mcfb snapshot list` 里仍有 C8K8（`gold  2 snapshot(s)`），而 C8K8 是备份之后才造的，不在换回的世界里。
+- `/mcfb snapshot restore C8K8`：聊天 `Gave Dev a new backpack with snapshot #1 of C8K8. The original backpack is unchanged.`，物品栏里多了一只金背包。
+
+覆盖 quickstart D 的 1、2 两条。快照目录在世界之外（实例的 `mcfloatingbackpack/snapshots/<世界名>/`），所以换回世界不影响它，符合设计。

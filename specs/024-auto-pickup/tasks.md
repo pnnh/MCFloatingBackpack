@@ -123,7 +123,7 @@
 - [X] T044 [P] [US5] 扩展测试 `src/test/java/pnnh/mcfloatingbackpack/inventory/ToolAreaRulesTest.java`（**先写，先失败**）：签名新增第三个谓词后更新所有既有调用；新增 `LEFT` 用例：左侧区已有 1 个，再放第 2 个到空格 → 拒绝；放到别的物品的格子（换进第二个）→ 拒绝；放到那个自动拾取自己的格子（交换）→ 允许；左侧区没有时放入 → 允许；旧背包已有 2 个，同格交换 → 允许、再放第三个 → 拒绝；其它区域（`MAIN/RIGHT/BOTTOM`）放自动拾取 → 允许；垃圾桶/标签管理器在 `LEFT` 不受限、既有的 `RIGHT`/`BOTTOM` 限制不变
 - [X] T045 [US5] 修改 `…/inventory/ToolAreaRules.java`：`canPlace(area, incoming, slotIndex, areaSlots, isTrashCan, isTagManager, isAutoPickup)`，`case LEFT -> isAutoPickup`，更新 javadoc；修改两处调用点补谓词 `stack -> stack.is(ModItems.AUTO_PICKUP.get())`：`…/network/BackpackClickPayload.java`（服务端唯一权威）与 `…/client/panel/FloatingPanelInput.java` 的 `refusedByLimit`（提示键：`held.is(AUTO_PICKUP)` → `message.mcfloatingbackpack.limit.auto_pickup`，其余保持）。使 T044 通过
 - [X] T046 [US5] 运行 `./gradlew compileJava test`，确认 T044 与全部既有测试通过
-- [x] T047 [US5] 按 `quickstart.md` Q19 在 `./gradlew runClient` 验证（先 `pgrep`）：左侧区已有一个时再放第二个（空格 / 别的物品的格子）被拒绝并在聊天区提示；用它自己的格子交换成功；Alt 交换主手同样被拒；其它区域放多个照旧允许；垃圾桶/标签管理器的既有限制不变；遗留 2 个的背包（用创造模式/命令构造）两个都在、不能放第三个；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [x] T047 [US5] 按 `quickstart.md` Q19 在 `./gradlew runClient` 验证（先 `pgrep`）：左侧区已有一个时再放第二个（空格 / 别的物品的格子）被拒绝并在聊天区提示；用它自己的格子交换成功；Alt 交换主手同样被拒；其它区域放多个照旧允许；垃圾桶/标签管理器的既有限制不变；遗留 2 个的背包（用创造模式/命令构造）两个都在、不能放第三个；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 补充验证（容器内）：往空格放第二个被拒并有聊天提示、与自己的格子交换无提示、右区可放；"别的物品的格子"被拒与 Alt 交换主手没测
 
 ---
 
@@ -134,7 +134,7 @@
 **Independent Test**: quickstart G（Q35～Q37）。
 
 - [X] T048 [US6] 审阅（2026-11-08 已审阅：升级保留、`normalize/fit` 带黑名单、旧存档读成空、非法请求整个丢弃且零变化、拾取早退路径不改动实体与背包、保存在缩小实体栈之前；无缺口）（读代码，不改行为）：①`BackpackUpgradeRecipe` 升级后 `pickupBlacklist` 保留（T012 已核对，再确认）；②`BackpackContents.normalize/fit` 在容量缩小时不丢黑名单；③读入旧存档（无 `pickup_blacklist` 字段）为 `PickupBlacklist.EMPTY`；④服务端所有非法请求路径（`op` 非法、标签非法、超过 64 个、左侧区没有自动拾取、背包不在）都整个丢弃且数据零变化，只补发同步；⑤`AutoPickupEvents` 的所有早退路径不改动实体栈与背包；保存失败时不缩小实体栈；⑥多人：事件只处理触发拾取的那名玩家，不碰别人的物品栏与背包。发现缺口就补并记录，没有缺口也记"已审阅，无缺口"
-- [ ] T049 [US6] 按 `quickstart.md` G（Q35～Q37）在 `./gradlew runClient` 验证（先 `pgrep`）：退出重进/关闭浮动面板黑名单仍在；自动拾取取走再放回黑名单还在（取走期间拾取与过滤都不起作用）；两只背包互不共享；锻造台升级保留；024 之前保存的旧背包黑名单为空不报错；多人无条件则写"未验证"；**重跑 011～023 的 quickstart 中与面板有关的场景**（点击、013 拖动均分与收集、014 选区、Ctrl 转移、缩放、滚动、标签管理器与标签面板、垃圾桶与 022 的删除手段、兼容开关、宿主界面键盘、023 配方）；结果记到 DELIVERY.md（由用户确认后才打勾）
+- [ ] T049 [US6] 按 `quickstart.md` G（Q35～Q37）在 `./gradlew runClient` 验证（先 `pgrep`）：退出重进/关闭浮动面板黑名单仍在；自动拾取取走再放回黑名单还在（取走期间拾取与过滤都不起作用）；两只背包互不共享；锻造台升级保留；024 之前保存的旧背包黑名单为空不报错；多人无条件则写"未验证"；**重跑 011～023 的 quickstart 中与面板有关的场景**（点击、013 拖动均分与收集、014 选区、Ctrl 转移、缩放、滚动、标签管理器与标签面板、垃圾桶与 022 的删除手段、兼容开关、宿主界面键盘、023 配方）；结果记到 DELIVERY.md（由用户确认后才打勾） ——2026-11-11 AI 自动验证（容器内）：Q35 的"退出重进、自动拾取取走再放回后黑名单仍在"通过；锻造台升级、两只背包互不共享、旧背包黑名单为空、Q36 多人、Q37 重跑 011～023 都没做，所以未勾
 
 ---
 
