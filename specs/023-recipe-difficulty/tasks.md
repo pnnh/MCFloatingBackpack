@@ -66,7 +66,7 @@
 **Independent Test**: quickstart 二 7、五 13、14。
 
 - [X] T009 [P] [US4] 静态检查：`git diff --stat` 确认本 feature **没有改动** `BackpackContents`、`FloatingBackpackItem`、`BackpackTier`、任何保存/编码相关类、任何面板或网络载荷类；`BackpackUpgradeRecipe.assemble` 一行未改；`grep -n "optionalFieldOf(\"template\"" …/BackpackUpgradeRecipe.java` 有命中（旧格式兼容）；`grep -rn "p3pp3rf1y\|tiviacz" …/inventory/recipe` 无命中（宪法 IV）。命令与结果记到 DELIVERY.md
-- [ ] T010（2026-11-07 部分：二 7 旧世界已由用户验证通过；**五 13（无 `template` 的旧格式数据包配方）、五 14（局域网协议版本）未验证**，保持未勾选） [US4] 按 `quickstart.md` 二 7（改动前保存的世界）、五 13（临时数据包里没有 `template` 的旧格式升级配方仍可加载且要求模板格为空）、五 14（局域网：新版客户端连新版服务端一致；旧版客户端被协议版本拒绝；**没有条件就写"未验证"**）在 `./gradlew runClient` 验证（先 `pgrep`）。结果记到 DELIVERY.md（**由用户确认后才打勾**）
+- [ ] T010（2026-11-07 部分：二 7 旧世界已由用户验证通过；**五 13（无 `template` 的旧格式数据包配方）、五 14（局域网协议版本）未验证**，保持未勾选） [US4] 按 `quickstart.md` 二 7（改动前保存的世界）、五 13（临时数据包里没有 `template` 的旧格式升级配方仍可加载且要求模板格为空）、五 14（局域网：新版客户端连新版服务端一致；旧版客户端被协议版本拒绝；**没有条件就写"未验证"**）在 `./gradlew runClient` 验证（先 `pgrep`）。结果记到 DELIVERY.md（**由用户确认后才打勾**） ——2026-11-11 AI：五 14（局域网配方显示与升级一致、旧协议被拒）通过，五 13 仍未做，未勾
 
 ---
 

@@ -77,3 +77,11 @@
 | N 未知类别行 | 没做 |
 
 **待你看一眼**：老客户端聊天里两段文字（中文一段、英文一段）之间是否换行显示，我只在日志里看到转义的 `\\n`，没截图确认。
+
+## 2026-11-11 第三轮 AI 自动验证：局域网房主（quickstart L）
+
+环境：局域网房主 = 容器里的单人世界（集成服务器，"对局域网开放"端口 25570），第二个客户端用 `mcfb-c1:25570` 直连。**集成服务器强制正版验证**，开发客户端没有正版账号，所以加了一个假的会话服务器 `scripts/ai-gui/MockSession.java`（两端的 `-Dminecraft.api.*.host` 指向它，`launch.sh` 用 `AIGUI_JAVA_OPTS` 传入，见脚本 README"联机"一节）。 房主是 0.1.0，加入者 P2 是 0.2.0（`-Pmod_version=0.2.0`）。
+
+| 项 | 结果 |
+|---|---|
+| L 加入者被提示、房主不提示 | **通过**：P2 聊天里出现 `Your MCFloatingBackpack (0.2.0) is newer than the server's (0.1.0): please downgrade to the server's version, or ask the server owner to update the server. …`；房主日志有 `[diag server] Version mismatch: P2 runs MCFloatingBackpack 0.2.0 (CLIENT_NEWER), the server runs 0.1.0`；**房主的聊天里没有任何 `[Floating Backpack]` 提示（计数 0）** |

@@ -61,3 +61,11 @@
 | T016 | 023-16/17（图集度量、日志检查） | **未做**：我这一轮再次 `pgrep` 发现游戏仍在运行（进程 75345），所以没跑 `check_atlas_budget.sh`，也没看 `latest.log`；本 feature 没有新增资源，**不声称已度量**，退出游戏后补跑 |
 
 T010 因 023-13、023-14 未验证保持未勾选。其余已验证项只证明"在用户的这台 macOS 机器、这一次会话里表现正常"，模板的生存来源与概率仍是读战利品表的结论，没有被实测（用户用创造栏取模板）。
+
+## 2026-11-11 AI 自动验证：quickstart 五 14（局域网）
+
+环境：局域网房主 = 容器里的单人世界（集成服务器，"对局域网开放"端口 25570），第二个客户端用 `mcfb-c1:25570` 直连。**集成服务器强制正版验证**，开发客户端没有正版账号，所以加了一个假的会话服务器 `scripts/ai-gui/MockSession.java`（两端的 `-Dminecraft.api.*.host` 指向它，`launch.sh` 用 `AIGUI_JAVA_OPTS` 传入，见脚本 README"联机"一节）。
+
+- **新版本客户端连新版本房主，配方显示与升级一致**：**通过**。加入者 P2（生存）在锻造台里放"哨兵盔甲纹饰锻造模板 + 皮革背包 + 铁块"，输出格出现铁背包（悬停提示 `Iron …`，`Slot: Back`、`No ID yet (given on first use)`），取出后进入物品栏、解锁配方提示出现。
+- **旧版本客户端被协议版本拒绝**：**通过**。构建一个除协议号外与当前源码相同的客户端（`versioned("11")`，模拟 023 当时的协议），连协议 17 的房主：被拒，界面 `Connection Lost`，`Channel of mod "MCFloatingBackpack" failed to connect: The client wants the payload to be version: 17, but the server wants it to be version: 11!`（28 个通道，界面折叠成 `mcfloatingbackpack:click [+27 more]`），房主日志 `lost connection: Incompatible client! Please use NeoForge 21.1.251`。另外用 023 的真实源码（`git archive 02daec6`，协议 11）也试了一次：它先因为 `owo:handshake`（开发环境后来才加了这个依赖，旧源码的运行环境里没有）被拒，不是协议号，所以以上面那次为准。
+- 五 13（无 `template` 的旧格式数据包配方）没做。
