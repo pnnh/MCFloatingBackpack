@@ -78,3 +78,10 @@
 - 原版在我们之前对 level.dat 的写入（原始 NBT 透传，不丢东西）与 session.lock 的占用无法避免。
 - 标记写不进去（只读目录等）时只记 WARN，本次不受保护。
 - 总口径不变：**本模组不支持降级，降级前请备份存档**；041 只让"低版本拒绝读高版本数据"在存档级成立。
+
+## AI 自动验证（2026-11-11，容器内 `runServer`）
+
+- **专用服务器放行路径通过**（quickstart I.3）：先让服务器创建世界并写入标记（`world marker set to data revision 1 (was none)`、`Done`），把标记手工改成 `data_revision=99`，带 `-Dmcfloatingbackpack.acceptDowngrade=true` 启动：WARN `world marker revision 99 is higher than this version's 1; accepted by -Dmcfloatingbackpack.acceptDowngrade=true, backpack data may be lost.`，随后 `Done (1.041s)`；停服后标记仍是 99，没被写低。
+- **`stop` 命令打不进去**：`./gradlew runServer` 没有把标准输入转给服务端，往管道里写 `stop` 服务器不退出。验证里用 SIGTERM 触发原版的关停钩子（日志有 `Saving chunks`、`All dimensions are saved`）。手动在终端里运行时是否能输入 `stop` 没有验证。
+- **041-H（对照实验）**：被拒时 `playerdata`、`region`、标记的指纹不变，已由你在单人游戏里（C）和 Claude 在专用服务器上（拒绝路径）各验证过，同一证据，不另做。
+- **仍未做**：旧版本构建不清理标记目录（quickstart J，需要旧构建）；041-G 的全部回归。

@@ -53,7 +53,7 @@
 
 1. **通过路径**：不带标记（或标记 ≤ 1）启动 → 日志有 `world marker set to data revision 1 (was none)`，随后 `Done`；`run/world/mcfloatingbackpack/world_marker.properties` 出现。
 2. **拒绝路径**：把 `run/world/mcfloatingbackpack/world_marker.properties` 的 `data_revision` 改成 99，先记 `playerdata`、`region` 的指纹，再 `./gradlew runServer` → 约 1 秒内日志出现我们的 ERROR（双语全文）、`Encountered an unexpected exception`、`crash-reports/crash-…-server.txt`、`Exception stopping the server` + NPE，**进程自己退出**；`playerdata`、`region`、标记指纹不变。（观察：Gradle 的退出码是 0，见 DELIVERY。）
-3. **放行路径**（需要能停服）：`-Dmcfloatingbackpack.acceptDowngrade=true` 启动，日志 WARN，服务器正常 `Done`；用 `stop` 命令停服；标记仍是 99。（`runServer` 没有 `-Pmcfb.*` 转发，需要时手工给 JVM 加参数。）
+3. **放行路径**（需要能停服）：`-Dmcfloatingbackpack.acceptDowngrade=true` 启动，日志 WARN，服务器正常 `Done`；停服后标记仍是 99。（`runServer` 没有 `-Pmcfb.*` 转发，需要时手工给 JVM 加参数，如环境变量 `JAVA_TOOL_OPTIONS`。2026-11-11 在容器里验证过；那里 Gradle 没把标准输入转给服务端，`stop` 打不进去，改用 SIGTERM 让原版关停钩子正常停服。）
 4. 还原标记（改回 1 或用备份）。
 
 ## J. 旧版本不会清理标记目录（research D4 的推断）

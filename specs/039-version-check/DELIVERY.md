@@ -43,3 +43,24 @@
 - 老客户端的提示是纯文本，不随语言切换。
 - 局域网里别的玩家被提示依据的是房主客户端的版本。
 - 不认识类别的行，悬停说明会显示找不到的语言键（`CategoryNames.langKey` 对未知 id 给预设键），这一版不处理。
+
+## AI 自动验证（2026-11-11，Linux 容器内 `runClient`）
+
+环境与方法见 `docs/plan/ai-gui-verification.md`：arm64 Linux 容器、Xvfb 虚拟屏幕、llvmpipe 软件渲染，Claude 用 xdotool 点击和按键、截图读画面、读日志。单人游戏，开发开关 `-Pmcfb.checkOwner=true -Pmcfb.serverVersion=…`。**判定证据**是日志里的 `[CHAT]` 行与 `[diag server] Version mismatch` WARN（每项另有截图，容器环境，不入库）。这是容器里（Linux、软件渲染）的结果，不代替真机；聊天文字与日志不依赖渲染，可信度高。
+
+| quickstart | 结果 | 证据（日志） |
+|---|---|---|
+| A 客户端更旧（`0.2.0`） | 通过 | CHAT：`Your MCFloatingBackpack (0.1.0) is older than the server's (0.2.0): please update to the server's version. A big gap … back up your world before updating.`；WARN `Version mismatch … (CLIENT_OLDER), the server runs 0.2.0` |
+| B 客户端更新（`0.0.9`） | 通过 | CHAT：`… is newer than the server's (0.0.9): please downgrade to the server's version, or ask the server owner to update the server. …`；WARN `CLIENT_NEWER` |
+| C PATCH 不同（`0.1.7`） | 通过 | 没有聊天行，没有版本 WARN |
+| D 一致（`0.1.0`） | 通过 | 没有提示、没有版本 WARN；"日志只有 DEBUG"一点**没开 DEBUG，未验证** |
+| E 预发布不同（`0.1.0-rc1`） | 通过 | 按"客户端更新"提示：`newer than the server's (0.1.0-rc1)` |
+| F 无法比较（`banana`） | 通过 | CHAT：`Cannot compare the MCFloatingBackpack versions (yours: 0.1.0, server: banana). …`；WARN `UNCOMPARABLE`；没有异常 |
+| G 退出再进 | 通过 | 同一世界两次登录各一对 CHAT + WARN，没有重复 |
+| H 中英文 | 通过 | 英文：更旧、更新、无法比较三类都实测；简体中文（`options.txt` 里 `lang:zh_cn`）同样三类都实测，如 `你的浮动背包版本（0.1.0）比服务器（0.2.0）旧：请升级到与服务器相同的版本。…升级前请先备份存档。` |
+| I 无开关的单人游戏 | 通过 | 没有聊天行，没有版本 WARN |
+| J 老客户端文字（`legacyClient=true`） | 通过 | 一行 CHAT 里中英双语纯文本：`你的浮动背包版本过旧（它没有版本检测功能），服务器版本是 0.1.0。…\n[MCFloatingBackpack] Your MCFloatingBackpack is too old (it has no version check); the server runs 0.1.0. …`；WARN `has no version check … told it to update` |
+
+**没做**：K（老客户端真实登录）、L（局域网别的玩家）都要第二个客户端；M（协议 17 的两端连接）没有单独验证，只能算旁证（同一会话里面板与背包正常打开、读写）；N（未知类别行的预测宽容）未验证。
+
+**限制**：C、D、F 里"没有任何提示"是反证（没出现），它们与 A、B 用同一套启动方式，只差 `serverVersion` 的值，所以反证可信；但没有开 DEBUG 看到"检查确实执行了"的正面日志。

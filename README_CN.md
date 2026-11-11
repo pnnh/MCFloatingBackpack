@@ -85,7 +85,7 @@ gh attestation verify mcfloatingbackpack-<版本>.jar --repo pnnh/MCFloatingBack
 ## 项目文档
 
 - [`docs/MCFloatingBackpack.md`](docs/MCFloatingBackpack.md)：项目目标、功能说明和各个 feature 的概要。
-- [`docs/plan/`](docs/plan)：规划与设计文档，以及[手动验证清单](docs/plan/manual-verification-checklist.md)。
+- [`docs/plan/`](docs/plan)：规划与设计文档。
 - [`specs/`](specs)：用 [Spec Kit](https://github.com/github/spec-kit) 做的每个 feature 的规格、方案、任务与交付说明（编号从 001 起，如 035 起是"分类扩展"系列）。
 - `docs/` 和 `specs/` 下的项目文档使用中文（作者的工作语言），约定见 [`AGENTS.md`](AGENTS.md)。
 

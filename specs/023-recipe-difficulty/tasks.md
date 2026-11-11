@@ -95,7 +95,7 @@
 ## Phase 7: Polish & Cross-Cutting
 
 - [X] T015 [P] 更新文档：`specs/006-tiered-backpacks/spec.md` 的 US2 验收与升级描述处加【023 修订】（四档材料改为铁块、金块、钻石块、下界合金块；要求各自的原版锻造模板；皮革配方改为 5 皮革 + 2 铁锭 + 线 + 箱子；**原文保留**）；`specs/006-tiered-backpacks/research.md` 里协议版本说明补 "023 → `\"11\"`"；`docs/MCFloatingBackpack.md` 的升级/配方相关处补一句 023 说明并指向 `specs/023-recipe-difficulty/`；**不要修改 `docs/ideas`**。
-- [ ] T016（2026-11-07 部分：`compileJava test` 通过；`pgrep` 发现用户的客户端正在运行，图集度量与日志检查未做，待退出游戏后补跑） 运行最终回归：`./gradlew compileJava test`；先 `pgrep` 确认没有客户端在运行再跑 `design/demo/tools/check_atlas_budget.sh`，图集仍应为 2048×1024（本 feature 不新增资源，宪法 VI）；按 `quickstart.md` 六（15～17）重跑 006 升级部分与 021 Q39、检查 `run/logs/latest.log` 无新增配方相关报错；跑不了的写"未度量/未验证"，不要声称已满足。
+- [ ] T016（2026-11-07 部分：`compileJava test` 通过；`pgrep` 发现用户的客户端正在运行，图集度量与日志检查未做，待退出游戏后补跑） 运行最终回归：`./gradlew compileJava test`；先 `pgrep` 确认没有客户端在运行再跑 `design/demo/tools/check_atlas_budget.sh`，图集仍应为 2048×1024（本 feature 不新增资源，宪法 VI）；按 `quickstart.md` 六（15～17）重跑 006 升级部分与 021 Q39、检查 `run/logs/latest.log` 无新增配方相关报错；跑不了的写"未度量/未验证"，不要声称已满足。 ——2026-11-11 AI 自动验证：图集度量已跑（容器内 `check_atlas_budget.sh`，干净环境与带全部模组都是 2048×1024，通过）；006 升级部分与 021 Q39 的重跑、日志检查仍未做，未勾
 - [X] T017 完成 `specs/023-recipe-difficulty/DELIVERY.md`（中文）：记录 T001、T003（`Ingredient.EMPTY` 核实结论）、T005、T007、T016 的结果，**每个客户端验证项实际验证了什么 / 没验证什么**；已知限制（模板概率读自战利品表、没有游戏内实测；盔甲纹饰模板在锻造台里的空槽提示图标与背包无关；Windows/Linux 未验证）；行为变化（升级要块 + 模板、皮革配方多铁锭）及用户是否接受；成本对照表引用 research D7；把 spec 的 Status 改为实现完成并如实写明验证未完成的部分。
 
 ---

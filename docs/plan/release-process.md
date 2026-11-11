@@ -13,7 +13,7 @@
 
 ## 发布流程
 
-1. 在 `main` 上确认测试通过（`./gradlew test`），游戏里的验证已做完（见 [手动验证清单](manual-verification-checklist.md)）。
+1. 在 `main` 上确认测试通过（`./gradlew test`），游戏里的验证已做完（各 `specs/*/tasks.md` 里没有无备注的未勾选客户端验证任务；查看方法见 [ai-gui-verification.md](ai-gui-verification.md) 的 5.2）。
 2. 改 `gradle.properties` 的 `mod_version`（如 `0.1.0`）。
 3. 写发布说明 `.github/release-notes/v<版本>.md`（中英文，参考 `v0.1.0.md`）；通用的"安装与使用、构建溯源"段落在 `.github/release-notes/_footer.md`，会自动附在每次发布说明后面，其中的 `{{version}}`、`{{repository}}` 会被替换。
 4. 提交，然后打 tag 并推送：`git tag v0.1.0 && git push origin v0.1.0`（**tag 必须是 `v` 加语义化版本，并且与 `mod_version` 完全一致**，否则流水线失败）。

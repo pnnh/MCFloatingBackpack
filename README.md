@@ -85,7 +85,7 @@ Java 21 is required. After running Gradle, `./gradlew --stop` shuts the backgrou
 ## Project documents
 
 - [`docs/MCFloatingBackpack.md`](docs/MCFloatingBackpack.md): goals, feature descriptions and an overview of every feature (in Chinese).
-- [`docs/plan/`](docs/plan): planning and design documents, and the [manual verification checklist](docs/plan/manual-verification-checklist.md).
+- [`docs/plan/`](docs/plan): planning and design documents.
 - [`specs/`](specs): the specification, plan, tasks and delivery notes of each feature, made with [Spec Kit](https://github.com/github/spec-kit) (numbered from 001; 035 onwards is the "category extensions" series).
 - Project documents under `docs/` and `specs/` are written in Chinese, the author's working language; see [`AGENTS.md`](AGENTS.md).
 
