@@ -64,3 +64,16 @@
 **没做**：K（老客户端真实登录）、L（局域网别的玩家）都要第二个客户端；M（协议 17 的两端连接）没有单独验证，只能算旁证（同一会话里面板与背包正常打开、读写）；N（未知类别行的预测宽容）未验证。
 
 **限制**：C、D、F 里"没有任何提示"是反证（没出现），它们与 A、B 用同一套启动方式，只差 `serverVersion` 的值，所以反证可信；但没有开 DEBUG 看到"检查确实执行了"的正面日志。
+
+## 2026-11-11 第二轮 AI 自动验证：两个客户端 + 专用服务器（quickstart K、L、M）
+
+环境：三个容器（专用服务器 + 两个客户端，见 `scripts/ai-gui/README.md` 的"联机"一节）。服务端用 `-Pmod_version=0.2.0` 启动（日志里 `mcfloatingbackpack ... versions {0.2.0}`），客户端 0.1.0。
+
+| 项 | 结果 |
+|---|---|
+| L 别的玩家被提示 | **通过（专用服务器版）**：P2（0.1.0）登录后聊天里出现 `[Floating Backpack] Your MCFloatingBackpack (0.1.0) is older than the server's (0.2.0): please update to the server's version. A big gap between versions may cause unknown problems; back up your world before updating.`；服务端日志 WARN `Version mismatch: P2 runs MCFloatingBackpack 0.1.0 (CLIENT_OLDER), the server runs 0.2.0`；客户端日志 `mcfloatingbackpack (version 0.1.0 -> 0.2.0)`。"房主自己不提示"**没测**（专用服务器没有房主；局域网房主未试） |
+| K 老客户端仍能登录 | **通过（对专用服务器）**：用 038 的构建（`git archive 23d478a`，缺的 `snapshot/net` 源码包按 f43de82 的修复从当前树补进去才能编译）当 P1 连 0.2.0 的服务端：**能登录**、进入世界、面板能打开并显示背包内容；聊天里收到服务器发来的双语纯文本 `[MCFloatingBackpack] 你的浮动背包版本过旧（它没有版本检测功能），服务器版本是 0.2.0。……\n[MCFloatingBackpack] Your MCFloatingBackpack is too old (it has no version check); the server runs 0.2.0. ……`（注意两段之间显示的是字面的 `\n` 两个字符，而不是换行——**这是个小问题**，见下）；服务端日志 WARN `P1 has no MCFloatingBackpack version check (a version older than this feature); the server runs 0.2.0; told it to update`。这是整个机制的核心假设，**成立** |
+| M 现有功能不受影响 | **通过（部分）**：两个当前构建的客户端与 0.1.0/0.2.0 的服务端、协议 17 都照常连接；面板、自动拾取、垃圾桶、受保护背包的门禁都在这个会话里正常；038 客户端连新服务端也能开面板。没系统回归 011～023 |
+| N 未知类别行 | 没做 |
+
+**小问题（待你看）**：老客户端收到的纯文本里，中英两段之间是字面 `\n` 而不是换行（`legacyClientText` 里写成了转义后的文本）。老客户端的聊天不会把它当换行；影响只是一行里两段连着显示。
