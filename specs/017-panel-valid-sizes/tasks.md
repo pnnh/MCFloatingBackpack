@@ -68,7 +68,7 @@
 - [X] T011 [US2] 修改 `src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelState.java` 的 `layout`：在算出 `colsUpper/rowsUpper`（屏幕与总行数限制）之后，受限时——列：`visibleCols = snapCols(counts(), clamp(偏好或 colsUpper, 3, colsUpper))`；行：`rowsUpper' = min(rowsUpper, maxRows(counts(), visibleCols))`，`visibleRows = clamp(偏好或 rowsUpper', 3, rowsUpper')`；自动适应（没有偏好）同样走这条路，得到"能放下的最大合法尺寸"；`MIN_VISIBLE_CELLS = 3` 仍压过屏幕过小的情况；不受限时沿用原逻辑；`width/height`、`posY` 修正与 `clampScroll()` 保持。使 T010 通过。依赖 T007
 - [X] T012 [US2] 运行 `./gradlew compileJava test`，确认 T010 与全部既有测试通过
   - **结果**：`PanelLayoutTest` 27 个用例通过，26 个测试类全过
-- [ ] T013 [US2] 按 `quickstart.md` 二（9–13）在 `./gradlew runClient` 逐项验证（改配置文件前先关闭游戏；换背包、缩小窗口、锻造台升级），结果记到 `DELIVERY.md`
+- [ ] T013 [US2] 按 `quickstart.md` 二（9–13）在 `./gradlew runClient` 逐项验证（改配置文件前先关闭游戏；换背包、缩小窗口、锻造台升级），结果记到 `DELIVERY.md` ——2026-11-11 AI 自动验证（容器内）：quickstart 9、10、11、13 通过，12（锻造台升级后再打开）因操作界面卡住没做成，所以未勾；证据见 DELIVERY"AI 自动验证"
   - **未确认（2026-11-05）**：用户这次反馈只涉及拖动手感与箭头；配置文件非法尺寸、换背包、缩小窗口、锻造台升级这几项没有被提到，保持未验证
 
 **Checkpoint**: US2 达成 FR-003、FR-004、FR-005（落点部分）、SC-004。

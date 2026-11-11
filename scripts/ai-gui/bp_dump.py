@@ -97,7 +97,7 @@ def main(paths):
         for slot, item_id, contents in backpacks(f):
             revs = []; find(contents, 'revision', revs)
             nested = []; ids(contents, nested)
-            print(' slot', slot, item_id,
+            print(' slot', slot, item_id, 'keys:', sorted(contents.keys()),
                   'revision:', [(k, v) for k, v in revs] or '（没有 data_revision 字段）',
                   'nested:', sorted(set(nested)))
 
