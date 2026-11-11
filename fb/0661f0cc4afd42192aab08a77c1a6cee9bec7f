@@ -1,0 +1,44 @@
+scripts/ai-gui/MockSession.java
+  s_9aefe4a2760245::t_5b8882d87567c3 23-24
+  s_9aefe4a2760245::t_895a3d9c9705f7 1-22,25-41
+scripts/ai-gui/launch.sh
+  s_9aefe4a2760245::t_895a3d9c9705f7 5,16
+specs/039-version-check/tasks.md
+  s_9aefe4a2760245::t_90bde88152b16e 70
+  s_9aefe4a2760245::t_0e4af8faa5bb4e 71
+specs/021-trash-can/DELIVERY.md
+  s_9aefe4a2760245::t_d9d5f08804525f 89-94
+specs/021-trash-can/tasks.md
+  s_9aefe4a2760245::t_0d77ca4dff57e3 146
+specs/023-recipe-difficulty/DELIVERY.md
+  s_9aefe4a2760245::t_a0828c61f61a3e 64-71
+specs/023-recipe-difficulty/tasks.md
+  s_9aefe4a2760245::t_af94e767d013dd 69
+specs/026-backpack-id/DELIVERY.md
+  s_9aefe4a2760245::t_2213bb608120eb 55-60
+specs/027-creative-inventory-compat/DELIVERY.md
+  s_9aefe4a2760245::t_e4f913bca4863a 77-82
+specs/039-version-check/DELIVERY.md
+  s_9aefe4a2760245::t_1e9204a28997db 80-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "fb0661f0cc4afd42192aab08a77c1a6cee9bec7f",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
