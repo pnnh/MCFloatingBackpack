@@ -85,3 +85,11 @@
 | 项 | 结果 |
 |---|---|
 | L 加入者被提示、房主不提示 | **通过**：P2 聊天里出现 `Your MCFloatingBackpack (0.2.0) is newer than the server's (0.1.0): please downgrade to the server's version, or ask the server owner to update the server. …`；房主日志有 `[diag server] Version mismatch: P2 runs MCFloatingBackpack 0.2.0 (CLIENT_NEWER), the server runs 0.1.0`；**房主的聊天里没有任何 `[Floating Backpack]` 提示（计数 0）** |
+
+### 2026-11-11 AI 自动验证：N（未知类别行，部分）
+
+用数据包函数给一只下界合金背包写入 `extension_rows`：`unknowncat`（格子 1 放 3 个钻石）和 `food`（格子 1 放 5 个苹果）两行，工具区没有对应的扩展件。结果：
+
+- 背包能进入世界，面板正常打开，日志没有报错或相关 WARN；两行及其内容原样保存在背包里（`/data get` 读到 `visible: [{category: "unknowncat", …3 钻石}, {category: "food", …5 苹果}]`，打开面板、关闭后仍在）。
+- 面板里这两行没有显示为可见行（没有对应的扩展件，行被当作隐藏行），图标上出现黄点；悬停黄点列出 `food: 1 slots hold items` 和 **`tag.mcfloatingbackpack.preset.unknowncat: 1 slots hold items`**。**小问题**：未知类别在提示里显示成原始语言键 `tag.mcfloatingbackpack.preset.unknowncat`，而不是类别 id 或"未知类别"这样的文字（已知类别显示 `food`）。
+- **没验证**：未知类别行作为**可见行**时的显示（红色高亮、客户端不拦截放入、交给服务端裁决）——可见行必须有对应的扩展件，而目前没有哪个版本有"客户端不认识的类别扩展件"，游戏里造不出，仍靠单元测试覆盖。
