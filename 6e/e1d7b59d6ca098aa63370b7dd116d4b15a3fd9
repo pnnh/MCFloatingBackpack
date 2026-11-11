@@ -1,0 +1,30 @@
+specs/021-trash-can/DELIVERY.md
+  s_9aefe4a2760245::t_ea8660a67fcf60 99-102
+specs/021-trash-can/tasks.md
+  s_9aefe4a2760245::t_9aba5ea8ee104e 146
+specs/022-trash-delete-tools/DELIVERY.md
+  s_9aefe4a2760245::t_c40c3e49975ca8 141-144
+specs/022-trash-delete-tools/tasks.md
+  s_9aefe4a2760245::t_ecbe746c7502d7 157
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "6ee1d7b59d6ca098aa63370b7dd116d4b15a3fd9",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
