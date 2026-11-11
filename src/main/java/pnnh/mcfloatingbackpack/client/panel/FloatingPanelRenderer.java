@@ -229,7 +229,8 @@ public final class FloatingPanelRenderer {
         List<FormattedCharSequence> out = new ArrayList<>();
         out.addAll(minecraft.font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.title"), 220));
         for (HiddenHint.Line line : lines) {
-            Component name = Component.translatable(CategoryNames.langKey(line.category()));
+            // A category this version does not know (made by a newer version) has no language entry: show its id.
+            Component name = Component.translatableWithFallback(CategoryNames.langKey(line.category()), line.category());
             out.addAll(minecraft.font.split(
                     Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", name, line.cells()), 220));
         }
@@ -417,7 +418,7 @@ public final class FloatingPanelRenderer {
         Component description = ExtensionCategories.GENERAL.equals(category)
                 ? Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip.general")
                 : Component.translatable(
-                        "panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip", Component.translatable(CategoryNames.langKey(category)));
+                        "panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip", Component.translatableWithFallback(CategoryNames.langKey(category), category));
         List<FormattedCharSequence> lines = new ArrayList<>(minecraft.font.split(description, 200));
         ItemStack held = cursorStack(minecraft);
         if (!held.isEmpty() && !ClientPlacement.canPlace(view, hit.index(), held)) {
