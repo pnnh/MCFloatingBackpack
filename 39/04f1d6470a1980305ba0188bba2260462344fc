@@ -1,0 +1,26 @@
+specs/020-compat-switches/DELIVERY.md
+  s_9aefe4a2760245::t_5ae13e9bb76e7e 83-109,125
+specs/020-compat-switches/tasks.md
+  s_9aefe4a2760245::t_5ae13e9bb76e7e 55,72,89,158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3904f1d6470a1980305ba0188bba2260462344fc",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
