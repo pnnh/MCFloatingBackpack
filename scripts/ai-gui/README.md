@@ -60,6 +60,15 @@ docker rm -f mcfb-gui                        # 用完删容器（卷和镜像保
 - **启动要从 `scripts/ai-gui/` 目录里调 `./launch.sh`**（或用绝对路径），在别的目录里相对路径找不到脚本会静默失败。
 - 服务端世界默认出生在平地上，夜里会有史莱姆把玩家打死：用 op 执行 `difficulty peaceful`、`gamerule keepInventory true`。
 
+### 局域网房主（对局域网开放）
+
+房主是 `mcfb-c1` 里进入的单人世界，暂停菜单点 "Open to LAN" → 端口框输入 `25570` → Start LAN World；加入者 `mcfb-c2` 用 `AIGUI_GAME_ARGS="--username P2 --quickPlayMultiplayer mcfb-c1:25570"` 启动（或在多人界面的 Direct Connection 里输入 `mcfb-c1:25570`，输入框里原有文字要先清掉）。
+
+- **集成服务器强制正版验证**：开发客户端没有正版账号，加入会报 `Invalid session` 或 `That name is already taken`（两个客户端默认都叫 Dev）。解决：`scripts/ai-gui/MockSession.java` 是个假的会话服务器（只实现 `hasJoined`/`join`），在服务端容器里 `java /tmp/MockSession.java 8080`（先 `docker cp`），然后**房主和加入者都**用 `AIGUI_JAVA_OPTS="-Dminecraft.api.env=custom -Dminecraft.api.auth.host=http://mcfb-srv:8080 -Dminecraft.api.account.host=… -Dminecraft.api.session.host=… -Dminecraft.api.services.host=…"`（四个 host 都写同一个地址）启动。
+- **旧版本客户端**：用 `git archive <提交> | tar -x -C 某目录` 导出旧源码，`docker cp` 进容器，在里面 `./gradlew -I game-args.init.gradle runClient`。老源码的开发运行环境可能缺后来加的依赖（如 owo），会先因为别的通道被拒；要单独验证本模组的协议号，用当前源码把 `BackpackNetwork` 的 `versioned("17")` 临时改成别的值（用完用 `sync.sh` 还原）。
+- 面板热键 B 与精妙背包、旅行者背包的默认键冲突，测它们的界面时在 `options.txt` 里把对方的键解绑。
+- 向别的玩家发命令：房主打 `give P2 …`；`tp` 要带显式的偏航与俯仰（`tp P2 x y z 0 30`），`facing` 对这个客户端不起作用。
+
 ## arm64 的原生库
 
 Apple Silicon 上 Docker 跑的是 arm64 容器，Gradle 却会解析出 x64 的 LWJGL 原生库，`runClient` 会报 `UnsatisfiedLinkError: liblwjgl.so`。`setup.sh` 会从 Maven Central 下载 `natives-linux-arm64` 的七个包（缓存在 `$AIGUI_CACHE`，默认 `~/.cache/mcfb-ai-gui`），放进容器的 `/natives`，并用环境变量 `JAVA_TOOL_OPTIONS=-Dorg.lwjgl.librarypath=/natives` 指过去。**不改项目文件。** x86_64 机器上不需要，脚本会自动跳过。
