@@ -1,0 +1,115 @@
+specs/049-fluid-pipes/spec.md
+  s_9aefe4a2760245::t_71eefa57ddce68 1-43,45,52-231
+  s_9aefe4a2760245::t_6ddd6704dcf1d0 44,46-51
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 244-258
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipePlanner.java
+  s_9aefe4a2760245::t_4114a87a0bf00e 27-29
+  s_9aefe4a2760245::t_7878c60e8dec5d 1-26,30-105
+specs/049-fluid-pipes/plan.md
+  s_9aefe4a2760245::t_ec84e42dffe3a5 1,3,7,9-15,17,19,21,23,25,27,29,31,33,35,39-60,65-83,86,88,92
+  s_9aefe4a2760245::t_913cfabe0f6808 2,4-6,8,16,18,20,22,24,26,28,30,32,34,36-38,61-64,84-85,87,89-91
+src/main/java/pnnh/mcfloatingbackpack/pipe/Cooldown.java
+  s_9aefe4a2760245::t_7878c60e8dec5d 1-36
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeEvents.java
+  s_9aefe4a2760245::t_4114a87a0bf00e 1-39
+src/main/java/pnnh/mcfloatingbackpack/item/PipeItem.java
+  s_9aefe4a2760245::t_752e84354faa9d 7,14-16,18-19,21,47-66
+  s_9aefe4a2760245::t_3003bd7dd44c2f 1-6,8-13,17,20,22-46,67-75
+docs/plan/fluid-tanks.md
+  s_9aefe4a2760245::t_d0d1e45d25be0a 92
+  s_9aefe4a2760245::t_e79244ae223bf6 3,87-91
+  s_9aefe4a2760245::t_b93bfe83aecb39 83-84
+specs/049-fluid-pipes/quickstart.md
+  s_9aefe4a2760245::t_bd4db5f9a59c2f 1-58
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeCooldowns.java
+  s_9aefe4a2760245::t_cee6f15a453156 1-37
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeKind.java
+  s_9aefe4a2760245::t_7878c60e8dec5d 1-49
+src/main/resources/assets/mcfloatingbackpack/models/item/lava_pipe.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-6
+specs/049-fluid-pipes/contracts/recipes-and-assets.md
+  s_9aefe4a2760245::t_bd4db5f9a59c2f 1-18,20-42
+  s_9aefe4a2760245::t_6ddd6704dcf1d0 19
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeActions.java
+  s_9aefe4a2760245::t_4114a87a0bf00e 15-16,18,23,34-37,139-250
+  s_9aefe4a2760245::t_752e84354faa9d 1-14,17,19-22,24-33,38-138,251-254
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeNotices.java
+  s_9aefe4a2760245::t_4114a87a0bf00e 25
+  s_9aefe4a2760245::t_cee6f15a453156 1-24,26-50
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeResourcesTest.java
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-28,30-32,39-59,61-131
+  s_9aefe4a2760245::t_365425c1ff8bc6 29,33-38,60
+README.md
+  s_9aefe4a2760245::t_e79244ae223bf6 36
+design/tank-textures/generate.py
+  s_9aefe4a2760245::t_3003bd7dd44c2f 2,58-83,93-95
+specs/049-fluid-pipes/research.md
+  s_9aefe4a2760245::t_ec84e42dffe3a5 1-58
+src/main/resources/assets/mcfloatingbackpack/models/item/oil_pipe.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-6
+src/test/java/pnnh/mcfloatingbackpack/pipe/CooldownTest.java
+  s_9aefe4a2760245::t_d02c31c02db288 1-68
+specs/049-fluid-pipes/tasks.md
+  s_9aefe4a2760245::t_273fa645d0abc3 59-63
+  s_9aefe4a2760245::t_20ff3f43ac2ab0 1-15,18-20,25-29,35-39,45-49,54-58,64-78
+  s_9aefe4a2760245::t_a3baf94d0dc632 16-17,21-24,30-34,40-44,50-53
+specs/049-fluid-pipes/checklists/requirements.md
+  s_9aefe4a2760245::t_71eefa57ddce68 1-36
+specs/049-fluid-pipes/contracts/pipe-rules.md
+  s_9aefe4a2760245::t_bd4db5f9a59c2f 1-50
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_4114a87a0bf00e 112-113
+  s_9aefe4a2760245::t_752e84354faa9d 105-106
+src/main/resources/data/mcfloatingbackpack/recipe/water_pipe.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-21
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 244-258
+scripts/ai-gui/README.md
+  s_9aefe4a2760245::t_e79244ae223bf6 51-57
+src/main/resources/data/mcfloatingbackpack/tags/item/never_trash.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 121-124
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_9aefe4a2760245::t_ad065ecad83eec 1-84,86-87,131-161
+  s_9aefe4a2760245::t_592aff321df439 85,88-130
+specs/049-fluid-pipes/data-model.md
+  s_9aefe4a2760245::t_ec84e42dffe3a5 1-78
+src/main/resources/data/mcfloatingbackpack/recipe/lava_pipe.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-21
+src/main/resources/data/mcfloatingbackpack/recipe/oil_pipe.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-24
+src/main/resources/assets/mcfloatingbackpack/models/item/water_pipe.json
+  s_9aefe4a2760245::t_1dcfaf26ef7822 1-6
+src/test/java/pnnh/mcfloatingbackpack/pipe/PipeKindTest.java
+  s_9aefe4a2760245::t_d02c31c02db288 1-47
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_9aefe4a2760245::t_a6d99861ef0532 132
+  s_9aefe4a2760245::t_3003bd7dd44c2f 20,63-65,82-84,120-131
+build.gradle
+  s_9aefe4a2760245::t_7521545f438a95 172-175
+README_CN.md
+  s_9aefe4a2760245::t_e79244ae223bf6 36
+src/test/java/pnnh/mcfloatingbackpack/pipe/PipePlannerTest.java
+  s_9aefe4a2760245::t_d02c31c02db288 1-71,73-221,223-226
+  s_9aefe4a2760245::t_59a2e371bae360 72,222
+.specify/feature.json
+  s_9aefe4a2760245::t_71eefa57ddce68 2
+specs/049-fluid-pipes/DELIVERY.md
+  s_9aefe4a2760245::t_273fa645d0abc3 1-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "5fe0a20c6ced200575ec0dad635e1bb1fdb350f6",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
