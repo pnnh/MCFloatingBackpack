@@ -1,0 +1,86 @@
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackSorter.java
+  s_9aefe4a2760245::t_56116cdb7b12a9 1-162
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackSorterTest.java
+  s_9aefe4a2760245::t_4c976d89696d43 1-158,162,164,166-177,179-343,368
+  s_9aefe4a2760245::t_2cec2c2a9c23f4 344-367
+  s_9aefe4a2760245::t_df2981686d643a 159-161,163,165,178
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsContractTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 112
+docs/plan/category-extensions.md
+  s_9aefe4a2760245::t_5290f4b061d47d 75
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackSortWiringTest.java
+  s_9aefe4a2760245::t_8ed3747f9a67f5 1-120
+src/main/java/pnnh/mcfloatingbackpack/client/panel/TitleBarLayout.java
+  s_9aefe4a2760245::t_dadc8cd776c11a 6-8,11,19,30,49-50,52-54
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_9aefe4a2760245::t_6fec7a716bbb67 140-162
+specs/047-backpack-sort/plan.md
+  s_9aefe4a2760245::t_652136a09582df 1-66
+specs/047-backpack-sort/spec.md
+  s_9aefe4a2760245::t_bf71ce6065e54d 1-188
+specs/047-backpack-sort/checklists/requirements.md
+  s_9aefe4a2760245::t_bf71ce6065e54d 1-36
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionUiResourcesTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 125
+src/test/java/pnnh/mcfloatingbackpack/client/panel/TitleBarLayoutTest.java
+  s_9aefe4a2760245::t_2c7428949de9f6 9,23-24,37,49,69-70,84,86-95,104
+.specify/feature.json
+  s_9aefe4a2760245::t_7473ce0c50fcaf 2
+src/test/java/pnnh/mcfloatingbackpack/resources/DowngradeProtectionResourcesTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 132
+src/main/java/pnnh/mcfloatingbackpack/inventory/ItemSortOrder.java
+  s_9aefe4a2760245::t_56116cdb7b12a9 1-57
+specs/047-backpack-sort/DELIVERY.md
+  s_9aefe4a2760245::t_42daee4815ad75 1-57
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchResourcesTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 107-108
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_9aefe4a2760245::t_6fec7a716bbb67 48,90-91
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_57bf505cd40352 154
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_9aefe4a2760245::t_57bf505cd40352 19,32,123-128,388-400
+  s_9aefe4a2760245::t_d6322af51d01f6 401
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelState.java
+  s_9aefe4a2760245::t_2c7428949de9f6 267-271
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchPrefixResourcesTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 100-101
+README.md
+  s_9aefe4a2760245::t_5290f4b061d47d 34
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackSortPayload.java
+  s_9aefe4a2760245::t_6fec7a716bbb67 1-69
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_57bf505cd40352 99-100,147-148,639-658
+  s_9aefe4a2760245::t_4c24483f156b15 659-660
+specs/047-backpack-sort/tasks.md
+  s_9aefe4a2760245::t_42daee4815ad75 16,20-23,29-32,38-42,48-51
+  s_9aefe4a2760245::t_652136a09582df 1-15,17-19,24-28,33-37,43-47,52
+src/test/java/pnnh/mcfloatingbackpack/resources/GreyCellWiringTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 86
+src/test/java/pnnh/mcfloatingbackpack/resources/ItemTooltipWiringTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 87
+src/test/java/pnnh/mcfloatingbackpack/resources/VersionCheckResourcesTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 70
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerWiringTest.java
+  s_9aefe4a2760245::t_2f528147380a6a 118
+README_CN.md
+  s_9aefe4a2760245::t_5290f4b061d47d 34
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_57bf505cd40352 154
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "c650c77ad89e6f063c808d7b85006e4bc3a845f4",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
