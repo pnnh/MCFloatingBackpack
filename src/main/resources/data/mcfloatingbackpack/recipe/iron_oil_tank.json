@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "K": {
+      "item": "minecraft:coal_block"
+    }
+  },
+  "pattern": [
+    "III",
+    "IBI",
+    "IKI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:iron_oil_tank"
+  }
+}

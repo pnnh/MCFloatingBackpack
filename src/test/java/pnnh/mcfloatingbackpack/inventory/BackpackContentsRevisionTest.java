@@ -50,8 +50,8 @@ class BackpackContentsRevisionTest {
     @Test
     void theRevisionSurvivesCopyingFittingAndUpgrading() throws IOException {
         String contents = read("inventory/BackpackContents.java");
-        assertTrue(contents.contains("normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, dataRevision)"));
-        assertTrue(contents.contains("fit(items, cursor, tools, tags, trash, pickupBlacklist, rows, capacity).withDataRevision(dataRevision)"));
+        assertTrue(contents.contains("normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, fluids, dataRevision)"));
+        assertTrue(contents.contains("fit(items, cursor, tools, tags, trash, pickupBlacklist, rows, fluids, capacity).withDataRevision(dataRevision)"));
         String recipe = read("inventory/recipe/BackpackUpgradeRecipe.java");
         assertTrue(recipe.contains(".withDataRevision(current.dataRevision())"));
     }

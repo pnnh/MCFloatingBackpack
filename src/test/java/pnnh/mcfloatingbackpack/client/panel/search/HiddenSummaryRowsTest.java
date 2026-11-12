@@ -67,4 +67,52 @@ class HiddenSummaryRowsTest {
         assertEquals(2, HiddenSummaryRows.totalCells(visible("fish", ALL)));
         assertEquals(0, HiddenSummaryRows.totalCells(visible("@x", ALL)));
     }
+    // ---- 048: a liquid with no tank is a line of its own ----
+
+    private static final Line WATER = new Line("liquid_water", "Water (liquid)", 1, 8000);
+    private static final Line OIL = new Line("liquid_oil", "Crude Oil (liquid)", 1, 4000);
+    private static final Line ZH_WATER = new Line("liquid_water", "水（液体）", 1, 8000);
+    private static final List<Line> MIXED = List.of(FOOD, WATER, OIL);
+
+    @Test
+    void aLiquidLineKnowsItIsOne() {
+        org.junit.jupiter.api.Assertions.assertTrue(WATER.isLiquid());
+        org.junit.jupiter.api.Assertions.assertFalse(FOOD.isLiquid());
+        assertEquals(0, FOOD.liquidMb(), "the three argument form is a category line");
+    }
+
+    @Test
+    void theWordLiquidFindsEveryHiddenLiquidAndNoCategory() {
+        assertEquals(List.of(WATER, OIL), visible("liquid", MIXED));
+        assertEquals(List.of(ZH_WATER), visible("液体", List.of(FOOD, ZH_WATER)));
+    }
+
+    @Test
+    void theNameOfTheLiquidFindsIt() {
+        assertEquals(List.of(WATER), visible("water", MIXED));
+        assertEquals(List.of(OIL), visible("oil", MIXED));
+        assertEquals(List.of(OIL), visible("crude", MIXED));
+        assertEquals(List.of(ZH_WATER), visible("水", List.of(FOOD, ZH_WATER)));
+    }
+
+    @Test
+    void theGrammarAppliesToLiquidsToo() {
+        assertEquals(List.of(FOOD, OIL), visible("-water", MIXED));
+        assertEquals(List.of(WATER, OIL), visible("water|oil", MIXED));
+        assertEquals(List.of(WATER), visible("liquid -oil", MIXED));
+        assertEquals(List.of(), visible("\"water oil\"", MIXED));
+    }
+
+    @Test
+    void aModOrATagAlternativeNeverHoldsForALiquidLine() {
+        assertEquals(List.of(), visible("@minecraft", MIXED));
+        assertEquals(List.of(), visible("#water", MIXED));
+        assertEquals(MIXED, visible("-@minecraft", MIXED));
+    }
+
+    @Test
+    void eachLiquidCountsAsOneInTheTotal() {
+        assertEquals(3 + 1 + 1, HiddenSummaryRows.totalCells(MIXED));
+        assertEquals(1, HiddenSummaryRows.totalCells(visible("water", MIXED)));
+    }
 }

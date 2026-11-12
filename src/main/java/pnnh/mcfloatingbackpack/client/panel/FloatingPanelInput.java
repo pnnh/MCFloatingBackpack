@@ -28,6 +28,8 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.item.TankItem;
+import pnnh.mcfloatingbackpack.tank.TankPlacement;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
 import pnnh.mcfloatingbackpack.network.BackpackSortPayload;
 
@@ -295,8 +297,18 @@ public final class FloatingPanelInput {
         ItemStack held = !screenOpen && Screen.hasAltDown() && minecraft.player != null
                 ? minecraft.player.getMainHandItem()
                 : FloatingPanelRenderer.cursorStack(minecraft);
-        if (held.isEmpty()
-                || ToolAreaRules.canPlace(
+        if (held.isEmpty()) {
+            return false;
+        }
+        // 048: a liquid tank that the backpack's tier does not take, or that the bottom area cannot have (one for each liquid, and it
+        // must hold what is stored); the same rule the server applies, so a request that is sure to fail is not sent
+        ClientBackpackView view = ClientBackpackView.get();
+        TankPlacement.Verdict tankVerdict = TankItem.check(area, held, slotIndex, view.toolStacks(area), view.backpackTier(), view.fluids());
+        if (tankVerdict != TankPlacement.Verdict.OK) {
+            FloatingPanelEvents.chat(minecraft, TankItem.refusal(tankVerdict, held));
+            return true;
+        }
+        if (ToolAreaRules.canPlace(
                         area,
                         held,
                         slotIndex,

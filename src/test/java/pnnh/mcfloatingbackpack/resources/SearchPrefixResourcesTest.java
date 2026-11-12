@@ -53,8 +53,11 @@ class SearchPrefixResourcesTest {
         }
         String renderer = read(SEARCH.resolve("SearchRenderer.java"));
         assertTrue(renderer.contains(".hidden.line"));
-        assertTrue(renderer.contains(".hidden.title"));
-        assertTrue(renderer.contains(".hidden.hint"));
+        // 048: the heading and the hint now come from HiddenTextKeys (items only still gets the 037 words)
+        assertTrue(renderer.contains("HiddenTextKeys.title(") && renderer.contains("HiddenTextKeys.hints("));
+        String keys = read(SEARCH.resolve("HiddenTextKeys.java"));
+        assertTrue(keys.contains("\".hidden.title\""));
+        assertTrue(keys.contains("\".hidden.hint\""));
     }
 
     @Test
@@ -97,8 +100,8 @@ class SearchPrefixResourcesTest {
     }
 
     @Test
-    void theProtocolIs18AndTheModsTomlAndTheConfigAreUntouched() throws IOException {
-        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"18\")"));
+    void theProtocolIs19AndTheModsTomlAndTheConfigAreUntouched() throws IOException {
+        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"19\")"));
         String toml = read(Path.of("src/main/templates/META-INF/neoforge.mods.toml"));
         assertFalse(toml.contains("search"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count(),

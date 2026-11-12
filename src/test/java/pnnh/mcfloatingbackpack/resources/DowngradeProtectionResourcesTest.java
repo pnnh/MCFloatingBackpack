@@ -129,7 +129,7 @@ class DowngradeProtectionResourcesTest {
     @Test
     void theProtocolAndTheOtherPayloadsAreUntouchedAndNothingWasAddedToConfigOrCommands() throws IOException {
         String network = src("network/BackpackNetwork.java");
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"18\")"));
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"19\")"));
         assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"1\").optional()"));
         assertFalse(src("diag/DiagConfig.java").toLowerCase().contains("revision"));
         assertFalse(src("compat/CompatConfig.java").toLowerCase().contains("revision"));

@@ -23,6 +23,10 @@ import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.item.TankItem;
+import pnnh.mcfloatingbackpack.tank.FluidKind;
+import pnnh.mcfloatingbackpack.tank.FluidStore;
+import pnnh.mcfloatingbackpack.tank.TankCatalog;
 
 /**
  * Mutable working copy of one backpack item. Capacity follows that item's tier.
@@ -49,6 +53,8 @@ public final class BackpackInventory {
     private ItemTags tags = ItemTags.EMPTY;
     private TrashContents trash = TrashContents.EMPTY;
     private PickupBlacklist pickupBlacklist = PickupBlacklist.EMPTY;
+    /** 048: what the backpack holds of each liquid; it stays when a tank is taken out. */
+    private FluidStore fluids = FluidStore.EMPTY;
 
     public BackpackInventory(int capacity) {
         int size = Math.max(1, Math.min(MAX_TIER_CAPACITY, capacity));
@@ -345,6 +351,34 @@ public final class BackpackInventory {
         return false;
     }
 
+    /** 048: what the backpack holds of each liquid. */
+    public FluidStore fluids() {
+        return fluids;
+    }
+
+    public void setFluids(FluidStore fluids) {
+        this.fluids = fluids == null ? FluidStore.EMPTY : fluids;
+    }
+
+    /** 048: the tier of this backpack, or {@code null} if its capacity is not one of the tiers'. */
+    public BackpackTier tier() {
+        return BackpackTier.byCapacity(baseCapacity);
+    }
+
+    /**
+     * 048: the tier of the tank that counts for {@code kind}: the one in the bottom area (looks at the whole stored list, not at the
+     * cells the panel currently shows), or {@code null} if there is none. There is at most one per liquid.
+     */
+    public BackpackTier tankTier(FluidKind kind) {
+        for (int i = 0; i < size(PanelArea.BOTTOM); i++) {
+            TankCatalog.Tank tank = TankItem.tankOf(getStackInSlot(PanelArea.BOTTOM, i));
+            if (tank != null && tank.kind() == kind) {
+                return tank.tier();
+            }
+        }
+        return null;
+    }
+
     /** The tags of which an item category carrying one is left on the ground by the auto pickup (024). */
     public PickupBlacklist pickupBlacklist() {
         return pickupBlacklist;
@@ -389,6 +423,7 @@ public final class BackpackInventory {
         inventory.setTags(fitted.tags());
         inventory.setTrash(fitted.trash());
         inventory.setPickupBlacklist(fitted.pickupBlacklist());
+        inventory.setFluids(fitted.fluids());
         for (PanelArea area : PanelArea.values()) {
             if (!area.isTool()) {
                 continue;
@@ -415,7 +450,7 @@ public final class BackpackInventory {
         // looks as if a newer version had saved it).
         Integer stamp = pnnh.mcfloatingbackpack.version.VersionDebug.stampRevisionOverride();
         return BackpackContents.fit(
-                        list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, reconciledRows(), baseCapacity)
+                        list, getCursor().copy(), toolContents(), tags, trash, pickupBlacklist, reconciledRows(), fluids, baseCapacity)
                 .withDataRevision(stamp != null ? stamp : pnnh.mcfloatingbackpack.inventory.revision.DataRevision.CURRENT);
     }
 

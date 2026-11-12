@@ -18,6 +18,8 @@ import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklistCodecs;
 import pnnh.mcfloatingbackpack.inventory.tags.ItemTags;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.tank.FluidStore;
+import pnnh.mcfloatingbackpack.tank.FluidStoreCodecs;
 
 /**
  * Immutable snapshot stored on a floating-backpack ItemStack as a data component.
@@ -30,8 +32,11 @@ import pnnh.mcfloatingbackpack.item.ModItems;
  * tier capacity, so everything that reads the capacity from it (upgrade, snapshots) is untouched. The visible rows' cells
  * join the main area only in the working copy ({@link BackpackInventory}).
  *
+ * <p>048: what the backpack holds of each liquid ({@code fluids}) is kept apart too; it belongs to the backpack, not to a tank item. On disk
+ * it is an optional field (an older backpack has none and reads as empty); on the wire it comes after the rows.
+ *
  * <p>The wire codec is written by hand: it had used up the six fields a {@code StreamCodec.composite} can take. The first six
- * fields go out in the order they always did, the rows last.
+ * fields go out in the order they always did, the rows and then the liquids (048) last.
  */
 public record BackpackContents(
         List<ItemStack> items,
@@ -41,6 +46,7 @@ public record BackpackContents(
         TrashContents trash,
         PickupBlacklist pickupBlacklist,
         RowSet<ItemStack> rows,
+        FluidStore fluids,
         int dataRevision) {
     public static final Codec<BackpackContents> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
@@ -66,6 +72,10 @@ public record BackpackContents(
                     ExtensionRowsCodecs.CODEC
                             .optionalFieldOf("extension_rows", RowSet.<ItemStack>empty())
                             .forGetter(BackpackContents::rows),
+                    // 048: the liquids the backpack holds; an older version leaves the field out (reads as empty)
+                    FluidStoreCodecs.CODEC
+                            .optionalFieldOf("fluids", FluidStore.EMPTY)
+                            .forGetter(BackpackContents::fluids),
                     // 040: the revision of the stored data this backpack was last saved with; an older version leaves the field out
                     // (it ignores what it does not know), so it reads as 0. It is on disk only: the wire codec below does not carry it.
                     Codec.INT
@@ -85,6 +95,7 @@ public record BackpackContents(
                 TrashContents.STREAM_CODEC.encode(buf, contents.trash());
                 PickupBlacklistCodecs.STREAM_CODEC.encode(buf, contents.pickupBlacklist());
                 ExtensionRowsCodecs.STREAM_CODEC.encode(buf, contents.rows());
+                FluidStoreCodecs.STREAM_CODEC.encode(buf, contents.fluids());
             },
             buf -> {
                 List<ItemStack> items = ITEMS_STREAM_CODEC.decode(buf);
@@ -94,11 +105,12 @@ public record BackpackContents(
                 TrashContents trash = TrashContents.STREAM_CODEC.decode(buf);
                 PickupBlacklist pickupBlacklist = PickupBlacklistCodecs.STREAM_CODEC.decode(buf);
                 RowSet<ItemStack> rows = ExtensionRowsCodecs.STREAM_CODEC.decode(buf);
-                return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows);
+                FluidStore fluids = FluidStoreCodecs.STREAM_CODEC.decode(buf);
+                return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, fluids, 0);
             });
 
     public static BackpackContents empty(int capacity) {
-        return fit(List.of(), ItemStack.EMPTY, ToolAreaContents.EMPTY, ItemTags.EMPTY, TrashContents.EMPTY, PickupBlacklist.EMPTY, RowSet.empty(), capacity);
+        return fit(List.of(), ItemStack.EMPTY, ToolAreaContents.EMPTY, ItemTags.EMPTY, TrashContents.EMPTY, PickupBlacklist.EMPTY, RowSet.empty(), FluidStore.EMPTY, capacity);
     }
 
     /** Copies stacks and clamps the list to {@link BackpackInventory#MAX_TIER_CAPACITY} without padding; no tool areas, no tags, no trash, no blacklist, no rows. */
@@ -116,7 +128,7 @@ public record BackpackContents(
             TrashContents trash,
             PickupBlacklist pickupBlacklist,
             RowSet<ItemStack> rows) {
-        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, 0);
+        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, FluidStore.EMPTY, 0);
     }
 
     /** Copies stacks and clamps the lists without padding; a negative revision reads as 0. */
@@ -128,6 +140,7 @@ public record BackpackContents(
             TrashContents trash,
             PickupBlacklist pickupBlacklist,
             RowSet<ItemStack> rows,
+            FluidStore fluids,
             int dataRevision) {
         int size = items == null ? 0 : Math.min(items.size(), BackpackInventory.MAX_TIER_CAPACITY);
         NonNullList<ItemStack> slots = NonNullList.create();
@@ -147,13 +160,14 @@ public record BackpackContents(
                 trash == null ? TrashContents.EMPTY : new TrashContents(trash.groups()),
                 pickupBlacklist == null ? PickupBlacklist.EMPTY : pickupBlacklist,
                 rows == null ? RowSet.empty() : rows,
+                fluids == null ? FluidStore.EMPTY : fluids,
                 pnnh.mcfloatingbackpack.inventory.revision.DataRevision.readStored(dataRevision));
     }
 
     /** Main slots fitted to {@code capacity}, tool areas empty (padded to their capacities), no tags, no trash, no blacklist, no rows. */
     public static BackpackContents fit(List<ItemStack> items, ItemStack cursor, int capacity) {
         return fit(
-                items, cursor, ToolAreaContents.EMPTY, ItemTags.EMPTY, TrashContents.EMPTY, PickupBlacklist.EMPTY, RowSet.empty(), capacity);
+                items, cursor, ToolAreaContents.EMPTY, ItemTags.EMPTY, TrashContents.EMPTY, PickupBlacklist.EMPTY, RowSet.empty(), FluidStore.EMPTY, capacity);
     }
 
     /**
@@ -168,6 +182,7 @@ public record BackpackContents(
             TrashContents trash,
             PickupBlacklist pickupBlacklist,
             RowSet<ItemStack> rows,
+            FluidStore fluids,
             int capacity) {
         int size = Math.max(0, Math.min(BackpackInventory.MAX_TIER_CAPACITY, capacity));
         NonNullList<ItemStack> slots = NonNullList.withSize(size, ItemStack.EMPTY);
@@ -187,21 +202,22 @@ public record BackpackContents(
                 trash == null ? TrashContents.EMPTY : new TrashContents(trash.groups()),
                 pickupBlacklist == null ? PickupBlacklist.EMPTY : pickupBlacklist,
                 rows == null ? RowSet.empty() : rows,
+                fluids == null ? FluidStore.EMPTY : fluids,
                 0);
     }
 
     /** The main list fitted to the tier capacity; the rows do not depend on the capacity and stay as they are; the revision stays too. */
     public BackpackContents fit(int capacity) {
-        return fit(items, cursor, tools, tags, trash, pickupBlacklist, rows, capacity).withDataRevision(dataRevision);
+        return fit(items, cursor, tools, tags, trash, pickupBlacklist, rows, fluids, capacity).withDataRevision(dataRevision);
     }
 
     public BackpackContents copy() {
-        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, dataRevision);
+        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, fluids, dataRevision);
     }
 
     /** 040: the same contents stamped with another data revision. */
     public BackpackContents withDataRevision(int revision) {
-        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, revision);
+        return normalize(items, cursor, tools, tags, trash, pickupBlacklist, rows, fluids, revision);
     }
 
     /**

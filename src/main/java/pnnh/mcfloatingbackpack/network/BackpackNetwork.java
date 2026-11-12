@@ -45,7 +45,7 @@ public final class BackpackNetwork {
         versionCheck.playToClient(VersionHelloPayload.TYPE, VersionHelloPayload.STREAM_CODEC, VersionHelloPayload::handleClient);
         versionCheck.playToServer(VersionReportPayload.TYPE, VersionReportPayload.STREAM_CODEC, VersionReportPayload::handleServer);
 
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("18");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("19");
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(
                 CreativeCursorReportPayload.TYPE,
@@ -79,6 +79,11 @@ public final class BackpackNetwork {
                 BackpackPickupBlacklistPayload.TYPE,
                 BackpackPickupBlacklistPayload.STREAM_CODEC,
                 BackpackPickupBlacklistPayload::handleClient);
+        // 048: what the backpack holds of each liquid
+        registrar.playToClient(
+                BackpackFluidsPayload.TYPE,
+                BackpackFluidsPayload.STREAM_CODEC,
+                BackpackFluidsPayload::handleClient);
         registrar.playToServer(
                 BackpackClickPayload.TYPE,
                 BackpackClickPayload.STREAM_CODEC,
@@ -204,6 +209,13 @@ public final class BackpackNetwork {
         sendTrash(player, inventory);
         // 024: and the pickup blacklist.
         sendPickupBlacklist(player, inventory);
+        // 048: and the liquids.
+        sendFluids(player, inventory);
+    }
+
+    /** 048: what the backpack holds of each liquid, as the server has it. */
+    public static void sendFluids(ServerPlayer player, BackpackInventory inventory) {
+        PacketDistributor.sendToPlayer(player, new BackpackFluidsPayload(inventory.fluids()));
     }
 
     /** 024: the pickup blacklist, as the server has it. */

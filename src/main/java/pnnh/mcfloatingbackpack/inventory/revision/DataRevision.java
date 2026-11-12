@@ -7,12 +7,12 @@ package pnnh.mcfloatingbackpack.inventory.revision;
  *
  * <p>{@link #CURRENT} goes up only when the stored data changes in a way an older version cannot keep: a new stored field, a field that
  * means something else now, a new kind of item that only lives in a backpack. A change of a rule or of the interface, or a bug fix,
- * does not raise it. See {@code docs/plan/release-process.md}. 1 is the first version that stamps; a backpack without a stamp reads as
+ * does not raise it. See {@code docs/plan/release-process.md}. 1 is the first version that stamps (040); 2 added the liquids a backpack holds (048); a backpack without a stamp reads as
  * 0. Pure logic with no Minecraft types.
  */
 public final class DataRevision {
     /** The revision this version stamps and understands. */
-    public static final int CURRENT = 1;
+    public static final int CURRENT = 2;
 
     private DataRevision() {
     }

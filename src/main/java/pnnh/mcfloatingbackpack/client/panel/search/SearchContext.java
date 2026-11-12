@@ -50,6 +50,13 @@ public final class SearchContext {
                 String name = Component.translatableWithFallback(CategoryNames.langKey(line.category()), line.category()).getString();
                 lines.add(new HiddenSummaryRows.Line(line.category(), name, line.cells()));
             }
+            // 048: then the liquids that have no tank, one line each (a cell of their own in the count, the amount shown in mB); the name
+            // carries the word "liquid" so that /hidden liquid finds them all
+            for (pnnh.mcfloatingbackpack.tank.HiddenLiquids.Line liquid : ClientBackpackView.get().hiddenLiquids()) {
+                Component fluid = Component.translatable("fluid.mcfloatingbackpack." + liquid.kind().id());
+                String name = Component.translatable("panel.mcfloatingbackpack.hidden.liquid.name", fluid).getString();
+                lines.add(new HiddenSummaryRows.Line("liquid_" + liquid.kind().id(), name, 1, liquid.amountMb()));
+            }
             return lines;
         }
     };

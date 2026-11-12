@@ -28,6 +28,8 @@ import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.item.TankItem;
+import pnnh.mcfloatingbackpack.tank.TankPlacement;
 
 /**
  * {@code swapHand} is the old {@code shiftDown} bit (014): the click asks to swap the slot with the main-hand
@@ -167,6 +169,16 @@ public record BackpackClickPayload(
                                 stack -> stack.is(ModItems.AUTO_PICKUP.get()))) {
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                     return;
+                }
+                // 048: a liquid tank goes only into a backpack of its tier or higher, and counts only in the bottom area, one for each liquid
+                // that fits what is stored; the player is told why when it is refused.
+                if (!held.isEmpty()) {
+                    TankPlacement.Verdict verdict = TankItem.check(inventory, area, held, payload.slotIndex());
+                    if (verdict != TankPlacement.Verdict.OK) {
+                        serverPlayer.displayClientMessage(TankItem.refusal(verdict, held), true);
+                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                        return;
+                    }
                 }
             }
 

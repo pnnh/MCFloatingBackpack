@@ -122,6 +122,6 @@ class CategoryExtensionUiResourcesTest {
     @Test
     void thisFeatureAddsNoNetworkPacketAndKeepsTheProtocol() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"18\")"));
+        assertTrue(network.contains("versioned(\"19\")"));
     }
 }

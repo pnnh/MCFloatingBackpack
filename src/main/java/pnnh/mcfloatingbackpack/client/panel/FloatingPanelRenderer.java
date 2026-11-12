@@ -40,6 +40,9 @@ import pnnh.mcfloatingbackpack.inventory.extension.RowLayout;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentity;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.item.TankItem;
+import pnnh.mcfloatingbackpack.tank.TankBar;
+import pnnh.mcfloatingbackpack.tank.TankCatalog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,9 +156,11 @@ public final class FloatingPanelRenderer {
                 && !TagPanelState.get().isOpen() && !PickupPanelState.get().isOpen()) {
             SearchRenderer.drawHiddenSummary(graphics, minecraft, mainArea);
             List<HiddenHint.Line> hiddenLines = HiddenHint.lines(ClientBackpackView.get().rowView().hidden());
-            if (!hiddenLines.isEmpty() && mouseX >= mainArea.x() && mouseX < mainArea.x() + mainArea.w()
+            // 048: and the liquids that have no tank
+            List<pnnh.mcfloatingbackpack.tank.HiddenLiquids.Line> hiddenLiquids = ClientBackpackView.get().hiddenLiquids();
+            if ((!hiddenLines.isEmpty() || !hiddenLiquids.isEmpty()) && mouseX >= mainArea.x() && mouseX < mainArea.x() + mainArea.w()
                     && mouseY >= mainArea.y() && mouseY < mainArea.y() + mainArea.h()) {
-                drawHiddenHint(graphics, minecraft, hiddenLines, mouseX, mouseY);
+                drawHiddenHint(graphics, minecraft, hiddenLines, hiddenLiquids, mouseX, mouseY);
             }
         }
         // 042: the magnifier, or the open search box in place of the number and the buttons
@@ -226,12 +231,15 @@ public final class FloatingPanelRenderer {
         graphics.renderItem(icon, iconX, iconY);
         // 037: some items are hidden (the rows they were in are not shown): a small yellow dot on the icon's corner and its hint.
         List<HiddenHint.Line> hidden = HiddenHint.lines(ClientBackpackView.get().rowView().hidden());
-        boolean overDot = !hidden.isEmpty() && TitleDotLayout.hits(state.getPosX(), state.getPosY(), mouseX, mouseY);
-        if (!hidden.isEmpty()) {
+        // 048: the liquids the backpack holds with no tank for them are hidden content too: the same dot
+        List<pnnh.mcfloatingbackpack.tank.HiddenLiquids.Line> hiddenLiquids = ClientBackpackView.get().hiddenLiquids();
+        boolean anyHidden = !hidden.isEmpty() || !hiddenLiquids.isEmpty();
+        boolean overDot = anyHidden && TitleDotLayout.hits(state.getPosX(), state.getPosY(), mouseX, mouseY);
+        if (anyHidden) {
             drawHiddenDot(graphics, state);
         }
         if (overDot) {
-            drawHiddenHint(graphics, minecraft, hidden, mouseX, mouseY);
+            drawHiddenHint(graphics, minecraft, hidden, hiddenLiquids, mouseX, mouseY);
         } else if (state.hitsTitleIcon(mouseX, mouseY)) {
             graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().baseCapacity()), mouseX, mouseY);
         }
@@ -255,17 +263,35 @@ public final class FloatingPanelRenderer {
     }
 
     /** 037: which categories have something hidden and in how many cells, and where to get it back. */
-    private static void drawHiddenHint(GuiGraphics graphics, Minecraft minecraft, List<HiddenHint.Line> lines, int mouseX, int mouseY) {
+    private static void drawHiddenHint(
+            GuiGraphics graphics,
+            Minecraft minecraft,
+            List<HiddenHint.Line> lines,
+            List<pnnh.mcfloatingbackpack.tank.HiddenLiquids.Line> liquids,
+            int mouseX,
+            int mouseY) {
         List<FormattedCharSequence> out = new ArrayList<>();
-        out.addAll(minecraft.font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.title"), 220));
+        // 048: the words depend on whether items, liquids or both are hidden
+        boolean hasItems = !lines.isEmpty();
+        boolean hasLiquids = !liquids.isEmpty();
+        out.addAll(minecraft.font.split(
+                Component.translatable("panel." + MCFloatingBackpack.MOD_ID
+                        + pnnh.mcfloatingbackpack.client.panel.search.HiddenTextKeys.title(hasItems, hasLiquids)), 220));
         for (HiddenHint.Line line : lines) {
             // A category this version does not know (made by a newer version) has no language entry: show its id.
             Component name = Component.translatableWithFallback(CategoryNames.langKey(line.category()), line.category());
             out.addAll(minecraft.font.split(
                     Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", name, line.cells()), 220));
         }
-        out.addAll(minecraft.font.split(
-                Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.hint").withStyle(ChatFormatting.GRAY), 220));
+        for (pnnh.mcfloatingbackpack.tank.HiddenLiquids.Line liquid : liquids) {
+            Component name = Component.translatable("fluid." + MCFloatingBackpack.MOD_ID + "." + liquid.kind().id());
+            out.addAll(minecraft.font.split(
+                    Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.liquid.line", name, liquid.amountMb()), 220));
+        }
+        for (String hintKey : pnnh.mcfloatingbackpack.client.panel.search.HiddenTextKeys.hints(hasItems, hasLiquids)) {
+            out.addAll(minecraft.font.split(
+                    Component.translatable("panel." + MCFloatingBackpack.MOD_ID + hintKey).withStyle(ChatFormatting.GRAY), 220));
+        }
         graphics.renderTooltip(minecraft.font, out, mouseX, mouseY);
     }
 
@@ -376,6 +402,10 @@ public final class FloatingPanelRenderer {
                 } else if (!stack.isEmpty()) {
                     graphics.renderItem(stack, sx + 1, sy + 1);
                     graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
+                    // 048: a tank in the bottom area (the only place it counts) shows how full it is
+                    if (area == PanelArea.BOTTOM) {
+                        drawTankBar(graphics, view, stack, sx, sy);
+                    }
                 }
                 // 042: a cell the query found (a cell kept as an empty place is not found any more); the tool areas are framed, never filtered
                 boolean found = searching
@@ -394,6 +424,39 @@ public final class FloatingPanelRenderer {
                 }
             }
         }
+    }
+
+    /**
+     * 048: the level bar of a tank: a thin vertical bar at the cell's left edge, in the colour of the liquid, drawn on the same layer as
+     * the durability bar of a vanilla item (over the item). Nothing is drawn for an empty tank or for a stack that is not a tank.
+     */
+    private static void drawTankBar(GuiGraphics graphics, ClientBackpackView view, ItemStack stack, int sx, int sy) {
+        TankCatalog.Tank tank = TankItem.tankOf(stack);
+        if (tank == null) {
+            return;
+        }
+        int amount = view.fluids().amount(tank.kind());
+        int fill = TankBar.fillPixels(amount, TankCatalog.capacityMb(tank.tier()), TankBar.HEIGHT);
+        if (fill <= 0) {
+            return;
+        }
+        int x = sx + TankBar.OFFSET;
+        int y = sy + TankBar.OFFSET;
+        graphics.pose().pushPose();
+        graphics.pose().translate(0.0F, 0.0F, 200.0F);
+        graphics.fill(x, y, x + TankBar.WIDTH, y + TankBar.HEIGHT, TankBar.COLOR_BACKING);
+        graphics.fill(x, y + TankBar.HEIGHT - fill, x + TankBar.WIDTH, y + TankBar.HEIGHT, tank.kind().color());
+        graphics.pose().popPose();
+    }
+
+    /** 048: the line a tank's tooltip gets in the bottom area: which liquid, how much, how much it holds; or that it is empty. */
+    private static Component tankTooltipLine(ClientBackpackView view, TankCatalog.Tank tank) {
+        Component liquid = Component.translatable("fluid.mcfloatingbackpack." + tank.kind().id());
+        int amount = view.fluids().amount(tank.kind());
+        Component line = amount > 0
+                ? Component.translatable("tooltip.mcfloatingbackpack.tank.amount", liquid, amount, TankCatalog.capacityMb(tank.tier()))
+                : Component.translatable("tooltip.mcfloatingbackpack.tank.empty", liquid);
+        return line.copy().withStyle(ChatFormatting.AQUA);
     }
 
     /** 037: the layout of the extension rows from what the server last said; an empty one when the backpack has none. */
@@ -470,6 +533,14 @@ public final class FloatingPanelRenderer {
                 TrashConfirmState.get().isPending(),
                 !stack.isEmpty())) {
             return false;
+        }
+        // 048: a tank in the bottom area (where it counts) also says what it holds
+        TankCatalog.Tank tank = hit.area() == PanelArea.BOTTOM ? TankItem.tankOf(stack) : null;
+        if (tank != null) {
+            List<Component> lines = new ArrayList<>(net.minecraft.client.gui.screens.Screen.getTooltipFromItem(minecraft, stack));
+            lines.add(tankTooltipLine(view, tank));
+            graphics.renderTooltip(minecraft.font, lines, java.util.Optional.empty(), mouseX, mouseY);
+            return true;
         }
         graphics.renderTooltip(minecraft.font, stack, mouseX, mouseY);
         return true;

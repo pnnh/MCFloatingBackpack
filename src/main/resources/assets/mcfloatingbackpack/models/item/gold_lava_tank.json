@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "mcfloatingbackpack:item/gold_lava_tank"
+  }
+}

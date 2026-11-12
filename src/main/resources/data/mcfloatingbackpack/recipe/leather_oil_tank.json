@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "L": {
+      "item": "minecraft:leather"
+    },
+    "G": {
+      "item": "minecraft:glass"
+    },
+    "B": {
+      "item": "minecraft:bucket"
+    },
+    "K": {
+      "item": "minecraft:coal_block"
+    }
+  },
+  "pattern": [
+    "LGL",
+    "LBL",
+    "LKL"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:leather_oil_tank"
+  }
+}

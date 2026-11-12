@@ -99,6 +99,25 @@
     {
       "id": "minecraft:black_bundle",
       "required": false
-    }
+    },
+    "mcfloatingbackpack:leather_water_tank",
+    "mcfloatingbackpack:leather_oil_tank",
+    "mcfloatingbackpack:leather_milk_tank",
+    "mcfloatingbackpack:leather_honey_tank",
+    "mcfloatingbackpack:iron_water_tank",
+    "mcfloatingbackpack:iron_oil_tank",
+    "mcfloatingbackpack:iron_lava_tank",
+    "mcfloatingbackpack:iron_milk_tank",
+    "mcfloatingbackpack:iron_honey_tank",
+    "mcfloatingbackpack:gold_water_tank",
+    "mcfloatingbackpack:gold_oil_tank",
+    "mcfloatingbackpack:gold_lava_tank",
+    "mcfloatingbackpack:gold_milk_tank",
+    "mcfloatingbackpack:gold_honey_tank",
+    "mcfloatingbackpack:netherite_water_tank",
+    "mcfloatingbackpack:netherite_oil_tank",
+    "mcfloatingbackpack:netherite_lava_tank",
+    "mcfloatingbackpack:netherite_milk_tank",
+    "mcfloatingbackpack:netherite_honey_tank"
   ]
 }

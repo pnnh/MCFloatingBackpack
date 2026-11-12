@@ -8,15 +8,16 @@ import org.junit.jupiter.api.Test;
 
 class DataRevisionTest {
     @Test
-    void theFirstVersionThatStampsIsOne() {
-        assertEquals(1, DataRevision.CURRENT);
+    void theCurrentRevisionIsTwoSince048AddedTheLiquids() {
+        assertEquals(2, DataRevision.CURRENT);
     }
 
     @Test
     void onlyAHigherRevisionIsNewer() {
         assertFalse(DataRevision.isNewer(0));
         assertFalse(DataRevision.isNewer(1));
-        assertTrue(DataRevision.isNewer(2));
+        assertFalse(DataRevision.isNewer(2));
+        assertTrue(DataRevision.isNewer(3));
         assertTrue(DataRevision.isNewer(99));
     }
 

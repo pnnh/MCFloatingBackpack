@@ -17,6 +17,8 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
+import pnnh.mcfloatingbackpack.tank.FluidKind;
+import pnnh.mcfloatingbackpack.tank.TankCatalog;
 
 public final class ModItems {
     public static final DeferredRegister.Items ITEMS =
@@ -54,6 +56,9 @@ public final class ModItems {
     /** 038: the five universal extensions, one for each backpack tier, in the order of the tiers; ids are {@code <tier>_general_extension}. */
     public static final Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> UNIVERSAL_EXTENSIONS = registerUniversalExtensions();
 
+    /** 048: the 19 liquid tanks, in the order of {@link TankCatalog#all()}; ids are {@code <tier>_<liquid>_tank}. */
+    public static final Map<TankCatalog.Tank, DeferredHolder<Item, TankItem>> TANKS = registerTanks();
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -67,6 +72,9 @@ public final class ModItems {
                                 output.accept(TAG_MANAGER.get());
                                 output.accept(TRASH_CAN.get());
                                 output.accept(AUTO_PICKUP.get());
+                                for (DeferredHolder<Item, TankItem> tank : TANKS.values()) {
+                                    output.accept(tank.get());
+                                }
                                 for (DeferredHolder<Item, CategoryExtensionItem> extension : CATEGORY_EXTENSIONS.values()) {
                                     output.accept(extension.get());
                                 }
@@ -88,6 +96,23 @@ public final class ModItems {
                             category + "_extension", () -> new CategoryExtensionItem(category, new Item.Properties())));
         }
         return Collections.unmodifiableMap(extensions);
+    }
+
+    private static Map<TankCatalog.Tank, DeferredHolder<Item, TankItem>> registerTanks() {
+        Map<TankCatalog.Tank, DeferredHolder<Item, TankItem>> tanks = new LinkedHashMap<>();
+        for (TankCatalog.Tank tank : TankCatalog.all()) {
+            tanks.put(
+                    tank,
+                    ITEMS.register(
+                            TankCatalog.itemId(tank.kind(), tank.tier()),
+                            () -> new TankItem(tank.kind(), tank.tier(), new Item.Properties())));
+        }
+        return Collections.unmodifiableMap(tanks);
+    }
+
+    /** 048: the tank item of a liquid and a tier. */
+    public static TankItem tank(FluidKind kind, BackpackTier tier) {
+        return TANKS.get(new TankCatalog.Tank(kind, tier)).get();
     }
 
     private static Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> registerUniversalExtensions() {

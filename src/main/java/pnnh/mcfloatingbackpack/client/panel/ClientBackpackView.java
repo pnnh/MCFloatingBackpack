@@ -32,6 +32,8 @@ public final class ClientBackpackView {
             pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
     private pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist pickupBlacklist =
             pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY;
+    /** 048: what the open backpack holds of each liquid. */
+    private pnnh.mcfloatingbackpack.tank.FluidStore fluids = pnnh.mcfloatingbackpack.tank.FluidStore.EMPTY;
     private BackpackRef activeRef;
 
     private ClientBackpackView() {
@@ -163,6 +165,37 @@ public final class ClientBackpackView {
                 : pickupBlacklist;
     }
 
+    /** 048: what the open backpack holds of each liquid. */
+    public pnnh.mcfloatingbackpack.tank.FluidStore fluids() {
+        return fluids;
+    }
+
+    public void setFluids(pnnh.mcfloatingbackpack.tank.FluidStore fluids) {
+        this.fluids = fluids == null ? pnnh.mcfloatingbackpack.tank.FluidStore.EMPTY : fluids;
+    }
+
+    /** 048: the tier of the open backpack, or {@code null} if its capacity is not one of the tiers'. */
+    public BackpackTier backpackTier() {
+        return BackpackTier.byCapacity(baseCapacity());
+    }
+
+    /** 048: the tier of the tank that counts for {@code kind} (the one in the bottom area, anywhere in its whole list), or {@code null}. */
+    public BackpackTier tankTier(pnnh.mcfloatingbackpack.tank.FluidKind kind) {
+        for (int i = 0; i < toolCount(PanelArea.BOTTOM); i++) {
+            pnnh.mcfloatingbackpack.tank.TankCatalog.Tank tank =
+                    pnnh.mcfloatingbackpack.item.TankItem.tankOf(getToolStack(PanelArea.BOTTOM, i));
+            if (tank != null && tank.kind() == kind) {
+                return tank.tier();
+            }
+        }
+        return null;
+    }
+
+    /** 048: the liquids this backpack holds that no tank in the bottom area counts for (the title bar's yellow dot, its hint and {@code /hidden} say so). */
+    public java.util.List<pnnh.mcfloatingbackpack.tank.HiddenLiquids.Line> hiddenLiquids() {
+        return pnnh.mcfloatingbackpack.tank.HiddenLiquids.lines(fluids, kind -> tankTier(kind) != null);
+    }
+
     public ItemStack getCursor() {
         return cursor;
     }
@@ -238,6 +271,7 @@ public final class ClientBackpackView {
         tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
         trash = pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
         pickupBlacklist = pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY;
+        fluids = pnnh.mcfloatingbackpack.tank.FluidStore.EMPTY;
         activeRef = null;
         FloatingPanelState.get().setScrollRow(0);
         reportCounts();

@@ -79,16 +79,25 @@ public final class SearchRenderer {
             body.addAll(font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + key), width));
         } else {
             for (HiddenSummaryRows.Line row : rows) {
-                body.addAll(font.split(
-                        Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", row.displayName(), row.cells()), width));
+                // 048: a liquid line says how much (in mB); a category line how many cells hold items
+                Component text = row.isLiquid()
+                        ? Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.liquid.line", row.displayName(), row.liquidMb())
+                        : Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", row.displayName(), row.cells());
+                body.addAll(font.split(text, width));
             }
         }
+        // 048: the heading and the hints follow what is listed: items, liquids or both
+        boolean hasItems = rows.stream().anyMatch(row -> !row.isLiquid());
+        boolean hasLiquids = rows.stream().anyMatch(HiddenSummaryRows.Line::isLiquid);
         List<FormattedCharSequence> title = rows.isEmpty()
                 ? List.of()
-                : font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.title"), width);
-        List<FormattedCharSequence> hint = rows.isEmpty()
-                ? List.of()
-                : font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.hint"), width);
+                : font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + HiddenTextKeys.title(hasItems, hasLiquids)), width);
+        List<FormattedCharSequence> hint = new ArrayList<>();
+        if (!rows.isEmpty()) {
+            for (String hintKey : HiddenTextKeys.hints(hasItems, hasLiquids)) {
+                hint.addAll(font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + hintKey), width));
+            }
+        }
 
         HiddenSummaryFit.Plan plan = HiddenSummaryFit.fit(body.size(), title.size(), hint.size(), available);
         // collect what is drawn first: the text is drawn on a mask over the whole main area (046)
