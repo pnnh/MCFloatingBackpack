@@ -1,0 +1,120 @@
+specs/043-search-terms-provider-api/tasks.md
+  s_9aefe4a2760245::t_745c712e201328 98-102
+  s_9aefe4a2760245::t_cef17efacde8c9 103
+  s_9aefe4a2760245::t_33e09d5a86b80f 19,23-29,39-45,55-56,66-67,77-80,90-92
+  s_9aefe4a2760245::t_ffe7f42deca994 1-18,20-22,30-38,46-54,57-65,68-76,81-89,93-97,104-125
+src/main/java/pnnh/mcfloatingbackpack/search/ProviderHealth.java
+  s_9aefe4a2760245::t_5fb131efd610c3 1-51
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsLevelsTest.java
+  s_9aefe4a2760245::t_177fdcccd194c3 1-118,120-127
+  s_9aefe4a2760245::t_a53738683fd9a0 119
+docs/api/search-terms.md
+  s_9aefe4a2760245::t_a661047e621615 1-106
+src/main/java/pnnh/mcfloatingbackpack/search/TermsNormalizer.java
+  s_9aefe4a2760245::t_5fb131efd610c3 1-51
+specs/043-search-terms-provider-api/data-model.md
+  s_9aefe4a2760245::t_2b954e864b31db 1-83
+src/test/java/pnnh/mcfloatingbackpack/search/TermsCacheTest.java
+  s_9aefe4a2760245::t_9209f559c414fc 1-44
+specs/043-search-terms-provider-api/DELIVERY.md
+  s_9aefe4a2760245::t_08577bc38cba0c 1-2,4-35,37,39-66
+  s_9aefe4a2760245::t_745c712e201328 36
+  s_9aefe4a2760245::t_cef17efacde8c9 3
+  s_9aefe4a2760245::t_61e99da2c074fd 38
+README_CN.md
+  s_9aefe4a2760245::t_aeef236ddb5ba8 38
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchContext.java
+  s_9aefe4a2760245::t_24ddbd31401f6b 3,14,18-19,53-65
+specs/042-backpack-search-core/spec.md
+  s_9aefe4a2760245::t_55a9d06f9d2a2b 34
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsContractTest.java
+  s_9aefe4a2760245::t_785e5ad3b4f242 1-122
+src/test/java/pnnh/mcfloatingbackpack/search/ProviderHealthTest.java
+  s_9aefe4a2760245::t_9209f559c414fc 1-62
+specs/043-search-terms-provider-api/spec.md
+  s_9aefe4a2760245::t_a383ea0bde5e85 131,147,156,159,171-172,189
+  s_9aefe4a2760245::t_8d8f10289abcee 1,7-18,21-25,30,34,40,45-63,71-73,77-82,88-90,96-97,99,106,110-116,121-127,132-138,140-143,146,157,170,176,182-188,196,205-207,209
+  s_9aefe4a2760245::t_851aff211f6867 3,19,29,32-33,35-39,41,64-67,75,86,92,98,100-104,108,117,139,144-145,148-154,158,161-168,174,177-180,190,197-201,208
+  s_9aefe4a2760245::t_ae1aec57c46d8c 2,4-6,20,26-28,31,42-44,68-70,74,76,83-85,87,91,93-95,105,107,109,118-120,128-130,155,160,169,173,175,181,191-195,202-204
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsCostTest.java
+  s_9aefe4a2760245::t_c713a8e40d68a9 1-86
+docs/plan/README.md
+  s_9aefe4a2760245::t_bd9b8c865d7d92 13
+README.md
+  s_9aefe4a2760245::t_aeef236ddb5ba8 38
+specs/043-search-terms-provider-api/checklists/requirements.md
+  s_9aefe4a2760245::t_0462e6ea7576c7 1-33,36
+  s_9aefe4a2760245::t_b4aa8b9fdf0fc5 34-35,37-38
+specs/043-search-terms-provider-api/plan.md
+  s_9aefe4a2760245::t_b4aa8b9fdf0fc5 2,4,6-8,10,17,21,23,25,27,29,31,33,35,41,43-47,57,62-66,75-79,104-105,107,109,122
+  s_9aefe4a2760245::t_4bafbf224a6a4b 1,3,5,9,11-16,18-20,22,24,26,28,30,32,34,36-40,42,48-56,58-61,67-74,80-103,106,108,110-111,113-121,123
+  s_9aefe4a2760245::t_e308ac104fbf80 112
+.specify/feature.json
+  s_9aefe4a2760245::t_26fa790c36cac9 2
+specs/042-backpack-search-core/DELIVERY.md
+  s_9aefe4a2760245::t_55a9d06f9d2a2b 62
+src/test/java/pnnh/mcfloatingbackpack/search/TermsNormalizerTest.java
+  s_9aefe4a2760245::t_9209f559c414fc 1-101
+src/test/java/pnnh/mcfloatingbackpack/search/ProviderRegistryTest.java
+  s_9aefe4a2760245::t_fed0cc62c839d9 1-359
+src/main/java/pnnh/mcfloatingbackpack/search/ProviderIds.java
+  s_9aefe4a2760245::t_4274036a6c7ed5 1-15
+src/main/java/pnnh/mcfloatingbackpack/api/BackpackSearchApi.java
+  s_9aefe4a2760245::t_4274036a6c7ed5 1-38
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_d68b96a1fb9308 45
+specs/043-search-terms-provider-api/quickstart.md
+  s_9aefe4a2760245::t_f01bf179b380b0 1-52
+src/main/java/pnnh/mcfloatingbackpack/client/ClientSetup.java
+  s_9aefe4a2760245::t_24ddbd31401f6b 9-10,18,39-42
+docs/plan/backpack-search.md
+  s_9aefe4a2760245::t_cef17efacde8c9 3
+  s_9aefe4a2760245::t_55a9d06f9d2a2b 51,61
+  s_9aefe4a2760245::t_0462e6ea7576c7 5,40,44-47,49-50,64
+  s_9aefe4a2760245::t_bd9b8c865d7d92 42,48,52-54
+  s_9aefe4a2760245::t_4c460571a3b23c 43
+specs/043-search-terms-provider-api/research.md
+  s_9aefe4a2760245::t_725dd054fa07cf 1-77
+src/main/java/pnnh/mcfloatingbackpack/search/SearchTerms.java
+  s_9aefe4a2760245::t_4274036a6c7ed5 1-66
+src/main/java/pnnh/mcfloatingbackpack/search/StackKey.java
+  s_9aefe4a2760245::t_4274036a6c7ed5 1-16
+src/main/java/pnnh/mcfloatingbackpack/compat/CompatConfig.java
+  s_9aefe4a2760245::t_d68b96a1fb9308 42-43
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsMatchingTest.java
+  s_9aefe4a2760245::t_a53738683fd9a0 112,190-192
+  s_9aefe4a2760245::t_177fdcccd194c3 1-111,113-189,193-216
+src/main/java/pnnh/mcfloatingbackpack/search/ProviderRegistry.java
+  s_9aefe4a2760245::t_5fb131efd610c3 1-160
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_d68b96a1fb9308 45
+src/main/java/pnnh/mcfloatingbackpack/search/TermsCache.java
+  s_9aefe4a2760245::t_5fb131efd610c3 1-38
+src/main/java/pnnh/mcfloatingbackpack/api/SearchTermsProvider.java
+  s_9aefe4a2760245::t_4274036a6c7ed5 1-26
+src/main/java/pnnh/mcfloatingbackpack/search/SearchTermsLimits.java
+  s_9aefe4a2760245::t_5fb131efd610c3 1-19
+specs/043-search-terms-provider-api/contracts/search-terms-api.md
+  s_9aefe4a2760245::t_22948058547468 1-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "3bb75edc2e4d0fd3181879f62c9a020ea6156e87",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
