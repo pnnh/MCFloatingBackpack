@@ -3,7 +3,7 @@ package pnnh.mcfloatingbackpack.inventory.extension;
 import java.util.List;
 
 /**
- * 035: the ten categories of the category extensions and the numbers around them. A category id is at once the category
+ * 035: the categories of the category extensions (ten, and since 051 nineteen) and the numbers around them. A category id is at once the category
  * of a row, the manual tag (018) that makes an item fit that category, and the last segment of the data tag
  * {@code mcfloatingbackpack:extension/<id>}. The order is fixed once released: it decides the order in which a
  * reconcile treats the categories. Pure logic with no Minecraft types.
@@ -11,16 +11,18 @@ import java.util.List;
 public final class ExtensionCategories {
     /** The ids, in their fixed order. */
     public static final List<String> IDS =
-            List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc");
+            List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc",
+                    // 051: nine more, appended (the order is fixed once released)
+                    "building", "natural", "plant", "decor", "mobdrop", "storage", "transport", "enchant", "meat");
 
     /**
-     * 038: the category of the universal extensions: a row that takes any item. It is deliberately not in {@link #IDS}: the ten
+     * 038: the category of the universal extensions: a row that takes any item. It is deliberately not in {@link #IDS}: the ones
      * there each have a data tag, an {@code <id>_extension} item and a preset tag name, and the code that walks {@code IDS} relies
-     * on that. {@link #ALL} is the ten and then this one, in the fixed order (the last place is part of what is released).
+     * on that. {@link #ALL} is those and then this one, in the fixed order (the last place is part of what is released).
      */
     public static final String GENERAL = "general";
 
-    /** 038: every category a row can have, in the fixed order: the ten of {@link #IDS}, then {@link #GENERAL}. */
+    /** 038: every category a row can have, in the fixed order: those of {@link #IDS}, then {@link #GENERAL}. */
     public static final List<String> ALL = java.util.stream.Stream.concat(IDS.stream(), java.util.stream.Stream.of(GENERAL)).toList();
 
     /** One row is nine cells, whatever the backpack's tier. */

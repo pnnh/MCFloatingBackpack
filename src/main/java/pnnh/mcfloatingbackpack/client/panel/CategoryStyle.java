@@ -28,7 +28,17 @@ public final class CategoryStyle {
             Map.entry("potion", 0xFFE060B0),
             Map.entry("redstone", 0xFF8B1A1A),
             Map.entry("disc", 0xFF2F3A8F),
-            // 038: the universal row, a near white: none of the ten is white, and white shows well over the slot's grey
+            // 051: nine more categories (a first draft, to be looked at in the game)
+            Map.entry("building", 0xFFC4552E),
+            Map.entry("natural", 0xFF4E7D2E),
+            Map.entry("plant", 0xFF14A06A),
+            Map.entry("decor", 0xFFE6D83A),
+            Map.entry("mobdrop", 0xFF6A2C7E),
+            Map.entry("storage", 0xFFD9A066),
+            Map.entry("transport", 0xFF4A4F5C),
+            Map.entry("enchant", 0xFF6D4BFF),
+            Map.entry("meat", 0xFFFF8F85),
+            // 038: the universal row, a near white: none of the others is white, and white shows well over the slot's grey
             Map.entry("general", 0xFFF2F2F2));
 
     private CategoryStyle() {

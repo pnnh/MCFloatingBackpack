@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:book"
+    },
+    "B": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "D": {
+      "item": "minecraft:enchanting_table"
+    },
+    "E": {
+      "item": "minecraft:bookshelf"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:enchant_extension"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:rails",
+      "required": false
+    },
+    {
+      "id": "#minecraft:boats",
+      "required": false
+    },
+    {
+      "id": "#minecraft:chest_boats",
+      "required": false
+    },
+    "minecraft:minecart",
+    "minecraft:chest_minecart",
+    "minecraft:furnace_minecart",
+    "minecraft:hopper_minecart",
+    "minecraft:tnt_minecart",
+    "minecraft:saddle",
+    "minecraft:lead",
+    "minecraft:carrot_on_a_stick",
+    "minecraft:warped_fungus_on_a_stick",
+    "minecraft:elytra"
+  ]
+}

@@ -52,7 +52,7 @@ public final class ClientPlacement {
                 rows.visibleCategories(), rows.baseCapacity(), slot, stack, new ItemCategoryMatcher(view.tags()));
     }
 
-    /** Whether the data tags of all ten categories have been bound in the client's item registry (they arrive with the world's tags). */
+    /** Whether the data tags of all the categories have been bound in the client's item registry (they arrive with the world's tags). */
     static boolean categoryTagsBound() {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.level == null) {

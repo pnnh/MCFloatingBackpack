@@ -9,7 +9,7 @@ import pnnh.mcfloatingbackpack.inventory.tags.PresetTags;
 
 class CategoryNamesTest {
     @Test
-    void theTenCategoriesUseTheTagPresetNames() {
+    void allTheCategoriesUseTheTagPresetNames() {
         for (String id : ExtensionCategories.IDS) {
             assertEquals(PresetTags.langKey(id), CategoryNames.langKey(id), id);
         }

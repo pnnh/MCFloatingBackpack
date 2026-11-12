@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:painting"
+    },
+    "B": {
+      "item": "minecraft:lantern"
+    },
+    "D": {
+      "item": "minecraft:loom"
+    },
+    "E": {
+      "item": "minecraft:candle"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:decor_extension"
+  }
+}

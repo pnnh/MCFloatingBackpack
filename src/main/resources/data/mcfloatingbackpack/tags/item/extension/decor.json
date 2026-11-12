@@ -1,0 +1,71 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#minecraft:candles",
+      "required": false
+    },
+    {
+      "id": "#minecraft:banners",
+      "required": false
+    },
+    {
+      "id": "#minecraft:beds",
+      "required": false
+    },
+    {
+      "id": "#minecraft:wool_carpets",
+      "required": false
+    },
+    {
+      "id": "#minecraft:signs",
+      "required": false
+    },
+    {
+      "id": "#minecraft:hanging_signs",
+      "required": false
+    },
+    {
+      "id": "#minecraft:skulls",
+      "required": false
+    },
+    {
+      "id": "#minecraft:decorated_pot_sherds",
+      "required": false
+    },
+    {
+      "id": "#c:bookshelves",
+      "required": false
+    },
+    {
+      "id": "#c:chains",
+      "required": false
+    },
+    {
+      "id": "#c:dyes",
+      "required": false
+    },
+    "minecraft:painting",
+    "minecraft:item_frame",
+    "minecraft:glow_item_frame",
+    "minecraft:lantern",
+    "minecraft:soul_lantern",
+    "minecraft:torch",
+    "minecraft:soul_torch",
+    "minecraft:flower_pot",
+    "minecraft:armor_stand",
+    "minecraft:decorated_pot",
+    "minecraft:sea_lantern",
+    "minecraft:jack_o_lantern",
+    "minecraft:carved_pumpkin",
+    "minecraft:iron_bars",
+    "minecraft:ladder",
+    "minecraft:scaffolding",
+    "minecraft:bell",
+    "minecraft:campfire",
+    "minecraft:soul_campfire",
+    "minecraft:end_crystal",
+    "minecraft:lodestone",
+    "minecraft:name_tag"
+  ]
+}

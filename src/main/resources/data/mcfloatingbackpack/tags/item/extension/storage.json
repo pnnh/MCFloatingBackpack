@@ -1,0 +1,30 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#c:chests",
+      "required": false
+    },
+    {
+      "id": "#c:barrels",
+      "required": false
+    },
+    {
+      "id": "#c:shulker_boxes",
+      "required": false
+    },
+    {
+      "id": "#c:player_workstations/crafting_tables",
+      "required": false
+    },
+    {
+      "id": "#c:player_workstations/furnaces",
+      "required": false
+    },
+    {
+      "id": "#c:villager_job_sites",
+      "required": false
+    },
+    "minecraft:bundle"
+  ]
+}

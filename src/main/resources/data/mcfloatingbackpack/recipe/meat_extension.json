@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:cooked_beef"
+    },
+    "B": {
+      "item": "minecraft:cooked_cod"
+    },
+    "D": {
+      "item": "minecraft:smoker"
+    },
+    "E": {
+      "item": "minecraft:cooked_chicken"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:meat_extension"
+  }
+}

@@ -60,6 +60,10 @@ public final class ItemCategoryMatcher implements CategoryMatcher<ItemStack> {
         if (category.equals("potion") && stack.has(DataComponents.POTION_CONTENTS)) {
             return true;
         }
+        // 051: an enchanted book keeps its enchantments in the stored component; the plain one of enchanted tools is deliberately not used
+        if (category.equals("enchant") && stack.has(DataComponents.STORED_ENCHANTMENTS)) {
+            return true;
+        }
         List<String> manual = tags.tagsOf(BuiltInRegistries.ITEM.getKey(stack.getItem()));
         return manual.contains(category);
     }

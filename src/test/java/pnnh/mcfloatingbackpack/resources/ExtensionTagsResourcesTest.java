@@ -1,6 +1,7 @@
 package pnnh.mcfloatingbackpack.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -41,6 +42,41 @@ class ExtensionTagsResourcesTest {
             "redstone", List.of("#c:dusts/redstone", "#c:storage_blocks/redstone"),
             "disc", List.of("#c:music_discs"));
 
+    /** 051 (contracts/categories.md): the tag entries of the nine categories added later, in file order; their plain items are checked apart. */
+    private static final Map<String, List<String>> EXPECTED_051 = Map.of(
+            "building", List.of("#minecraft:stairs", "#minecraft:slabs", "#minecraft:walls", "#minecraft:fences", "#minecraft:fence_gates",
+                    "#minecraft:doors", "#minecraft:trapdoors", "#minecraft:terracotta", "#minecraft:wool", "#c:bricks", "#c:glass_blocks",
+                    "#c:glass_panes", "#c:concretes", "#c:concrete_powders", "#c:glazed_terracottas"),
+            "natural", List.of("#c:stones", "#c:cobblestones", "#c:sands", "#c:gravels", "#c:netherracks", "#c:end_stones", "#c:obsidians",
+                    "#minecraft:dirt", "#minecraft:sand"),
+            "plant", List.of("#minecraft:flowers", "#minecraft:leaves", "#c:mushrooms"),
+            "decor", List.of("#minecraft:candles", "#minecraft:banners", "#minecraft:beds", "#minecraft:wool_carpets", "#minecraft:signs",
+                    "#minecraft:hanging_signs", "#minecraft:skulls", "#minecraft:decorated_pot_sherds", "#c:bookshelves", "#c:chains",
+                    "#c:dyes"),
+            "mobdrop", List.of("#c:bones", "#c:strings", "#c:gunpowders", "#c:leathers", "#c:feathers", "#c:slime_balls", "#c:ender_pearls",
+                    "#c:eggs", "#c:nether_stars", "#c:rods/blaze", "#c:rods/breeze"),
+            "storage", List.of("#c:chests", "#c:barrels", "#c:shulker_boxes", "#c:player_workstations/crafting_tables",
+                    "#c:player_workstations/furnaces", "#c:villager_job_sites"),
+            "transport", List.of("#minecraft:rails", "#minecraft:boats", "#minecraft:chest_boats"),
+            "enchant", List.of(),
+            "meat", List.of("#minecraft:meat", "#minecraft:fishes", "#c:foods/raw_meat", "#c:foods/cooked_meat", "#c:foods/raw_fish",
+                    "#c:foods/cooked_fish"));
+
+    private static List<String> expected(String id) {
+        return EXPECTED.containsKey(id) ? EXPECTED.get(id) : EXPECTED_051.get(id);
+    }
+
+    /** 051: items that must be in the file by name (quickstart's spot-check table: at least five that belong, for the ones that need names). */
+    private static final Map<String, List<String>> PLAIN_051 = Map.of(
+            "natural", List.of("clay", "snow_block", "ice", "soul_sand", "sculk", "flint"),
+            "plant", List.of("short_grass", "fern", "vine", "lily_pad", "cactus", "brain_coral_fan"),
+            "decor", List.of("painting", "lantern", "item_frame", "flower_pot", "armor_stand", "campfire"),
+            "mobdrop", List.of("ghast_tear", "phantom_membrane", "rabbit_foot", "ink_sac", "slime_block"),
+            "storage", List.of("bundle"),
+            "transport", List.of("minecart", "saddle", "lead", "elytra", "chest_minecart"),
+            "enchant", List.of("book", "lapis_lazuli", "enchanting_table", "bookshelf", "experience_bottle", "anvil"),
+            "building", List.of("polished_andesite", "smooth_stone", "chiseled_stone_bricks", "cut_sandstone", "quartz_block", "copper_block"));
+
     private static final List<String> REDSTONE_PARTS = List.of("repeater", "comparator", "piston", "sticky_piston", "observer",
             "lever", "hopper", "dropper", "dispenser", "redstone_lamp", "redstone_torch", "daylight_detector", "target");
 
@@ -59,7 +95,9 @@ class ExtensionTagsResourcesTest {
             expected.add(id + ".json");
         }
         assertEquals(expected, names);
-        assertEquals(EXPECTED.keySet(), new TreeSet<>(ExtensionCategories.IDS));
+        TreeSet<String> described = new TreeSet<>(EXPECTED.keySet());
+        described.addAll(EXPECTED_051.keySet());
+        assertEquals(described, new TreeSet<>(ExtensionCategories.IDS));
     }
 
     @Test
@@ -77,7 +115,7 @@ class ExtensionTagsResourcesTest {
                 assertEquals("false", entries.group(2), id + ": " + entries.group(1));
                 found.add(entries.group(1));
             }
-            assertEquals(EXPECTED.get(id), found, id);
+            assertEquals(expected(id), found, id);
         }
     }
 
@@ -91,7 +129,7 @@ class ExtensionTagsResourcesTest {
 
     @Test
     void theOtherFilesListNoPlainItems() throws IOException {
-        for (String id : ExtensionCategories.IDS) {
+        for (String id : ExtensionCategories.IDS.subList(0, 10)) { // the first ten; the nine of 051 list items by name on purpose
             if (id.equals("redstone")) {
                 continue;
             }
@@ -110,8 +148,38 @@ class ExtensionTagsResourcesTest {
             assertTrue(en.contains("\"" + PresetTags.langKey(id) + "\""), "en_us missing " + id);
             assertTrue(zh.contains("\"" + PresetTags.langKey(id) + "\""), "zh_cn missing " + id);
         }
-        assertEquals(13, PresetTags.ids().size());
-        assertTrue(PresetTags.isPreset("plant"), "plant stays, it is not a category");
-        assertTrue(!ExtensionCategories.isKnown("plant"));
+        assertEquals(21, PresetTags.ids().size());
+        assertTrue(PresetTags.isPreset("plant"), "plant was a preset before it became a category (051)");
+        assertTrue(ExtensionCategories.isKnown("plant"));
+    }
+
+    @Test
+    void the051CategoriesListTheirItemsByNameAndNeverUseTheTagsThatDoNotWork() throws IOException {
+        for (Map.Entry<String, List<String>> entry : PLAIN_051.entrySet()) {
+            String compact = read(TAGS.resolve(entry.getKey() + ".json")).replaceAll("\\s+", "");
+            for (String item : entry.getValue()) {
+                assertTrue(compact.contains("\"minecraft:" + item + "\""), entry.getKey() + " lacks " + item);
+            }
+        }
+        for (String id : ExtensionCategories.IDS) {
+            String compact = read(TAGS.resolve(id + ".json")).replaceAll("\\s+", "");
+            assertFalse(compact.contains("#minecraft:shulker_boxes"), id + ": that tag does not exist, #c:shulker_boxes does");
+            assertFalse(compact.contains("#c:dyed"), id + ": #c:dyed holds every dyed block");
+        }
+        // things that must not be in the category they would be tempting for
+        assertFalse(read(TAGS.resolve("plant.json")).contains("sapling"), "saplings stay in crop");
+        assertFalse(read(TAGS.resolve("enchant.json")).contains("pickaxe"));
+        assertFalse(read(TAGS.resolve("building.json")).contains("cobblestone\""), "cobblestone is natural");
+        assertTrue(read(TAGS.resolve("storage.json")).contains("#c:shulker_boxes"));
+    }
+
+    @Test
+    void enchantAlsoMatchesTheStoredEnchantmentsComponentAndNotTheEnchantments() throws IOException {
+        String matcher = Files.readString(Path.of("src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ItemCategoryMatcher.java"),
+                StandardCharsets.UTF_8);
+        int at = matcher.indexOf("category.equals(\"enchant\")");
+        assertTrue(at > 0);
+        assertTrue(matcher.substring(at, at + 120).contains("DataComponents.STORED_ENCHANTMENTS"));
+        assertFalse(matcher.replace("STORED_ENCHANTMENTS", "").contains("ENCHANTMENTS"), "ENCHANTMENTS would take every enchanted tool");
     }
 }

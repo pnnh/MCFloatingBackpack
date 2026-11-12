@@ -1,0 +1,16 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:book",
+    "minecraft:writable_book",
+    "minecraft:written_book",
+    "minecraft:enchanted_book",
+    "minecraft:lapis_lazuli",
+    "minecraft:enchanting_table",
+    "minecraft:bookshelf",
+    "minecraft:experience_bottle",
+    "minecraft:anvil",
+    "minecraft:chipped_anvil",
+    "minecraft:damaged_anvil"
+  ]
+}

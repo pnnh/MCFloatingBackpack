@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:bone"
+    },
+    "B": {
+      "item": "minecraft:string"
+    },
+    "D": {
+      "item": "minecraft:slime_block"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:mobdrop_extension"
+  }
+}

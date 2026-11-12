@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Draws the ten 16x16 category extension item icons (036) pixel by pixel.
+"""Draws the 16x16 category extension item icons (036: ten; 051: nine more) pixel by pixel.
 
 Usage: make_category_extension_icons.py <out_dir> [--preview <preview_dir>]
 
@@ -106,7 +106,7 @@ def log_picture():
 
 
 def icons():
-    """{category: {(x, y): color}} of the ten pictures."""
+    """{category: {(x, y): color}} of the pictures."""
     bread = picture(
         [
             "..........",
@@ -227,6 +227,143 @@ def icons():
         ],
         {"r": rgb(0xE8241C), "R": rgb(0x8A0C0C)},
     )
+
+    # ---- 051: nine more -------------------------------------------------------------------------------------------
+    building = picture(
+        [
+            "..........",
+            "rrrmrrrrmr",
+            "mmmmmmmmmm",
+            "rrmrrrmrrr",
+            "mmmmmmmmmm",
+            "rrrmrrrrmr",
+            "mmmmmmmmmm",
+            "rrmrrrmrrr",
+            "mmmmmmmmmm",
+            "..........",
+        ],
+        {"r": rgb(0xB5503A), "m": rgb(0xD8D0C0)},
+    )
+    natural = picture(
+        [
+            "..........",
+            "gGgGgGgGgG",
+            "GgGgGgGgGg",
+            "ddddddddd.",
+            "dDdddDdddd",
+            "ddddddddDd",
+            "dDddDddddd",
+            "dddddDdddd",
+            "ddDdddddDd",
+            "..........",
+        ],
+        {"g": rgb(0x5FB03A), "G": rgb(0x3F8A28), "d": rgb(0x8A5A32), "D": rgb(0x6A4222)},
+    )
+    plant = picture(
+        [
+            "...pPp....",
+            "..pPyPp...",
+            "...pPp....",
+            "....g..pp.",
+            "....g.pPyp",
+            "..g.g..pp.",
+            "...gg.g...",
+            "....ggg...",
+            "....g.....",
+            "....g.....",
+        ],
+        {"p": rgb(0xE85AA0), "P": rgb(0xB02C70), "y": rgb(0xF2D43A), "g": rgb(0x3F9A2A)},
+    )
+    decor = picture(
+        [
+            "..........",
+            ".ffffffff.",
+            ".fsssssgf.",
+            ".fsbbssgf.",
+            ".fsbbBsgf.",
+            ".fsssBBgf.",
+            ".fsyyssgf.",
+            ".fsssssgf.",
+            ".ffffffff.",
+            "..........",
+        ],
+        {"f": rgb(0x8A5A2B), "s": rgb(0x9AD0F0), "g": rgb(0x5FB03A), "b": rgb(0xE8E8F0), "B": rgb(0xB8B8C8), "y": rgb(0xF2D43A)},
+    )
+    mobdrop = picture(
+        [
+            "bB......bB",
+            "bbB....bbB",
+            ".bbB..bbB.",
+            "..bbbbbb..",
+            "...bbbb...",
+            "...bbbb...",
+            "..bbbbbb..",
+            ".bbB..bbB.",
+            "bbB....bbB",
+            "bB......bB",
+        ],
+        {"b": rgb(0xEDE8D8), "B": rgb(0xB5AE98)},
+    )
+    storage = picture(
+        [
+            "..........",
+            ".wwwwwwww.",
+            "wWWWWWWWWw",
+            "wWWWWWWWWw",
+            "wwwwiiwwww",
+            "wWWWiiWWWw",
+            "wWWWWWWWWw",
+            "wWWWWWWWWw",
+            ".wwwwwwww.",
+            "..........",
+        ],
+        {"w": rgb(0x6A4222), "W": rgb(0xA8773E), "i": rgb(0xC8C8D0)},
+    )
+    transport = picture(
+        [
+            "..........",
+            "i.t..t..i.",
+            "i.t..t..i.",
+            "iiiiiiiiii",
+            "i.t..t..i.",
+            "..........",
+            "i.t..t..i.",
+            "iiiiiiiiii",
+            "i.t..t..i.",
+            "..........",
+        ],
+        {"i": rgb(0x4A4A58), "t": rgb(0x8A5A2B)},
+    )
+    enchant = picture(
+        [
+            "..........",
+            ".bbbbbbbb.",
+            "bBBBBBBBpb",
+            "bBpBBBpBpb",
+            "bBBpBpBBpb",
+            "bBpBBBpBpb",
+            "bBBBBBBBpb",
+            "bBBBBBBBpb",
+            ".bbbbbbbb.",
+            "..........",
+        ],
+        {"b": rgb(0x3A1E58), "B": rgb(0x7A4AA8), "p": rgb(0xF0E8D0)},
+    )
+    meat = picture(
+        [
+            "..........",
+            "..bbbbbb..",
+            ".bRRRRRRb.",
+            "bRRwwRRRRb",
+            "bRRwRRRRRb",
+            "bRRRRRRwRb",
+            "bRRRRRwwRb",
+            ".bRRRRRRb.",
+            "..bbbbbb..",
+            "..........",
+        ],
+        {"b": rgb(0x6A1E1E), "R": rgb(0xD04848), "w": rgb(0xF2C8C0)},
+    )
     return {
         "food": bread,
         "tool": pickaxe,
@@ -240,6 +377,15 @@ def icons():
         "disc": disc_picture(
             rim=rgb(0x3A3A44), body=rgb(0x16161C), shine=rgb(0x3A3C4C), label=rgb(0xD83A3A), hole_hint=CLEAR
         ),
+        "building": building,
+        "natural": natural,
+        "plant": plant,
+        "decor": decor,
+        "mobdrop": mobdrop,
+        "storage": storage,
+        "transport": transport,
+        "enchant": enchant,
+        "meat": meat,
     }
 
 
@@ -264,7 +410,8 @@ def main():
     if preview_dir:
         os.makedirs(preview_dir, exist_ok=True)
 
-    order = ["food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc"]
+    order = ["food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc",
+             "building", "natural", "plant", "decor", "mobdrop", "storage", "transport", "enchant", "meat"]
     pictures = icons()
     rendered = {}
     for category in order:
@@ -278,16 +425,16 @@ def main():
         # one overview: five by two on a dark and a light checker so that transparency and the plate can be judged
         scale = 8
         cell = SIZE * scale
-        sheet = Image.new("RGBA", (cell * 5, cell * 2), (60, 60, 66, 255))
+        sheet = Image.new("RGBA", (cell * 5, cell * ((len(order) + 4) // 5)), (60, 60, 66, 255))
         for i, category in enumerate(order):
             big = rendered[category].resize((cell, cell), Image.NEAREST)
             sheet.alpha_composite(big, ((i % 5) * cell, (i // 5) * cell))
         sheet.save(os.path.join(preview_dir, "overview.png"))
         # and at the real size of a slot (18 pixels) magnified 4 times, as the player sees them
-        small = Image.new("RGBA", (18 * 10, 18), (139, 139, 139, 255))
+        small = Image.new("RGBA", (18 * len(order), 18), (139, 139, 139, 255))
         for i, category in enumerate(order):
             small.alpha_composite(rendered[category], (i * 18 + 1, 1))
-        small.resize((18 * 10 * 4, 18 * 4), Image.NEAREST).save(os.path.join(preview_dir, "slot_size.png"))
+        small.resize((18 * len(order) * 4, 18 * 4), Image.NEAREST).save(os.path.join(preview_dir, "slot_size.png"))
     print("wrote", len(order), "icons to", out_dir)
     return 0
 

@@ -11,16 +11,23 @@ import org.junit.jupiter.api.Test;
 /** 038: the universal category sits after the ten category extensions and is not one of them. */
 class ExtensionCategoriesTest {
     @Test
-    void theTenCategoryExtensionsAreUnchanged() {
-        assertEquals(List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc"), ExtensionCategories.IDS);
+    void theFirstTenAreUnchangedAndNineWereAppendedIn051() {
+        assertEquals(List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc"),
+                ExtensionCategories.IDS.subList(0, 10));
+        assertEquals(List.of("building", "natural", "plant", "decor", "mobdrop", "storage", "transport", "enchant", "meat"),
+                ExtensionCategories.IDS.subList(10, 19));
+        assertEquals(19, ExtensionCategories.IDS.size());
+        for (String id : ExtensionCategories.IDS) {
+            assertTrue(id.length() <= ExtensionCategories.MAX_CATEGORY_LENGTH, id);
+        }
         assertFalse(ExtensionCategories.IDS.contains(ExtensionCategories.GENERAL));
     }
 
     @Test
-    void allIsTheTenAndThenGeneral() {
-        assertEquals(11, ExtensionCategories.ALL.size());
-        assertEquals(ExtensionCategories.IDS, ExtensionCategories.ALL.subList(0, 10));
-        assertEquals("general", ExtensionCategories.ALL.get(10));
+    void allIsTheNineteenAndThenGeneral() {
+        assertEquals(20, ExtensionCategories.ALL.size());
+        assertEquals(ExtensionCategories.IDS, ExtensionCategories.ALL.subList(0, 19));
+        assertEquals("general", ExtensionCategories.ALL.get(19));
         assertEquals("general", ExtensionCategories.GENERAL);
     }
 
@@ -31,7 +38,8 @@ class ExtensionCategoriesTest {
         }
         assertTrue(ExtensionCategories.orderOf("zzz") > ExtensionCategories.orderOf("general"));
         assertTrue(ExtensionCategories.isKnown("general"));
-        assertFalse(ExtensionCategories.isKnown("plant"));
+        assertTrue(ExtensionCategories.isKnown("plant")); // a category since 051
+        assertFalse(ExtensionCategories.isKnown("zzz"));
         assertFalse(ExtensionCategories.isKnown(null));
     }
 }

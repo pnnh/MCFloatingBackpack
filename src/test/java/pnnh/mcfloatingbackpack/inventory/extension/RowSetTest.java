@@ -28,13 +28,15 @@ class RowSetTest {
 
     @Test
     void constantsAreTheSpecifiedOnes() {
-        assertEquals(List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc"),
+        assertEquals(List.of("food", "tool", "weapon", "armor", "ore", "crop", "wood", "potion", "redstone", "disc", "building", "natural",
+                        "plant", "decor", "mobdrop", "storage", "transport", "enchant", "meat"),
                 ExtensionCategories.IDS);
         assertEquals(9, ExtensionCategories.ROW_CELLS);
         assertEquals(35, ExtensionCategories.MAX_ROWS);
         assertEquals(423, ExtensionCategories.MAX_MAIN_SLOTS);
         assertTrue(ExtensionCategories.isKnown("crop"));
-        assertFalse(ExtensionCategories.isKnown("plant"));
+        assertTrue(ExtensionCategories.isKnown("plant")); // a category since 051
+        assertFalse(ExtensionCategories.isKnown("zzz"));
         assertFalse(ExtensionCategories.isKnown(null));
     }
 

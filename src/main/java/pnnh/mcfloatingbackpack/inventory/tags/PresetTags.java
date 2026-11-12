@@ -12,7 +12,9 @@ public final class PresetTags {
     private static final List<String> IDS =
             List.of(
                     "stone", "wood", "food", "ore", "trash", "tool", "weapon", "armor", "plant", "redstone", "crop", "potion",
-                    "disc");
+                    "disc",
+                    // 051: the other category ids that were not presets yet ("plant" already was)
+                    "building", "natural", "decor", "mobdrop", "storage", "transport", "enchant", "meat");
 
     private PresetTags() {
     }

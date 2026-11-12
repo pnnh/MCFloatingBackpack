@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:minecart"
+    },
+    "B": {
+      "item": "minecraft:rail"
+    },
+    "D": {
+      "item": "minecraft:oak_boat"
+    },
+    "E": {
+      "item": "minecraft:saddle"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:transport_extension"
+  }
+}

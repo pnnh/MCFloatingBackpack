@@ -51,7 +51,7 @@ public final class ModItems {
     public static final DeferredHolder<Item, AutoPickupItem> AUTO_PICKUP =
             ITEMS.register("auto_pickup", () -> new AutoPickupItem(new Item.Properties()));
 
-    /** 036: the ten category extensions, in the fixed order of the categories; ids are {@code <category>_extension}. */
+    /** 036, 051: the category extensions, in the fixed order of the categories; ids are {@code <category>_extension}. */
     public static final Map<String, DeferredHolder<Item, CategoryExtensionItem>> CATEGORY_EXTENSIONS = registerCategoryExtensions();
 
     /** 038: the five universal extensions, one for each backpack tier, in the order of the tiers; ids are {@code <tier>_general_extension}. */

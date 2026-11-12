@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
 
-/** 036: the ten category extension items' models, textures, recipes and language keys. Plain text and pixel checks (no JSON library). */
+/** 036, 051: the category extension items (ten, then nine more)' models, textures, recipes and language keys. Plain text and pixel checks (no JSON library). */
 class CategoryExtensionResourcesTest {
     private static final Path ROOT = Path.of("src/main/resources");
     private static final Path SRC = Path.of("src/main/java/pnnh/mcfloatingbackpack");
@@ -45,6 +45,16 @@ class CategoryExtensionResourcesTest {
         CORE.put("potion", List.of("minecraft:nether_wart", "minecraft:glass_bottle", "minecraft:brewing_stand", "minecraft:glass_bottle", "minecraft:glowstone_dust"));
         CORE.put("redstone", List.of("minecraft:comparator", "minecraft:repeater", "minecraft:redstone_block", "minecraft:piston", "minecraft:redstone"));
         CORE.put("disc", List.of("minecraft:diamond", "minecraft:note_block", "minecraft:jukebox", "minecraft:lapis_lazuli", "#c:music_discs"));
+        // 051
+        CORE.put("building", List.of("minecraft:glass", "minecraft:stone_bricks", "minecraft:stonecutter", "minecraft:stone_bricks", "minecraft:terracotta"));
+        CORE.put("natural", List.of("minecraft:grass_block", "minecraft:cobblestone", "minecraft:iron_shovel", "minecraft:cobblestone", "minecraft:sand"));
+        CORE.put("plant", List.of("minecraft:sunflower", "#minecraft:leaves", "minecraft:composter", "#minecraft:leaves", "minecraft:lily_pad"));
+        CORE.put("decor", List.of("minecraft:painting", "minecraft:lantern", "minecraft:loom", "minecraft:lantern", "minecraft:candle"));
+        CORE.put("mobdrop", List.of("minecraft:bone", "minecraft:string", "minecraft:slime_block", "minecraft:string", "minecraft:ender_pearl"));
+        CORE.put("storage", List.of("minecraft:chest", "minecraft:barrel", "minecraft:hopper", "minecraft:barrel", "minecraft:trapped_chest"));
+        CORE.put("transport", List.of("minecraft:minecart", "minecraft:rail", "minecraft:oak_boat", "minecraft:rail", "minecraft:saddle"));
+        CORE.put("enchant", List.of("minecraft:book", "minecraft:lapis_lazuli", "minecraft:enchanting_table", "minecraft:lapis_lazuli", "minecraft:bookshelf"));
+        CORE.put("meat", List.of("minecraft:cooked_beef", "minecraft:cooked_cod", "minecraft:smoker", "minecraft:cooked_cod", "minecraft:cooked_chicken"));
     }
 
     private static String read(String relative) throws IOException {
@@ -109,7 +119,7 @@ class CategoryExtensionResourcesTest {
     }
 
     @Test
-    void theTenTexturesAndTheOlderToolIconsAreAllDifferent() throws IOException {
+    void theTexturesAndTheOlderToolIconsAreAllDifferent() throws IOException {
         List<List<Integer>> all = new ArrayList<>();
         for (String category : ExtensionCategories.IDS) {
             all.add(pixels(texture(category)));
@@ -200,6 +210,8 @@ class CategoryExtensionResourcesTest {
         assertTrue(zh.contains("放进浮动背包的功能区，增加一行只能存 %s 的格子"));
         assertTrue(zh.contains("\"item.mcfloatingbackpack.food_extension\": \"食物扩展\""));
         assertTrue(zh.contains("\"item.mcfloatingbackpack.disc_extension\": \"唱片扩展\""));
+        assertTrue(zh.contains("\"item.mcfloatingbackpack.meat_extension\": \"肉与鱼扩展\""));
+        assertTrue(en.contains("\"item.mcfloatingbackpack.meat_extension\": \"Meat & Fish Extension\""));
     }
 
     @Test

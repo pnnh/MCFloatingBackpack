@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "A": {
+      "item": "minecraft:sunflower"
+    },
+    "B": {
+      "tag": "minecraft:leaves"
+    },
+    "D": {
+      "item": "minecraft:composter"
+    },
+    "E": {
+      "item": "minecraft:lily_pad"
+    }
+  },
+  "pattern": [
+    "IAI",
+    "BDB",
+    "IEI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:plant_extension"
+  }
+}
