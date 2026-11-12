@@ -10,7 +10,7 @@
 | [worn-backpack-compat.md](./worn-backpack-compat.md) | 规划：背包可放进 Curios / Accessories 的后背槽；查找顺序 胸甲 → Curios → Accessories，按 B 与渲染共用；不拦截、不数数；拆成 032～034，先做验证步骤 |
 | [category-extensions.md](./category-extensions.md) | 规划（讨论稿）："分类扩展"功能件——放进功能区给背包加一行只能存某一类物品的存储；逻辑行列表、拿走时隐藏行、黄点提示、行总数上限、10 个类别与配方草案；拆成 035～037，搜索与整理单独做 |
 | [ai-gui-verification.md](./ai-gui-verification.md) | 规划：让 Claude 在隔离环境里自动验证游戏界面（Linux 容器先试，macOS 虚拟机后议）；虚拟机方案对比、已查证与未验证、自动验证结果的记录规矩 |
-| [backpack-search.md](./backpack-search.md) | 规划（已与用户确认主要决策）：背包搜索——标题栏放大镜与搜索框、实时过滤主区域并高亮命中、`@模组` `#标签` `/hidden` 语法、中英文与拼音（PinIn）；拆成 042～044 |
+| [backpack-search.md](./backpack-search.md) | 规划（已与用户确认主要决策）：背包搜索——标题栏放大镜与搜索框、实时过滤主区域并高亮命中、`@模组` `#标签` `/hidden` 语法、中英文与拼音改由别的模组经本模组公开的搜索词提供者接口提供；拆成 042～044 |
 
 ## 与现有文档关系
 

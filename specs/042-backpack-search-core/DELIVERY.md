@@ -59,6 +59,6 @@
 
 ## 给 043 / 044 的提醒
 
-- **043**：`TextMatcher` 是拼音的接入点——`SearchContext.matcherFor(stack)` 换成"当前语言名 + en_us + zh_cn + 拼音"的实现即可，`SearchQuery`/`SearchMatcher`/`SearchResults` 都不用动。
+- **043**：`TextMatcher` 是拼音的接入点——`SearchContext.matcherFor(stack)` 在"当前语言名 + 注册名"之外并上外部提供者的词即可（043 已改方案：公开搜索词提供者接口，拼音与多语言由别的模组提供，本模组不读别的语言文件、不打包 PinIn），`SearchQuery`/`SearchMatcher`/`SearchResults` 都不用动。
 - **044**：`@`、`#`、开头的 `/` 要在 `SearchQuery.parse` 里扩展（现在都是普通字符，`SearchQueryTest` 有一条用例专门钉着这一点，扩展时要改它）；`/hidden` 的只读格子不在主区域映射之内，要走另一条渲染与命中路径。
 

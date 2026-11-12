@@ -6,6 +6,8 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
@@ -13,6 +15,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesClientCompat;
 import pnnh.mcfloatingbackpack.compat.ConfigFileWatch;
 import pnnh.mcfloatingbackpack.client.render.BackpackRenderEvents;
+import pnnh.mcfloatingbackpack.search.SearchTerms;
 
 /**
  * Client-only wiring for the floating backpack overlay and hotkeys.
@@ -33,6 +36,10 @@ public final class ClientSetup {
             }
         }));
         BackpackRenderEvents.register(modEventBus);
+        // 043: what search terms providers gave is cached per item; a language switch, F3+T or a resource pack reloads the resources,
+        // and the providers' terms may be different after it.
+        modEventBus.addListener((RegisterClientReloadListenersEvent event) ->
+                event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> SearchTerms.onResourcesReloaded()));
         FloatingPanelEvents.init();
         // 020: tell the player in chat when NeoForge had to set a broken config file aside.
         modEventBus.addListener(ConfigFileWatch::onLoading);

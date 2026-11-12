@@ -39,6 +39,8 @@ public final class CompatConfig {
                         "            that behaves like vanilla containers may work fine.",
                         "  OFF     - the panel is not shown on that mod's container screens: the panel and that UI are either/or.",
                         "            For a mod that only decorates other screens (jei) OFF is the same as GENERIC.",
+                        "For a mod that registered search terms for the backpack search (the public API), GENERIC and OFF mean its",
+                        "search terms are ignored.",
                         "The first time the panel is shown on a mod's screen the log says which mod id to use.",
                         "Mistakes in this list are reported in the chat.",
                         "Example: modLevels = [\"sophisticatedbackpacks=OFF\", \"jei=GENERIC\"]")

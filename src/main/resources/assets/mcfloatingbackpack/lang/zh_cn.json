@@ -42,7 +42,7 @@
   "config.mcfloatingbackpack.logLevel": "日志级别",
   "config.mcfloatingbackpack.logLevel.tooltip": "写进 latest.log 的诊断量。OFF：不写；ERROR：只写出错并丢了东西的；WARN：再加可疑的事（例如背包从玩家物品栏消失，并附上该玩家最近的面板操作）；INFO：再加值得注意但没出错的事（例如背包被丢在地上）；DEBUG：再加每一次面板点击和创造光标消息，行数很多，只在追查问题时使用。每个玩家最近的面板操作无论级别都会保存在内存里。",
   "config.mcfloatingbackpack.modLevels": "各模组的兼容档位",
-  "config.mcfloatingbackpack.modLevels.tooltip": "每条写成 模组id=档位，例如 sophisticatedbackpacks=OFF。没列出的模组按 FULL。\nFULL：专用适配。开启我们为该模组写的专有代码，代表对它做了主动兼容，也可以看作功能增强（目前只有 jei 有：让 JEI 避开面板）。\nGENERIC：没有专用适配。关闭我们为该模组写的任何专有代码；没写过专有代码的模组，GENERIC 与 FULL 一样。它不决定面板能不能显示在该模组的界面上、能不能与它的菜单 Ctrl+点击互相转移物品——这取决于该模组自己的实现，实现得越接近原版容器，兼容得越好。\nOFF：面板不显示。面板与该模组的界面只能二选一（对只叠加在别的界面上的 jei，等同 GENERIC）。\n原版（minecraft）不可配置。面板第一次挂在某个模组的界面上时，日志会提示该写哪个模组 id。配置写错会在聊天里提示。",
+  "config.mcfloatingbackpack.modLevels.tooltip": "每条写成 模组id=档位，例如 sophisticatedbackpacks=OFF。没列出的模组按 FULL。\nFULL：专用适配。开启我们为该模组写的专有代码，代表对它做了主动兼容，也可以看作功能增强（目前只有 jei 有：让 JEI 避开面板）。\nGENERIC：没有专用适配。关闭我们为该模组写的任何专有代码；没写过专有代码的模组，GENERIC 与 FULL 一样。它不决定面板能不能显示在该模组的界面上、能不能与它的菜单 Ctrl+点击互相转移物品——这取决于该模组自己的实现，实现得越接近原版容器，兼容得越好。\nOFF：面板不显示。面板与该模组的界面只能二选一（对只叠加在别的界面上的 jei，等同 GENERIC）。\n对注册了背包搜索词的模组（公开接口），GENERIC 与 OFF 表示忽略它提供的搜索词。\n原版（minecraft）不可配置。面板第一次挂在某个模组的界面上时，日志会提示该写哪个模组 id。配置写错会在聊天里提示。",
   "message.mcfloatingbackpack.prefix": "[浮动背包]",
   "message.mcfloatingbackpack.config.malformed": "配置 modLevels 里的 \"%s\" 格式不对，已忽略（应写成 模组id=档位，模组id 只能是小写字母、数字和下划线）",
   "message.mcfloatingbackpack.config.vanilla": "配置 modLevels 里的 \"%s\" 已忽略：原版不可配置",
