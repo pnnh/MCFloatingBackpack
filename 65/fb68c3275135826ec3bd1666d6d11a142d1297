@@ -1,0 +1,26 @@
+specs/042-backpack-search-core/tasks.md
+  s_9aefe4a2760245::t_8647743ddf4544 78,96,103-104
+specs/042-backpack-search-core/DELIVERY.md
+  s_9aefe4a2760245::t_47ea58ce532d5e 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "65fb68c3275135826ec3bd1666d6d11a142d1297",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
