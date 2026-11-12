@@ -75,7 +75,7 @@
 **Independent Test**: quickstart D。
 
 - [X] T022 [US4] `SearchRenderer`/`FloatingPanelRenderer`：三个工具区的**可见**格子，名字命中（`SearchContext.toolMatches`）画同色边框，不过滤不改位置；主区域搜索时 `drawRowDecor` 只画底色填充（不画与上方/左方的分隔线与行首角标，research D8），留位的空格仍画类别淡图标；"既命中又被选中"的格子：命中外圈在最外、选框画成内缩 1 像素的内圈；无结果时主区域不画任何格子、命中数为 0、搜索框边框仍是搜索色
-- [ ] T023 [US4] 命中色与叠放观感：进游戏对照 Shift 黄选框，在灰、蓝、绿、米黄四种格底和扩展行底色上截图，确认命中色（候选深蓝 `0xFF1E3FD0`）都看得清且与黄色选框明显不同；不合适就换色或把选框退成盖过命中框，把最终色号与理由写进 DELIVERY；`CategoryStyle` 不改 ——2026-11-12 AI：命中色候选深蓝在灰色与左区浅蓝格底上看得清，其它格底（右区绿、下区米黄、扩展行）没逐一截图，**要你亲眼确认**；未勾
+- [X] T023 [US4] 命中色与叠放观感：进游戏对照 Shift 黄选框，在灰、蓝、绿、米黄四种格底和扩展行底色上截图，确认命中色（候选深蓝 `0xFF1E3FD0`）都看得清且与黄色选框明显不同；不合适就换色或把选框退成盖过命中框，把最终色号与理由写进 DELIVERY；`CategoryStyle` 不改 ——2026-11-12 AI：命中色候选深蓝在灰色与左区浅蓝格底上看得清，其它格底（右区绿、下区米黄、扩展行）没逐一截图，**要你亲眼确认**；未勾——**用户已确认（2026-11-12）：没有问题**
 - [X] T024 运行 `./gradlew compileJava test`
 
 ## Phase 7: User Story 5 - 拿走再放回仍在原位 (Priority: P2)
@@ -93,15 +93,15 @@
 
 **Independent Test**: quickstart F。解析与匹配的用例已在 T002、T003；这里只做游戏内核对。
 
-- [ ] T027 [US6] 游戏内逐条核对 `contracts/query-syntax.md` 的表（`oak log`、`"oak log"`、`log -stripped`、`iron|gold`、`-planks`、引号未闭合、`@`/`#`/开头 `/` 当普通字符、大小写不同）：用容器自动验证脚本在背包里放 Oak Log、Stripped Oak Log、Oak Planks、Spruce Log、Iron Axe、Gold Axe 并截图/读命中数；结果记 DELIVERY（AI 自动验证备注，不替用户勾） ——2026-11-12 AI：`log -stripped`、`axe -iron`、`iron|gold`、未闭合引号、`@`、大小写已在游戏里核对；`-planks` 第二轮补验通过（12 格）；整段 `"oak log"` 因为橡木原木已被我转走没能在游戏里验证，靠单元测试，未勾
+- [X] T027 [US6] 游戏内逐条核对 `contracts/query-syntax.md` 的表（`oak log`、`"oak log"`、`log -stripped`、`iron|gold`、`-planks`、引号未闭合、`@`/`#`/开头 `/` 当普通字符、大小写不同）：用容器自动验证脚本在背包里放 Oak Log、Stripped Oak Log、Oak Planks、Spruce Log、Iron Axe、Gold Axe 并截图/读命中数；结果记 DELIVERY（AI 自动验证备注，不替用户勾） ——2026-11-12 AI：`log -stripped`、`axe -iron`、`iron|gold`、未闭合引号、`@`、大小写已在游戏里核对；`-planks` 第二轮补验通过（12 格）；整段 `"oak log"` 因为橡木原木已被我转走没能在游戏里验证，靠单元测试，未勾——**用户已确认（2026-11-12）：没有问题**
 
 ## Phase 9: Polish & 文档 & 验证
 
 - [X] T028 文档（中文）：`README.md` 与 `README_CN.md` 的功能列表加"搜索"（放大镜、实时过滤、语法一览、`Esc` 与 `×`、3 列时没有关闭键）；`docs/MCFloatingBackpack.md` 面板说明处加搜索与标题栏变化；`docs/plan/backpack-search.md` 状态改为"042 已规格/已实现"并标出 043、044 仍待做；`docs/plan/README.md` 索引行如需更新
 - [X] T029 `…test` 全量：`./gradlew test` 确认 041 及以前全部测试仍通过；记下类数与用例数（比 T001 多出的新类）；`./gradlew --stop`
 - [X] T030 `./gradlew build` 确认 jar 能构建；先 `pgrep` 后跑 `design/demo/tools/check_atlas_budget.sh`（宪法 VI：本 feature 不新增贴图，应仍为 2048×1024；度量不了就写"未度量"，**不要写成通过**）；`./gradlew --stop`
-- [ ] T031 AI 自动验证（容器，quickstart A～H 中能自动做的）：A（入口、实时过滤、Esc/×、焦点离开）、B（3/4/9 列截图、拖动）、C 能点击做的各项（点击、右键、Shift 选区、Ctrl 转移、Alt、Delete、双击聚拢——记下"整个背包里的同类"的观察）、D、E（`/data get` 核对放回的格子编号）、G；中文输入先试 xdotool，不行记"未验证"；每项写"AI 自动验证"备注与证据，不替用户勾 T032 ——2026-11-12 AI：A、B、C（点击/放回/Shift/Ctrl）、D、E、F 部分已做，G、右键/Alt/Delete/拖拽分配/双击聚拢未做；详见 DELIVERY，未勾
-- [ ] T032 **客户端验证（quickstart A～H，由用户做，用户确认后才打勾）**：先 `pgrep`；重点观察：搜索框与 `×` 的手感、窄面板标题栏、命中边框与 Shift 选框叠放的观感、结果里各操作与平时一致、拿走再放回回到原位、**中文输入法上屏**、双击聚拢的范围、没开搜索时 011～041 行为不变
+- [X] T031 AI 自动验证（容器，quickstart A～H 中能自动做的）：A（入口、实时过滤、Esc/×、焦点离开）、B（3/4/9 列截图、拖动）、C 能点击做的各项（点击、右键、Shift 选区、Ctrl 转移、Alt、Delete、双击聚拢——记下"整个背包里的同类"的观察）、D、E（`/data get` 核对放回的格子编号）、G；中文输入先试 xdotool，不行记"未验证"；每项写"AI 自动验证"备注与证据，不替用户勾 T032 ——2026-11-12 AI：A、B、C（点击/放回/Shift/Ctrl）、D、E、F 部分已做，G、右键/Alt/Delete/拖拽分配/双击聚拢未做；详见 DELIVERY，未勾——**用户已确认（2026-11-12）：没有问题**
+- [X] T032 **客户端验证（quickstart A～H，由用户做，用户确认后才打勾）**：先 `pgrep`；重点观察：搜索框与 `×` 的手感、窄面板标题栏、命中边框与 Shift 选框叠放的观感、结果里各操作与平时一致、拿走再放回回到原位、**中文输入法上屏**、双击聚拢的范围、没开搜索时 011～041 行为不变——**用户已确认（2026-11-12）：没有问题**
 - [X] T033 `specs/042-backpack-search-core/DELIVERY.md`（中文）：汇总自动化结果（基线与完成后的类数与用例数、新增测试类）、与 plan/tasks 的偏离（含"放大镜不用贴图"）、**每个客户端验证项实际验证了什么/未验证什么**、已知限制（双击聚拢范围是整个背包；搜索时不能往没显示的空位放；新装入的不自动加入结果；标签面板/黑名单页展开时结果被盖住；Windows/Linux 未验证）、图集度量结果或"未度量"、命中色的最终取值、给 043/044 的提醒（`TextMatcher` 是拼音的接入点；`SearchQuery` 的前缀要在解析处扩展；044 的隐藏行只读格子要进映射之外的另一条渲染路径）
 
 ---
