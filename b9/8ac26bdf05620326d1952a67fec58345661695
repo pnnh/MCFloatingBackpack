@@ -1,0 +1,123 @@
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/HiddenSummaryFit.java
+  s_9aefe4a2760245::t_325d974199b5af 1-33
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchCommandStateTest.java
+  s_9aefe4a2760245::t_017745681edf2b 1-192
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchState.java
+  s_9aefe4a2760245::t_325d974199b5af 3-4,27-31,115-128,130-134
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchQueryTest.java
+  s_9aefe4a2760245::t_11d1ef25ba6484 85-86
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchQuery.java
+  s_9aefe4a2760245::t_8337c19951cdbd 8-18,24-36,43-55,58,60,62,69,74-78,80,87-106,114-116,122,126,129-130,135,138-139,147-152,154,157,159,162,164
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchFactsEvents.java
+  s_9aefe4a2760245::t_e6eead53cd034d 1-20
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchRenderer.java
+  s_9aefe4a2760245::t_17b559b13fb12b 3-5,10,16,54-72,76-113,190-196
+  s_9aefe4a2760245::t_6c42e7f59fc78b 73-75
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchMatcherPrefixTest.java
+  s_9aefe4a2760245::t_11d1ef25ba6484 1-113,133
+  s_9aefe4a2760245::t_7b711b62151486 114-132
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/HiddenSummaryFitTest.java
+  s_9aefe4a2760245::t_89eccef2679f62 1-31,33-53,55-56
+  s_9aefe4a2760245::t_017745681edf2b 32,54
+specs/044-search-prefix-syntax/contracts/query-syntax.md
+  s_9aefe4a2760245::t_f17d1fd88f385f 1-43,45-87
+  s_9aefe4a2760245::t_6c42e7f59fc78b 44
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_6c42e7f59fc78b 158
+  s_9aefe4a2760245::t_325d974199b5af 157,159
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/HiddenSummaryRows.java
+  s_9aefe4a2760245::t_325d974199b5af 1-43
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/ModMatchTest.java
+  s_9aefe4a2760245::t_6f500b227e925b 43
+  s_9aefe4a2760245::t_3cd1304ce870ea 1-42,44-78
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchResults.java
+  s_9aefe4a2760245::t_8337c19951cdbd 24-27
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/ModMatch.java
+  s_9aefe4a2760245::t_e6eead53cd034d 1-15
+specs/044-search-prefix-syntax/data-model.md
+  s_9aefe4a2760245::t_e02f07545eb81d 1-111
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchMatcherTest.java
+  s_9aefe4a2760245::t_11d1ef25ba6484 79-80,82,84-85
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchResultsTest.java
+  s_9aefe4a2760245::t_60adc880fac1ba 60-76
+src/main/java/pnnh/mcfloatingbackpack/client/ClientSetup.java
+  s_9aefe4a2760245::t_e6eead53cd034d 17,43-47
+specs/044-search-prefix-syntax/tasks.md
+  s_9aefe4a2760245::t_930b1c2414790d 20,24-28,38-42,52-57,67-76,86-88,94
+  s_9aefe4a2760245::t_47cf3e88121d9f 1-19,21-23,29-37,43-51,58-66,77-85,89-93,99-120
+  s_9aefe4a2760245::t_ad54acd9152784 95-98
+specs/044-search-prefix-syntax/research.md
+  s_9aefe4a2760245::t_c6673dfeb560d6 23
+  s_9aefe4a2760245::t_a837789ebd55de 1-22,24-76
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/HiddenSummaryRowsTest.java
+  s_9aefe4a2760245::t_017745681edf2b 41-42
+  s_9aefe4a2760245::t_89eccef2679f62 1-40,43-70
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchPrefixCostTest.java
+  s_9aefe4a2760245::t_7b711b62151486 1-93
+README_CN.md
+  s_9aefe4a2760245::t_930b1c2414790d 38
+specs/044-search-prefix-syntax/checklists/requirements.md
+  s_9aefe4a2760245::t_f59df470bdbb4c 1-37
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/TagMatchTest.java
+  s_9aefe4a2760245::t_3cd1304ce870ea 1-145
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/TextMatcher.java
+  s_9aefe4a2760245::t_8337c19951cdbd 13-22
+.specify/feature.json
+  s_9aefe4a2760245::t_9d9c8b33355112 2
+specs/044-search-prefix-syntax/DELIVERY.md
+  s_9aefe4a2760245::t_ad54acd9152784 37
+  s_9aefe4a2760245::t_8d4ac6661af7cf 1-36,38-74
+src/test/java/pnnh/mcfloatingbackpack/client/panel/search/SearchQueryPrefixTest.java
+  s_9aefe4a2760245::t_11d1ef25ba6484 1-203
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/ItemFacts.java
+  s_9aefe4a2760245::t_e6eead53cd034d 1-101
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_325d974199b5af 157,159
+  s_9aefe4a2760245::t_6c42e7f59fc78b 158
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_389558d816b3cf 145-147
+  s_9aefe4a2760245::t_17b559b13fb12b 143-144,148-154
+README.md
+  s_9aefe4a2760245::t_930b1c2414790d 38
+docs/plan/backpack-search.md
+  s_9aefe4a2760245::t_ad54acd9152784 3
+  s_9aefe4a2760245::t_f59df470bdbb4c 38
+specs/044-search-prefix-syntax/plan.md
+  s_9aefe4a2760245::t_3551ae27df285d 2,4,6-8,10,17,19,21,23,25,27,29,31,33,35,40,43-46,58-63,72-76,100-101,119-121
+  s_9aefe4a2760245::t_359be68810cf98 1,3,5,9,11-16,18,20,22,24,26,28,30,32,34,36-39,41-42,47-57,64-71,77-99,102-118,122
+specs/044-search-prefix-syntax/quickstart.md
+  s_9aefe4a2760245::t_7e6f0aef46ebcd 1-54
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchContext.java
+  s_9aefe4a2760245::t_325d974199b5af 8,16-17,43-54,108-109
+  s_9aefe4a2760245::t_e6eead53cd034d 9,65,69,72-83,85-103
+specs/044-search-prefix-syntax/spec.md
+  s_9aefe4a2760245::t_2c2f9b254061b5 1-203
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/TagMatch.java
+  s_9aefe4a2760245::t_e6eead53cd034d 1-50
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchMatcher.java
+  s_9aefe4a2760245::t_8337c19951cdbd 8,26-30
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchPrefixResourcesTest.java
+  s_9aefe4a2760245::t_d36e667951dd1e 1-36,38-39,41-123
+  s_9aefe4a2760245::t_6c42e7f59fc78b 37,40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "b98ac26bdf05620326d1952a67fec58345661695",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
