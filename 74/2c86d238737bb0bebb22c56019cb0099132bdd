@@ -1,0 +1,40 @@
+src/test/java/pnnh/mcfloatingbackpack/client/panel/ItemTooltipRulesTest.java
+  s_9aefe4a2760245::t_7de28f83d20657 1-66
+README_CN.md
+  s_9aefe4a2760245::t_7de28f83d20657 34
+specs/045-panel-item-tooltips/tasks.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-38
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ItemTooltipRules.java
+  s_9aefe4a2760245::t_7de28f83d20657 1-27
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_7de28f83d20657 159-162,442-464
+  s_9aefe4a2760245::t_4668054d51f46d 465-466
+src/test/java/pnnh/mcfloatingbackpack/resources/ItemTooltipWiringTest.java
+  s_9aefe4a2760245::t_7de28f83d20657 1-93
+specs/045-panel-item-tooltips/DELIVERY.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-45
+specs/045-panel-item-tooltips/spec.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-118
+README.md
+  s_9aefe4a2760245::t_7de28f83d20657 34
+specs/045-panel-item-tooltips/plan.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-65
+specs/045-panel-item-tooltips/checklists/requirements.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "742c86d238737bb0bebb22c56019cb0099132bdd",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
