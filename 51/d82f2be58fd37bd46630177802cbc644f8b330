@@ -1,0 +1,16 @@
+specs/008-panel-title-icon-and-jei-safe-zone/tasks.md
+  h_6465a203f88bd5 69
+specs/009-sculpted-mesh-backpack-models/tasks.md
+  h_6465a203f88bd5 60
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "51d82f2be58fd37bd46630177802cbc644f8b330",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
