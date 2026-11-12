@@ -241,5 +241,19 @@
   "panel.mcfloatingbackpack.hidden.liquid.title": "Some liquids have no tank",
   "panel.mcfloatingbackpack.hidden.liquid.line": "%s: %s mB",
   "panel.mcfloatingbackpack.hidden.liquid.hint": "Put the matching tank into the bottom area to use it again",
-  "panel.mcfloatingbackpack.hidden.mixed.title": "Some items and liquids are hidden"
+  "panel.mcfloatingbackpack.hidden.mixed.title": "Some items and liquids are hidden",
+  "item.mcfloatingbackpack.water_pipe": "Water Pipe",
+  "item.mcfloatingbackpack.oil_pipe": "Oil Pipe",
+  "item.mcfloatingbackpack.lava_pipe": "Lava Pipe",
+  "item.mcfloatingbackpack.pipe.tooltip": "Right-click a source block to take it into the matching tank of your backpack; left-click a block to pour one bucket out",
+  "item.mcfloatingbackpack.pipe.needs_tank": "The backpack you would open with B needs that tank in its bottom area",
+  "message.mcfloatingbackpack.pipe.full_now": "The %s tank is full",
+  "message.mcfloatingbackpack.pipe.empty_now": "The %s tank is empty",
+  "message.mcfloatingbackpack.pipe.cannot_absorb": "The %s tank has no room for another bucket",
+  "message.mcfloatingbackpack.pipe.cannot_place": "The %s tank holds less than a bucket",
+  "message.mcfloatingbackpack.pipe.no_backpack": "No floating backpack found",
+  "message.mcfloatingbackpack.pipe.backpack_protected": "This backpack was saved by a newer version and cannot be used yet",
+  "message.mcfloatingbackpack.pipe.no_tank": "Your backpack has no %s tank in its bottom area",
+  "message.mcfloatingbackpack.pipe.oil_locked": "The oil tank already holds another oil (%s); empty it first",
+  "message.mcfloatingbackpack.pipe.no_fluid": "The mod that adds that oil (%s) is not installed"
 }

@@ -169,6 +169,10 @@ dependencies {
         localRuntime "maven.modrinth:accessories:1.1.0-beta.54+1.21.1"
         localRuntime "maven.modrinth:owo-lib:0.12.15.6-beta.1+1.21"
 
+        // 049：PneumaticCraft: Repressurized——开发运行里的原油来源（它的 pneumaticcraft:oil 带 #c:crude_oil 标签），用来测油管。
+        // 只在开发运行时存在；主代码不引用它的任何类型（只认标签），所以不需要 compileOnly；不进发布的 jar（宪法 VII）。
+        localRuntime "maven.modrinth:pneumaticcraft-repressurized:8.2.24"
+
         // 010：光影（Iris 1.8.12 声明依赖的正是 Sodium 0.6.13）；光影包放在 run/shaderpacks/，见 design/demo/tools/fetch_shaderpack.sh。
         if (!serverOrDataRun) {
             localRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"

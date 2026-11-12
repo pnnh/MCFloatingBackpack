@@ -241,5 +241,19 @@
   "panel.mcfloatingbackpack.hidden.liquid.title": "有液体没有罐",
   "panel.mcfloatingbackpack.hidden.liquid.line": "%s：%s mB",
   "panel.mcfloatingbackpack.hidden.liquid.hint": "把对应的罐放进底部工具区就能继续使用",
-  "panel.mcfloatingbackpack.hidden.mixed.title": "有物品和液体被隐藏"
+  "panel.mcfloatingbackpack.hidden.mixed.title": "有物品和液体被隐藏",
+  "item.mcfloatingbackpack.water_pipe": "水管",
+  "item.mcfloatingbackpack.oil_pipe": "油管",
+  "item.mcfloatingbackpack.lava_pipe": "岩浆管",
+  "item.mcfloatingbackpack.pipe.tooltip": "右键源方块，吸进背包里对应的罐；左键方块，倒出一桶",
+  "item.mcfloatingbackpack.pipe.needs_tank": "按 B 会打开的那只背包，底部区里要有对应的罐",
+  "message.mcfloatingbackpack.pipe.full_now": "%s罐满了",
+  "message.mcfloatingbackpack.pipe.empty_now": "%s罐空了",
+  "message.mcfloatingbackpack.pipe.cannot_absorb": "%s罐装不下一桶了",
+  "message.mcfloatingbackpack.pipe.cannot_place": "%s罐里不足一桶",
+  "message.mcfloatingbackpack.pipe.no_backpack": "没有找到浮动背包",
+  "message.mcfloatingbackpack.pipe.backpack_protected": "这个背包是更新版本保存的，暂时不能用",
+  "message.mcfloatingbackpack.pipe.no_tank": "背包底部区里没有%s罐",
+  "message.mcfloatingbackpack.pipe.oil_locked": "油罐里已经是另一种原油（%s），排空后才能装别的",
+  "message.mcfloatingbackpack.pipe.no_fluid": "添加这种原油的模组（%s）没有安装"
 }

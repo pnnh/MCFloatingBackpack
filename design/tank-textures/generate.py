@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""048: 占位贴图——为 19 种液体罐各生成一张 16x16 的物品贴图（四档材质 x 五种液体，没有皮岩浆罐）。
+"""048/049: 占位贴图——为 19 种液体罐各生成一张 16x16 的物品贴图（四档材质 x 五种液体，没有皮岩浆罐），再为 3 根管子（水、油、岩浆）各生成一张。
 
 这只是占位图：画一个带盖的罐子，罐壁与盖用"档次色"，罐里的液体用"液体色"。用户之后可以直接用同名 PNG 替换，不用改代码。
 颜色表与 specs/048-fluid-tanks/contracts/recipes-and-assets.md 一致。
@@ -55,6 +55,32 @@ def draw(tier_hex, liquid_hex):
     return img
 
 
+def draw_pipe(liquid_hex):
+    """049: 斜放的铁灰色管身，右上角的管口一端是液体色（占位图）。"""
+    metal, liquid = rgb("#B8B8B8"), rgb(liquid_hex)
+    img = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
+    px = img.load()
+    # 管身：从左下到右上的两像素宽斜线，上沿亮、下沿暗
+    for i in range(3, 12):
+        x, y = i, 15 - i
+        px[x, y] = shade(metal, 1.15) + (255,)
+        px[x + 1, y] = metal + (255,)
+        px[x + 1, y + 1] = shade(metal, 0.8) + (255,)
+        px[x, y + 1] = shade(metal, 0.9) + (255,)
+    # 管口：右上角 3x3 的液体色，外面一圈深色
+    for x in range(11, 16):
+        for y in range(0, 5):
+            if x in (11, 15) or y in (0, 4):
+                px[x, y] = shade(metal, 0.55) + (255,)
+            else:
+                px[x, y] = liquid + (255,)
+    # 左下的接头
+    for x in range(1, 4):
+        for y in range(12, 15):
+            px[x, y] = shade(metal, 0.7) + (255,)
+    return img
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
     count = 0
@@ -64,6 +90,9 @@ def main():
                 continue
             draw(tier_hex, liquid_hex).save(os.path.join(OUT, f"{tier}_{liquid}_tank.png"))
             count += 1
+    for liquid in ("water", "oil", "lava"):
+        draw_pipe(LIQUIDS[liquid]).save(os.path.join(OUT, f"{liquid}_pipe.png"))
+        count += 1
     print(f"wrote {count} textures to {os.path.normpath(OUT)}")
 
 

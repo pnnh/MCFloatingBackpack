@@ -17,6 +17,7 @@ import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionCategories;
+import pnnh.mcfloatingbackpack.pipe.PipeKind;
 import pnnh.mcfloatingbackpack.tank.FluidKind;
 import pnnh.mcfloatingbackpack.tank.TankCatalog;
 
@@ -59,6 +60,9 @@ public final class ModItems {
     /** 048: the 19 liquid tanks, in the order of {@link TankCatalog#all()}; ids are {@code <tier>_<liquid>_tank}. */
     public static final Map<TankCatalog.Tank, DeferredHolder<Item, TankItem>> TANKS = registerTanks();
 
+    /** 049: the pipes (water, oil, lava), in the order of {@link PipeKind}; ids are {@code <liquid>_pipe}. */
+    public static final Map<PipeKind, DeferredHolder<Item, PipeItem>> PIPES = registerPipes();
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -74,6 +78,9 @@ public final class ModItems {
                                 output.accept(AUTO_PICKUP.get());
                                 for (DeferredHolder<Item, TankItem> tank : TANKS.values()) {
                                     output.accept(tank.get());
+                                }
+                                for (DeferredHolder<Item, PipeItem> pipe : PIPES.values()) {
+                                    output.accept(pipe.get());
                                 }
                                 for (DeferredHolder<Item, CategoryExtensionItem> extension : CATEGORY_EXTENSIONS.values()) {
                                     output.accept(extension.get());
@@ -108,6 +115,19 @@ public final class ModItems {
                             () -> new TankItem(tank.kind(), tank.tier(), new Item.Properties())));
         }
         return Collections.unmodifiableMap(tanks);
+    }
+
+    private static Map<PipeKind, DeferredHolder<Item, PipeItem>> registerPipes() {
+        Map<PipeKind, DeferredHolder<Item, PipeItem>> pipes = new LinkedHashMap<>();
+        for (PipeKind kind : PipeKind.values()) {
+            pipes.put(kind, ITEMS.register(kind.itemId(), () -> new PipeItem(kind, new Item.Properties())));
+        }
+        return Collections.unmodifiableMap(pipes);
+    }
+
+    /** 049: the pipe item of a liquid. */
+    public static PipeItem pipe(PipeKind kind) {
+        return PIPES.get(kind).get();
     }
 
     /** 048: the tank item of a liquid and a tier. */

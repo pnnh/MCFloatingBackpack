@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "pattern": [
+    " I ",
+    " C ",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:lava_pipe"
+  }
+}

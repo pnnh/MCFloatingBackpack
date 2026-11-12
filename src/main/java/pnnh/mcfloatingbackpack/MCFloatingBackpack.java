@@ -102,11 +102,15 @@ public class MCFloatingBackpack {
                 CreativeCursorBridge.onLogout(player);
                 BackpackWatchService.forget(player.getUUID());
                 SERVER_MAIN_HAND.forget(player.getUUID());
+                // 049: the pipes' cooldowns
+                pnnh.mcfloatingbackpack.pipe.PipeCooldowns.forget(player.getUUID());
                 BackpackGate.forget(player.getUUID());
                 // 030: what the player changed last is written as a snapshot now.
                 SnapshotService.get().ifPresent(service -> service.onLogout(player.getUUID()));
             }
         });
+        // 049: the left button with a pipe in the main hand pours a bucket out (and never mines)
+        NeoForge.EVENT_BUS.addListener(pnnh.mcfloatingbackpack.pipe.PipeEvents::onLeftClickBlock);
         // 041: before the world is loaded, and so before any player data is read, a world that a newer data revision saved is refused.
         NeoForge.EVENT_BUS.addListener(WorldMarkerEvents::onServerAboutToStart);
         // 030: backpack snapshots, kept outside the world: started with the server, checked once a second, written out when it stops.

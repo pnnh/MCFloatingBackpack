@@ -48,6 +48,13 @@ docker rm -f mcfb-gui                        # 用完删容器（卷和镜像保
 - **右键**：`docker exec -e DISPLAY=:99 <容器> sh -c 'xdotool mousemove X Y; sleep 0.3; xdotool click 3'`；`gui.sh rclick` 不移动鼠标，只点当前位置。
 - **缩小窗口**：`docker exec -e DISPLAY=:99 <容器> sh -c 'xdotool windowsize $(xdotool search --name Minecraft | tail -1) 200 150'`，用来测面板自动收缩。
 
+## 在世界里做右键与左键（049 的经验）
+
+- 在世界里要"使用物品"与"攻击"时，最可靠的是**把这两个键改绑到键盘**：容器停着时改 `run/options.txt`（`key_key.use:key.keyboard.u`、`key_key.attack:key.keyboard.y`），再 `launch.sh`；然后 `gui.sh key u` 是右键，`key y` 是左键（短按 = 点一下；按住用 `xdotool keydown y; sleep 2.5; xdotool keyup y`）。用完把两行改回 `key.mouse.left`、`key.mouse.right`。（直接用 `xdotool click 1/3` 在世界里没有得到可信的结果：当时瞄的是池塘里的水，不一定是源方块，没能分清是输入没到还是目标不对，所以没有结论。）
+- **搭一个确定的试验台**，别在天然池塘里试：数据包函数 `fill 94 119 94 106 119 110 stone`、`tp @s 100.5 120 100.5 0 45`，在 `100 119 102` 放一个源方块（周围是石头，不会扩散）；目标正好在准星下。换液体前先把上面的空间 `fill … air` 清掉，否则上一次倒出的液体会盖在目标上，射线先打到它。
+- 原版的 F5 会在第一人称与两种第三人称间轮换（按到三次才回来）；看不到手里的东西时先按 F5 回第一人称。
+- 查背包里的液量：`data get entity @s Inventory[{Slot:8b}].components."mcfloatingbackpack:backpack_contents".fluids`（没有这个字段 = 空）。
+
 ## 联机：一个服务端加两个客户端（多容器）
 
 `multi-setup.sh` 建三个容器 `mcfb-srv`（专用服务器）、`mcfb-c1`、`mcfb-c2`（客户端，各有自己的虚拟屏幕），同一个 Docker 网络 `mcfb-net`，客户端用主机名 `mcfb-srv:25565` 直连。用环境变量选容器：`AIGUI_CONTAINER=mcfb-c1 ./gui.sh shot a`、`AIGUI_CONTAINER=mcfb-srv ./server.sh M1`。

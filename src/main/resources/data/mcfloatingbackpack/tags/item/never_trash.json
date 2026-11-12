@@ -118,6 +118,9 @@
     "mcfloatingbackpack:netherite_oil_tank",
     "mcfloatingbackpack:netherite_lava_tank",
     "mcfloatingbackpack:netherite_milk_tank",
-    "mcfloatingbackpack:netherite_honey_tank"
+    "mcfloatingbackpack:netherite_honey_tank",
+    "mcfloatingbackpack:water_pipe",
+    "mcfloatingbackpack:oil_pipe",
+    "mcfloatingbackpack:lava_pipe"
   ]
 }
