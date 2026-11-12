@@ -36,6 +36,10 @@ public final class SearchRenderer {
     private static final int COLOR_TEXT = 0xFF303030;
     private static final int COLOR_DIM = 0xFF707070;
     private static final int COLOR_CLEAR = 0xFF6E6E6E;
+    /** 046: the mask of /hidden over the main area: the colour and edges of the tag panel (018), so the two look alike. */
+    private static final int COLOR_SUMMARY_BACKING = 0xFFDCDCDC;
+    private static final int COLOR_MASK_EDGE_DARK = 0xFF555555;
+    private static final int COLOR_MASK_EDGE_LIGHT = 0xFFFFFFFF;
     private static final int CARET_BLINK_MS = 500;
 
     private SearchRenderer() {
@@ -87,27 +91,42 @@ public final class SearchRenderer {
                 : font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.hint"), width);
 
         HiddenSummaryFit.Plan plan = HiddenSummaryFit.fit(body.size(), title.size(), hint.size(), available);
-        int x = area.x() + pad;
-        int y = area.y() + pad;
+        // collect what is drawn first: the text is drawn on a mask over the whole main area (046)
+        List<FormattedCharSequence> lines = new ArrayList<>();
+        List<Integer> colors = new ArrayList<>();
         if (plan.showTitle()) {
             for (FormattedCharSequence line : title) {
-                graphics.drawString(font, line, x, y, COLOR_TEXT, false);
-                y += lineHeight;
+                lines.add(line);
+                colors.add(COLOR_TEXT);
             }
         }
         for (int i = 0; i < plan.categoryLines(); i++) {
-            graphics.drawString(font, body.get(i), x, y, COLOR_TEXT, false);
-            y += lineHeight;
+            lines.add(body.get(i));
+            colors.add(COLOR_TEXT);
         }
         if (plan.ellipsis()) {
-            graphics.drawString(font, "…", x, y, COLOR_TEXT, false);
-            y += lineHeight;
+            lines.add(FormattedCharSequence.forward("…", net.minecraft.network.chat.Style.EMPTY));
+            colors.add(COLOR_TEXT);
         }
         if (plan.showHint()) {
             for (FormattedCharSequence line : hint) {
-                graphics.drawString(font, line, x, y, COLOR_DIM, false);
-                y += lineHeight;
+                lines.add(line);
+                colors.add(COLOR_DIM);
             }
+        }
+        // 046: the summary is a mask over the whole main area, like the tag panel's: the grey cells under it are not to be seen
+        int areaRight = area.x() + area.w();
+        int areaBottom = area.y() + area.h();
+        graphics.fill(area.x(), area.y(), areaRight, areaBottom, COLOR_SUMMARY_BACKING);
+        graphics.fill(area.x(), area.y(), areaRight, area.y() + 1, COLOR_MASK_EDGE_DARK);
+        graphics.fill(area.x(), area.y(), area.x() + 1, areaBottom, COLOR_MASK_EDGE_DARK);
+        graphics.fill(area.x(), areaBottom - 1, areaRight, areaBottom, COLOR_MASK_EDGE_LIGHT);
+        graphics.fill(areaRight - 1, area.y(), areaRight, areaBottom, COLOR_MASK_EDGE_LIGHT);
+        int x = area.x() + pad;
+        int y = area.y() + pad;
+        for (int i = 0; i < lines.size(); i++) {
+            graphics.drawString(font, lines.get(i), x, y, colors.get(i), false);
+            y += lineHeight;
         }
     }
 

@@ -68,6 +68,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_EDGE_DARK = 0xFF555555;
     private static final int COLOR_OUTLINE = 0xFF000000;
     private static final int COLOR_SLOT = 0xFF8B8B8B;
+    /** 046: a main-area cell with nothing to show while a search is on: darker than the empty cell above, same bevel. */
+    private static final int COLOR_SLOT_GREY = 0xFF606060;
     /** Tool-area wells (016): three different light colours, all distinct from the main area's gray. */
     private static final int COLOR_SLOT_LEFT = 0xFFB5D3EE;
     private static final int COLOR_SLOT_RIGHT = 0xFFBFE5B5;
@@ -336,6 +338,11 @@ public final class FloatingPanelRenderer {
                 // is left as plain panel background: the panel stays one rectangle without inventing slots.
                 int index = layout.slotIndex(area, ordinal);
                 if (index < 0) {
+                    // 046: while a search is on, the main area's cells that hold no result are drawn as grey cells (they have no slot
+                    // behind them, so nothing can be done with them); otherwise they stay plain panel background
+                    if (GreyCellRules.greyed(searching, TagPanelState.get().isOpen() || PickupPanelState.get().isOpen(), area, index)) {
+                        drawSlotWell(graphics, layout.cellX(area, ordinal), layout.cellY(area, ordinal), COLOR_SLOT_GREY);
+                    }
                     continue;
                 }
                 int sx = layout.cellX(area, ordinal);
