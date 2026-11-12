@@ -62,6 +62,12 @@ class PipeResourcesTest {
         String lava = read(DATA.resolve("recipe/lava_pipe.json"));
         assertEquals(" I / C / I ", pattern(lava));
         assertTrue(lava.contains("\"minecraft:lava_bucket\""));
+        String milk = read(DATA.resolve("recipe/milk_pipe.json"));
+        assertEquals(" I / C / I ", pattern(milk));
+        assertTrue(milk.contains("\"minecraft:crafting_shaped\"") && milk.contains("\"minecraft:iron_ingot\"") && milk.contains("\"minecraft:milk_bucket\""));
+        String honey = read(DATA.resolve("recipe/honey_pipe.json"));
+        assertEquals(" I / C / I ", pattern(honey));
+        assertTrue(honey.contains("\"minecraft:crafting_shaped\"") && honey.contains("\"minecraft:iron_ingot\"") && honey.contains("\"minecraft:honey_bottle\""));
         String oil = read(DATA.resolve("recipe/oil_pipe.json"));
         assertEquals(" K / B / I ", pattern(oil));
         assertTrue(oil.contains("\"minecraft:coal_block\"") && oil.contains("\"minecraft:bucket\"") && oil.contains("\"minecraft:iron_ingot\""));
@@ -110,7 +116,14 @@ class PipeResourcesTest {
                     "message.mcfloatingbackpack.pipe.backpack_protected",
                     "message.mcfloatingbackpack.pipe.no_tank",
                     "message.mcfloatingbackpack.pipe.oil_locked",
-                    "message.mcfloatingbackpack.pipe.no_fluid")) {
+                    "message.mcfloatingbackpack.pipe.no_fluid",
+                    "item.mcfloatingbackpack.pipe.discharge",
+                    "item.mcfloatingbackpack.pipe.discharge_bottle",
+                    "item.mcfloatingbackpack.pipe.milk.tooltip",
+                    "item.mcfloatingbackpack.pipe.honey.tooltip",
+                    "message.mcfloatingbackpack.pipe.no_container",
+                    "message.mcfloatingbackpack.pipe.no_bucket",
+                    "message.mcfloatingbackpack.pipe.no_block_form")) {
                 assertTrue(text.contains("\"" + key + "\""), lang + " " + key);
             }
         }
@@ -127,5 +140,6 @@ class PipeResourcesTest {
         String item = read(Path.of("src/main/java/pnnh/mcfloatingbackpack/item/PipeItem.java"));
         assertTrue(item.contains("stacksTo(1)"));
         assertFalse(item.contains("DataComponent"), "a pipe carries no data");
+        assertEquals(5, PipeKind.values().length, "water, oil, lava, milk, honey");
     }
 }

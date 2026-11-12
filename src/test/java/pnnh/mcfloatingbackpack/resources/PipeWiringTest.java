@@ -34,7 +34,7 @@ class PipeWiringTest {
         assertTrue(use.contains("NOT_FOR_THIS_PIPE -> InteractionResultHolder.pass(stack)"));
         assertTrue(use.contains("REFUSED -> InteractionResultHolder.fail(stack)"));
         assertTrue(use.contains("DONE -> InteractionResultHolder.success(stack)"));
-        assertFalse(item.contains("useOn"), "the default (pass) lets vanilla go on to use(), as for a bucket");
+        // (050 adds useOn for the honey pipe and interactLivingEntity for the milk pipe; both pass for everything else, so vanilla still goes on to use())
     }
 
     @Test
@@ -128,6 +128,115 @@ class PipeWiringTest {
         assertTrue(actions.contains("BuiltInRegistries.FLUID.get(id)") && actions.contains("fluid == Fluids.EMPTY ? null : fluid"));
         assertTrue(actions.contains("case WATER:\n                return Fluids.WATER;") && actions.contains("case LAVA:\n                return Fluids.LAVA;"));
         assertTrue(actions.contains("ResourceLocation.fromNamespaceAndPath(\"c\", \"crude_oil\")"));
+    }
+
+    // ---- 050: sneak + right click fills an empty container ----
+
+    @Test
+    void sneakingFillsAContainerAndNotSneakingKeepsTheOldWays() throws IOException {
+        String item = read(SRC.resolve("item/PipeItem.java"));
+        String use = item.substring(item.indexOf("public InteractionResultHolder<ItemStack> use("));
+        int sneak = use.indexOf("player.isShiftKeyDown()");
+        int discharge = use.indexOf("PipeActions.discharge(serverPlayer, kind)");
+        int noBlock = use.indexOf("!kind.hasBlockForm()");
+        int absorb = use.indexOf("PipeActions.absorb(serverPlayer, kind, hit)");
+        assertTrue(sneak > 0 && discharge > sneak && noBlock > discharge && absorb > noBlock,
+                "sneaking discharges; then a milk or honey pipe passes; then the others absorb");
+    }
+
+    @Test
+    void dischargeChecksEverythingThenUsesUpTheContainerThenKeepsTheLiquid() throws IOException {
+        String actions = read(SRC.resolve("pipe/PipeActions.java"));
+        String discharge = actions.substring(actions.indexOf("public static Result discharge("), actions.indexOf("public static Result place("));
+        int find = discharge.indexOf("Found found = find(player)");
+        int pick = discharge.indexOf("ContainerPicker.firstMatch(");
+        int product = discharge.indexOf("productOf(pipe,");
+        int plan = discharge.indexOf("PipePlanner.discharge(pipe, situation(pipe, found, \"\"), new PipePlanner.Supply(position >= 0, !product.isEmpty()))");
+        int shrink = discharge.indexOf("taken.shrink(1)");
+        int give = discharge.indexOf("inventory.add(product.copy())");
+        int drop = discharge.indexOf("player.drop(product.copy(), false)");
+        int commit = discharge.indexOf("commit(player, found, plan.next())");
+        int sync = discharge.indexOf("BackpackNetwork.sendFullSync(player, found.ref())");
+        assertTrue(find > 0 && pick > find && product > pick && plan > product && shrink > plan && give > shrink && drop > give && commit > drop && sync > commit,
+                "find, pick, product, decide, use up the container, give the product (or drop it), keep the liquid, sync the panel");
+        assertTrue(discharge.contains("fromBackpack"), "the panel is only resynced when the container came from the backpack");
+        assertTrue(actions.contains("pipe.emptyContainer() == PipeKind.Container.GLASS_BOTTLE ? Items.GLASS_BOTTLE : Items.BUCKET"), "only the vanilla bucket and bottle");
+    }
+
+    @Test
+    void theProductsAreTheVanillaFilledContainersAndAnOilsOwnBucket() throws IOException {
+        String actions = read(SRC.resolve("pipe/PipeActions.java"));
+        String product = actions.substring(actions.indexOf("private static ItemStack productOf("));
+        for (String item : new String[] {"Items.WATER_BUCKET", "Items.LAVA_BUCKET", "Items.MILK_BUCKET", "Items.HONEY_BOTTLE"}) {
+            assertTrue(product.contains("new ItemStack(" + item + ")"), item);
+        }
+        assertTrue(product.contains("fluid.getBucket()") && product.contains("bucket == Items.AIR ? ItemStack.EMPTY"), "an oil with no bucket makes nothing");
+    }
+
+    // ---- 050: milk from a cow or goat, honey from a beehive ----
+
+    @Test
+    void theMilkPipeMilksAdultCowsAndGoatsOnTheServer() throws IOException {
+        String item = read(SRC.resolve("item/PipeItem.java"));
+        String milk = item.substring(item.indexOf("public InteractionResult interactLivingEntity("), item.indexOf("public InteractionResult useOn("));
+        assertTrue(milk.contains("kind != PipeKind.MILK") && milk.contains("player.isShiftKeyDown()"), "only the milk pipe, and not while sneaking");
+        assertTrue(milk.contains("target instanceof Cow || target instanceof Goat") && milk.contains("target.isBaby()"), "adult cows (mooshrooms are cows) and goats");
+        int client = milk.indexOf("sidedSuccess(true)");
+        int server = milk.indexOf("PipeActions.absorbEntity(serverPlayer, kind, target)");
+        assertTrue(client > 0 && server > client, "the client only says it worked (the arm swings); the server does it");
+        String actions = read(SRC.resolve("pipe/PipeActions.java"));
+        String absorb = actions.substring(actions.indexOf("public static Result absorbEntity("), actions.indexOf("public static Result absorbHive("));
+        int plan = absorb.indexOf("PipePlanner.absorb(pipe, situation(pipe, found, \"\"))");
+        int commit = absorb.indexOf("commit(player, found, plan.next())");
+        assertTrue(plan > 0 && commit > plan);
+        assertTrue(absorb.contains("SoundEvents.COW_MILK") && absorb.contains("goat.isScreamingGoat()")
+                && absorb.contains("SoundEvents.GOAT_SCREAMING_MILK") && absorb.contains("SoundEvents.GOAT_MILK"), "the sounds of milking");
+    }
+
+    @Test
+    void theHoneyPipeTakesHoneyFromAReadyHiveTheWayABottleDoes() throws IOException {
+        String item = read(SRC.resolve("item/PipeItem.java"));
+        String useOn = item.substring(item.indexOf("public InteractionResult useOn("), item.indexOf("public InteractionResultHolder<ItemStack> use("));
+        assertTrue(useOn.contains("kind != PipeKind.HONEY") && useOn.contains("player.isShiftKeyDown()"));
+        assertTrue(useOn.contains("state.getBlock() instanceof BeehiveBlock") && useOn.contains("PipeActions.READY_HONEY_LEVEL"));
+        int may = useOn.indexOf("level.mayInteract(player, pos) || !player.mayUseItemAt(");
+        int absorb = useOn.indexOf("PipeActions.absorbHive(serverPlayer, kind, pos, state)");
+        assertTrue(may > 0 && absorb > may);
+        String actions = read(SRC.resolve("pipe/PipeActions.java"));
+        assertTrue(actions.contains("READY_HONEY_LEVEL = 5"));
+        String hive = actions.substring(actions.indexOf("public static Result absorbHive("), actions.indexOf("private static void angerNearbyBees("));
+        int plan = hive.indexOf("PipePlanner.absorb(pipe, situation(pipe, found, \"\"))");
+        int sound = hive.indexOf("SoundEvents.BOTTLE_FILL");
+        int smoke = hive.indexOf("CampfireBlock.isSmokeyPos(level, pos)");
+        int anger = hive.indexOf("angerNearbyBees(level, pos)");
+        int release = hive.indexOf("hive.releaseBeesAndResetHoneyLevel(level, state, pos, player, BeehiveBlockEntity.BeeReleaseStatus.EMERGENCY)");
+        int reset = hive.indexOf("hive.resetHoneyLevel(level, state, pos)");
+        int emptied = hive.indexOf("getValue(BeehiveBlock.HONEY_LEVEL) >= READY_HONEY_LEVEL");
+        int commit = hive.indexOf("commit(player, found, plan.next())");
+        assertTrue(plan > 0 && sound > plan && smoke > sound && anger > smoke && release > anger && reset > release && emptied > reset && commit > emptied,
+                "plan, the sound, the smoke, the bees, the hive, did it empty, keep the honey");
+        assertTrue(hive.contains("GameEvent.FLUID_PICKUP"));
+        String anger2 = actions.substring(actions.indexOf("private static void angerNearbyBees("));
+        assertTrue(anger2.contains("inflate(8.0, 6.0, 8.0)") && anger2.contains("bee.getTarget() == null"), "vanilla's own rule for the bees");
+    }
+
+    @Test
+    void theLeftButtonWithAMilkOrHoneyPipeNeverMinesAndOnlySaysThereIsNothingToPour() throws IOException {
+        String actions = read(SRC.resolve("pipe/PipeActions.java"));
+        String place = actions.substring(actions.indexOf("public static Result place("));
+        int block = place.indexOf("!pipe.hasBlockForm()");
+        int notice = place.indexOf("PipeNotices.send(player, Notice.NO_BLOCK_FORM, liquidName(pipe))");
+        int find = place.indexOf("Found found = find(player)");
+        assertTrue(block > 0 && notice > block && find > notice, "said before the backpack is even looked for");
+        assertTrue(read(SRC.resolve("pipe/PipeEvents.java")).contains("event.setCanceled(true)"), "never mines (049)");
+    }
+
+    @Test
+    void thereAreStillNoNewPacketsAndTheProtocolIsStill19() throws IOException {
+        String network = read(SRC.resolve("network/BackpackNetwork.java"));
+        assertTrue(network.contains("versioned(\"19\")"));
+        assertFalse(network.contains("Pipe"));
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 2;"));
     }
 
     // ---- what was not touched ----

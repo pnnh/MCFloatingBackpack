@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:honey_bottle"
+    }
+  },
+  "pattern": [
+    " I ",
+    " C ",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:honey_pipe"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:milk_bucket"
+    }
+  },
+  "pattern": [
+    " I ",
+    " C ",
+    " I "
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:milk_pipe"
+  }
+}

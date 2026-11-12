@@ -1,6 +1,6 @@
 # 液体罐与管子（048 / 049 / 050）
 
-状态：方案已与用户确认（2026-11-12）。**048 已实现并经用户确认**（`specs/048-fluid-tanks/`）；**049 已实现**（三根管子的吸收与放置，游戏里的验证见 `specs/049-fluid-pipes/DELIVERY.md`，用户确认待做）；050 尚未建 spec。按 Spec Kit 一次只做一个 feature：048 → 049 → 050。
+状态：方案已与用户确认（2026-11-12）。**048 已实现并经用户确认**（`specs/048-fluid-tanks/`）；**049 已实现、提交并经用户确认**（`specs/049-fluid-pipes/`）；**050 已实现**（牛奶管、蜂蜜管与排放到容器，`specs/050-milk-honey-containers/`，已经用户确认）。按 Spec Kit 一次只做一个 feature：048 → 049 → 050。
 
 048 与本方案的差别（plan 阶段查证后）：档次限制对**三个工具区**都生效（不只底部区），主区域不限；被拒时有动作栏/聊天提示；液量放在背包数据里（可选字段 `fluids`），数据修订 1→2、协议号 18→19。
 
@@ -89,4 +89,10 @@
 - 左键放置**不需要新网络包**：服务端的 `LeftClickBlock`（`START`）取消并放置，客户端同样取消（不预测挖掘、创造不瞬间破坏）；按住左键时原版每 tick 发 `START`，所以放置节流 4 tick。协议号仍 19，数据修订仍 2。
 - 目标位置已是同种源方块时不放置、不扣量（桶在这种情况下会白白用掉一桶，管子不这样）。
 - PNC 在容器里（arm64、软件渲染）能起来；`setblock ~ ~ ~ pneumaticcraft:oil` 放出的是源方块，油管能吸、能放回，`oil_fluid` 是 `pneumaticcraft:oil`；锁定为别的流体（假 id）时油管拒绝并提示。
+
+## 10. 050 实现后的补充（2026-11-12）
+
+- 排放到容器落在 `PipeItem.use()`（潜行）；方块的 `useOn`、实体的 `interactLivingEntity` 在潜行时返回 `pass`，原版随后调 `use`。牛奶管走 `interactLivingEntity`（成年 `Cow`/`Goat`），蜂蜜管走 `useOn`（`BeehiveBlock`，`honey_level` = 5）。无新网络包，协议号仍 19，数据修订仍 2。
+- 空容器先用背包主区域的、后用物品栏的（`ContainerPicker`）；成品放不下掉在脚边；油的桶用锁定流体自己的 `getBucket()`，PNC 的 `pneumaticcraft:oil` 得到 `pneumaticcraft:oil_bucket`（已验证）。
+- 049 的两条提示（`cannot_absorb`、`cannot_place`）改成与单位无关的说法（蜂蜜一份只有 250 mB）。
 

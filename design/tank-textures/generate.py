@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""048/049: 占位贴图——为 19 种液体罐各生成一张 16x16 的物品贴图（四档材质 x 五种液体，没有皮岩浆罐），再为 3 根管子（水、油、岩浆）各生成一张。
+"""048/049: 占位贴图——为 19 种液体罐各生成一张 16x16 的物品贴图（四档材质 x 五种液体，没有皮岩浆罐），再为 5 根管子（水、油、岩浆、牛奶、蜂蜜）各生成一张。
 
 这只是占位图：画一个带盖的罐子，罐壁与盖用"档次色"，罐里的液体用"液体色"。用户之后可以直接用同名 PNG 替换，不用改代码。
 颜色表与 specs/048-fluid-tanks/contracts/recipes-and-assets.md 一致。
@@ -90,7 +90,7 @@ def main():
                 continue
             draw(tier_hex, liquid_hex).save(os.path.join(OUT, f"{tier}_{liquid}_tank.png"))
             count += 1
-    for liquid in ("water", "oil", "lava"):
+    for liquid in ("water", "oil", "lava", "milk", "honey"):
         draw_pipe(LIQUIDS[liquid]).save(os.path.join(OUT, f"{liquid}_pipe.png"))
         count += 1
     print(f"wrote {count} textures to {os.path.normpath(OUT)}")

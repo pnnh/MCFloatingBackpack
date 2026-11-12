@@ -61,7 +61,7 @@
 - [X] T023 [P] `README.md` 与 `README_CN.md`：管子一节（水、油、岩浆；右键吸收、左键放一桶；需要背包底部区的对应罐；提示；潜行右键留给以后；牛奶与蜂蜜随后）；`docs/plan/fluid-tanks.md` 状态改为"049 已实现"，PNC 一节更新为已验证的结论（README 两份、`docs/plan/fluid-tanks.md` 都已更新）
 - [X] T024 `specs/049-fluid-pipes/DELIVERY.md`（中文）：基线与完成后的类数与用例数、与 spec/plan 的偏离、每个游戏内验证项验证了什么/没验证什么、**协议号与数据修订不变的理由**、PNC 作为开发依赖的说明（只在 `localRuntime`）、已知局限（按住左键的节流、没有桶的模组流体）、图集前后尺寸、宪法复查（已写）
 - [X] T025 最终检查：`./gradlew compileJava test` 全部通过；`git status` 确认无临时修改残留；`DependencyRulesTest` 通过；发布 jar 里不含 PNC（`./gradlew jar` 后 `unzip -l` 抽查，或写在 DELIVERY 里"未检查"）；**不提交、不打 tag**（186 个类、1418 个用例，0 失败；`DependencyRulesTest` 通过；jar 里没有 PNC；未提交、未打 tag）
-- [ ] T026 用户确认：用户在真机上试吸收、放置、提示（水、岩浆，有 PNC 时再试油）；**只有用户明确确认才勾**
+- [X] T026 用户确认：用户在真机上试吸收、放置、提示（水、岩浆，有 PNC 时再试油）；**只有用户明确确认才勾**（用户已确认（2026-11-12）：没有问题）
 
 ## Dependencies
 

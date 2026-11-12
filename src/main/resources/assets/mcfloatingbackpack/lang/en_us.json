@@ -249,11 +249,20 @@
   "item.mcfloatingbackpack.pipe.needs_tank": "The backpack you would open with B needs that tank in its bottom area",
   "message.mcfloatingbackpack.pipe.full_now": "The %s tank is full",
   "message.mcfloatingbackpack.pipe.empty_now": "The %s tank is empty",
-  "message.mcfloatingbackpack.pipe.cannot_absorb": "The %s tank has no room for another bucket",
-  "message.mcfloatingbackpack.pipe.cannot_place": "The %s tank holds less than a bucket",
+  "message.mcfloatingbackpack.pipe.cannot_absorb": "The %s tank has no room for more",
+  "message.mcfloatingbackpack.pipe.cannot_place": "The %s tank holds too little",
   "message.mcfloatingbackpack.pipe.no_backpack": "No floating backpack found",
   "message.mcfloatingbackpack.pipe.backpack_protected": "This backpack was saved by a newer version and cannot be used yet",
   "message.mcfloatingbackpack.pipe.no_tank": "Your backpack has no %s tank in its bottom area",
   "message.mcfloatingbackpack.pipe.oil_locked": "The oil tank already holds another oil (%s); empty it first",
-  "message.mcfloatingbackpack.pipe.no_fluid": "The mod that adds that oil (%s) is not installed"
+  "message.mcfloatingbackpack.pipe.no_fluid": "The mod that adds that oil (%s) is not installed",
+  "item.mcfloatingbackpack.milk_pipe": "Milk Pipe",
+  "item.mcfloatingbackpack.honey_pipe": "Honey Pipe",
+  "item.mcfloatingbackpack.pipe.discharge": "Sneak + right-click to fill an empty bucket from the tank",
+  "item.mcfloatingbackpack.pipe.discharge_bottle": "Sneak + right-click to fill an empty glass bottle from the tank",
+  "item.mcfloatingbackpack.pipe.milk.tooltip": "Right-click an adult cow or goat to milk it into the tank",
+  "item.mcfloatingbackpack.pipe.honey.tooltip": "Right-click a full beehive to take its honey into the tank",
+  "message.mcfloatingbackpack.pipe.no_container": "No empty %s in your backpack or inventory",
+  "message.mcfloatingbackpack.pipe.no_bucket": "There is no bucket for this oil (%s)",
+  "message.mcfloatingbackpack.pipe.no_block_form": "%s cannot be poured out as a block; sneak and right-click to fill a container"
 }

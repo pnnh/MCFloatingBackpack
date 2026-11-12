@@ -23,6 +23,9 @@ public final class PipeNotices {
             case TANK_FULL_NOW -> "full_now";
             case TANK_EMPTY_NOW -> "empty_now";
             case NO_FLUID -> "no_fluid";
+            case NO_EMPTY_CONTAINER -> "no_container";
+            case NO_BUCKET_FOR_FLUID -> "no_bucket";
+            case NO_BLOCK_FORM -> "no_block_form";
         };
     }
 

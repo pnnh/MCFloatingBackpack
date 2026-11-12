@@ -38,6 +38,27 @@ class PipeKindTest {
     }
 
     @Test
+    void milkAndHoneyBelongToNoFluidInTheWorld() {
+        for (boolean water : new boolean[] {false, true}) {
+            for (boolean lava : new boolean[] {false, true}) {
+                for (boolean oil : new boolean[] {false, true}) {
+                    PipeKind kind = PipeKind.classify(water, lava, oil);
+                    assertTrue(kind == null || kind.hasBlockForm());
+                    assertFalse(PipeKind.MILK.accepts(water, lava, oil));
+                    assertFalse(PipeKind.HONEY.accepts(water, lava, oil));
+                }
+            }
+        }
+    }
+
+    @Test
+    void thereAreFivePipesInTheCreativeOrder() {
+        assertEquals(java.util.List.of(PipeKind.WATER, PipeKind.OIL, PipeKind.LAVA, PipeKind.MILK, PipeKind.HONEY), java.util.List.of(PipeKind.values()));
+        assertEquals("milk_pipe", PipeKind.MILK.itemId());
+        assertEquals("honey_pipe", PipeKind.HONEY.itemId());
+    }
+
+    @Test
     void theItemIdsAndLiquidsMatchTheTanks() {
         assertEquals("water_pipe", PipeKind.WATER.itemId());
         assertEquals("oil_pipe", PipeKind.OIL.itemId());
