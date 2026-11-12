@@ -1,0 +1,104 @@
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_9aefe4a2760245::t_ad9d46dfab24c7 176-241
+  s_9aefe4a2760245::t_99aa303daee7e2 133-175
+  s_9aefe4a2760245::t_aac92e6b0e0f03 37
+src/main/resources/data/mcfloatingbackpack/recipe/milk_pipe.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 1-21
+specs/050-milk-honey-containers/plan.md
+  s_9aefe4a2760245::t_36ff0fc19c1dcd 1,3,5,7,9-12,14,18,20,22,24,26,28,30,32,34,38-58,63-79,82,84,88
+  s_9aefe4a2760245::t_edb4dbc34fa845 2,4,6,8,13,15-17,19,21,23,25,27,29,31,33,35-37,59-62,80-81,83,85-87
+specs/050-milk-honey-containers/contracts/recipes-and-assets.md
+  s_9aefe4a2760245::t_2a293eaa975734 1-42
+specs/050-milk-honey-containers/tasks.md
+  s_9aefe4a2760245::t_67adeb01e3e673 1-15,17-19,24-28,34-38,43-47,53-57,64-76
+  s_9aefe4a2760245::t_3eaa400407ddaf 63
+  s_9aefe4a2760245::t_1dd16c317a8b8a 16,20-23,29-33,39-42,48-52,58-62
+src/main/resources/assets/mcfloatingbackpack/models/item/honey_pipe.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 1-6
+src/test/java/pnnh/mcfloatingbackpack/pipe/PipePlannerTest.java
+  s_9aefe4a2760245::t_130d627a9d599f 218
+  s_9aefe4a2760245::t_541e35d1035b64 226-368
+specs/050-milk-honey-containers/research.md
+  s_9aefe4a2760245::t_36ff0fc19c1dcd 1-43
+src/main/java/pnnh/mcfloatingbackpack/pipe/ContainerPicker.java
+  s_9aefe4a2760245::t_60b9291d928b11 1-34
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeResourcesTest.java
+  s_9aefe4a2760245::t_6dd1712cb7dcab 65-70,119-126,143
+docs/plan/fluid-tanks.md
+  s_9aefe4a2760245::t_3eaa400407ddaf 3
+  s_9aefe4a2760245::t_2f2fb9989a5835 93-97
+  s_9aefe4a2760245::t_7c0afd3186ef1a 98
+specs/049-fluid-pipes/DELIVERY.md
+  s_9aefe4a2760245::t_3eaa400407ddaf 3
+README.md
+  s_9aefe4a2760245::t_2f2fb9989a5835 36
+README_CN.md
+  s_9aefe4a2760245::t_2f2fb9989a5835 36
+src/test/java/pnnh/mcfloatingbackpack/pipe/ContainerPickerTest.java
+  s_9aefe4a2760245::t_541e35d1035b64 1-58
+src/main/resources/assets/mcfloatingbackpack/models/item/milk_pipe.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 1-6
+specs/050-milk-honey-containers/quickstart.md
+  s_9aefe4a2760245::t_2a293eaa975734 1-53
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeActions.java
+  s_9aefe4a2760245::t_1a19ae60be8782 13-16,18,103,105-112,116-140,336-380
+  s_9aefe4a2760245::t_68da28757db363 22-30,262-289,291-309,311-335,387-391
+  s_9aefe4a2760245::t_eecaee71096815 63-65,290,310
+  s_9aefe4a2760245::t_59fa0458ce9b3a 141,381
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 252-253,258-267
+.specify/feature.json
+  s_9aefe4a2760245::t_c41ae58318ff92 2
+specs/050-milk-honey-containers/checklists/requirements.md
+  s_9aefe4a2760245::t_c41ae58318ff92 1-36
+src/main/resources/data/mcfloatingbackpack/recipe/honey_pipe.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 1-21
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipePlanner.java
+  s_9aefe4a2760245::t_60b9291d928b11 10-12,15,28-33,59-62,77-78,81,87-89,97-118,121-126,128
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 252-253,258-267
+design/tank-textures/generate.py
+  s_9aefe4a2760245::t_6dd1712cb7dcab 2,93
+specs/050-milk-honey-containers/spec.md
+  s_9aefe4a2760245::t_c41ae58318ff92 1-40,42,49-199
+  s_9aefe4a2760245::t_2a293eaa975734 41,43-48
+specs/050-milk-honey-containers/data-model.md
+  s_9aefe4a2760245::t_36ff0fc19c1dcd 1-70
+specs/049-fluid-pipes/tasks.md
+  s_9aefe4a2760245::t_3eaa400407ddaf 64
+src/main/java/pnnh/mcfloatingbackpack/item/PipeItem.java
+  s_9aefe4a2760245::t_68da28757db363 8-14,52-85,87-102
+  s_9aefe4a2760245::t_1a19ae60be8782 108-118
+  s_9aefe4a2760245::t_6dd1712cb7dcab 141-150
+  s_9aefe4a2760245::t_eecaee71096815 86
+  s_9aefe4a2760245::t_bd7deb9086bcaa 103
+specs/050-milk-honey-containers/contracts/discharge-rules.md
+  s_9aefe4a2760245::t_2a293eaa975734 1-57
+src/test/java/pnnh/mcfloatingbackpack/pipe/PipeKindTest.java
+  s_9aefe4a2760245::t_541e35d1035b64 40-60
+specs/050-milk-honey-containers/DELIVERY.md
+  s_9aefe4a2760245::t_1dd16c317a8b8a 1-2,4-59
+  s_9aefe4a2760245::t_3eaa400407ddaf 3
+src/main/resources/data/mcfloatingbackpack/tags/item/never_trash.json
+  s_9aefe4a2760245::t_6dd1712cb7dcab 124-126
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeNotices.java
+  s_9aefe4a2760245::t_541e35d1035b64 26-28
+src/main/java/pnnh/mcfloatingbackpack/pipe/PipeKind.java
+  s_9aefe4a2760245::t_60b9291d928b11 6-9,12-19,22-23,25,27-43
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "44481df323a534fc5bfdae1443a46b87ab010421",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "unknown"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
