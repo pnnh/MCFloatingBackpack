@@ -156,7 +156,10 @@ public final class FloatingPanelRenderer {
         SearchRenderer.render(graphics, state, minecraft, mouseX, mouseY);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
-        drawRowTooltip(graphics, minecraft, mouseX, mouseY);
+        // 045: the tooltip of the item in the cell under the mouse; only when there is none the cell may have the extension row's
+        if (!drawItemTooltip(graphics, minecraft, mouseX, mouseY)) {
+            drawRowTooltip(graphics, minecraft, mouseX, mouseY);
+        }
         // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
         if (TrashPanelState.get().isOpen()) {
             TrashPanelRenderer.render(graphics, mouseX, mouseY);
@@ -434,6 +437,31 @@ public final class FloatingPanelRenderer {
         String id = CategoryStyle.ghostItemId(category);
         var holder = id == null ? null : ModItems.CATEGORY_EXTENSIONS.get(category);
         return holder == null ? null : holder.get();
+    }
+
+    /**
+     * 045: the vanilla tooltip of the item in the cell under the mouse (the main area's cells, which a search maps to the found ones,
+     * and the three tool areas), unless {@link ItemTooltipRules} says no. Returns whether it drew one.
+     */
+    private static boolean drawItemTooltip(GuiGraphics graphics, Minecraft minecraft, int mouseX, int mouseY) {
+        ClientBackpackView view = ClientBackpackView.get();
+        PanelLayout.Hit hit = view.layout().hit(mouseX, mouseY);
+        if (hit == null) {
+            return false;
+        }
+        ItemStack stack = hit.area() == PanelArea.MAIN ? view.getStackInSlot(hit.index()) : view.getToolStack(hit.area(), hit.index());
+        boolean mainCovered = TagPanelState.get().isOpen() || PickupPanelState.get().isOpen();
+        if (!ItemTooltipRules.shouldShow(
+                hit.area(),
+                mainCovered,
+                !cursorStack(minecraft).isEmpty(),
+                PanelDragInput.preview() != null,
+                TrashConfirmState.get().isPending(),
+                !stack.isEmpty())) {
+            return false;
+        }
+        graphics.renderTooltip(minecraft.font, stack, mouseX, mouseY);
+        return true;
     }
 
     /** 037: the tooltip of the extension row cell under the mouse: which category the row is and what it takes. */
