@@ -57,4 +57,21 @@ class SearchResultsTest {
         assertEquals(2, SearchResults.liveCount(slots, items::contains));
         assertEquals(0, SearchResults.liveCount(null, items::contains));
     }
+
+    @Test
+    void aCommandShowsNoCellsWhateverTheTextsSay() {
+        // 044: /hidden draws its own summary and an unknown command finds nothing: both are "filtering" with an empty list
+        for (String input : new String[] {"/hidden", "/hidden oak", "/foo", "/", "/hidden @x"}) {
+            int[] slots = SearchResults.compute(SearchQuery.parse(input), NAMES.length, matchers());
+            assertArrayEquals(new int[0], slots, input);
+        }
+        assertEquals(0, SearchResults.liveCount(new int[0], slot -> true));
+    }
+
+    @Test
+    void aQueryWithoutACommandStillFiltersAndAnEmptyOneStillDoesNot() {
+        assertArrayEquals(new int[] {0, 2, 6}, SearchResults.compute(SearchQuery.parse("oak log"), NAMES.length, matchers()));
+        assertEquals(null, SearchResults.compute(SearchQuery.parse("  "), NAMES.length, matchers()));
+        assertEquals(null, SearchResults.compute(SearchQuery.parse("@"), NAMES.length, matchers()));
+    }
 }

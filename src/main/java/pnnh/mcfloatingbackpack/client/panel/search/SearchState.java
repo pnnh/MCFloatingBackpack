@@ -1,5 +1,7 @@
 package pnnh.mcfloatingbackpack.client.panel.search;
 
+import java.util.List;
+
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 import pnnh.mcfloatingbackpack.client.panel.PanelSelection;
 
@@ -22,6 +24,11 @@ public final class SearchState {
         TextMatcher matcherOf(int slot);
 
         boolean hasItem(int slot);
+
+        /** 044: the categories that have items hidden (037) and in how many cells, for {@code /hidden}; nothing by default. */
+        default List<HiddenSummaryRows.Line> hiddenLines() {
+            return List.of();
+        }
     }
 
     private static final SearchState INSTANCE = new SearchState();
@@ -105,9 +112,26 @@ public final class SearchState {
         state.setScrollRow(0);
     }
 
-    /** The number shown in the box: the listed slots that hold an item right now. */
+    /** 044: the command the query begins with (none, {@code /hidden}, or an unknown one). */
+    public SearchQuery.Command command() {
+        return query.command();
+    }
+
+    /** 044: the lines {@code /hidden} shows: the categories with items hidden that the words after the command let through. */
+    public List<HiddenSummaryRows.Line> hiddenRows(Source source) {
+        return HiddenSummaryRows.visible(source.hiddenLines(), query);
+    }
+
+    /**
+     * The number shown in the box: the listed slots that hold an item right now; for {@code /hidden} the cells its lines stand for; for
+     * an unknown command nothing.
+     */
     public int liveCount(Source source) {
-        return SearchResults.liveCount(slots, source::hasItem);
+        return switch (query.command().type()) {
+            case HIDDEN -> HiddenSummaryRows.totalCells(hiddenRows(source));
+            case UNKNOWN -> 0;
+            case NONE -> SearchResults.liveCount(slots, source::hasItem);
+        };
     }
 
     /** Forgets everything (the panel closed, a new session, leaving the world). */

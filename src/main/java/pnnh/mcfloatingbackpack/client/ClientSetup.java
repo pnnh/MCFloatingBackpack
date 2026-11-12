@@ -14,6 +14,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.accessories.AccessoriesClientCompat;
 import pnnh.mcfloatingbackpack.compat.ConfigFileWatch;
+import pnnh.mcfloatingbackpack.client.panel.search.ItemFacts;
 import pnnh.mcfloatingbackpack.client.render.BackpackRenderEvents;
 import pnnh.mcfloatingbackpack.search.SearchTerms;
 
@@ -39,7 +40,11 @@ public final class ClientSetup {
         // 043: what search terms providers gave is cached per item; a language switch, F3+T or a resource pack reloads the resources,
         // and the providers' terms may be different after it.
         modEventBus.addListener((RegisterClientReloadListenersEvent event) ->
-                event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> SearchTerms.onResourcesReloaded()));
+                event.registerReloadListener((ResourceManagerReloadListener) resourceManager -> {
+                    SearchTerms.onResourcesReloaded();
+                    // 044: the names of the backpack's preset tags are in the current language
+                    ItemFacts.invalidate();
+                }));
         FloatingPanelEvents.init();
         // 020: tell the player in chat when NeoForge had to set a broken config file aside.
         modEventBus.addListener(ConfigFileWatch::onLoading);

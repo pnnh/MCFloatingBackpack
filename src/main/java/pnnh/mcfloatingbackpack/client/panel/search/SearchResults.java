@@ -21,6 +21,10 @@ public final class SearchResults {
         if (query.isEmpty()) {
             return null;
         }
+        if (query.command().type() != SearchQuery.Command.Type.NONE) {
+            // 044: a command shows no cells (/hidden draws its own summary, an unknown command finds nothing)
+            return new int[0];
+        }
         int[] found = new int[slotCount];
         int count = 0;
         for (int slot = 0; slot < slotCount; slot++) {

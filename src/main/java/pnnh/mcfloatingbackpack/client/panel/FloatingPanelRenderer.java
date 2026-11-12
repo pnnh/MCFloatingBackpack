@@ -140,6 +140,18 @@ public final class FloatingPanelRenderer {
         }
         drawCloseButton(graphics, state);
         drawSnapshotButton(graphics, state, minecraft, mouseX, mouseY);
+        // 044: /hidden: the main area has no cells, its summary of the hidden items is written there; the whole 037 hint is the tooltip
+        PanelLayout.Rect mainArea = ClientBackpackView.get().layout().rect(PanelArea.MAIN);
+        // (not over the tag panel or the blacklist page, which cover the main area themselves)
+        if (SearchState.get().isOpen() && SearchState.get().command().type() == SearchQuery.Command.Type.HIDDEN
+                && !TagPanelState.get().isOpen() && !PickupPanelState.get().isOpen()) {
+            SearchRenderer.drawHiddenSummary(graphics, minecraft, mainArea);
+            List<HiddenHint.Line> hiddenLines = HiddenHint.lines(ClientBackpackView.get().rowView().hidden());
+            if (!hiddenLines.isEmpty() && mouseX >= mainArea.x() && mouseX < mainArea.x() + mainArea.w()
+                    && mouseY >= mainArea.y() && mouseY < mainArea.y() + mainArea.h()) {
+                drawHiddenHint(graphics, minecraft, hiddenLines, mouseX, mouseY);
+            }
+        }
         // 042: the magnifier, or the open search box in place of the number and the buttons
         SearchRenderer.render(graphics, state, minecraft, mouseX, mouseY);
         drawResizeHandle(graphics, state);

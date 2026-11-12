@@ -1,14 +1,19 @@
 package pnnh.mcfloatingbackpack.client.panel.search;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
+import pnnh.mcfloatingbackpack.client.panel.PanelLayout;
 import pnnh.mcfloatingbackpack.client.panel.PanelSlots;
 import pnnh.mcfloatingbackpack.client.panel.SearchBoxLayout;
 import pnnh.mcfloatingbackpack.client.panel.TitleBarLayout;
@@ -43,6 +48,66 @@ public final class SearchRenderer {
             drawBox(graphics, panel, minecraft, state, mouseX, mouseY);
         } else {
             drawMagnifier(graphics, panel, minecraft, mouseX, mouseY);
+        }
+    }
+
+    /**
+     * 044: {@code /hidden}: the main area has no cells, so the categories with hidden items are written into it, one entry per
+     * category ("Food: 3 slots hold items", the same words as 037's hint), headed by the title and ended by the hint when there is room
+     * ({@link HiddenSummaryFit}); with nothing hidden it says so. The text wraps to the area's width, so it fits even at 3 columns.
+     */
+    public static void drawHiddenSummary(GuiGraphics graphics, Minecraft minecraft, PanelLayout.Rect area) {
+        SearchState state = SearchState.get();
+        if (!state.isOpen() || state.command().type() != SearchQuery.Command.Type.HIDDEN) {
+            return;
+        }
+        Font font = minecraft.font;
+        int pad = 3;
+        int width = Math.max(1, area.w() - 2 * pad);
+        int lineHeight = font.lineHeight + 1;
+        int available = (area.h() - 2 * pad + 1) / lineHeight;
+
+        List<HiddenSummaryRows.Line> rows = state.hiddenRows(SearchContext.source());
+        List<FormattedCharSequence> body = new ArrayList<>();
+        if (rows.isEmpty()) {
+            // nothing is hidden at all, or something is and the words after /hidden let none of it through: two different things to say
+            String key = SearchContext.source().hiddenLines().isEmpty() ? ".search.hidden.none" : ".search.hidden.nomatch";
+            body.addAll(font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + key), width));
+        } else {
+            for (HiddenSummaryRows.Line row : rows) {
+                body.addAll(font.split(
+                        Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.line", row.displayName(), row.cells()), width));
+            }
+        }
+        List<FormattedCharSequence> title = rows.isEmpty()
+                ? List.of()
+                : font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.title"), width);
+        List<FormattedCharSequence> hint = rows.isEmpty()
+                ? List.of()
+                : font.split(Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".hidden.hint"), width);
+
+        HiddenSummaryFit.Plan plan = HiddenSummaryFit.fit(body.size(), title.size(), hint.size(), available);
+        int x = area.x() + pad;
+        int y = area.y() + pad;
+        if (plan.showTitle()) {
+            for (FormattedCharSequence line : title) {
+                graphics.drawString(font, line, x, y, COLOR_TEXT, false);
+                y += lineHeight;
+            }
+        }
+        for (int i = 0; i < plan.categoryLines(); i++) {
+            graphics.drawString(font, body.get(i), x, y, COLOR_TEXT, false);
+            y += lineHeight;
+        }
+        if (plan.ellipsis()) {
+            graphics.drawString(font, "…", x, y, COLOR_TEXT, false);
+            y += lineHeight;
+        }
+        if (plan.showHint()) {
+            for (FormattedCharSequence line : hint) {
+                graphics.drawString(font, line, x, y, COLOR_DIM, false);
+                y += lineHeight;
+            }
         }
     }
 
@@ -122,6 +187,13 @@ public final class SearchRenderer {
         if (panel.hitsSearchClear(mouseX, mouseY)) {
             graphics.renderTooltip(
                     font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".search.clear"), mouseX, mouseY);
+        } else if (state.command().type() == SearchQuery.Command.Type.UNKNOWN && panel.hitsSearchBox(mouseX, mouseY)) {
+            // 044: a command that does not exist finds nothing; say what can be typed
+            graphics.renderTooltip(
+                    font,
+                    Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".search.unknown_command", state.command().raw()),
+                    mouseX,
+                    mouseY);
         } else if (state.isFiltering() && panel.hitsSearchBox(mouseX, mouseY)) {
             graphics.renderTooltip(
                     font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".search.count", count), mouseX, mouseY);

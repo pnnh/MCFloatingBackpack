@@ -82,6 +82,7 @@ class SearchQueryTest {
 
     @Test
     void theFutureSymbolsAreOrdinaryCharactersForNow() {
-        assertEquals("@iron,#x,/hidden", show("@iron #x /hidden"));
+        // 044 made the leading @ and # prefixes (their texts are what show() prints); a "/hidden" in the middle is still a word
+        assertEquals("iron,x,/hidden", show("@iron #x /hidden"));
     }
 }

@@ -10,6 +10,16 @@ import java.util.List;
 public interface TextMatcher {
     boolean contains(String needleLowerCase);
 
+    /** 044: whether the item belongs to a mod the needle names ({@code @mod}). Nothing knows about mods unless it says so. */
+    default boolean inMod(String needleLowerCase) {
+        return false;
+    }
+
+    /** 044: whether the item has a tag the needle names ({@code #tag}). Nothing knows about tags unless it says so. */
+    default boolean hasTag(String needleLowerCase) {
+        return false;
+    }
+
     /** Plain substring matching against already lower-cased texts: true when any of them contains the needle. */
     static TextMatcher ofTexts(List<String> lowerCaseTexts) {
         return needle -> {

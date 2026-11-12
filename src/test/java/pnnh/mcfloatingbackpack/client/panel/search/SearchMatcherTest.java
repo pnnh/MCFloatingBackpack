@@ -76,9 +76,12 @@ class SearchMatcherTest {
     }
 
     @Test
-    void theSymbolsOf044AreOrdinaryCharactersHere() {
+    void aPlainMatcherKnowsNothingAboutModsAndTagsSoThePrefixesOf044Fail() {
+        // 042 treated @ and # as ordinary characters; 044 made them prefixes, and a TextMatcher.ofTexts knows no mods or tags
         assertFalse(hit("@minecraft", "stone"));
-        assertTrue(hit("@minecraft", "a@minecraft item"));
+        assertFalse(hit("@minecraft", "a@minecraft item"));
         assertFalse(hit("#logs", "oak log"));
+        // in the middle of a word they are still ordinary characters
+        assertTrue(hit("a@minecraft", "a@minecraft item"));
     }
 }
