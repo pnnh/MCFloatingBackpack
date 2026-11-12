@@ -84,7 +84,7 @@ class ItemTooltipWiringTest {
             }
             assertFalse(keys.stream().anyMatch(k -> k.contains("item.tooltip") || k.contains("itemtooltip")), file);
         }
-        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"17\")"));
+        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"18\")"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count());
         for (String name : List.of("ItemTooltipRules")) {
             assertFalse(read(SRC.resolve("client/panel/" + name + ".java")).contains("PacketDistributor"));

@@ -3,11 +3,12 @@ package pnnh.mcfloatingbackpack.client.panel;
 /**
  * 042: where everything in the floating panel's title bar goes, for a given panel width: the tier icon at the left (008, always), the
  * backpack's number after it (026), and at the right, from the right edge in: the close button (007, left out at the smallest size),
- * the snapshot button (031) and the magnifier that opens the search box. While the search box is open it takes everything between
- * the tier icon and the right-hand end (the close button when there is one): number, magnifier and snapshot button are not shown.
+ * the snapshot button (031), the magnifier that opens the search box and (047) the sort button. While the search box is open it takes
+ * everything between the tier icon and the right-hand end (the close button when there is one): number, sort button, magnifier and
+ * snapshot button are not shown.
  *
  * <p>The close button is left out by the caller (it asks for the smallest size). When the bar is too narrow the rest give way in
- * this order: snapshot button, then the number's room; the magnifier is always there. Pure arithmetic with no Minecraft types; all x
+ * this order: snapshot button, then the number's room; the magnifier and the sort button are always there. Pure arithmetic with no Minecraft types; all x
  * values are absolute (the panel's left edge is {@code panelX}).
  *
  * @param hasClose whether the close button is shown
@@ -15,6 +16,7 @@ package pnnh.mcfloatingbackpack.client.panel;
  * @param hasSnapshot whether the snapshot button is shown
  * @param snapshotLeft its left edge
  * @param searchLeft the magnifier's left edge (shown whenever the box is not open)
+ * @param sortLeft the sort button's left edge, left of the magnifier (shown whenever the box is not open)
  * @param textRightLimit where the number must stop: the left edge of the leftmost button shown
  * @param boxLeft the search box's left edge while it is open
  * @param boxRight its right edge (exclusive)
@@ -25,6 +27,7 @@ public record TitleBarLayout(
         boolean hasSnapshot,
         int snapshotLeft,
         int searchLeft,
+        int sortLeft,
         int textRightLimit,
         int boxLeft,
         int boxRight) {
@@ -43,9 +46,11 @@ public record TitleBarLayout(
 
         int snapshotLeft = edge - BUTTON_SIZE;
         int searchWithSnapshot = snapshotLeft - GAP - BUTTON_SIZE;
-        boolean hasSnapshot = searchWithSnapshot - TitleIdLayout.MARGIN - textStart >= MIN_TEXT;
+        int sortWithSnapshot = searchWithSnapshot - GAP - BUTTON_SIZE;
+        boolean hasSnapshot = sortWithSnapshot - TitleIdLayout.MARGIN - textStart >= MIN_TEXT;
         int searchLeft = hasSnapshot ? searchWithSnapshot : snapshotLeft;
-        // 3 columns still have 54 pixels for the number with everything shown, so even there nothing has to give way
-        return new TitleBarLayout(showClose, closeLeft, hasSnapshot, snapshotLeft, searchLeft, searchLeft, textStart, edge);
+        int sortLeft = searchLeft - GAP - BUTTON_SIZE;
+        // 3 columns still have more than 24 pixels for the number with everything shown, so even there nothing has to give way
+        return new TitleBarLayout(showClose, closeLeft, hasSnapshot, snapshotLeft, searchLeft, sortLeft, sortLeft, textStart, edge);
     }
 }

@@ -137,6 +137,29 @@ public final class BackpackInventory {
                 (written, index) -> setStackInSlot(index, written));
     }
 
+    /**
+     * 047: tidies the main area (the tier capacity's cells and the cells of the visible rows): stacks of one kind are merged, the kinds
+     * are put in registry order and every stack goes where {@link BackpackSorter} says (the rows that take it first, then the tier
+     * capacity's cells, the universal rows last). Nothing else is touched: not the tool areas, the hidden rows, the cursor, the tags,
+     * the trash or the pickup blacklist. Returns false, with nothing changed, when it cannot be done without losing or inventing
+     * anything.
+     */
+    public boolean sortMain() {
+        List<ItemStack> before = new ArrayList<>(size());
+        for (int slot = 0; slot < size(); slot++) {
+            before.add(items.getStackInSlot(slot).copy());
+        }
+        List<ItemStack> after = BackpackSorter.sort(
+                before, baseCapacity, visibleCategories, new ItemCategoryMatcher(tags), ItemStackTransferOps.INSTANCE, ItemSortOrder.INSTANCE);
+        if (after == null) {
+            return false;
+        }
+        for (int slot = 0; slot < after.size(); slot++) {
+            items.setStackInSlot(slot, after.get(slot));
+        }
+        return true;
+    }
+
     /** Replaces the rows: resizes the main area to the tier capacity plus the visible rows and fills their cells. */
     private void applyRows(RowSet<ItemStack> rows) {
         List<ItemStack> base = new ArrayList<>(baseCapacity);

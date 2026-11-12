@@ -264,6 +264,11 @@ public final class FloatingPanelState {
         return hitsButton(titleBar().searchLeft(), mouseX, mouseY);
     }
 
+    /** 047: the sort button, left of the magnifier (only drawn and hit while the search box is closed: the caller checks). */
+    public boolean hitsSortButton(double mouseX, double mouseY) {
+        return hitsButton(titleBar().sortLeft(), mouseX, mouseY);
+    }
+
     private boolean hitsButton(int left, double mouseX, double mouseY) {
         int y1 = posY + 2;
         return mouseX >= left

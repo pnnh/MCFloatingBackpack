@@ -16,6 +16,7 @@ import pnnh.mcfloatingbackpack.client.snapshot.SnapshotClient;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.search.SearchInput;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
@@ -28,6 +29,7 @@ import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.network.BackpackClickPayload;
+import pnnh.mcfloatingbackpack.network.BackpackSortPayload;
 
 /**
  * Hit-testing, panel drag, and slot clicks for the floating backpack.
@@ -116,6 +118,12 @@ public final class FloatingPanelInput {
             // 042: the magnifier, the clear button and the box itself come before the snapshot and close buttons and the drag
             // bar: a press in the box places the caret, it never drags the panel.
             if (!isRight && SearchInput.onPress(state, mouseX, mouseY)) {
+                return true;
+            }
+            // 047: the sort button, left of the magnifier; the open search box has taken its place then. A press is taken even when it
+            // cannot be used (something is held), so it never falls through to the drag bar.
+            if (!isRight && !SearchState.get().isOpen() && state.hitsSortButton(mouseX, mouseY)) {
+                sortBackpack();
                 return true;
             }
             // Close button and resize handle sit on/inside the drag bar and body respectively, so
@@ -376,5 +384,19 @@ public final class FloatingPanelInput {
     private static void finishResize(FloatingPanelState state) {
         state.endResize();
         FloatingPanelConfig.saveFrom(state);
+    }
+
+    /**
+     * 047: asks the server to tidy the backpack: merge the stacks, put them in order, the category rows first. Nothing is sent while
+     * something is held on the cursor (the server refuses then too); the selection is cleared because the cells change under it.
+     * No prediction: what the panel shows next is the server's answer.
+     */
+    private static void sortBackpack() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (!FloatingPanelRenderer.cursorStack(minecraft).isEmpty()) {
+            return;
+        }
+        PanelSelection.get().clear();
+        PacketDistributor.sendToServer(new BackpackSortPayload());
     }
 }

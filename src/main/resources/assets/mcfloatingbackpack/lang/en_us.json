@@ -151,6 +151,7 @@
   "key.mcfloatingbackpack.snapshots": "Backpack snapshots",
   "panel.mcfloatingbackpack.snapshot.tooltip": "Backpack snapshots",
   "panel.mcfloatingbackpack.search.tooltip": "Search",
+  "panel.mcfloatingbackpack.sort.tooltip": "Sort backpack",
   "panel.mcfloatingbackpack.search.clear": "Clear search (Esc)",
   "panel.mcfloatingbackpack.search.placeholder": "Search...",
   "panel.mcfloatingbackpack.search.count": "%s found",

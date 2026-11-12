@@ -83,7 +83,7 @@ class GreyCellWiringTest {
         String rules = read(SRC.resolve("client/panel/GreyCellRules.java"));
         assertFalse(rules.contains("net.minecraft"));
         assertFalse(rules.contains("net.neoforged"));
-        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"17\")"));
+        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"18\")"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count());
     }
 }

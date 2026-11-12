@@ -96,6 +96,8 @@ public final class FloatingPanelRenderer {
     private static final int COLOR_CLOSE_BUTTON = 0xFFB33A3A;
     private static final int COLOR_CLOSE_GLYPH = 0xFFFFFFFF;
     private static final int COLOR_SNAPSHOT_BUTTON = 0xFF3A6EA5;
+    /** 047: the sort button: violet, apart from the green magnifier, the blue snapshot button and the red close button. */
+    private static final int COLOR_SORT_BUTTON = 0xFF7B5FB5;
     private static final int COLOR_RESIZE_GRIP = 0xFF555555;
     /** 026: the backpack's number in the title bar. */
     private static final int COLOR_TITLE_ID = 0xFF404040;
@@ -142,6 +144,8 @@ public final class FloatingPanelRenderer {
         }
         drawCloseButton(graphics, state);
         drawSnapshotButton(graphics, state, minecraft, mouseX, mouseY);
+        // 047: the sort button, left of the magnifier
+        drawSortButton(graphics, state, minecraft, mouseX, mouseY);
         // 044: /hidden: the main area has no cells, its summary of the hidden items is written there; the whole 037 hint is the tooltip
         PanelLayout.Rect mainArea = ClientBackpackView.get().layout().rect(PanelArea.MAIN);
         // (not over the tag panel or the blacklist page, which cover the main area themselves)
@@ -629,6 +633,28 @@ public final class FloatingPanelRenderer {
         if (state.hitsSnapshotButton(mouseX, mouseY)) {
             graphics.renderTooltip(
                     minecraft.font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".snapshot.tooltip"), mouseX, mouseY);
+        }
+    }
+
+    /**
+     * 047: the sort button, left of the magnifier, drawn in code (three bars getting shorter, on a violet button; no texture). Geometry
+     * must match {@link FloatingPanelState#hitsSortButton}; the open search box takes its place.
+     */
+    private static void drawSortButton(GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
+        if (SearchState.get().isOpen()) {
+            return;
+        }
+        int size = TitleBarLayout.BUTTON_SIZE;
+        int x1 = state.titleBar().sortLeft();
+        int y1 = state.getPosY() + 2;
+        graphics.fill(x1, y1, x1 + size, y1 + size, COLOR_SORT_BUTTON);
+        graphics.fill(x1 + 2, y1 + 2, x1 + size - 2, y1 + 3, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 4, x1 + size - 4, y1 + 5, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 6, x1 + size - 6, y1 + 7, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 8, x1 + 4, y1 + 9, COLOR_CLOSE_GLYPH);
+        if (state.hitsSortButton(mouseX, mouseY)) {
+            graphics.renderTooltip(
+                    minecraft.font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".sort.tooltip"), mouseX, mouseY);
         }
     }
 

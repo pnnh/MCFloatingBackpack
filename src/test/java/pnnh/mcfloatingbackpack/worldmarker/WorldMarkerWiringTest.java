@@ -115,7 +115,7 @@ class WorldMarkerWiringTest {
     @Test
     void noConfigCommandLanguageKeyOrNetworkPacketWasAdded() throws IOException {
         String network = src("network/BackpackNetwork.java");
-        assertTrue(network.contains("versioned(\"17\")"));
+        assertTrue(network.contains("versioned(\"18\")"));
         try (Stream<Path> files = Files.walk(SRC.resolve("worldmarker"))) {
             for (Path file : files.filter(p -> p.toString().endsWith(".java")).toList()) {
                 String text = read(file);

@@ -97,8 +97,8 @@ class SearchPrefixResourcesTest {
     }
 
     @Test
-    void theProtocolIsStill17AndTheModsTomlAndTheConfigAreUntouched() throws IOException {
-        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"17\")"));
+    void theProtocolIs18AndTheModsTomlAndTheConfigAreUntouched() throws IOException {
+        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"18\")"));
         String toml = read(Path.of("src/main/templates/META-INF/neoforge.mods.toml"));
         assertFalse(toml.contains("search"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count(),

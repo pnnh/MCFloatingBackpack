@@ -109,7 +109,7 @@ class SearchTermsContractTest {
         String toml = read(Path.of("src/main/templates/META-INF/neoforge.mods.toml"));
         assertFalse(toml.contains("search"), "no dependency or entry was added for the search terms API");
         String network = read(Path.of("src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java"));
-        assertTrue(network.contains("\"17\""), "the protocol is still 17");
+        assertTrue(network.contains("\"18\""), "the protocol is 18 (047 added the sort request)");
     }
 
     @Test

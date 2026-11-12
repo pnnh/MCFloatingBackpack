@@ -67,7 +67,7 @@ class VersionCheckResourcesTest {
     void theTwoPayloadsAreOptionalAndRegisteredApartFromTheOthers() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
         // the protocol number of the others is as it was
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"17\")"));
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"18\")"));
         // the version check has a registrar of its own, optional, with a version that never changes
         assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"1\").optional()"));
         int own = network.indexOf("PayloadRegistrar versionCheck");
