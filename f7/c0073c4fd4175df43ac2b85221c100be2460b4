@@ -1,0 +1,46 @@
+src/main/java/pnnh/mcfloatingbackpack/client/panel/search/SearchRenderer.java
+  s_9aefe4a2760245::t_7de28f83d20657 39-42,94-96,99-100,104-105,108-109,113-114,117-129
+  s_9aefe4a2760245::t_539aace56cc92a 130
+specs/046-search-grey-cells/plan.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-58
+src/test/java/pnnh/mcfloatingbackpack/resources/GreyCellWiringTest.java
+  s_9aefe4a2760245::t_7de28f83d20657 1-89
+specs/046-search-grey-cells/checklists/requirements.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-35
+docs/plan/backpack-search.md
+  s_9aefe4a2760245::t_7de28f83d20657 70-74
+specs/046-search-grey-cells/DELIVERY.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-60
+specs/046-search-grey-cells/spec.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-116
+.specify/feature.json
+  s_9aefe4a2760245::t_7de28f83d20657 2
+specs/046-search-grey-cells/tasks.md
+  s_9aefe4a2760245::t_7de28f83d20657 1-40
+src/main/java/pnnh/mcfloatingbackpack/client/panel/GreyCellRules.java
+  s_9aefe4a2760245::t_7de28f83d20657 1-23
+src/test/java/pnnh/mcfloatingbackpack/client/panel/GreyCellRulesTest.java
+  s_9aefe4a2760245::t_7de28f83d20657 1-50
+README.md
+  s_9aefe4a2760245::t_5342a01574c21a 39
+README_CN.md
+  s_9aefe4a2760245::t_32a4fde5eaf562 39
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_313dcfddf19d9f 71-72,341-345
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f7c0073c4fd4175df43ac2b85221c100be2460b4",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
