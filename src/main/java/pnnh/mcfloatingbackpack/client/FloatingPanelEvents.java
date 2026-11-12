@@ -41,6 +41,8 @@ import pnnh.mcfloatingbackpack.client.panel.PanelSelectionInput;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchInput;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
@@ -109,6 +111,7 @@ public final class FloatingPanelEvents {
             return;
         }
         state.setVisible(false);
+        SearchState.get().reset();
         PickupPanelState.get().collapse();
         TrashPanelState.get().collapse();
         TrashConfirmState.get().cancel();
@@ -123,6 +126,7 @@ public final class FloatingPanelEvents {
         QuickTransferInput.reset();
         PanelDragInput.reset();
         PanelSelectionInput.reset();
+        SearchState.get().reset();
         TagPanelState.get().reset();
         TagOverviewState.get().reset();
         PickupPanelState.get().reset();
@@ -150,6 +154,7 @@ public final class FloatingPanelEvents {
     @SubscribeEvent
     public static void onLoggingOut(ClientPlayerNetworkEvent.LoggingOut event) {
         HostScreenManager.reset();
+        SearchState.get().reset();
         TagPanelState.get().reset();
         TagOverviewState.get().reset();
         PickupPanelState.get().reset();
@@ -460,6 +465,12 @@ public final class FloatingPanelEvents {
             event.setCanceled(true);
             return;
         }
+        // 042: the search box in the title bar takes the keyboard the same way (and Esc is its own: clear and close).
+        if (hostsPanel(event.getScreen()) && SearchState.get().isFocused()) {
+            SearchInput.onKeyPressed(event.getKeyCode(), event.getScanCode(), event.getModifiers());
+            event.setCanceled(true);
+            return;
+        }
         if (hostsPanel(event.getScreen())
                 && (TagPanelState.get().isEditing() || TagOverviewState.get().isFilterEditing())) {
             // 025: in the overview the keys go to its own text box (the filter box, or the detail page's add box).
@@ -500,13 +511,20 @@ public final class FloatingPanelEvents {
         if (hostsPanel(event.getScreen())
                 && (TagPanelState.get().isEditing()
                         || PickupPanelState.get().isEditing()
-                        || TagOverviewState.get().isFilterEditing())) {
+                        || TagOverviewState.get().isFilterEditing()
+                        || SearchState.get().isFocused())) {
             event.setCanceled(true);
         }
     }
 
     @SubscribeEvent
     public static void onScreenCharTyped(ScreenEvent.CharacterTyped.Pre event) {
+        // 042: the search box takes every character, any language (a code point, not a char).
+        if (hostsPanel(event.getScreen()) && SearchState.get().isFocused()) {
+            SearchInput.onCharTyped(event.getCodePoint());
+            event.setCanceled(true);
+            return;
+        }
         if (hostsPanel(event.getScreen())
                 && (TagPanelState.get().isEditing() || TagOverviewState.get().isFilterEditing())) {
             if (TagOverviewState.get().view() != TagOverviewState.View.SELECTION) {

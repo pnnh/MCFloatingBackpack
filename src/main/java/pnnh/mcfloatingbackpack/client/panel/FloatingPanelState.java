@@ -34,6 +34,8 @@ public final class FloatingPanelState {
     private int dragOffsetX;
     private int dragOffsetY;
     private int totalRows = 4;
+    /** 042: see {@link #getSearchSlots()}. */
+    private int[] searchSlots;
     private int visibleRows = 4;
     private int visibleCols = PanelSlots.COLS;
     private int scrollRow;
@@ -214,13 +216,22 @@ public final class FloatingPanelState {
         return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
-    /** Fixed-size close control near the top-right of the drag bar. */
+    /** 042: the close button is left out at the smallest size (3 main columns): B and Esc close the panel as well. */
+    public boolean showClose() {
+        return visibleCols > MIN_VISIBLE_CELLS;
+    }
+
+    /** Fixed-size close control near the top-right of the drag bar; there is none at the smallest size. */
     public boolean hitsCloseButton(double mouseX, double mouseY) {
-        int x2 = posX + width - 3;
-        int x1 = x2 - CLOSE_BUTTON_SIZE;
+        if (!showClose()) {
+            return false;
+        }
+        int x1 = titleBar().closeLeft();
         int y1 = posY + 2;
-        int y2 = y1 + CLOSE_BUTTON_SIZE;
-        return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
+        return mouseX >= x1
+                && mouseX < x1 + CLOSE_BUTTON_SIZE
+                && mouseY >= y1
+                && mouseY < y1 + CLOSE_BUTTON_SIZE;
     }
 
     /** Fixed-size backpack-tier icon at the top-left of the drag bar. */
@@ -232,33 +243,59 @@ public final class FloatingPanelState {
         return mouseX >= x1 && mouseX < x2 && mouseY >= y1 && mouseY < y2;
     }
 
-    /** 026: the left edge of the close button. */
+    /** 026: the left edge of the close button (042: meaningless when {@link #showClose()} is false). */
     public int closeButtonLeft() {
-        return posX + width - 3 - CLOSE_BUTTON_SIZE;
+        return titleBar().closeLeft();
     }
 
-    /** 031: the title bar's right end: the close button, the snapshot button when there is room, and where the number must stop. */
-    public TitleButtonsLayout titleButtons() {
-        return TitleButtonsLayout.of(posX, width);
+    /** 042: where the title bar's pieces go at the panel's current position and width (the close button is left out at 3 columns). */
+    public TitleBarLayout titleBar() {
+        return TitleBarLayout.of(posX, width, showClose());
     }
 
-    /** 031: the snapshot button, left of the close button; never hit when the bar is too narrow to show it. */
+    /** 031: the snapshot button; never hit when the bar is too narrow to show it. */
     public boolean hitsSnapshotButton(double mouseX, double mouseY) {
-        TitleButtonsLayout buttons = titleButtons();
-        if (!buttons.hasSnapshot()) {
-            return false;
-        }
-        int x1 = buttons.snapshotLeft();
+        TitleBarLayout bar = titleBar();
+        return bar.hasSnapshot() && hitsButton(bar.snapshotLeft(), mouseX, mouseY);
+    }
+
+    /** 042: the magnifier, left of the snapshot button (only drawn and hit while the search box is closed: the caller checks). */
+    public boolean hitsSearchButton(double mouseX, double mouseY) {
+        return hitsButton(titleBar().searchLeft(), mouseX, mouseY);
+    }
+
+    private boolean hitsButton(int left, double mouseX, double mouseY) {
         int y1 = posY + 2;
-        return mouseX >= x1
-                && mouseX < x1 + TitleButtonsLayout.BUTTON_SIZE
+        return mouseX >= left
+                && mouseX < left + TitleBarLayout.BUTTON_SIZE
                 && mouseY >= y1
-                && mouseY < y1 + TitleButtonsLayout.BUTTON_SIZE;
+                && mouseY < y1 + TitleBarLayout.BUTTON_SIZE;
+    }
+
+    /** 042: the open search box: from the tier icon to the close button (or the right end), as tall as the buttons. */
+    public boolean hitsSearchBox(double mouseX, double mouseY) {
+        TitleBarLayout bar = titleBar();
+        int y1 = posY + 2;
+        return mouseX >= bar.boxLeft()
+                && mouseX < bar.boxRight()
+                && mouseY >= y1
+                && mouseY < y1 + TitleBarLayout.BUTTON_SIZE;
+    }
+
+    /** 042: the clear button inside the open search box. */
+    public boolean hitsSearchClear(double mouseX, double mouseY) {
+        TitleBarLayout bar = titleBar();
+        int left = bar.boxRight() - SearchBoxLayout.RIGHT_INSET - SearchBoxLayout.CLEAR_SIZE;
+        int y1 = posY + 2;
+        return mouseX >= left
+                && mouseX < left + SearchBoxLayout.CLEAR_SIZE
+                && mouseY >= y1
+                && mouseY < y1 + TitleBarLayout.BUTTON_SIZE;
     }
 
     /** 026: the backpack's number in the title bar, to the right of the tier icon ({@code textWidth}: the whole number's width). */
     public boolean hitsTitleId(double mouseX, double mouseY, int textWidth) {
-        TitleIdLayout layout = TitleIdLayout.of(posX, titleButtons().textRightLimit(), textWidth);
+        TitleIdLayout layout = TitleIdLayout.of(posX, titleBar().textRightLimit(), textWidth);
         int x1 = layout.x();
         int x2 = x1 + Math.min(textWidth, layout.maxWidth());
         int y1 = posY + 1;
@@ -407,11 +444,34 @@ public final class FloatingPanelState {
      */
     public PanelLayout layoutModel(int[] counts) {
         return PanelLayout.of(posX, posY, visibleCols, visibleRows, counts,
-                new int[] {scrollRow, toolScroll[1], toolScroll[2], toolScroll[3]});
+                new int[] {scrollRow, toolScroll[1], toolScroll[2], toolScroll[3]}, searchSlots);
+    }
+
+    /**
+     * 042: the slots the main area shows while a search is on (ascending backpack slot numbers), or null when it shows them all.
+     * Only the main area's scrolling follows it; {@link #getTotalRows()} and so the panel's size and shape stay what they were.
+     * The array is read, never changed.
+     */
+    public int[] getSearchSlots() {
+        return searchSlots;
+    }
+
+    public void setSearchSlots(int[] slots) {
+        this.searchSlots = slots;
+        clampScroll();
+    }
+
+    /** 042: the rows the main area scrolls over: the whole backpack's, or the search results' packed over the visible columns. */
+    private int mainScrollRows() {
+        if (searchSlots == null) {
+            return totalRows;
+        }
+        int cols = Math.max(1, visibleCols);
+        return Math.max(1, (searchSlots.length + cols - 1) / cols);
     }
 
     private void clampScroll() {
-        scrollRow = AxisScroll.clamp(scrollRow, totalRows, Math.max(1, visibleRows));
+        scrollRow = AxisScroll.clamp(scrollRow, mainScrollRows(), Math.max(1, visibleRows));
         int sideVisible = Math.max(1, visibleRows);
         toolScroll[PanelArea.LEFT.ordinal()] =
                 AxisScroll.clamp(toolScroll[PanelArea.LEFT.ordinal()], toolCount[PanelArea.LEFT.ordinal()], sideVisible);

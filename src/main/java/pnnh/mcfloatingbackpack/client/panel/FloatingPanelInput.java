@@ -15,6 +15,7 @@ import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
 import pnnh.mcfloatingbackpack.client.snapshot.SnapshotClient;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
@@ -106,8 +107,15 @@ public final class FloatingPanelInput {
                     && !ClientBackpackView.get().layout().rect(PanelArea.MAIN).contains(mouseX, mouseY)) {
                 PickupPanelState.get().stopEditing();
             }
+            // 042: a press anywhere but in the search box takes the keyboard away from it (its text and results stay).
+            SearchInput.loseFocusIfOutside(state, mouseX, mouseY);
             // 021: the trash can panel lies outside the floating panel's rectangle; a press on it is claimed here.
             if (TrashPanelInput.onPress(button, mouseX, mouseY)) {
+                return true;
+            }
+            // 042: the magnifier, the clear button and the box itself come before the snapshot and close buttons and the drag
+            // bar: a press in the box places the caret, it never drags the panel.
+            if (!isRight && SearchInput.onPress(state, mouseX, mouseY)) {
                 return true;
             }
             // Close button and resize handle sit on/inside the drag bar and body respectively, so

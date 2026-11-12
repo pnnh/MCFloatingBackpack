@@ -16,6 +16,10 @@ import net.neoforged.api.distmarker.OnlyIn;
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelRenderer;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchContext;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchQuery;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchRenderer;
+import pnnh.mcfloatingbackpack.client.panel.search.SearchState;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewRenderer;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
@@ -136,6 +140,8 @@ public final class FloatingPanelRenderer {
         }
         drawCloseButton(graphics, state);
         drawSnapshotButton(graphics, state, minecraft, mouseX, mouseY);
+        // 042: the magnifier, or the open search box in place of the number and the buttons
+        SearchRenderer.render(graphics, state, minecraft, mouseX, mouseY);
         drawResizeHandle(graphics, state);
         drawTitleIcon(graphics, state, minecraft, mouseX, mouseY);
         drawRowTooltip(graphics, minecraft, mouseX, mouseY);
@@ -208,7 +214,10 @@ public final class FloatingPanelRenderer {
         } else if (state.hitsTitleIcon(mouseX, mouseY)) {
             graphics.renderTooltip(minecraft.font, titleFor(ClientBackpackView.get().baseCapacity()), mouseX, mouseY);
         }
-        drawTitleId(graphics, state, minecraft, mouseX, mouseY);
+        // 042: the open search box takes the number's place
+        if (!SearchState.get().isOpen()) {
+            drawTitleId(graphics, state, minecraft, mouseX, mouseY);
+        }
     }
 
     /** 037: the yellow dot: a 5 by 5 square without its corners, with a dark outline so it shows on the icon and on the title bar. */
@@ -258,7 +267,7 @@ public final class FloatingPanelRenderer {
         }
         String id = identity.id();
         int textWidth = minecraft.font.width(id);
-        TitleIdLayout layout = TitleIdLayout.of(state.getPosX(), state.titleButtons().textRightLimit(), textWidth);
+        TitleIdLayout layout = TitleIdLayout.of(state.getPosX(), state.titleBar().textRightLimit(), textWidth);
         if (layout.maxWidth() <= 0) {
             return;
         }
@@ -298,6 +307,11 @@ public final class FloatingPanelRenderer {
         // 037: the rows of the category extensions, once per frame; without rows none of the code that uses it runs.
         RowLayout rows = rowLayout(view);
         ItemStack held = rows.hasRows() ? cursorStack(minecraft) : ItemStack.EMPTY;
+        // 042: while a query is on the main area shows the found slots packed together, so the rows' lines and corners (which
+        // say where a row begins and ends in the full grid) are left out; and the cells that match are framed
+        SearchState search = SearchState.get();
+        boolean searching = search.isFiltering();
+        SearchQuery query = searching ? search.query() : SearchQuery.empty();
         for (PanelArea area : PanelArea.values()) {
             if (area == PanelArea.MAIN && (TagPanelState.get().isOpen() || PickupPanelState.get().isOpen())) {
                 continue;
@@ -315,7 +329,7 @@ public final class FloatingPanelRenderer {
                 ItemStack stack = area == PanelArea.MAIN ? view.getStackInSlot(index) : view.getToolStack(area, index);
                 boolean ofARow = area == PanelArea.MAIN && rows.groupOf(index) >= 0;
                 if (ofARow) {
-                    drawRowDecor(graphics, rows, index, layout.cols(), sx, sy);
+                    drawRowDecor(graphics, rows, index, layout.cols(), sx, sy, searching);
                 }
                 // 013 drag preview and 014 selection only exist in the main area.
                 int previewIndex = area == PanelArea.MAIN && preview != null ? preview.slots().indexOf(index) : -1;
@@ -337,8 +351,16 @@ public final class FloatingPanelRenderer {
                     graphics.renderItem(stack, sx + 1, sy + 1);
                     graphics.renderItemDecorations(minecraft.font, stack, sx + 1, sy + 1);
                 }
+                // 042: a cell the query found (a cell kept as an empty place is not found any more); the tool areas are framed, never filtered
+                boolean found = searching
+                        && !query.isEmpty()
+                        && (area == PanelArea.MAIN ? !stack.isEmpty() : SearchContext.toolMatches(query, area, index));
+                if (found) {
+                    SearchRenderer.drawHitFrame(graphics, sx, sy);
+                }
                 if (area == PanelArea.MAIN && selection.contains(index)) {
-                    drawSelectionBorder(graphics, sx, sy);
+                    // a selected cell that is also found: the selection goes one pixel in, the frame of the find stays outside
+                    drawSelectionBorder(graphics, found ? sx + 1 : sx, found ? sy + 1 : sy, found ? PanelSlots.SLOT_SIZE - 2 : PanelSlots.SLOT_SIZE);
                 }
                 if (hovered != null && hovered.area() == area && hovered.index() == index) {
                     boolean denied = ofARow && !held.isEmpty() && !ClientPlacement.canPlace(view, index, held);
@@ -359,10 +381,13 @@ public final class FloatingPanelRenderer {
      * the corner of the row's first cell. The colour alone does not carry the category: the corner, the faint picture in an empty
      * cell and the tooltip say it too.
      */
-    private static void drawRowDecor(GuiGraphics graphics, RowLayout rows, int index, int cols, int sx, int sy) {
+    private static void drawRowDecor(GuiGraphics graphics, RowLayout rows, int index, int cols, int sx, int sy, boolean flat) {
         String category = rows.categoryOf(index);
         int size = PanelSlots.SLOT_SIZE;
         graphics.fill(sx + 1, sy + 1, sx + size - 1, sy + size - 1, CategoryStyle.fill(category));
+        if (flat) {
+            return;
+        }
         int edge = CategoryStyle.edge(category);
         if (rows.topEdge(index, cols)) {
             graphics.fill(sx, sy, sx + size, sy + 1, edge);
@@ -439,8 +464,12 @@ public final class FloatingPanelRenderer {
 
     /** One pixel frame just inside the slot. */
     private static void drawSelectionBorder(GuiGraphics graphics, int x, int y) {
-        int x2 = x + PanelSlots.SLOT_SIZE;
-        int y2 = y + PanelSlots.SLOT_SIZE;
+        drawSelectionBorder(graphics, x, y, PanelSlots.SLOT_SIZE);
+    }
+
+    private static void drawSelectionBorder(GuiGraphics graphics, int x, int y, int size) {
+        int x2 = x + size;
+        int y2 = y + size;
         graphics.fill(x, y, x2, y + 1, COLOR_SELECTED);
         graphics.fill(x, y2 - 1, x2, y2, COLOR_SELECTED);
         graphics.fill(x, y + 1, x + 1, y2 - 1, COLOR_SELECTED);
@@ -514,10 +543,14 @@ public final class FloatingPanelRenderer {
 
     /** Geometry must match {@link FloatingPanelState#hitsCloseButton}. */
     private static void drawCloseButton(GuiGraphics graphics, FloatingPanelState state) {
+        // 042: there is none at the smallest size (B and Esc close the panel)
+        if (!state.showClose()) {
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         int size = FloatingPanelState.CLOSE_BUTTON_SIZE;
-        int x2 = state.getPosX() + state.getWidth() - 3;
-        int x1 = x2 - size;
+        int x1 = state.titleBar().closeLeft();
+        int x2 = x1 + size;
         int y1 = state.getPosY() + 2;
         int y2 = y1 + size;
         graphics.fill(x1, y1, x2, y2, COLOR_CLOSE_BUTTON);
@@ -532,11 +565,12 @@ public final class FloatingPanelRenderer {
      * {@link FloatingPanelState#hitsSnapshotButton}; it is not drawn when the title bar is too narrow.
      */
     private static void drawSnapshotButton(GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
-        TitleButtonsLayout buttons = state.titleButtons();
-        if (!buttons.hasSnapshot()) {
+        TitleBarLayout buttons = state.titleBar();
+        // 042: the open search box takes the snapshot button's place
+        if (!buttons.hasSnapshot() || SearchState.get().isOpen()) {
             return;
         }
-        int size = TitleButtonsLayout.BUTTON_SIZE;
+        int size = TitleBarLayout.BUTTON_SIZE;
         int x1 = buttons.snapshotLeft();
         int y1 = state.getPosY() + 2;
         graphics.fill(x1, y1, x1 + size, y1 + size, COLOR_SNAPSHOT_BUTTON);

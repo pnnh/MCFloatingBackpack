@@ -92,6 +92,8 @@ public record BackpackSessionPayload(
             FloatingPanelState state = FloatingPanelState.get();
             // 025: a new session (possibly another backpack) or none: the tag overview starts from the selection view.
             TagOverviewState.get().resetView();
+            // 042: and so does the search box: nothing typed, nothing filtered.
+            pnnh.mcfloatingbackpack.client.panel.search.SearchState.get().reset();
             if (!payload.open()) {
                 state.setVisible(false);
                 state.setScrollRow(0);

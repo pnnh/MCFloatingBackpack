@@ -33,14 +33,17 @@ public final class PanelLayout {
     private final int rows;
     private final int[] counts;
     private final int[] scroll;
+    /** 042: the slots the main area shows while a search is on (ascending, packed from the top left); null = all of them. */
+    private final int[] mainMap;
 
-    private PanelLayout(int posX, int posY, int cols, int rows, int[] counts, int[] scroll) {
+    private PanelLayout(int posX, int posY, int cols, int rows, int[] counts, int[] scroll, int[] mainMap) {
         this.posX = posX;
         this.posY = posY;
         this.cols = Math.max(1, cols);
         this.rows = Math.max(1, rows);
         this.counts = counts.clone();
         this.scroll = scroll.clone();
+        this.mainMap = mainMap;
     }
 
     /**
@@ -50,7 +53,17 @@ public final class PanelLayout {
      * @param scroll scroll offset (in cells) of each area, indexed the same way
      */
     public static PanelLayout of(int posX, int posY, int cols, int rows, int[] counts, int[] scroll) {
-        return new PanelLayout(posX, posY, cols, rows, counts, scroll);
+        return new PanelLayout(posX, posY, cols, rows, counts, scroll, null);
+    }
+
+    /**
+     * 042: the same, with the main area showing only {@code mainMap}: cell {@code n} of the packed grid (scroll applied) is backpack
+     * slot {@code mainMap[n]}, and the area has as many slots as the map has entries. Everything that reads the layout (drawing, hit
+     * testing, scrolling) follows; what is sent to the server is still the backpack's own slot number. The array is read, never
+     * changed, and must not be changed by the caller afterwards. Null is the plain layout.
+     */
+    public static PanelLayout of(int posX, int posY, int cols, int rows, int[] counts, int[] scroll, int[] mainMap) {
+        return new PanelLayout(posX, posY, cols, rows, counts, scroll, mainMap);
     }
 
     /** Whole panel width: the main columns plus one column on each side. */
@@ -104,12 +117,15 @@ public final class PanelLayout {
     }
 
     public int slotCount(PanelArea area) {
+        if (area == PanelArea.MAIN && mainMap != null) {
+            return mainMap.length;
+        }
         return counts[area.ordinal()];
     }
 
     /** Virtual row count of the main area after reflowing its slots over the visible columns. */
     public int mainTotalRows() {
-        return Math.max(1, (counts[PanelArea.MAIN.ordinal()] + cols - 1) / cols);
+        return Math.max(1, (slotCount(PanelArea.MAIN) + cols - 1) / cols);
     }
 
     /** Largest scroll offset of the area: main and side columns scroll rows, the bottom row scrolls columns. */
@@ -136,6 +152,10 @@ public final class PanelLayout {
      * row by row ({@code row * cols + col}).
      */
     public int slotIndex(PanelArea area, int ordinal) {
+        if (area == PanelArea.MAIN && mainMap != null) {
+            int position = (ordinal / cols + scroll(area)) * cols + ordinal % cols;
+            return ordinal >= 0 && position >= 0 && position < mainMap.length ? mainMap[position] : -1;
+        }
         int index = switch (area) {
             case MAIN -> (ordinal / cols + scroll(area)) * cols + ordinal % cols;
             case LEFT, RIGHT, BOTTOM -> scroll(area) + ordinal;
