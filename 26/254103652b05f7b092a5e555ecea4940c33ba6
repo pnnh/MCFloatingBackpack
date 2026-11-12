@@ -1,0 +1,154 @@
+docs/plan/category-extensions.md
+  s_9aefe4a2760245::t_0c7f917a81872c 160-168
+src/test/java/pnnh/mcfloatingbackpack/client/panel/CategoryStyleTest.java
+  s_9aefe4a2760245::t_d0e336b992c760 26,77-115
+specs/051-more-categories/tasks.md
+  s_9aefe4a2760245::t_ca16baaaa584b1 1-16,18-20,28-32,38-42,46-50,54-56,62-75
+  s_9aefe4a2760245::t_a6a30b00bda6f2 17,21-27,33-37,43-45,51-53,57-61
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/building.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-160
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 32-39,89-97
+src/main/resources/assets/mcfloatingbackpack/models/item/meat_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/CategoryNames.java
+  s_9aefe4a2760245::t_9bf8eaeba889e0 6
+.specify/feature.json
+  s_9aefe4a2760245::t_30d5495f6aca9e 2
+src/main/java/pnnh/mcfloatingbackpack/inventory/tags/PresetTags.java
+  s_9aefe4a2760245::t_4fc56a9d9505d4 15-17
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_9aefe4a2760245::t_9bf8eaeba889e0 54
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/enchant.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-16
+specs/051-more-categories/checklists/requirements.md
+  s_9aefe4a2760245::t_5343116c3cda79 1-36
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionResourcesTest.java
+  s_9aefe4a2760245::t_d6f213e87bc3b1 29,48-57,122,213-214
+src/test/java/pnnh/mcfloatingbackpack/resources/ExtensionTagsResourcesTest.java
+  s_9aefe4a2760245::t_888c0089104e2c 4,45-79,98-100,118,132,154-183
+  s_9aefe4a2760245::t_866ecb55a7f47a 151-153
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/meat.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-29
+src/main/resources/assets/mcfloatingbackpack/models/item/storage_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/decor_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/resources/data/mcfloatingbackpack/recipe/meat_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/resources/data/mcfloatingbackpack/recipe/transport_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+specs/051-more-categories/data-model.md
+  s_9aefe4a2760245::t_9253db808af6a1 1-36
+specs/051-more-categories/contracts/recipes-and-assets.md
+  s_9aefe4a2760245::t_9253db808af6a1 1-11,13-54
+  s_9aefe4a2760245::t_c91efee2caacc9 12
+src/main/resources/assets/mcfloatingbackpack/models/item/plant_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ItemCategoryMatcher.java
+  s_9aefe4a2760245::t_4fc56a9d9505d4 64-66
+  s_9aefe4a2760245::t_2c55ddf9449ea6 63
+src/main/resources/data/mcfloatingbackpack/recipe/storage_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/resources/assets/mcfloatingbackpack/models/item/enchant_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/decor.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-71
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/natural.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-99
+specs/051-more-categories/research.md
+  s_9aefe4a2760245::t_81b05e3744a1ce 1-95
+src/main/resources/assets/mcfloatingbackpack/models/item/building_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+specs/051-more-categories/plan.md
+  s_9aefe4a2760245::t_3f4d4a7a609874 2,4-6,8,16,18,20,22,24,26,28,30,32,34-36,48-53,64-68,86-87,89-91
+  s_9aefe4a2760245::t_711c81de77c41c 1,3,7,9-15,17,19,21,23,25,27,29,31,33,37-47,54-63,69-85,88,92
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/CategoryNamesTest.java
+  s_9aefe4a2760245::t_866ecb55a7f47a 12
+src/test/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevisionTest.java
+  s_9aefe4a2760245::t_866ecb55a7f47a 11-12,20-21
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_9aefe4a2760245::t_866ecb55a7f47a 239,249
+src/main/resources/assets/mcfloatingbackpack/models/item/natural_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/storage.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-30
+src/main/resources/assets/mcfloatingbackpack/models/item/mobdrop_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/test/java/pnnh/mcfloatingbackpack/inventory/tags/PresetTagsTest.java
+  s_9aefe4a2760245::t_866ecb55a7f47a 14,17-18
+specs/051-more-categories/DELIVERY.md
+  s_9aefe4a2760245::t_a6a30b00bda6f2 1-56
+src/test/java/pnnh/mcfloatingbackpack/resources/TankWiringTest.java
+  s_9aefe4a2760245::t_866ecb55a7f47a 64-65
+specs/051-more-categories/spec.md
+  s_9aefe4a2760245::t_5343116c3cda79 1-35,37,39-75,79-81,83-216,218
+  s_9aefe4a2760245::t_4e7746a084993d 76-78
+  s_9aefe4a2760245::t_ae30539baed9e6 36,38
+  s_9aefe4a2760245::t_043c296972618c 82,217
+specs/051-more-categories/contracts/categories.md
+  s_9aefe4a2760245::t_26ebadd27a1b0d 1-14,16-32,34-59
+  s_9aefe4a2760245::t_b63cb32296032f 15
+  s_9aefe4a2760245::t_c91efee2caacc9 33
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionCategoriesTest.java
+  s_9aefe4a2760245::t_7149de56bc5924 41-42
+  s_9aefe4a2760245::t_866ecb55a7f47a 14-22,27-30
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/plant.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-69
+README_CN.md
+  s_9aefe4a2760245::t_0c7f917a81872c 31
+specs/051-more-categories/quickstart.md
+  s_9aefe4a2760245::t_ae30539baed9e6 1-52
+src/main/resources/data/mcfloatingbackpack/recipe/natural_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionCategories.java
+  s_9aefe4a2760245::t_4fc56a9d9505d4 6,14-16,19,21,25
+design/demo/tools/make_category_extension_icons.py
+  s_9aefe4a2760245::t_58abf27622c666 325-332,335,341-346,350
+  s_9aefe4a2760245::t_2c55ddf9449ea6 2,109,230-324,333-334,336-340,347-349,351-366,380-388,413-414,428,434,437
+src/main/resources/assets/mcfloatingbackpack/models/item/transport_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/mobdrop.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-62
+src/main/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevision.java
+  s_9aefe4a2760245::t_4fc56a9d9505d4 10,15
+README.md
+  s_9aefe4a2760245::t_0c7f917a81872c 31
+src/main/java/pnnh/mcfloatingbackpack/client/panel/CategoryStyle.java
+  s_9aefe4a2760245::t_4fc56a9d9505d4 31-41
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 32-39,89-97
+src/main/resources/assets/mcfloatingbackpack/models/item/decor_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-6
+src/test/java/pnnh/mcfloatingbackpack/inventory/extension/RowSetTest.java
+  s_9aefe4a2760245::t_866ecb55a7f47a 31-32
+  s_9aefe4a2760245::t_7149de56bc5924 38-39
+src/main/resources/data/mcfloatingbackpack/recipe/mobdrop_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientPlacement.java
+  s_9aefe4a2760245::t_9bf8eaeba889e0 55
+src/main/resources/data/mcfloatingbackpack/recipe/plant_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/resources/data/mcfloatingbackpack/recipe/building_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+src/main/resources/data/mcfloatingbackpack/tags/item/extension/transport.json
+  s_9aefe4a2760245::t_623bcd09f46f32 1-27
+src/main/resources/data/mcfloatingbackpack/recipe/enchant_extension.json
+  s_9aefe4a2760245::t_7b75a000d15bf5 1-30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "26254103652b05f7b092a5e555ecea4940c33ba6",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
