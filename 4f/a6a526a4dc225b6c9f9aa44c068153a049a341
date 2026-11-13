@@ -1,0 +1,218 @@
+src/test/java/pnnh/mcfloatingbackpack/resources/DowngradeProtectionResourcesTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 132
+specs/052-lantern-light/tasks.md
+  h_6465a203f88bd5 30
+src/main/java/pnnh/mcfloatingbackpack/jukebox/PlaylistReader.java
+  s_9aefe4a2760245::t_cc6f30dcb87495 1-54
+specs/054-mobile-crafting-table/data-model.md
+  s_9aefe4a2760245::t_c6978b6c223d04 1-23
+src/main/resources/assets/mcfloatingbackpack/models/item/mobile_crafting_table.json
+  s_9aefe4a2760245::t_708fcce38a42d2 1-6
+src/main/resources/data/mcfloatingbackpack/recipe/mobile_crafting_table.json
+  s_9aefe4a2760245::t_708fcce38a42d2 1-33
+src/test/java/pnnh/mcfloatingbackpack/resources/LightWiringTest.java
+  s_9aefe4a2760245::t_abdb0715322057 105
+  s_9aefe4a2760245::t_9b24f46de964f6 107
+specs/054-mobile-crafting-table/tasks.md
+  s_9aefe4a2760245::t_ab3e1e2ae7159d 1-46,52-63
+  s_9aefe4a2760245::t_50ef45c5812795 47-51
+src/main/java/pnnh/mcfloatingbackpack/client/jukebox/JukeboxPlayback.java
+  s_9aefe4a2760245::t_aaeb86296c6bc7 1-238
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsContractTest.java
+  s_9aefe4a2760245::t_abdb0715322057 112
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_9aefe4a2760245::t_00e02b43f4ebf9 24-25,122-125,177,181-189
+  s_9aefe4a2760245::t_5f734456096806 190-202
+  s_9aefe4a2760245::t_708fcce38a42d2 363-374
+  s_9aefe4a2760245::t_fc3581f86c6f9c 351-362
+src/test/java/pnnh/mcfloatingbackpack/resources/GreyCellWiringTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 86
+specs/054-mobile-crafting-table/contracts/resources.md
+  s_9aefe4a2760245::t_c6978b6c223d04 1-21
+src/main/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevision.java
+  s_9aefe4a2760245::t_5f734456096806 10,15
+src/main/java/pnnh/mcfloatingbackpack/network/OpenToolPayload.java
+  s_9aefe4a2760245::t_5f734456096806 1-51
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileJukeboxResourcesTest.java
+  s_9aefe4a2760245::t_abd03344864984 1-144
+README_CN.md
+  s_9aefe4a2760245::t_352c5c561de09c 35-36
+  s_9aefe4a2760245::t_50ef45c5812795 37
+specs/054-mobile-crafting-table/spec.md
+  s_9aefe4a2760245::t_994af454051320 1-188
+docs/plan/mobile-tools.md
+  s_9aefe4a2760245::t_50ef45c5812795 3
+  s_9aefe4a2760245::t_4ee48000302e86 1-2,4-54
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_9aefe4a2760245::t_fc3581f86c6f9c 208-220
+  s_9aefe4a2760245::t_708fcce38a42d2 194-207
+docs/plan/README.md
+  s_9aefe4a2760245::t_2e8033ae53ce0c 14
+src/main/java/pnnh/mcfloatingbackpack/tool/MobileMenu.java
+  s_9aefe4a2760245::t_5f734456096806 1-6
+src/main/java/pnnh/mcfloatingbackpack/client/jukebox/MobileJukeboxSound.java
+  s_9aefe4a2760245::t_aaeb86296c6bc7 1-23
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerWiringTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 118
+src/main/resources/data/mcfloatingbackpack/recipe/mobile_jukebox.json
+  s_9aefe4a2760245::t_fc3581f86c6f9c 1-30
+specs/053-mobile-jukebox/quickstart.md
+  s_9aefe4a2760245::t_4ba028feb46fc4 1-36
+specs/053-mobile-jukebox/tasks.md
+  s_9aefe4a2760245::t_2186543dde8278 1-70
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_9aefe4a2760245::t_fc3581f86c6f9c 54-57,87
+  s_9aefe4a2760245::t_708fcce38a42d2 58-61,88
+specs/054-mobile-crafting-table/contracts/rules.md
+  s_9aefe4a2760245::t_c6978b6c223d04 1-27
+src/test/java/pnnh/mcfloatingbackpack/tool/ToolOpenPlannerTest.java
+  s_9aefe4a2760245::t_f0863a1bc77923 1-52
+specs/053-mobile-jukebox/checklists/requirements.md
+  s_9aefe4a2760245::t_2e8033ae53ce0c 1-37
+src/main/java/pnnh/mcfloatingbackpack/tool/MobileTools.java
+  s_9aefe4a2760245::t_5f734456096806 1-60
+README.md
+  s_9aefe4a2760245::t_352c5c561de09c 35-36
+  s_9aefe4a2760245::t_50ef45c5812795 37
+src/main/java/pnnh/mcfloatingbackpack/client/panel/jukebox/JukeboxPanelLayout.java
+  s_9aefe4a2760245::t_cc6f30dcb87495 1-100
+design/demo/tools/make_mobile_tool_icons.py
+  s_9aefe4a2760245::t_708fcce38a42d2 2,36-51
+  s_9aefe4a2760245::t_77f11d2f3c52f9 1,3-35,52-75
+src/main/java/pnnh/mcfloatingbackpack/tool/MobileTool.java
+  s_9aefe4a2760245::t_f0863a1bc77923 1-31
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_00e02b43f4ebf9 30-31,180-182
+  s_9aefe4a2760245::t_ee97a1372ef13d 183
+specs/054-mobile-crafting-table/plan.md
+  s_9aefe4a2760245::t_c6978b6c223d04 1,3,7,9-15,17,19,21,23,25,27,29,31,33,37-47,54-63,69-91,94,98
+  s_9aefe4a2760245::t_c05c4991efb667 2,4-6,8,16,18,20,22,24,26,28,30,32,34-36,48-53,64-68,92-93,95-97
+src/main/java/pnnh/mcfloatingbackpack/inventory/ToolSingleRules.java
+  s_9aefe4a2760245::t_cc6f30dcb87495 1-41
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchPrefixResourcesTest.java
+  s_9aefe4a2760245::t_abdb0715322057 103
+  s_9aefe4a2760245::t_d23e52d9a269ea 104
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 237,247
+  s_9aefe4a2760245::t_abdb0715322057 239
+  s_9aefe4a2760245::t_9b24f46de964f6 249
+src/main/resources/assets/mcfloatingbackpack/models/item/mobile_jukebox.json
+  s_9aefe4a2760245::t_fc3581f86c6f9c 1-6
+specs/053-mobile-jukebox/plan.md
+  s_9aefe4a2760245::t_2180c6cca381ec 2,4-6,8,16,18,20,22,24,26,28,30,32-34,46-51,62-66,95-96,98-100
+  s_9aefe4a2760245::t_c6f34c10cdc24c 1,3,7,9-15,17,19,21,23,25,27,29,31,35-45,52-61,67-94,97,101
+specs/054-mobile-crafting-table/research.md
+  s_9aefe4a2760245::t_c6978b6c223d04 1-53
+src/test/java/pnnh/mcfloatingbackpack/tool/MobileToolTest.java
+  s_9aefe4a2760245::t_f0863a1bc77923 1-41
+src/test/java/pnnh/mcfloatingbackpack/resources/VersionCheckResourcesTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 70
+.specify/feature.json
+  s_9aefe4a2760245::t_0a1ed1afd98a87 1
+src/test/java/pnnh/mcfloatingbackpack/client/panel/jukebox/JukeboxPanelLayoutTest.java
+  s_9aefe4a2760245::t_7beeb110f0fd9c 1-98
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileCraftingWiringTest.java
+  s_9aefe4a2760245::t_9b24f46de964f6 1-115
+src/test/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevisionTest.java
+  s_9aefe4a2760245::t_9b24f46de964f6 11-12,22-23
+  s_9aefe4a2760245::t_fc3581f86c6f9c 21
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileCraftingTableResourcesTest.java
+  s_9aefe4a2760245::t_7d62a7bf2cb0cd 1-127,129-139
+  s_9aefe4a2760245::t_daba38d242df0a 128
+specs/053-mobile-jukebox/spec.md
+  s_9aefe4a2760245::t_6d1b6ed632c007 1-219
+specs/053-mobile-jukebox/research.md
+  s_9aefe4a2760245::t_4ba028feb46fc4 1-73
+src/main/java/pnnh/mcfloatingbackpack/client/panel/jukebox/JukeboxPanelInput.java
+  s_9aefe4a2760245::t_00e02b43f4ebf9 1-78
+src/main/java/pnnh/mcfloatingbackpack/tool/MobileCraftingMenu.java
+  s_9aefe4a2760245::t_7a9afa95b4f99a 23
+  s_9aefe4a2760245::t_5f734456096806 1-22,24-30
+src/main/resources/data/mcfloatingbackpack/tags/item/never_trash.json
+  s_9aefe4a2760245::t_fc3581f86c6f9c 11
+  s_9aefe4a2760245::t_708fcce38a42d2 12
+specs/053-mobile-jukebox/contracts/resources.md
+  s_9aefe4a2760245::t_4ba028feb46fc4 1-23,25,27-34
+  s_9aefe4a2760245::t_352c5c561de09c 24,26
+src/main/java/pnnh/mcfloatingbackpack/client/panel/jukebox/JukeboxPanelState.java
+  s_9aefe4a2760245::t_aaeb86296c6bc7 1-34
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackSortWiringTest.java
+  s_9aefe4a2760245::t_abdb0715322057 26
+  s_9aefe4a2760245::t_d23e52d9a269ea 28
+specs/053-mobile-jukebox/contracts/rules.md
+  s_9aefe4a2760245::t_4ba028feb46fc4 1-29
+src/test/java/pnnh/mcfloatingbackpack/resources/TankWiringTest.java
+  s_9aefe4a2760245::t_abdb0715322057 64-65
+  s_9aefe4a2760245::t_d23e52d9a269ea 67
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionUiResourcesTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 125
+src/test/java/pnnh/mcfloatingbackpack/inventory/ToolSingleRulesTest.java
+  s_9aefe4a2760245::t_7beeb110f0fd9c 1-59
+src/main/java/pnnh/mcfloatingbackpack/tool/ToolOpenPlanner.java
+  s_9aefe4a2760245::t_f0863a1bc77923 1-31
+src/main/java/pnnh/mcfloatingbackpack/client/panel/ClientBackpackView.java
+  s_9aefe4a2760245::t_00e02b43f4ebf9 83-92
+src/main/java/pnnh/mcfloatingbackpack/jukebox/JukeboxPlayer.java
+  s_9aefe4a2760245::t_7beeb110f0fd9c 40-41,111-113,174,186,196,218-220,223
+  s_9aefe4a2760245::t_cc6f30dcb87495 1-39,42-110,114-173,175-185,187-195,197-217,221-222,224-266
+specs/054-mobile-crafting-table/checklists/requirements.md
+  s_9aefe4a2760245::t_9a2385ad65b4b1 1-37
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_708fcce38a42d2 257-259
+  s_9aefe4a2760245::t_fc3581f86c6f9c 260-276
+src/test/java/pnnh/mcfloatingbackpack/jukebox/PlaylistReaderTest.java
+  s_9aefe4a2760245::t_7beeb110f0fd9c 1-68
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_9aefe4a2760245::t_00e02b43f4ebf9 52-54,120,138-139,168-169,351-356,577-578,580
+  s_9aefe4a2760245::t_95ed90d34ee627 579
+specs/053-mobile-jukebox/DELIVERY.md
+  s_9aefe4a2760245::t_9d1942ed5aedff 1-65
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_9aefe4a2760245::t_5f734456096806 48,95-96
+specs/054-mobile-crafting-table/quickstart.md
+  s_9aefe4a2760245::t_c6978b6c223d04 1-36
+src/test/java/pnnh/mcfloatingbackpack/jukebox/JukeboxPlayerTest.java
+  s_9aefe4a2760245::t_4ae778d817d86b 1-269
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_fc3581f86c6f9c 260-276
+  s_9aefe4a2760245::t_708fcce38a42d2 257-259
+src/main/java/pnnh/mcfloatingbackpack/client/panel/jukebox/JukeboxPanelRenderer.java
+  s_9aefe4a2760245::t_00e02b43f4ebf9 1-179
+src/main/java/pnnh/mcfloatingbackpack/item/MobileCraftingTableItem.java
+  s_9aefe4a2760245::t_708fcce38a42d2 1-24
+src/test/java/pnnh/mcfloatingbackpack/resources/ItemTooltipWiringTest.java
+  s_9aefe4a2760245::t_d23e52d9a269ea 87
+specs/053-mobile-jukebox/data-model.md
+  s_9aefe4a2760245::t_4ba028feb46fc4 1-27
+src/main/java/pnnh/mcfloatingbackpack/item/MobileJukeboxItem.java
+  s_9aefe4a2760245::t_fc3581f86c6f9c 1-25
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchResourcesTest.java
+  s_9aefe4a2760245::t_abdb0715322057 107
+  s_9aefe4a2760245::t_d23e52d9a269ea 108
+specs/054-mobile-crafting-table/DELIVERY.md
+  s_9aefe4a2760245::t_d93b22de440c49 1-62
+src/test/java/pnnh/mcfloatingbackpack/resources/JukeboxWiringTest.java
+  s_9aefe4a2760245::t_abd03344864984 1-110,112,114-133
+  s_9aefe4a2760245::t_abdb0715322057 111,113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "4fa6a526a4dc225b6c9f9aa44c068153a049a341",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
