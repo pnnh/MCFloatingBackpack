@@ -308,6 +308,25 @@ public final class FloatingPanelInput {
             FloatingPanelEvents.chat(minecraft, TankItem.refusal(tankVerdict, held));
             return true;
         }
+        // 052: a second light in the bottom area is refused (the server's rule, so a request that is sure to fail is not sent)
+        if (pnnh.mcfloatingbackpack.light.ToolLightRules.check(
+                        area,
+                        held,
+                        slotIndex,
+                        view.toolStacks(area),
+                        pnnh.mcfloatingbackpack.light.LightTags::isLight)
+                != pnnh.mcfloatingbackpack.light.ToolLightRules.Verdict.OK) {
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.light.duplicate"));
+            return true;
+        }
+        // 052: a light in the bottom area only shines through LambDynamicLights, which the player installs themselves: say so once.
+        if (area == PanelArea.BOTTOM
+                && pnnh.mcfloatingbackpack.light.LightTags.isLight(held)
+                && !lightNeedsModHinted
+                && !net.neoforged.fml.ModList.get().isLoaded("lambdynlights")) {
+            lightNeedsModHinted = true;
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.light.needs_mod"));
+        }
         if (ToolAreaRules.canPlace(
                         area,
                         held,
@@ -326,6 +345,9 @@ public final class FloatingPanelInput {
         FloatingPanelEvents.chat(minecraft, Component.translatable(key));
         return true;
     }
+
+    /** 052: the hint that a light needs LambDynamicLights was shown in this game session. */
+    private static boolean lightNeedsModHinted;
 
     static void sendClick(int slotIndex, boolean rightClick) {
         sendClick(PanelArea.MAIN, slotIndex, rightClick);

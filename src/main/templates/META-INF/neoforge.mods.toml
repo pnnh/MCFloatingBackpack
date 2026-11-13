@@ -68,6 +68,18 @@ and other container GUIs so items can be moved between them.
     ordering="NONE"
     side="BOTH"
 
+# 052: LambDynamicLights (client only): a light item in the backpack's bottom tool area lights its player through it. Never required: without
+# it nothing shines (the floating backpack does no lighting of its own). The compat code in compat/lambdynlights/ is only used when it is loaded.
+[[dependencies.${mod_id}]]
+    modId="lambdynlights"
+    type="optional"
+    versionRange="[4,)"
+    ordering="NONE"
+    side="CLIENT"
+
+[modproperties."${mod_id}"."yumi:entrypoints"]
+    "lambdynlights:initializer" = "pnnh.mcfloatingbackpack.compat.lambdynlights.BackpackDynamicLight"
+
 # Discovery-only: never required. Dev runClient may include JEI via localRuntime.
 [[dependencies.${mod_id}]]
     modId="jei"

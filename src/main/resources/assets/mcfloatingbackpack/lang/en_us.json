@@ -253,6 +253,8 @@
   "tooltip.mcfloatingbackpack.tank.empty": "%s: empty",
   "message.mcfloatingbackpack.tank.tier": "This tank needs a %s backpack or better",
   "message.mcfloatingbackpack.tank.duplicate": "This backpack already has a tank for that liquid",
+  "message.mcfloatingbackpack.light.duplicate": "The bottom area of this backpack already has a light source",
+  "message.mcfloatingbackpack.light.needs_mod": "A light only shines if you also install LambDynamicLights (the dynamic lights mod); without it nothing lights up",
   "message.mcfloatingbackpack.tank.too_small": "This tank is too small for the liquid already stored",
   "panel.mcfloatingbackpack.hidden.liquid.name": "%s (liquid)",
   "panel.mcfloatingbackpack.hidden.liquid.title": "Some liquids have no tank",

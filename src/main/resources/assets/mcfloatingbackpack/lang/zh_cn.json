@@ -253,6 +253,8 @@
   "tooltip.mcfloatingbackpack.tank.empty": "%s：空",
   "message.mcfloatingbackpack.tank.tier": "这个罐子需要%s及以上的背包",
   "message.mcfloatingbackpack.tank.duplicate": "这个背包已经有这种液体的罐了",
+  "message.mcfloatingbackpack.light.duplicate": "这个背包的下方区已经有一个光源了",
+  "message.mcfloatingbackpack.light.needs_mod": "光源需要你另外安装 LambDynamicLights（动态光源模组）才会发光；没有安装时，放进去也不会亮",
   "message.mcfloatingbackpack.tank.too_small": "这个罐子装不下背包里已有的液体",
   "panel.mcfloatingbackpack.hidden.liquid.name": "%s（液体）",
   "panel.mcfloatingbackpack.hidden.liquid.title": "有液体没有罐",

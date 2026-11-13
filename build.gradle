@@ -41,6 +41,14 @@ repositories {
         }
     }
     maven {
+        // 052：LambDynamicLights 的 API jar（只用来编译，见 dependencies 里的 compileOnly）；Yumi 的事件库在 Maven Central。
+        name = "Gegy"
+        url = "https://maven.gegy.dev/releases"
+        content {
+            includeGroup "dev.lambdaurora.lambdynamiclights"
+        }
+    }
+    maven {
         // 034：Accessories 的 API（只用来编译，见 dependencies 里的 compileOnly）。
         name = "WispForest"
         url = "https://maven.wispforest.io/releases"
@@ -158,6 +166,25 @@ dependencies {
         transitive = false
     }
 
+    // 052: compile-time-only LambDynamicLights API (the mojmap jar; the plain one uses intermediary names) for compat/lambdynlights/, the
+    // way Traveler's Backpack lights its players. Not bundled and not a runtime dependency: a player installs LambDynamicLights
+    // themselves (the floating backpack lights nothing without it), and the dev runs have it as localRuntime below. The event library its
+    // API refers to comes from Maven Central.
+    compileOnly("dev.lambdaurora.lambdynamiclights:lambdynamiclights-api:4.8.11+1.21.1:mojmap") {
+        transitive = false
+    }
+    // transitive = false: the event library's POM pulls a newer slf4j than the game's (a version conflict), and its collections library is not needed to compile
+    compileOnly("dev.yumi.commons:yumi-commons-event:1.0.0") {
+        transitive = false
+    }
+    compileOnly("dev.yumi.commons:yumi-commons-core:1.0.0") {
+        transitive = false
+    }
+    compileOnly("dev.yumi.commons:yumi-commons-collections:1.0.0") {
+        transitive = false
+    }
+    compileOnly "org.jspecify:jspecify:1.0.0"
+
     if (!cleanRuntime) {
         // 004：精妙背包与旅行者背包，用来对照面板的行数、滚动与尺寸；CurseMaven 的 file id 要与各自 mod 要求的 core 版本配套。
         localRuntime "curse.maven:sophisticated-core-618298:9385313"
@@ -177,6 +204,8 @@ dependencies {
         if (!serverOrDataRun) {
             localRuntime "maven.modrinth:sodium:mc1.21.1-0.6.13-neoforge"
             localRuntime "maven.modrinth:iris:1.8.12+1.21.1-neoforge"
+            // 052: LambDynamicLights (client only): the light of a lantern in the backpack's bottom tool area is its dynamic light.
+            localRuntime "maven.modrinth:lambdynamiclights:4.8.11+1.21.1"
         }
     }
 

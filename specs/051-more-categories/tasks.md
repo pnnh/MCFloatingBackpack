@@ -59,7 +59,7 @@
 - [X] T022 [P] `README.md` 与 `README_CN.md`：分类扩展一节更新为 19 个类别（名字与收什么）；`docs/plan/category-extensions.md` 追加 051 一节；`docs/plan/release-process.md` 若列了修订历史则补"3 = 051"
 - [X] T023 `specs/051-more-categories/DELIVERY.md`（中文）：基线与完成后的类数与用例数、与 spec/plan 的偏离（如标签清单的实际条数）、每个游戏内验证项验证了什么/没验证什么、**协议号不变（19）与数据修订 2→3 的理由**、已知变化（自定义标签重名）、已知缺口（刷怪蛋、模板、按钮与压力板等约 205 个）、图集前后尺寸、宪法复查
 - [X] T024 最终检查：`./gradlew compileJava test` 全部通过；`git status` 无临时修改残留；**不提交、不打 tag**
-- [ ] T025 用户确认：9 种底色与贴图在游戏里的观感、9 vs 10 个类别、真机放置；**只有用户明确确认才勾**
+- [X] T025 用户确认：9 种底色与贴图在游戏里的观感、9 vs 10 个类别、真机放置；**只有用户明确确认才勾**
 
 ## Dependencies
 

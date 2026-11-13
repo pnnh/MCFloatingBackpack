@@ -179,6 +179,18 @@ public record BackpackClickPayload(
                         BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                         return;
                     }
+                    // 052: a light (lantern and the like) counts in the bottom area, one only, whatever its kind
+                    if (pnnh.mcfloatingbackpack.light.ToolLightRules.check(
+                                    area,
+                                    held,
+                                    payload.slotIndex(),
+                                    inventory.toolStacks(area),
+                                    pnnh.mcfloatingbackpack.light.LightTags::isLight)
+                            != pnnh.mcfloatingbackpack.light.ToolLightRules.Verdict.OK) {
+                        serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.light.duplicate"), true);
+                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                        return;
+                    }
                 }
             }
 
