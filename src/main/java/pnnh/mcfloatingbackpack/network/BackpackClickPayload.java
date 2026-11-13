@@ -191,6 +191,33 @@ public record BackpackClickPayload(
                         BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                         return;
                     }
+                    // 054: so does the mobile crafting table
+                    if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                    PanelArea.RIGHT,
+                                    area,
+                                    held,
+                                    payload.slotIndex(),
+                                    inventory.toolStacks(area),
+                                    stack -> stack.is(ModItems.MOBILE_CRAFTING_TABLE.get()))
+                            != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                        serverPlayer.displayClientMessage(
+                                Component.translatable("message.mcfloatingbackpack.limit.mobile_crafting_table"), true);
+                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                        return;
+                    }
+                    // 053: the mobile jukebox counts in the right area, one only
+                    if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                    PanelArea.RIGHT,
+                                    area,
+                                    held,
+                                    payload.slotIndex(),
+                                    inventory.toolStacks(area),
+                                    stack -> stack.is(ModItems.MOBILE_JUKEBOX.get()))
+                            != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                        serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.limit.mobile_jukebox"), true);
+                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                        return;
+                    }
                 }
             }
 

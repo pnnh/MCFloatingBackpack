@@ -234,9 +234,9 @@ class PipeWiringTest {
     @Test
     void thereAreStillNoNewPacketsAndTheProtocolIsStill19() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"19\")"));
+        assertTrue(network.contains("versioned(\"20\")"));
         assertFalse(network.contains("Pipe"));
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 3;")); // 051 raised it from 2
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 5;")); // 051 raised it from 2
     }
 
     // ---- what was not touched ----
@@ -244,9 +244,9 @@ class PipeWiringTest {
     @Test
     void nothingNewWasAddedToTheNetworkTheDataOrTheBuildOutsideTheDevRuntime() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"19\")"), "the protocol is still 19");
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"20\")"), "the protocol is still 19");
         assertFalse(network.contains("Pipe"), "no pipe packet");
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 3;"), "the data revision is 3 since 051 (049 itself left it at 2)");
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 5;"), "the data revision is 5 since 054 (049 itself left it at 2)");
         String gradle = read(Path.of("build.gradle"));
         assertTrue(gradle.contains("localRuntime \"maven.modrinth:pneumaticcraft-repressurized:8.2.24\""));
         assertFalse(gradle.contains("compileOnly \"maven.modrinth:pneumaticcraft"), "the pipes only know the oil by its tag");

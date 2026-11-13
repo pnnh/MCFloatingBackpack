@@ -1,0 +1,33 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "D": {
+      "item": "minecraft:diamond"
+    },
+    "A": {
+      "item": "minecraft:iron_pickaxe"
+    },
+    "B": {
+      "item": "minecraft:iron_axe"
+    },
+    "T": {
+      "item": "minecraft:crafting_table"
+    },
+    "C": {
+      "item": "minecraft:chest"
+    }
+  },
+  "pattern": [
+    "IDI",
+    "ATB",
+    "ICI"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:mobile_crafting_table"
+  }
+}

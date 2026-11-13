@@ -27,6 +27,8 @@ import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmRenderer;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmState;
+import pnnh.mcfloatingbackpack.client.panel.jukebox.JukeboxPanelRenderer;
+import pnnh.mcfloatingbackpack.client.panel.jukebox.JukeboxPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
@@ -174,6 +176,10 @@ public final class FloatingPanelRenderer {
         // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
         if (TrashPanelState.get().isOpen()) {
             TrashPanelRenderer.render(graphics, mouseX, mouseY);
+        }
+        // 053: the player page of the mobile jukebox hangs at the same place (only one of the two is ever open).
+        if (JukeboxPanelState.get().isOpen()) {
+            JukeboxPanelRenderer.render(graphics, mouseX, mouseY);
         }
         // 022: a question waiting for the player's yes or no covers the whole panel.
         // Item icons are drawn 150 deep and their count text 200 deep (GuiGraphics), so a mask drawn at the panel's own

@@ -23,9 +23,9 @@ class BackpackSortWiringTest {
     }
 
     @Test
-    void theRequestIsRegisteredAndTheProtocolIs19() throws IOException {
+    void theRequestIsRegisteredAndTheProtocolIs20() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"19\")"));
+        assertTrue(network.contains("versioned(\"20\")"));
         assertTrue(network.contains("BackpackSortPayload.TYPE, BackpackSortPayload.STREAM_CODEC, BackpackSortPayload::handleServer"));
         assertTrue(network.contains("registrar.playToServer(BackpackSortPayload.TYPE"), "a client-to-server request");
     }

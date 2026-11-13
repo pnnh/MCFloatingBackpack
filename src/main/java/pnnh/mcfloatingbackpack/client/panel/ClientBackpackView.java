@@ -80,6 +80,16 @@ public final class ClientBackpackView {
         return false;
     }
 
+    /** 053: whether the right area holds a mobile jukebox, anywhere in its whole list (not only in the visible cells). */
+    public boolean hasMobileJukebox() {
+        for (int i = 0; i < toolCount(PanelArea.RIGHT); i++) {
+            if (getToolStack(PanelArea.RIGHT, i).is(pnnh.mcfloatingbackpack.item.ModItems.MOBILE_JUKEBOX.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /** 024: whether the left area holds an auto pickup, anywhere in its whole list (not only in the visible cells). */
     public boolean hasAutoPickup() {
         for (int i = 0; i < toolCount(PanelArea.LEFT); i++) {

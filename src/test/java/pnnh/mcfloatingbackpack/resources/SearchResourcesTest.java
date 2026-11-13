@@ -104,8 +104,8 @@ class SearchResourcesTest {
     }
 
     @Test
-    void theProtocolIs19AndNoPacketOrConfigWasAdded() throws IOException {
-        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"19\")"));
+    void theProtocolIs20AndNoPacketOrConfigWasAdded() throws IOException {
+        assertTrue(read(SRC.resolve("network/BackpackNetwork.java")).contains("versioned(\"20\")"));
         try (var files = Files.walk(SRC.resolve("client/panel/search"))) {
             files.filter(f -> f.toString().endsWith(".java")).forEach(f -> {
                 try {

@@ -51,6 +51,14 @@ public final class ModItems {
     public static final DeferredHolder<Item, AutoPickupItem> AUTO_PICKUP =
             ITEMS.register("auto_pickup", () -> new AutoPickupItem(new Item.Properties()));
 
+    /** 053: lives in the panel's right area; see {@link MobileJukeboxItem}. */
+    public static final DeferredHolder<Item, MobileJukeboxItem> MOBILE_JUKEBOX =
+            ITEMS.register("mobile_jukebox", () -> new MobileJukeboxItem(new Item.Properties()));
+
+    /** 054: lives in the panel's right area; see {@link MobileCraftingTableItem}. */
+    public static final DeferredHolder<Item, MobileCraftingTableItem> MOBILE_CRAFTING_TABLE =
+            ITEMS.register("mobile_crafting_table", () -> new MobileCraftingTableItem(new Item.Properties()));
+
     /** 036, 051: the category extensions, in the fixed order of the categories; ids are {@code <category>_extension}. */
     public static final Map<String, DeferredHolder<Item, CategoryExtensionItem>> CATEGORY_EXTENSIONS = registerCategoryExtensions();
 
@@ -76,6 +84,8 @@ public final class ModItems {
                                 output.accept(TAG_MANAGER.get());
                                 output.accept(TRASH_CAN.get());
                                 output.accept(AUTO_PICKUP.get());
+                                output.accept(MOBILE_JUKEBOX.get());
+                                output.accept(MOBILE_CRAFTING_TABLE.get());
                                 for (DeferredHolder<Item, TankItem> tank : TANKS.values()) {
                                     output.accept(tank.get());
                                 }

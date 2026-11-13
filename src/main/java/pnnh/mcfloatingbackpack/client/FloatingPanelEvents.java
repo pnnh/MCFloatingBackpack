@@ -49,6 +49,9 @@ import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmState;
+import pnnh.mcfloatingbackpack.client.jukebox.JukeboxPlayback;
+import pnnh.mcfloatingbackpack.client.panel.jukebox.JukeboxPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.jukebox.JukeboxPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.AttachNotice;
@@ -114,6 +117,7 @@ public final class FloatingPanelEvents {
         SearchState.get().reset();
         PickupPanelState.get().collapse();
         TrashPanelState.get().collapse();
+        JukeboxPanelState.get().collapse(); // 053: the page folds up, the music goes on
         TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.close());
@@ -131,6 +135,8 @@ public final class FloatingPanelEvents {
         TagOverviewState.get().reset();
         PickupPanelState.get().reset();
         TrashPanelState.get().reset();
+        JukeboxPanelState.get().reset();
+        JukeboxPlayback.reset();
         TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
@@ -159,6 +165,8 @@ public final class FloatingPanelEvents {
         TagOverviewState.get().reset();
         PickupPanelState.get().reset();
         TrashPanelState.get().reset();
+        JukeboxPanelState.get().reset();
+        JukeboxPlayback.reset();
         TrashConfirmState.get().cancel();
         QuickTransferInput.reset();
         PanelDragInput.reset();
@@ -340,6 +348,12 @@ public final class FloatingPanelEvents {
                 && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasTrashCan())) {
             TrashPanelState.get().collapse();
         }
+        // 053: the player page needs a mobile jukebox in the right area and an open panel; the music does not (see JukeboxPlayback)
+        if (JukeboxPanelState.get().isOpen()
+                && (!FloatingPanelState.get().isVisible() || !ClientBackpackView.get().hasMobileJukebox())) {
+            JukeboxPanelState.get().collapse();
+        }
+        JukeboxPlayback.tick(minecraft);
         FloatingPanelState state = FloatingPanelState.get();
         if (state.isVisible()) {
             state.setTotalRows(ClientBackpackView.get().rows());
@@ -558,6 +572,10 @@ public final class FloatingPanelEvents {
         }
         // 021: the wheel over the trash can panel (outside the floating panel's rectangle) does nothing, but is taken.
         if (state.isVisible() && scrollDeltaY != 0 && TrashPanelInput.covers(mouseX, mouseY)) {
+            return true;
+        }
+        // 053: and over the player page of the mobile jukebox
+        if (state.isVisible() && scrollDeltaY != 0 && JukeboxPanelInput.covers(mouseX, mouseY)) {
             return true;
         }
         if (!state.isVisible() || scrollDeltaY == 0 || !state.contains(mouseX, mouseY)) {

@@ -21,6 +21,8 @@ import pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.tags.TagPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashConfirmInput;
+import pnnh.mcfloatingbackpack.client.panel.jukebox.JukeboxPanelInput;
+import pnnh.mcfloatingbackpack.client.panel.jukebox.JukeboxPanelState;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelState;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
@@ -117,6 +119,10 @@ public final class FloatingPanelInput {
             if (TrashPanelInput.onPress(button, mouseX, mouseY)) {
                 return true;
             }
+            // 053: and so does the player page of the mobile jukebox, which hangs at the same place.
+            if (JukeboxPanelInput.onPress(button, mouseX, mouseY)) {
+                return true;
+            }
             // 042: the magnifier, the clear button and the box itself come before the snapshot and close buttons and the drag
             // bar: a press in the box places the caret, it never drags the panel.
             if (!isRight && SearchInput.onPress(state, mouseX, mouseY)) {
@@ -168,7 +174,30 @@ public final class FloatingPanelInput {
                         && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
                         && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
                                 .is(ModItems.TRASH_CAN.get())) {
+                    JukeboxPanelState.get().collapse();
                     TrashPanelState.get().toggle();
+                    return true;
+                }
+                // 053: the same for a mobile jukebox in the right area, which opens or closes the player page; the two pages hang at the
+                // same place, so opening one closes the other.
+                if (!isRight
+                        && toolHit.area() == PanelArea.RIGHT
+                        && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
+                        && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
+                                .is(ModItems.MOBILE_JUKEBOX.get())) {
+                    TrashPanelState.get().collapse();
+                    JukeboxPanelState.get().toggle();
+                    return true;
+                }
+                // 054: the same for a mobile crafting table, which has no page: the click asks the server for a vanilla crafting screen
+                // (clicking again closes it).
+                if (!isRight
+                        && toolHit.area() == PanelArea.RIGHT
+                        && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
+                        && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
+                                .is(ModItems.MOBILE_CRAFTING_TABLE.get())) {
+                    PacketDistributor.sendToServer(new pnnh.mcfloatingbackpack.network.OpenToolPayload(
+                            pnnh.mcfloatingbackpack.tool.MobileTool.CRAFTING_TABLE.id()));
                     return true;
                 }
                 if (!isRight
@@ -317,6 +346,30 @@ public final class FloatingPanelInput {
                         pnnh.mcfloatingbackpack.light.LightTags::isLight)
                 != pnnh.mcfloatingbackpack.light.ToolLightRules.Verdict.OK) {
             FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.light.duplicate"));
+            return true;
+        }
+        // 053: the right area takes one mobile jukebox (the server's rule, so a request that is sure to fail is not sent)
+        if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                        PanelArea.RIGHT,
+                        area,
+                        held,
+                        slotIndex,
+                        view.toolStacks(area),
+                        stack -> stack.is(ModItems.MOBILE_JUKEBOX.get()))
+                != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.mobile_jukebox"));
+            return true;
+        }
+        // 054: and one mobile crafting table
+        if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                        PanelArea.RIGHT,
+                        area,
+                        held,
+                        slotIndex,
+                        view.toolStacks(area),
+                        stack -> stack.is(ModItems.MOBILE_CRAFTING_TABLE.get()))
+                != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.mobile_crafting_table"));
             return true;
         }
         // 052: a light in the bottom area only shines through LambDynamicLights, which the player installs themselves: say so once.
