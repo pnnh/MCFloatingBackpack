@@ -84,15 +84,23 @@ public final class SnapshotServer {
     // ---------------------------------------------------------------- versions and preview
 
     public static void onVersions(ServerPlayer player, SnapshotVersionsRequestPayload request) {
-        Optional<SnapshotService> service = SnapshotService.get();
-        List<VersionRow> versions = List.of();
-        if (service.isPresent()) {
-            versions = SnapshotOps.versions(service.get(), Requester.of(player), request.backpack()).stream()
-                    .limit(SnapshotRequestRules.MAX_VERSIONS)
-                    .map(meta -> new VersionRow(meta.time(), meta.slots(), meta.ownerName(), meta.capacity()))
-                    .toList();
+        if (!SnapshotRequestRules.validPage(request.page())
+                || !SnapshotRequestRules.validPageSize(request.pageSize())
+                || !SnapshotRequestRules.validKind(request.kind())) {
+            refuse(player, "versions");
+            return;
         }
-        send(player, new SnapshotVersionsPayload(request.backpack(), versions));
+        Optional<SnapshotService> service = SnapshotService.get();
+        List<SnapshotMeta> all = service.isPresent()
+                ? SnapshotOps.versions(service.get(), Requester.of(player), request.backpack())
+                : List.of();
+        // 057: one page, of one kind or all of them; a page that is gone (the list got shorter) is the last one
+        VersionPaging.Page<SnapshotMeta> page = VersionPaging.page(all, request.kind(), SnapshotMeta::kind, request.page(), request.pageSize());
+        List<VersionRow> rows = page.items().stream()
+                .map(meta -> new VersionRow(
+                        meta.time(), meta.slots(), meta.ownerName(), meta.capacity(), meta.kind().code(), meta.kind() == SnapshotKind.UPGRADE ? meta.toVersion() : ""))
+                .toList();
+        send(player, new SnapshotVersionsPayload(request.backpack(), request.kind(), page.page(), page.pages(), page.total(), rows));
     }
 
     public static void onPreview(ServerPlayer player, SnapshotPreviewRequestPayload request) {
@@ -171,13 +179,14 @@ public final class SnapshotServer {
             send(player, SnapshotResultPayload.of(ResultCode.TARGET_OFFLINE));
             return;
         }
-        ResultCode result = SnapshotOps.restore(player.server, service, chosen, target);
-        if (result != ResultCode.RESTORED) {
-            send(player, SnapshotResultPayload.of(result));
+        SnapshotOps.RestoreResult result = SnapshotOps.restore(player.server, service, chosen, target);
+        if (result.code() != ResultCode.RESTORED) {
+            send(player, SnapshotResultPayload.of(result.code()));
             return;
         }
+        // 057: n1 is how many stacks of the snapshot could not be restored (the item no longer exists)
         send(player, new SnapshotResultPayload(
-                ResultCode.RESTORED, BackpackIds.of(request.backpack()), target.getGameProfile().getName(), 0, 0));
+                ResultCode.RESTORED, BackpackIds.of(request.backpack()), target.getGameProfile().getName(), result.lostCells(), 0));
     }
 
     private static void deleteOne(ServerPlayer player, SnapshotService service, Requester who, SnapshotActionPayload request) {

@@ -8,6 +8,7 @@ import java.util.UUID;
 
 import pnnh.mcfloatingbackpack.snapshot.SnapshotAccess;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotRequestRules;
+import pnnh.mcfloatingbackpack.snapshot.VersionPaging;
 import pnnh.mcfloatingbackpack.snapshot.net.ResultCode;
 import pnnh.mcfloatingbackpack.snapshot.net.Row;
 import pnnh.mcfloatingbackpack.snapshot.net.Scope;
@@ -50,6 +51,12 @@ public final class SnapshotScreenState<P> {
     private UUID selected;
     private List<VersionRow> versions = List.of();
     private int selectedVersion;
+    // 057: the versions come in pages and can be limited to one kind (0: all)
+    private byte versionKind;
+    private int versionPage = 1;
+    private int versionPages = 1;
+    private int versionTotal;
+    private int versionPageSize = 5;
     private Preview<P> preview;
     private ResultCode previewFailure;
 
@@ -88,21 +95,62 @@ public final class SnapshotScreenState<P> {
         }
     }
 
-    /** The versions of the selected backpack arrived; an empty list means it is gone (deleted, or never visible). */
-    public void applyVersions(UUID backpack, List<VersionRow> list) {
+    /**
+     * One page of the versions of the selected backpack arrived; no versions at all (none of any kind) means it is gone (deleted, or never
+     * visible). With the list limited to a kind, an empty page only says there is none of that kind.
+     */
+    public void applyVersions(UUID backpack, byte kind, int page, int pages, int total, List<VersionRow> list) {
         if (selected == null || !selected.equals(backpack)) {
             return;
         }
-        if (list.isEmpty()) {
+        if (list.isEmpty() && total == 0 && kind == 0) {
             clearSelection();
             status = new Status(ResultCode.NOT_FOUND, "", "", 0, 0);
             return;
         }
+        versionKind = kind;
+        versionPage = Math.max(1, page);
+        versionPages = Math.max(1, pages);
+        versionTotal = Math.max(0, total);
         versions = List.copyOf(list);
         if (selectedVersion > versions.size()) {
             selectedVersion = 0;
             clearPreview();
         }
+    }
+
+    /** @return true if the version list is now on another page (the window then asks for it) */
+    public boolean gotoVersionPage(int number) {
+        if (selected == null || number < 1 || number > versionPages || number == versionPage) {
+            return false;
+        }
+        versionPage = number;
+        selectedVersion = 0;
+        clearPreview();
+        return true;
+    }
+
+    /** The kind button: all, timed, change, before an update, all... @return true if there is a backpack to ask about */
+    public boolean cycleVersionKind() {
+        if (selected == null) {
+            return false;
+        }
+        versionKind = VersionPaging.nextKind(versionKind);
+        versionPage = 1;
+        selectedVersion = 0;
+        clearPreview();
+        return true;
+    }
+
+    /** How many version rows a page has (what the window asks the server for): at least one. */
+    public boolean setVersionPageSize(int size) {
+        int fitted = Math.max(1, Math.min(SnapshotRequestRules.MAX_PAGE_SIZE, size));
+        if (fitted == versionPageSize) {
+            return false;
+        }
+        versionPageSize = fitted;
+        versionPage = 1;
+        return true;
     }
 
     /** A preview arrived; it counts only if it is still the version selected. */
@@ -229,7 +277,17 @@ public final class SnapshotScreenState<P> {
     }
 
     public boolean canDeleteAll() {
-        return op && selected != null && !versions.isEmpty();
+        return op && selected != null && snapshotCount() > 0;
+    }
+
+    /** How many snapshots the selected backpack has in all, of every kind (the list's count; the version list may be limited to one kind). */
+    private int snapshotCount() {
+        for (Row row : rows) {
+            if (row.uuid().equals(selected)) {
+                return row.versions();
+            }
+        }
+        return Math.max(versionTotal, versions.size());
     }
 
     /** The clean-up's preview needs a number of days the server will take. */
@@ -245,7 +303,7 @@ public final class SnapshotScreenState<P> {
             return false;
         }
         pending = Pending.DELETE_ALL;
-        pendingFiles = versions.size();
+        pendingFiles = snapshotCount();
         return true;
     }
 
@@ -315,6 +373,26 @@ public final class SnapshotScreenState<P> {
         return selectedVersion;
     }
 
+    public byte versionKind() {
+        return versionKind;
+    }
+
+    public int versionPage() {
+        return versionPage;
+    }
+
+    public int versionPages() {
+        return versionPages;
+    }
+
+    public int versionTotal() {
+        return versionTotal;
+    }
+
+    public int versionPageSize() {
+        return versionPageSize;
+    }
+
     /** The selected version's time, or null if none is selected. */
     public Long versionTime() {
         return selectedVersion >= 1 && selectedVersion <= versions.size() ? versions.get(selectedVersion - 1).time() : null;
@@ -358,6 +436,10 @@ public final class SnapshotScreenState<P> {
         selected = null;
         versions = List.of();
         selectedVersion = 0;
+        versionKind = 0;
+        versionPage = 1;
+        versionPages = 1;
+        versionTotal = 0;
         clearPreview();
         pending = Pending.NONE;
     }

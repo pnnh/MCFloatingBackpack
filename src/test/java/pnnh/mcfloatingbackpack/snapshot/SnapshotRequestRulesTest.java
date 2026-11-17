@@ -30,8 +30,8 @@ class SnapshotRequestRulesTest {
     void versionNumbers() {
         assertFalse(SnapshotRequestRules.validVersion(0));
         assertTrue(SnapshotRequestRules.validVersion(1));
-        assertTrue(SnapshotRequestRules.validVersion(16));
-        assertFalse(SnapshotRequestRules.validVersion(17));
+        assertTrue(SnapshotRequestRules.validVersion(100));
+        assertFalse(SnapshotRequestRules.validVersion(101));
     }
 
     @Test

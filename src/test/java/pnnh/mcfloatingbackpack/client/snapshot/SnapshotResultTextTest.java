@@ -27,9 +27,22 @@ class SnapshotResultTextTest {
     @Test
     void theArgumentsAreAsManyAsTheTextTakes() {
         for (ResultCode code : ResultCode.values()) {
-            Object[] args = SnapshotResultText.args(new Status(code, "NF56", "Dev", 3, 4));
-            assertEquals(SnapshotResultText.placeholders(code), args.length, code.name());
+            Status status = new Status(code, "NF56", "Dev", 3, 4);
+            Object[] args = SnapshotResultText.args(status);
+            assertEquals(SnapshotResultText.placeholders(status), args.length, code.name());
         }
+    }
+
+    /** 057: a restore that lost stacks has its own text with the number as a third argument. */
+    @Test
+    void aRestoreThatLostStacksHasItsOwnKeyAndThreeArguments() {
+        Status lost = new Status(ResultCode.RESTORED, "NF56", "Dev", 4, 0);
+        assertEquals("gui.mcfloatingbackpack.snapshot.result.restored_lost", SnapshotResultText.key(lost));
+        assertEquals(java.util.List.of("Dev", "NF56", 4), java.util.List.of(SnapshotResultText.args(lost)));
+        Status whole = new Status(ResultCode.RESTORED, "NF56", "Dev", 0, 0);
+        assertEquals("gui.mcfloatingbackpack.snapshot.result.restored", SnapshotResultText.key(whole));
+        assertEquals(2, SnapshotResultText.placeholders(whole));
+        assertEquals(3, SnapshotResultText.placeholders(lost));
     }
 
     @Test

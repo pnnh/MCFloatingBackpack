@@ -18,7 +18,7 @@ class SnapshotAccessTest {
     private static final UUID BOB = UUID.fromString("b0000000-0000-0000-0000-000000000002");
 
     private static Group group(int n, UUID owner) {
-        return new Group(new SnapshotMeta(new UUID(0, n), owner, "x", 36, 1000L, 3), 1);
+        return new Group(SnapshotMeta.of(new UUID(0, n), owner, "x", 36, 1000L, 3), 1);
     }
 
     @Test

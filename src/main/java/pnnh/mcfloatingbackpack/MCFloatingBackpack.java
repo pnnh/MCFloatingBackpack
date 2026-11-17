@@ -94,11 +94,21 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
                 VersionNetwork.onLogin(player);
+                // 057: the notice of a change of the mod's version, and what could not be read of the player's backpacks
+                pnnh.mcfloatingbackpack.snapshot.SnapshotNotices.onLogin(player);
+            }
+        });
+        // 057: the player's data has just been read: how many stacks of the backpacks in it could not be read is counted for them.
+        NeoForge.EVENT_BUS.addListener((PlayerEvent.LoadFromFile event) -> {
+            if (event.getEntity() instanceof ServerPlayer player) {
+                pnnh.mcfloatingbackpack.snapshot.SnapshotNotices.onPlayerDataRead(
+                        player.getUUID(), new java.io.File(event.getPlayerDirectory(), event.getPlayerUUID() + ".dat"), player.registryAccess());
             }
         });
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
                 PlayerVersions.forget(player.getUUID());
+                pnnh.mcfloatingbackpack.snapshot.SnapshotNotices.onLogout(player.getUUID());
                 CreativeCursorBridge.onLogout(player);
                 BackpackWatchService.forget(player.getUUID());
                 SERVER_MAIN_HAND.forget(player.getUUID());

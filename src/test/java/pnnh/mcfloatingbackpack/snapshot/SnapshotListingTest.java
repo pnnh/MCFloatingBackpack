@@ -23,7 +23,7 @@ class SnapshotListingTest {
 
     private static Group group(int n, UUID owner, long time) {
         UUID uuid = new UUID(0, n);
-        return new Group(new SnapshotMeta(uuid, owner, "x", 36, time, 3), 2);
+        return new Group(SnapshotMeta.of(uuid, owner, "x", 36, time, 3), 2);
     }
 
     @Test

@@ -7,8 +7,8 @@ public final class SnapshotRequestRules {
     public static final int MAX_PAGE = 1000;
     public static final int MIN_PAGE_SIZE = 1;
     public static final int MAX_PAGE_SIZE = 16;
-    /** The most versions of one backpack a request or a reply deals with (030 keeps five; old folders may hold more). */
-    public static final int MAX_VERSIONS = 16;
+    /** The most versions of one backpack a request or a reply deals with (057: a backpack keeps up to 85; a page of them is at most {@link #MAX_PAGE_SIZE}). */
+    public static final int MAX_VERSIONS = 100;
     public static final int MAX_DAYS = 36_500;
     /** The longest player name. */
     public static final int MAX_NAME = 16;
@@ -26,6 +26,11 @@ public final class SnapshotRequestRules {
 
     public static boolean validPageSize(int size) {
         return size >= MIN_PAGE_SIZE && size <= MAX_PAGE_SIZE;
+    }
+
+    /** 057: the kind a list of versions is limited to: 0 (all of them) or the byte of a {@link SnapshotKind}. */
+    public static boolean validKind(byte kind) {
+        return kind == 0 || SnapshotKind.fromByte(kind) != null;
     }
 
     /** A version's number (from 1, newest first). */

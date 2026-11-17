@@ -16,7 +16,7 @@ public final class SnapshotScreenLayout {
     public static final int TITLE_H = 16;
     public static final int ROW_H = 12;
     public static final int VERSION_ROW_H = 11;
-    public static final int VERSION_HEADER_H = 22;
+    public static final int VERSION_HEADER_H = 33;
     public static final int MAX_VERSION_ROWS = 5;
     public static final int OP_ROW_H = 20;
     public static final int ACTIONS_H = 20;
@@ -25,6 +25,12 @@ public final class SnapshotScreenLayout {
     public static final int MAX_SLOT = 18;
     public static final int MIN_SLOT = 8;
     public static final int CLOSE = 10;
+    /** 057: the version list's controls: the kind button, two arrows and the page text; they need this much width in the detail area. */
+    public static final int KIND_W = 76;
+    public static final int ARROW_W = 12;
+    public static final int PAGE_TEXT_W = 40;
+    public static final int CONTROL_H = 10;
+    public static final int MIN_CONTROLS_W = 150;
     private static final int GAP = PAD;
     private static final int MIN_LIST_W = 90;
     private static final int MAX_LIST_W = 176;
@@ -54,6 +60,10 @@ public final class SnapshotScreenLayout {
      * @param pager the previous / next controls under the list
      * @param versions the selected backpack's header and version rows
      * @param versionRows how many version rows fit
+     * @param versionKind 057: the kind button on the header's third line (empty if the detail area is too narrow for the controls)
+     * @param versionPrev 057: the previous-page control of the version list
+     * @param versionPageText 057: where the version list's page number is written
+     * @param versionNext 057: the next-page control
      * @param preview the preview's grid area (its width is the 9 columns' width)
      * @param slot the size of one preview cell
      * @param previewRows how many grid rows are visible at once
@@ -68,6 +78,10 @@ public final class SnapshotScreenLayout {
             Rect detail,
             Rect versions,
             int versionRows,
+            Rect versionKind,
+            Rect versionPrev,
+            Rect versionPageText,
+            Rect versionNext,
             Rect preview,
             int slot,
             int previewRows,
@@ -115,16 +129,30 @@ public final class SnapshotScreenLayout {
         int listRows = Math.max(1, Math.min(SnapshotRequestRules.MAX_PAGE_SIZE, (contentH - pagerH) / ROW_H));
 
         Rect detail = new Rect(innerX + listW + GAP, top, detailW, contentH);
-        int versionsH = Math.min(VERSION_HEADER_H + MAX_VERSION_ROWS * VERSION_ROW_H, contentH / 2);
+        int versionsH = Math.min(VERSION_HEADER_H + MAX_VERSION_ROWS * VERSION_ROW_H, contentH * 3 / 5);
         Rect versions = new Rect(detail.x(), top, detailW, versionsH);
         int versionRows = Math.max(0, (versionsH - VERSION_HEADER_H) / VERSION_ROW_H);
+
+        // 057: on the third line of the header, at the right: [kind] [<] page [>]
+        Rect noRect = new Rect(0, 0, 0, 0);
+        Rect versionKind = noRect;
+        Rect versionPrev = noRect;
+        Rect versionPageText = noRect;
+        Rect versionNext = noRect;
+        if (detailW >= MIN_CONTROLS_W && versionsH >= VERSION_HEADER_H) {
+            int y2 = top + 22;
+            versionNext = new Rect(detail.right() - ARROW_W, y2, ARROW_W, CONTROL_H);
+            versionPageText = new Rect(versionNext.x() - PAGE_TEXT_W, y2, PAGE_TEXT_W, CONTROL_H);
+            versionPrev = new Rect(versionPageText.x() - ARROW_W, y2, ARROW_W, CONTROL_H);
+            versionKind = new Rect(versionPrev.x() - 2 - KIND_W, y2, KIND_W, CONTROL_H);
+        }
 
         int slot = Math.max(MIN_SLOT, Math.min(MAX_SLOT, detailW / GRID_COLS));
         int previewY = top + versionsH + 2;
         int previewH = Math.max(0, bottom - previewY);
         Rect preview = new Rect(detail.x(), previewY, Math.min(detailW, GRID_COLS * slot), previewH);
         int previewRows = previewH / slot;
-        return new Layout(dialog, close, opRow, list, listRows, pager, detail, versions, versionRows, preview, slot, previewRows, actions, status);
+        return new Layout(dialog, close, opRow, list, listRows, pager, detail, versions, versionRows, versionKind, versionPrev, versionPageText, versionNext, preview, slot, previewRows, actions, status);
     }
 
     /** How many grid rows a preview of {@code slots} cells has (9 to a row). */

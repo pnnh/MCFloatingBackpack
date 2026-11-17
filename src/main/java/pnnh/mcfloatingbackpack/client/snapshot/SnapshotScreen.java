@@ -67,6 +67,10 @@ public final class SnapshotScreen extends Screen {
 
     private Button prev;
     private Button next;
+    // 057: the version list's page arrows and kind button
+    private Button versionPrev;
+    private Button versionNext;
+    private Button versionKindButton;
     private Button scopeButton;
     private EditBox ownerBox;
     private EditBox daysBox;
@@ -106,6 +110,8 @@ public final class SnapshotScreen extends Screen {
                 .bounds(pager.right() - half, pager.y(), half, pager.h())
                 .build());
 
+        buildVersionControls();
+
         scopeButton = null;
         ownerBox = null;
         daysBox = null;
@@ -120,9 +126,57 @@ public final class SnapshotScreen extends Screen {
             buildActions();
         }
 
+        boolean versionSizeChanged = state.setVersionPageSize(layout.versionRows());
+        if (versionSizeChanged && state.selected() != null) {
+            requestVersions();
+        }
+
         if (state.setPageSize(layout.listRows()) || !requested) {
             requested = true;
             requestList();
+        }
+    }
+
+    /** 057: [kind] [<] page [>] on the second line of the version list's header (nothing if the detail area is too narrow). */
+    private void buildVersionControls() {
+        versionPrev = null;
+        versionNext = null;
+        versionKindButton = null;
+        Rect kind = layout.versionKind();
+        if (kind.isEmpty()) {
+            return;
+        }
+        versionKindButton = addRenderableWidget(Button.builder(kindLabel(), button -> {
+                    if (state.cycleVersionKind()) {
+                        previewScroll = 0;
+                        requestVersions();
+                    }
+                })
+                .bounds(kind.x(), kind.y(), kind.w(), kind.h())
+                .build());
+        Rect prevRect = layout.versionPrev();
+        versionPrev = addRenderableWidget(Button.builder(Component.translatable(K + "button.prev"), button -> goToVersionPage(state.versionPage() - 1))
+                .bounds(prevRect.x(), prevRect.y(), prevRect.w(), prevRect.h())
+                .build());
+        Rect nextRect = layout.versionNext();
+        versionNext = addRenderableWidget(Button.builder(Component.translatable(K + "button.next"), button -> goToVersionPage(state.versionPage() + 1))
+                .bounds(nextRect.x(), nextRect.y(), nextRect.w(), nextRect.h())
+                .build());
+    }
+
+    private Component kindLabel() {
+        return Component.translatable(K + "button.kind", Component.translatable(K + "kind." + switch (state.versionKind()) {
+            case 1 -> "timed";
+            case 2 -> "change";
+            case 3 -> "upgrade";
+            default -> "all";
+        }));
+    }
+
+    private void goToVersionPage(int number) {
+        if (state.gotoVersionPage(number)) {
+            previewScroll = 0;
+            requestVersions();
         }
     }
 
@@ -260,7 +314,8 @@ public final class SnapshotScreen extends Screen {
 
     private void requestVersions() {
         if (state.selected() != null) {
-            PacketDistributor.sendToServer(new SnapshotVersionsRequestPayload(state.selected()));
+            PacketDistributor.sendToServer(new SnapshotVersionsRequestPayload(
+                    state.selected(), state.versionPage(), state.versionPageSize(), state.versionKind()));
         }
     }
 
@@ -359,8 +414,11 @@ public final class SnapshotScreen extends Screen {
     }
 
     void onVersions(SnapshotVersionsPayload payload) {
-        state.applyVersions(payload.backpack(), payload.versions());
+        state.applyVersions(payload.backpack(), payload.kind(), payload.page(), payload.pages(), payload.total(), payload.versions());
         previewScroll = 0;
+        if (versionKindButton != null) {
+            versionKindButton.setMessage(kindLabel());
+        }
     }
 
     void onPreview(SnapshotPreviewPayload payload) {
@@ -421,6 +479,10 @@ public final class SnapshotScreen extends Screen {
             previewScroll = Math.max(0, Math.min(max, previewScroll - (int) Math.signum(scrollY)));
             return true;
         }
+        if (layout.versions().contains(mouseX, mouseY) && state.selected() != null) {
+            goToVersionPage(state.versionPage() - (int) Math.signum(scrollY));
+            return true;
+        }
         if (layout.list().contains(mouseX, mouseY)) {
             goToPage(state.page() - (int) Math.signum(scrollY));
             return true;
@@ -479,6 +541,11 @@ public final class SnapshotScreen extends Screen {
         }
         prev.active = state.page() > 1;
         next.active = state.page() < state.pages();
+        if (versionKindButton != null) {
+            versionKindButton.active = state.selected() != null;
+            versionPrev.active = state.selected() != null && state.versionPage() > 1;
+            versionNext.active = state.selected() != null && state.versionPage() < state.versionPages();
+        }
         if (restoreButton != null) {
             restoreButton.active = state.canRestore();
             deleteOneButton.active = state.canDeleteOne();
@@ -570,17 +637,44 @@ public final class SnapshotScreen extends Screen {
                     COLOR_TEXT_DIM,
                     false);
         }
+        if (!layout.versionPageText().isEmpty()) {
+            Rect pageRect = layout.versionPageText();
+            Component pageText = Component.translatable(K + "page", state.versionPage(), state.versionPages());
+            graphics.drawString(font, pageText, pageRect.x() + (pageRect.w() - font.width(pageText)) / 2, pageRect.y() + 1, COLOR_TEXT, false);
+        }
         long now = System.currentTimeMillis();
         int top = versions.y() + SnapshotScreenLayout.VERSION_HEADER_H;
+        if (state.versions().isEmpty() && state.versionKind() != 0) {
+            graphics.drawString(font, Component.translatable(K + "version.none_of_kind"), versions.x() + 2, top + 1, COLOR_TEXT_DIM, false);
+        }
         for (int i = 0; i < state.versions().size() && i < layout.versionRows(); i++) {
             VersionRow version = state.versions().get(i);
             int y = top + i * SnapshotScreenLayout.VERSION_ROW_H;
             if (i + 1 == state.selectedVersion()) {
                 graphics.fill(versions.x(), y, versions.right(), y + SnapshotScreenLayout.VERSION_ROW_H, 0x60FFD34D);
             }
-            Component text = Component.translatable(K + "version.row", i + 1, AgeText.ago(now - version.time()), version.slots());
-            graphics.drawString(font, font.plainSubstrByWidth(text.getString(), versions.w() - 4), versions.x() + 2, y + 1, COLOR_TEXT, false);
+            graphics.drawString(font, font.plainSubstrByWidth(versionText(version, i, now), versions.w() - 4), versions.x() + 2, y + 1, COLOR_TEXT, false);
         }
+    }
+
+    /** 057: the kind's mark, the number (only when the list is not limited to a kind: it is the number the commands use), how long ago, how many items, and for a pinned one the version it was pinned for. */
+    private String versionText(VersionRow version, int indexOnPage, long now) {
+        String mark = "[" + Component.translatable(K + "kind.mark." + switch (version.kind()) {
+            case 1 -> "timed";
+            case 3 -> "upgrade";
+            default -> "change";
+        }).getString() + "] ";
+        String body;
+        if (state.versionKind() == 0) {
+            int number = (state.versionPage() - 1) * state.versionPageSize() + indexOnPage + 1;
+            body = Component.translatable(K + "version.row", number, AgeText.ago(now - version.time()), version.slots()).getString();
+        } else {
+            body = Component.translatable(K + "version.row_plain", AgeText.ago(now - version.time()), version.slots()).getString();
+        }
+        String to = version.kind() == 3 && !version.toVersion().isEmpty()
+                ? " " + Component.translatable(K + "version.to", version.toVersion()).getString()
+                : "";
+        return mark + body + to;
     }
 
     private Row selectedRow() {
@@ -662,7 +756,7 @@ public final class SnapshotScreen extends Screen {
             default -> {
                 Status status = state.status();
                 if (status != null) {
-                    text = Component.translatable(SnapshotResultText.key(status.code()), SnapshotResultText.args(status));
+                    text = Component.translatable(SnapshotResultText.key(status), SnapshotResultText.args(status));
                     color = status.code().success() ? COLOR_OK : COLOR_ERROR;
                 }
             }

@@ -9,7 +9,7 @@ import pnnh.mcfloatingbackpack.inventory.identity.BackpackIds;
 /**
  * 030: the names of a backpack's snapshot folder (its UUID, a dash, and the id the player sees, so a player can tell which folder is
  * which backpack; only the UUID counts, whatever follows the dash is ignored, and a folder named by the UUID alone, as the first
- * version made them, is still the same backpack's) and of the snapshot files in it (the time in milliseconds and {@code .dat}).
+ * version made them, is still the same backpack's) and of the snapshot files in it (the time in milliseconds, 057: the kind's suffix, and {@code .dat}).
  * Pure logic.
  */
 public final class SnapshotFiles {
@@ -38,25 +38,48 @@ public final class SnapshotFiles {
         return UUID.fromString(matcher.group(1));
     }
 
-    public static String fileName(long time) {
-        return time + EXTENSION;
+    /** The name of a snapshot file: the time, the kind's suffix and {@code .dat}. */
+    public static String fileName(long time, SnapshotKind kind) {
+        return time + kind.suffix() + EXTENSION;
     }
 
-    /** @return the time a file name stands for, or -1 if it is not a snapshot file's name (a temporary file, a stray file) */
+    /** @return the time a file name stands for, or -1 if it is not a snapshot file's name (a temporary file, a stray file, a suffix this version does not know) */
     public static long parseTime(String name) {
-        if (name == null || !name.endsWith(EXTENSION)) {
+        String digits = digitsOf(name);
+        if (digits == null) {
             return -1;
         }
+        return Long.parseLong(digits);
+    }
+
+    /** @return the kind a file name stands for, or null if it is not a snapshot file's name of this version */
+    public static SnapshotKind kindOf(String name) {
+        if (digitsOf(name) == null) {
+            return null;
+        }
+        String body = name.substring(0, name.length() - EXTENSION.length());
+        String suffix = body.endsWith("-t") ? "-t" : body.endsWith("-u") ? "-u" : "";
+        return SnapshotKind.fromSuffix(suffix);
+    }
+
+    /** The digits of the time in a name like {@code 123.dat}, {@code 123-t.dat} or {@code 123-u.dat}; null for anything else. */
+    private static String digitsOf(String name) {
+        if (name == null || !name.endsWith(EXTENSION)) {
+            return null;
+        }
         String digits = name.substring(0, name.length() - EXTENSION.length());
+        if (digits.endsWith("-t") || digits.endsWith("-u")) {
+            digits = digits.substring(0, digits.length() - 2);
+        }
         if (digits.isEmpty() || digits.length() > 18) {
-            return -1;
+            return null;
         }
         for (int i = 0; i < digits.length(); i++) {
             if (digits.charAt(i) < '0' || digits.charAt(i) > '9') {
-                return -1;
+                return null;
             }
         }
-        return Long.parseLong(digits);
+        return digits;
     }
 
     /** The wanted time, or the next later one that no existing snapshot of the backpack uses, so a file is never overwritten. */

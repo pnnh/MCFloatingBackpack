@@ -13,8 +13,8 @@ import pnnh.mcfloatingbackpack.inventory.identity.BackpackIds;
 class SnapshotFilesTest {
     @Test
     void aNameAndItsTimeRoundTrip() {
-        assertEquals("1762700000123.dat", SnapshotFiles.fileName(1762700000123L));
-        assertEquals(1762700000123L, SnapshotFiles.parseTime(SnapshotFiles.fileName(1762700000123L)));
+        assertEquals("1762700000123.dat", SnapshotFiles.fileName(1762700000123L, SnapshotKind.CHANGE));
+        assertEquals(1762700000123L, SnapshotFiles.parseTime(SnapshotFiles.fileName(1762700000123L, SnapshotKind.CHANGE)));
         assertEquals(0L, SnapshotFiles.parseTime("0.dat"));
     }
 
@@ -22,6 +22,22 @@ class SnapshotFilesTest {
     void whatIsNotASnapshotNameIsRefused() {
         for (String bad : new String[] {null, "", ".dat", "abc.dat", "123.dat.tmp", "123.tmp", "12 3.dat", "-5.dat", "1234567890123456789.dat", "123"}) {
             assertEquals(-1L, SnapshotFiles.parseTime(bad), String.valueOf(bad));
+        }
+    }
+
+    /** 057: the kind is the suffix of the name; names this version does not know are not snapshot names at all. */
+    @Test
+    void theKindIsTheSuffixAndAnUnknownSuffixIsNotOurs() {
+        assertEquals("100-t.dat", SnapshotFiles.fileName(100L, SnapshotKind.TIMED));
+        assertEquals("100-u.dat", SnapshotFiles.fileName(100L, SnapshotKind.UPGRADE));
+        for (SnapshotKind kind : SnapshotKind.values()) {
+            String name = SnapshotFiles.fileName(12345L, kind);
+            assertEquals(12345L, SnapshotFiles.parseTime(name), name);
+            assertEquals(kind, SnapshotFiles.kindOf(name), name);
+        }
+        for (String other : new String[] {"100-x.dat", "100-tt.dat", "100-.dat", "-t.dat", "100-t.dat.tmp", "100--t.dat", "abc-t.dat"}) {
+            assertEquals(-1L, SnapshotFiles.parseTime(other), other);
+            assertEquals(null, SnapshotFiles.kindOf(other), other);
         }
     }
 

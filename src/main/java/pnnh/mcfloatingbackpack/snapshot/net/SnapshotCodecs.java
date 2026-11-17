@@ -8,6 +8,7 @@ import io.netty.handler.codec.DecoderException;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.FriendlyByteBuf;
 
+import pnnh.mcfloatingbackpack.snapshot.SnapshotKind;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotRequestRules;
 
 /** 031: how the window's rows travel. A list longer than its limit is a bad packet. */
@@ -55,6 +56,9 @@ final class SnapshotCodecs {
         return rows;
     }
 
+    /** The longest mod version that travels (a longer one is cut). */
+    public static final int MAX_VERSION_TEXT = 32;
+
     static void writeVersions(FriendlyByteBuf buf, List<VersionRow> versions) {
         buf.writeVarInt(versions.size());
         for (VersionRow version : versions) {
@@ -62,18 +66,28 @@ final class SnapshotCodecs {
             buf.writeVarInt(version.slots());
             buf.writeUtf(version.ownerName(), SnapshotRequestRules.MAX_NAME);
             buf.writeVarInt(version.capacity());
+            buf.writeByte(version.kind());
+            String to = version.toVersion();
+            buf.writeUtf(to.length() > MAX_VERSION_TEXT ? to.substring(0, MAX_VERSION_TEXT) : to, MAX_VERSION_TEXT);
         }
     }
 
     static List<VersionRow> readVersions(FriendlyByteBuf buf) {
         int count = buf.readVarInt();
-        if (count < 0 || count > SnapshotRequestRules.MAX_VERSIONS) {
+        if (count < 0 || count > SnapshotRequestRules.MAX_PAGE_SIZE) {
             throw new DecoderException("snapshot version count out of range: " + count);
         }
         List<VersionRow> versions = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
-            versions.add(new VersionRow(
-                    buf.readVarLong(), buf.readVarInt(), buf.readUtf(SnapshotRequestRules.MAX_NAME), buf.readVarInt()));
+            long time = buf.readVarLong();
+            int slots = buf.readVarInt();
+            String owner = buf.readUtf(SnapshotRequestRules.MAX_NAME);
+            int capacity = buf.readVarInt();
+            byte kind = buf.readByte();
+            if (SnapshotKind.fromByte(kind) == null) {
+                throw new DecoderException("unknown snapshot kind: " + kind);
+            }
+            versions.add(new VersionRow(time, slots, owner, capacity, kind, buf.readUtf(MAX_VERSION_TEXT)));
         }
         return versions;
     }

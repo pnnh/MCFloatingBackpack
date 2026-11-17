@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
+import pnnh.mcfloatingbackpack.inventory.LostCells;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.ModItems;
@@ -52,6 +53,10 @@ public final class SnapshotOps {
         public boolean ok() {
             return failure == null;
         }
+    }
+
+    /** 057: how a restore turned out: the code, and how many stacks of the snapshot could not be read (0 unless restored). */
+    public record RestoreResult(ResultCode code, int lostCells) {
     }
 
     private static final StreamCodec<RegistryFriendlyByteBuf, List<ItemStack>> ITEMS_CODEC =
@@ -149,22 +154,26 @@ public final class SnapshotOps {
      * Gives {@code target} a new backpack with this snapshot's contents. The new backpack has no identity (it gets its own the
      * first time it is used, so it never shares the original's), and nothing that exists is changed.
      *
-     * @return {@link ResultCode#RESTORED}, {@link ResultCode#NO_TIER} or {@link ResultCode#UNREADABLE}
+     * @return {@link ResultCode#RESTORED}, {@link ResultCode#NO_TIER} or {@link ResultCode#UNREADABLE}, and (057) how many stacks of the
+     *         snapshot could not be read, because the item no longer exists, and are empty places in the new backpack
      */
-    public static ResultCode restore(MinecraftServer server, SnapshotService service, SnapshotMeta chosen, ServerPlayer target) {
+    public static RestoreResult restore(MinecraftServer server, SnapshotService service, SnapshotMeta chosen, ServerPlayer target) {
         BackpackTier tier = BackpackTier.byCapacity(chosen.capacity());
         Item item = tier == null ? null : itemOf(tier);
         if (item == null) {
-            return ResultCode.NO_TIER;
+            return new RestoreResult(ResultCode.NO_TIER, 0);
         }
+        // 057: what could not be read (an item that no longer exists) is counted on this thread while the snapshot is decoded
+        LostCells.reset();
         BackpackContents contents = readContents(server, service, chosen);
+        int lost = LostCells.take();
         if (contents == null) {
-            return ResultCode.UNREADABLE;
+            return new RestoreResult(ResultCode.UNREADABLE, 0);
         }
         ItemStack stack = new ItemStack(item);
         stack.set(ModDataComponents.BACKPACK_CONTENTS.get(), contents);
         target.getInventory().placeItemBackInInventory(stack);
-        return ResultCode.RESTORED;
+        return new RestoreResult(ResultCode.RESTORED, lost);
     }
 
     private static BackpackContents readContents(MinecraftServer server, SnapshotService service, SnapshotMeta meta) {

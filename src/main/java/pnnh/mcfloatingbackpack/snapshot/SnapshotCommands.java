@@ -84,7 +84,7 @@ public final class SnapshotCommands {
                         .requires(SnapshotCommands::isOp)
                         .then(Commands.argument("backpack", StringArgumentType.word())
                                 .executes(ctx -> restore(ctx, 1, null))
-                                .then(Commands.argument("version", IntegerArgumentType.integer(1))
+                                .then(Commands.argument("version", IntegerArgumentType.integer(1, SnapshotRequestRules.MAX_VERSIONS))
                                         .executes(ctx -> restore(ctx, IntegerArgumentType.getInteger(ctx, "version"), null))
                                         .then(Commands.argument("target", EntityArgument.player())
                                                 .executes(ctx -> restore(
@@ -96,7 +96,7 @@ public final class SnapshotCommands {
                         .then(Commands.argument("backpack", StringArgumentType.word())
                                 .executes(ctx -> deleteAll(ctx, false))
                                 .then(Commands.literal("confirm").executes(ctx -> deleteAll(ctx, true)))
-                                .then(Commands.argument("version", IntegerArgumentType.integer(1))
+                                .then(Commands.argument("version", IntegerArgumentType.integer(1, SnapshotRequestRules.MAX_VERSIONS))
                                         .executes(SnapshotCommands::deleteOne))))
                 .then(Commands.literal("trim")
                         .requires(SnapshotCommands::isOp)
@@ -297,8 +297,15 @@ public final class SnapshotCommands {
         for (int i = 0; i < versions.size(); i++) {
             int number = i + 1;
             SnapshotMeta version = versions.get(i);
+            // 057: the kind of each snapshot ([T] timed, [C] change, [U] from before an update, and the version it was pinned for)
+            String mark = switch (version.kind()) {
+                case TIMED -> "T";
+                case UPGRADE -> "U";
+                default -> "C";
+            };
+            String to = version.kind() == SnapshotKind.UPGRADE && !version.toVersion().isEmpty() ? " -> " + version.toVersion() : "";
             ctx.getSource().sendSuccess(
-                    () -> msg("info.version", "  #%s  %s ago  %s non-empty slots", number, AgeText.ago(now - version.time()), version.slots()),
+                    () -> msg("info.version", "  #%s  [%s]  %s ago  %s non-empty slots%s", number, mark, AgeText.ago(now - version.time()), version.slots(), to),
                     false);
         }
         return 1;
@@ -325,12 +332,22 @@ public final class SnapshotCommands {
             return fail(ctx, msg("restore.badversion", "Backpack %s has %s snapshot(s); there is no snapshot #%s.", id, versions.size(), version));
         }
         SnapshotMeta chosen = versions.get(version - 1);
-        ResultCode result = SnapshotOps.restore(ctx.getSource().getServer(), service.get(), chosen, target);
+        SnapshotOps.RestoreResult restored = SnapshotOps.restore(ctx.getSource().getServer(), service.get(), chosen, target);
+        ResultCode result = restored.code();
         if (result == ResultCode.NO_TIER) {
             return fail(ctx, msg("restore.notier", "Backpack %s has a size that matches no tier (%s slots).", id, chosen.capacity()));
         }
         if (result != ResultCode.RESTORED) {
             return fail(ctx, msg("restore.unreadable", "The snapshot could not be read (see the server log)."));
+        }
+        if (restored.lostCells() > 0) {
+            return ok(ctx, msg(
+                    "restore.lost",
+                    "Gave %s a new backpack with snapshot #%s of %s. %s stack(s) could not be restored because the item no longer exists; the snapshot file is kept, restore it in the old version to get everything back. The original backpack is unchanged.",
+                    target.getGameProfile().getName(),
+                    version,
+                    id,
+                    restored.lostCells()));
         }
         return ok(ctx, msg(
                 "restore.ok",

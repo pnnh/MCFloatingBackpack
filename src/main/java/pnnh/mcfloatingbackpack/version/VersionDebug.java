@@ -13,6 +13,7 @@ package pnnh.mcfloatingbackpack.version;
  *   <li>{@code legacyClient=true}: the server treats every player as a client without the version check (the plain text for them);
  *   <li>{@code stampRevision=N}: 040, every backpack save stamps the data revision N instead of the current one (99 makes a backpack
  *       that looks as if a newer version had saved it, to try the downgrade protection out);
+ *   <li>{@code timedSnapshotSeconds=N}: 057, the timed snapshots of the backpacks are written every N seconds instead of every 15 minutes;
  *   <li>{@code worldMarkerRevision=N}: 041, the world marker is written with the data revision N instead of the current one (99 makes a
  *       world that the next start without the switch refuses); only when N is higher than the marker already is.
  * </ul>
@@ -53,6 +54,12 @@ public final class VersionDebug {
     /** 041: the data revision the world marker is written with instead of the current one, or null when it is not overridden (or not a number). */
     public static Integer worldMarkerRevisionOverride() {
         return parseInt(System.getProperty(PREFIX + "worldMarkerRevision"));
+    }
+
+    /** 057: the seconds between the timed snapshots, or null when it is not overridden (or not a number, or less than one). */
+    public static Integer timedSnapshotSecondsOverride() {
+        Integer seconds = parseInt(System.getProperty(PREFIX + "timedSnapshotSeconds"));
+        return seconds == null || seconds < 1 ? null : seconds;
     }
 
     private static Integer parseInt(String value) {

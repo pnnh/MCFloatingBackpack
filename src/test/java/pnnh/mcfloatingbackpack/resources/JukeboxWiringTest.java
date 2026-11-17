@@ -108,7 +108,7 @@ class JukeboxWiringTest {
     @Test
     void nothingWasAddedToTheNetworkTheDataTheConfigOrTheBuildAndTheRevisionIsFour() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"20\")"), "the protocol is 20 since 054");
+        assertTrue(network.contains("versioned(\"21\")"), "the protocol is 20 since 054");
         assertFalse(network.contains("Jukebox"), "no packet for the player");
         assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count());

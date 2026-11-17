@@ -29,7 +29,7 @@ public final class WorldMarkerEvents {
                 DataRevision.CURRENT,
                 VersionDebug.acceptDowngrade(),
                 VersionDebug.worldMarkerRevisionOverride(),
-                modVersion());
+                pnnh.mcfloatingbackpack.version.ModVersion.current());
         for (WorldMarkerCheck.Line line : result.lines()) {
             switch (line.severity()) {
                 case INFO -> MCFloatingBackpack.LOGGER.info(line.text());
@@ -63,12 +63,5 @@ public final class WorldMarkerEvents {
             MCFloatingBackpack.LOGGER.error("MCFloatingBackpack: could not let the game leave the loading screen; if it stays there, close "
                     + "the game (the refusal above is why). / 无法让游戏离开加载界面；如果停在那里，请直接关闭游戏（原因见上面的拒绝说明）。", failed);
         }
-    }
-
-    /** This version's number as the mod loader has it, or null when it cannot be told. */
-    private static String modVersion() {
-        return ModList.get().getModContainerById(MCFloatingBackpack.MOD_ID)
-                .map(container -> container.getModInfo().getVersion().toString())
-                .orElse(null);
     }
 }

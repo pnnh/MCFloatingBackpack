@@ -119,4 +119,33 @@ class SnapshotScreenLayoutTest {
         assertEquals(0, SnapshotScreenLayout.maxScroll(36, 5));
         assertEquals(11, SnapshotScreenLayout.maxScroll(108, 0), "at least one row is taken to be visible");
     }
+
+    /** 057: the version list's controls sit on the third line of its header, apart from each other, or are all absent. */
+    @Test
+    void theVersionControlsAreInsideTheHeaderApartAndAllThereOrAllGone() {
+        for (int[] size : SIZES) {
+            Layout l = SnapshotScreenLayout.of(size[0], size[1], true);
+            Rect[] controls = {l.versionKind(), l.versionPrev(), l.versionPageText(), l.versionNext()};
+            String what = size[0] + "x" + size[1];
+            boolean any = false;
+            boolean all = true;
+            for (Rect control : controls) {
+                any |= !control.isEmpty();
+                all &= !control.isEmpty();
+                assertTrue(inside(control, l.versions()), "a version control leaves the version area at " + what + ": " + control);
+                if (!control.isEmpty()) {
+                    assertTrue(control.y() >= l.versions().y() + 22 && control.bottom() <= l.versions().y() + SnapshotScreenLayout.VERSION_HEADER_H,
+                            "on the third line of the header at " + what);
+                }
+            }
+            assertEquals(any, all, "either all of the controls or none at " + what);
+            for (int i = 0; i < controls.length; i++) {
+                for (int j = i + 1; j < controls.length; j++) {
+                    assertTrue(apart(controls[i], controls[j]), "version controls overlap at " + what);
+                }
+            }
+        }
+        assertFalse(SnapshotScreenLayout.of(1920, 1080, true).versionKind().isEmpty(), "the biggest window has them");
+        assertTrue(SnapshotScreenLayout.of(300, 200, true).versionKind().isEmpty() || SnapshotScreenLayout.of(300, 200, true).versions().w() >= SnapshotScreenLayout.MIN_CONTROLS_W);
+    }
 }
