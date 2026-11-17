@@ -48,7 +48,22 @@ def icons():
         ],
         {"w": rgb(0x5A3A1C), "W": rgb(0xC8A060), "g": rgb(0x8A5A2B), "l": rgb(0x3E2812)},
     )
-    return {"mobile_jukebox": jukebox, "mobile_crafting_table": crafting_table}
+    furnace = picture(
+        [
+            ".ssssssss.",
+            ".sSSSSSSs.",
+            ".sSsssssS.",
+            ".sSkkkkSs.",
+            ".sSkorkSs.",
+            ".sSkyokSs.",
+            ".sSsssssS.",
+            ".sSSSSSSs.",
+            ".ssssssss.",
+            "..........",
+        ],
+        {"s": rgb(0x4A4A50), "S": rgb(0x8E8E96), "k": rgb(0x14141A), "o": rgb(0xE8782A), "r": rgb(0xD83A1A), "y": rgb(0xF4D03F)},
+    )
+    return {"mobile_jukebox": jukebox, "mobile_crafting_table": crafting_table, "mobile_furnace": furnace}
 
 
 def main():

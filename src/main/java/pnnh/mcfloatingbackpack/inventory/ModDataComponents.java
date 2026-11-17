@@ -29,6 +29,14 @@ public final class ModDataComponents {
                             .persistent(pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentityCodecs.CODEC)
                             .networkSynchronized(pnnh.mcfloatingbackpack.inventory.identity.BackpackIdentityCodecs.STREAM_CODEC));
 
+    /** 055: what a mobile furnace item keeps on itself (its slots, its counters, the game time they are worked out up to). Absent: an empty furnace. */
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<pnnh.mcfloatingbackpack.tool.furnace.FurnaceState>>
+            MOBILE_FURNACE_STATE = COMPONENTS.registerComponentType(
+                    "mobile_furnace_state",
+                    (UnaryOperator<DataComponentType.Builder<pnnh.mcfloatingbackpack.tool.furnace.FurnaceState>>) builder -> builder
+                            .persistent(pnnh.mcfloatingbackpack.tool.furnace.FurnaceState.CODEC)
+                            .networkSynchronized(pnnh.mcfloatingbackpack.tool.furnace.FurnaceState.STREAM_CODEC));
+
     private ModDataComponents() {
     }
 

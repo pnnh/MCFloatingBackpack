@@ -59,6 +59,10 @@ public final class ModItems {
     public static final DeferredHolder<Item, MobileCraftingTableItem> MOBILE_CRAFTING_TABLE =
             ITEMS.register("mobile_crafting_table", () -> new MobileCraftingTableItem(new Item.Properties()));
 
+    /** 055: lives in the panel's right area; see {@link MobileFurnaceItem}. */
+    public static final DeferredHolder<Item, MobileFurnaceItem> MOBILE_FURNACE =
+            ITEMS.register("mobile_furnace", () -> new MobileFurnaceItem(new Item.Properties()));
+
     /** 036, 051: the category extensions, in the fixed order of the categories; ids are {@code <category>_extension}. */
     public static final Map<String, DeferredHolder<Item, CategoryExtensionItem>> CATEGORY_EXTENSIONS = registerCategoryExtensions();
 
@@ -86,6 +90,7 @@ public final class ModItems {
                                 output.accept(AUTO_PICKUP.get());
                                 output.accept(MOBILE_JUKEBOX.get());
                                 output.accept(MOBILE_CRAFTING_TABLE.get());
+                                output.accept(MOBILE_FURNACE.get());
                                 for (DeferredHolder<Item, TankItem> tank : TANKS.values()) {
                                     output.accept(tank.get());
                                 }

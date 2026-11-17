@@ -104,7 +104,7 @@ class LightWiringTest {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
         assertTrue(network.contains("versioned(\"20\")"), "the protocol is 20 since 054");
         assertFalse(network.contains("Light"), "no packet for the light");
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 5;"), "the data revision is 5 since 054");
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;"), "the data revision is 6 since 055");
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count(),
                 "no config entry was added");
         assertFalse(Files.exists(Path.of("src/main/resources/mcfloatingbackpack.mixins.json")));

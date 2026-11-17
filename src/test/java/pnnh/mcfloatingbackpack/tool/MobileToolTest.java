@@ -26,6 +26,12 @@ class MobileToolTest {
     }
 
     @Test
+    void theFurnaceIsByteOneAndNeverChanges() {
+        assertEquals((byte) 1, MobileTool.FURNACE.id());
+        assertEquals(MobileTool.FURNACE, MobileTool.fromByte((byte) 1));
+    }
+
+    @Test
     void aByteThatIsNoToolGivesNull() {
         for (int b = Byte.MIN_VALUE; b <= Byte.MAX_VALUE; b++) {
             byte value = (byte) b;

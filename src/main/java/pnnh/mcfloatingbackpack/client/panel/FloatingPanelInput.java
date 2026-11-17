@@ -200,6 +200,16 @@ public final class FloatingPanelInput {
                             pnnh.mcfloatingbackpack.tool.MobileTool.CRAFTING_TABLE.id()));
                     return true;
                 }
+                // 055: and the mobile furnace
+                if (!isRight
+                        && toolHit.area() == PanelArea.RIGHT
+                        && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
+                        && ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index())
+                                .is(ModItems.MOBILE_FURNACE.get())) {
+                    PacketDistributor.sendToServer(new pnnh.mcfloatingbackpack.network.OpenToolPayload(
+                            pnnh.mcfloatingbackpack.tool.MobileTool.FURNACE.id()));
+                    return true;
+                }
                 if (!isRight
                         && toolHit.area() == PanelArea.BOTTOM
                         && FloatingPanelRenderer.cursorStack(Minecraft.getInstance()).isEmpty()
@@ -370,6 +380,18 @@ public final class FloatingPanelInput {
                         stack -> stack.is(ModItems.MOBILE_CRAFTING_TABLE.get()))
                 != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
             FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.mobile_crafting_table"));
+            return true;
+        }
+        // 055: and one mobile furnace
+        if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                        PanelArea.RIGHT,
+                        area,
+                        held,
+                        slotIndex,
+                        view.toolStacks(area),
+                        stack -> stack.is(ModItems.MOBILE_FURNACE.get()))
+                != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.mobile_furnace"));
             return true;
         }
         // 052: a light in the bottom area only shines through LambDynamicLights, which the player installs themselves: say so once.

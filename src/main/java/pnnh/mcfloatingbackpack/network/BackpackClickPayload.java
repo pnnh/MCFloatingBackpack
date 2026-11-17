@@ -205,6 +205,20 @@ public record BackpackClickPayload(
                         BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
                         return;
                     }
+                    // 055: and the mobile furnace
+                    if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                    PanelArea.RIGHT,
+                                    area,
+                                    held,
+                                    payload.slotIndex(),
+                                    inventory.toolStacks(area),
+                                    stack -> stack.is(ModItems.MOBILE_FURNACE.get()))
+                            != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                        serverPlayer.displayClientMessage(
+                                Component.translatable("message.mcfloatingbackpack.limit.mobile_furnace"), true);
+                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                        return;
+                    }
                     // 053: the mobile jukebox counts in the right area, one only
                     if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
                                     PanelArea.RIGHT,

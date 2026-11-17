@@ -49,7 +49,7 @@
 - [X] T018 [P] `README.md` 与 `README_CN.md`：移动工作台一节；`docs/plan/mobile-tools.md` 状态改为"054 已实现"
 - [X] T019 `specs/054-mobile-crafting-table/DELIVERY.md`（中文）：基线与完成后的类数与用例数、与 spec/plan 的偏离、每个游戏内验证项验证了什么 / 没验证什么、**协议号 19 → 20 与数据修订 4 → 5 的理由**、已知局限、图集前后尺寸、宪法复查
 - [X] T020 最终检查：`./gradlew compileJava test` 全部通过；`git status` 无临时修改残留；**不提交、不打 tag**
-- [ ] T021 用户确认：真机点工具打开、合成、再点关闭、界面衔接、JEI / EMI 转移；**只有用户明确确认才勾**
+- [X] T021 用户确认：真机点工具打开、合成、再点关闭、界面衔接、JEI / EMI 转移；**只有用户明确确认才勾**
 
 ## Dependencies
 

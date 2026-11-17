@@ -100,7 +100,7 @@ class MobileCraftingWiringTest {
             }
         }
         assertFalse(Files.exists(Path.of("src/main/resources/mcfloatingbackpack.mixins.json")));
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 5;"));
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count());
     }
 

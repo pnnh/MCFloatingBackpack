@@ -10,6 +10,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
+import pnnh.mcfloatingbackpack.tool.furnace.MobileFurnaceStore;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.item.ModItems;
@@ -26,6 +27,7 @@ public final class MobileTools {
     public static Item itemOf(MobileTool tool) {
         return switch (tool) {
             case CRAFTING_TABLE -> ModItems.MOBILE_CRAFTING_TABLE.get();
+            case FURNACE -> ModItems.MOBILE_FURNACE.get();
         };
     }
 
@@ -54,7 +56,10 @@ public final class MobileTools {
             case CRAFTING_TABLE -> new SimpleMenuProvider(
                     (id, inventory, p) -> new MobileCraftingMenu(id, inventory, ContainerLevelAccess.create(p.level(), p.blockPosition())),
                     Component.translatable("container.crafting"));
+            case FURNACE -> MobileFurnaceStore.provider(player);
         };
-        player.openMenu(provider);
+        if (provider != null) {
+            player.openMenu(provider);
+        }
     }
 }

@@ -1,13 +1,13 @@
 package pnnh.mcfloatingbackpack.tool;
 
 /**
- * 054: the mobile tools of the right area that open a vanilla screen when they are clicked (the mobile crafting table now, the mobile furnace
- * in 055). The byte is what goes on the wire in the "open tool" request; the server reads it with {@link #fromByte}, which gives
+ * 054: the mobile tools of the right area that open a vanilla screen when they are clicked (the mobile crafting table, 054; the mobile furnace, 055). The byte is what goes on the wire in the "open tool" request; the server reads it with {@link #fromByte}, which gives
  * {@code null} for a value this version does not know (such a request is ignored, never an error: the client is not trusted). Pure logic with
  * no Minecraft types.
  */
 public enum MobileTool {
-    CRAFTING_TABLE((byte) 0);
+    CRAFTING_TABLE((byte) 0),
+    FURNACE((byte) 1);
 
     private final byte id;
 

@@ -1,6 +1,6 @@
 # 规划：移动工作台、移动熔炉、移动唱片机（2026-11-13，用户已确认主要决策）
 
-状态：规划文档，决策已与用户确认。**移动唱片机（053）、移动工作台（054）已实现**（`specs/053-mobile-jukebox/`、`specs/054-mobile-crafting-table/`，等用户确认手感），之后是移动熔炉（055）。按 Speckit 一次只做一个 feature。
+状态：规划文档，决策已与用户确认。**移动唱片机（053）、移动工作台（054）已实现并经用户确认**（`specs/053-mobile-jukebox/`、`specs/054-mobile-crafting-table/`）；**移动熔炉（055）已实现并经用户确认**（`specs/055-mobile-furnace/`）。按 Speckit 一次只做一个 feature。
 
 ## 玩法（三个工具共同的规则）
 
