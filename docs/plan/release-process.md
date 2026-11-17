@@ -1,6 +1,6 @@
 # 版本号与发布流程（2026-11-10）
 
-**状态**：已落地（流水线与文档），**还没有打过任何 tag，也没有发布过 Release**。参考了作者的另一个模组项目 [MCompatIssues](https://github.com/pnnh/MCompatIssues)（同样是 NeoForge 1.21.1 的模组，已经在用同一套流水线发布 v0.1.0），本项目沿用它的做法，只改了名字和一处构建参数（见下）。
+**状态**：已落地并跑通；**v0.1.0 已于 2026-11-17 发布**（tag 指向 `125318c`，GitHub Actions 两次运行都成功：推送 `main` 的测试与构建、推送 tag 的发布；Release 附件 `mcfloatingbackpack-0.1.0.jar`）。参考了作者的另一个模组项目 [MCompatIssues](https://github.com/pnnh/MCompatIssues)（同样是 NeoForge 1.21.1 的模组，已经在用同一套流水线发布 v0.1.0），本项目沿用它的做法，只改了名字和一处构建参数（见下）。
 
 ## 版本号规则
 
@@ -29,7 +29,7 @@
 1. **名字**：模组名、jar 名（`mcfloatingbackpack-<版本>.jar`）。
 2. **构建参数 `-PcleanRuntime -PnoJei`**：本项目的 `build.gradle` 把联调用的模组（精妙背包、旅行者背包、Curios、Accessories、owo-lib、Sodium、Iris、JEI）放在 `localRuntime`，而它被并进了 `runtimeClasspath`，所以不加参数时 CI 里的 `test` 也要从 CurseMaven 与 Modrinth 下载它们。这些只用于本地 `runClient`，不进发布 jar；CI 里去掉。已在本机验证：`./gradlew test build -PcleanRuntime -PnoJei` 通过，产物 `build/libs/mcfloatingbackpack-0.1.0.jar` 里只有本模组。
 
-**尚未验证**：流水线本身没有在 GitHub 上跑过（需要推送后才知道），第一次推送到 `main` 会触发一次"只测试与构建"的运行，可以先用它检查；发布路径要到第一次打 tag 才会跑。
+**已验证**（2026-11-17）：推送 `main` 的运行（Validate、Build & Test 成功，Publish 跳过）与推送 tag `v0.1.0` 的运行（三个任务都成功）。
 
 ## 许可证
 
