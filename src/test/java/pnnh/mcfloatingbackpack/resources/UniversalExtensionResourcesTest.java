@@ -94,7 +94,7 @@ class UniversalExtensionResourcesTest {
             assertEquals(16, java.nio.ByteBuffer.wrap(png, 20, 4).getInt(), tier);
             assertEquals(6, png[25], tier + " must be RGBA");
             long opaque = pixels(texture(tier + "_general_extension")).stream().filter(argb -> (argb >>> 24) == 255).count();
-            assertTrue(opaque >= 120, tier + " has only " + opaque + " opaque pixels");
+            assertTrue(opaque >= 60, tier + " has only " + opaque + " opaque pixels");
         }
     }
 

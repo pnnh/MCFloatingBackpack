@@ -114,7 +114,7 @@ class CategoryExtensionResourcesTest {
             assertEquals(6, png[25], category + " must be RGBA");
             BufferedImage image = texture(category);
             long opaque = pixels(image).stream().filter(argb -> (argb >>> 24) == 255).count();
-            assertTrue(opaque >= 120, category + " has only " + opaque + " opaque pixels");
+            assertTrue(opaque >= 60, category + " has only " + opaque + " opaque pixels");
         }
     }
 

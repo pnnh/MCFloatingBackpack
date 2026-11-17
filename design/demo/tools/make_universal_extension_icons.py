@@ -7,7 +7,7 @@ Hand-drawn, no source image: ludo.ai / pixellab were not used (same as the categ
 make_category_extension_icons.py, whose iron plate and helpers this uses); this script is the source. Development-time tool: not
 shipped in the mod.
 
-Every icon is the same iron plate with a 10x10 picture on it: a frame around a three by three grid of cells (every cell takes
+Every icon is a 10x10 picture (enlarged and outlined by the base module, no plate): a frame around a three by three grid of cells (every cell takes
 anything: "any item fits here"), in the colours of the backpack tier it is for. The ten category extensions show things (bread, a
 pickaxe...); these show a grid, so they cannot be taken for one of those. Files are named <tier>_general_extension.png.
 With --preview it also writes each icon magnified 12 times, an overview of the five and one of the five beside the ten category
@@ -36,22 +36,22 @@ TIERS = {
 
 
 def grid_picture(frame_light, frame_dark, cell_light, cell_dark):
-    """A 10x10 picture as {(x, y): colour} on the plate (origin at (3, 3) of the icon)."""
-    pixels = {}
+    """A 10x10 picture as {(x, y): colour} (no plate: it is enlarged and outlined by base.render)."""
+    pixels = base.Picture(10)
     for y in range(10):
         for x in range(10):
             if x in (0, 9) or y in (0, 9):
                 color = frame_dark if (x == 9 or y == 9) else frame_light
             else:
                 color = INSIDE
-            pixels[(x + 3, y + 3)] = color
+            pixels[(x, y)] = color
     for cx in (1, 4, 7):
         for cy in (1, 4, 7):
             for dx in (0, 1):
                 for dy in (0, 1):
                     # light cell, its bottom row and right column a little darker, like the slots of the panel
                     shade = cell_dark if (dx == 1 or dy == 1) and not (dx == 0 and dy == 0) else cell_light
-                    pixels[(cx + dx + 3, cy + dy + 3)] = shade
+                    pixels[(cx + dx, cy + dy)] = shade
     return pixels
 
 

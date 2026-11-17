@@ -6,9 +6,11 @@ Usage: make_category_extension_icons.py <out_dir> [--preview <preview_dir>]
 Hand-drawn, no source image: ludo.ai / pixellab were not used (same as the auto pickup icon, see
 specs/024-auto-pickup/DELIVERY.md); this script is the source. Development-time tool: not shipped in the mod.
 
-Every icon is the same iron plate (a dark 1-pixel outline, light at the top left and dark at the bottom right, like the
-vanilla item icons, which echoes the four iron ingots of the recipes) with a 10x10 picture of the category on it, each in
-its own colors so that the ten can be told apart at the size of a slot. Files are named <category>_extension.png.
+Every icon is a picture of the category (no background plate any more, like the trash can and the tag manager): the 10x10
+drawing is enlarged to 12x12 (the two middle rows and columns are doubled), then a 1-pixel outline, a much darker shade of the
+pixel it touches, is put around the silhouette, and the whole is centred in the 16x16 icon, so an icon is up to 14x14 and
+fills the slot like a vanilla item. Computed pictures (the disc, the log) are drawn at 12x12 directly. Files are named
+<category>_extension.png.
 """
 import math
 import os
@@ -18,90 +20,83 @@ from PIL import Image
 
 SIZE = 16
 CLEAR = (0, 0, 0, 0)
-OUTLINE = (0x24, 0x24, 0x28, 255)
-PLATE_LIGHT = (0xCF, 0xCF, 0xD3, 255)
-PLATE = (0x9A, 0x9A, 0xA0, 255)
-PLATE_DARK = (0x62, 0x62, 0x68, 255)
+OUTLINE_SHADE = 0.35  # the outline is this fraction of the brightness of the pixel it touches
 
 
 def rgb(hex_value):
     return ((hex_value >> 16) & 0xFF, (hex_value >> 8) & 0xFF, hex_value & 0xFF, 255)
 
 
-def plate():
-    """The shared base: {(x, y): color} for the 14x14 rounded iron plate."""
-    cells = {(x, y) for x in range(1, 15) for y in range(1, 15)}
-    cells -= {(1, 1), (14, 1), (1, 14), (14, 14)}
-    out = {}
-    for (x, y) in cells:
-        edge = any((x + dx, y + dy) not in cells for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
-        if edge:
-            out[(x, y)] = OUTLINE
-        elif x == 2 or y == 2:
-            out[(x, y)] = PLATE_LIGHT
-        elif x == 13 or y == 13:
-            out[(x, y)] = PLATE_DARK
-        else:
-            out[(x, y)] = PLATE
-    return out
+class Picture(dict):
+    """{(x, y): color} in picture space (the origin is the top left of the drawing) with the size of the drawing."""
+
+    def __init__(self, size, pixels=()):
+        super().__init__(pixels)
+        self.size = size
+
+
+# the source rows (and columns) of the 12 of an enlarged 10x10 drawing: the two in the middle are doubled, so a symmetric
+# drawing stays symmetric and the 2-pixel cells of the universal grid stay 2 pixels
+ENLARGE = (0, 1, 2, 3, 3, 4, 5, 6, 6, 7, 8, 9)
 
 
 def picture(rows, palette):
-    """A 10x10 picture from ten strings of ten characters; '.' leaves the plate showing."""
+    """A 10x10 picture from ten strings of ten characters; '.' is transparent."""
     assert len(rows) == 10, rows
-    pixels = {}
+    pixels = Picture(10)
     for y, row in enumerate(rows):
         assert len(row) == 10, (y, row)
         for x, ch in enumerate(row):
             if ch != ".":
-                pixels[(x + 3, y + 3)] = palette[ch]
+                pixels[(x, y)] = palette[ch]
     return pixels
 
 
 def disc_picture(rim, body, shine, label, hole_hint):
-    """A record seen from above: black disc with a lighter ring, a coloured label and a hole."""
-    pixels = {}
-    cx = cy = 4.5
-    for y in range(10):
-        for x in range(10):
+    """A record seen from above, 12x12: black disc with a lighter ring, a coloured label and a hole."""
+    pixels = Picture(12)
+    cx = cy = 5.5
+    for y in range(12):
+        for x in range(12):
             d = math.hypot(x - cx, y - cy)
-            if d > 4.6:
+            if d > 5.6:
                 continue
-            if d > 3.9:
+            if d > 4.7:
                 color = rim
-            elif d < 0.9:
+            elif d < 1.1:
                 color = hole_hint
-            elif d < 2.0:
+            elif d < 2.5:
                 color = label
             else:
-                color = shine if (x - cx) + (y - cy) < -2.5 and d > 2.6 else body
-            pixels[(x + 3, y + 3)] = color
+                color = shine if (x - cx) + (y - cy) < -3.0 and d > 3.2 else body
+            if color != CLEAR:
+                pixels[(x, y)] = color
     return pixels
 
 
 def log_picture():
-    """The end of a log: bark, then growth rings."""
+    """The end of a log, 12x12: bark, then growth rings."""
     bark = rgb(0x5A3A1C)
     ring_dark = rgb(0x8A5E2E)
     ring_light = rgb(0xC4975A)
-    pixels = {}
-    cx = cy = 4.5
-    for y in range(10):
-        for x in range(10):
+    pixels = Picture(12)
+    cx = cy = 5.5
+    for y in range(12):
+        for x in range(12):
             d = math.hypot(x - cx, y - cy)
-            if d > 4.7:
+            if d > 5.7:
                 continue
-            if d > 3.9:
+            if d > 4.7:
                 color = bark
-            elif d > 2.9:
+            elif d > 3.5:
                 color = ring_light
-            elif d > 1.9:
+            elif d > 2.3:
                 color = ring_dark
-            elif d > 0.9:
+            elif d > 1.1:
                 color = ring_light
             else:
                 color = ring_dark
-            pixels[(x + 3, y + 3)] = color
+            pixels[(x, y)] = color
     return pixels
 
 
@@ -109,15 +104,15 @@ def icons():
     """{category: {(x, y): color}} of the pictures."""
     bread = picture(
         [
-            "..........",
             "...bbbb...",
             "..bLLLLb..",
             ".bLLcLcLb.",
-            ".bLcLcLLb.",
-            ".bLLLLLLb.",
+            "bLLcLcLLLb",
+            "bLcLcLLLLb",
+            "bLLLLLLLLb",
+            "bLLLLLLLLb",
             ".bLLLLLLb.",
             "..bbbbbb..",
-            "..........",
             "..........",
         ],
         {"b": rgb(0x7A4412), "L": rgb(0xD9A04A), "c": rgb(0xF0C878)},
@@ -389,13 +384,38 @@ def icons():
     }
 
 
+def enlarge(pixels):
+    """A 10x10 drawing becomes 12x12 (a 12x12 one stays)."""
+    if pixels.size == 12:
+        return dict(pixels)
+    assert pixels.size == 10, pixels.size
+    return {(x, y): pixels[(ENLARGE[x], ENLARGE[y])]
+            for y in range(12) for x in range(12) if (ENLARGE[x], ENLARGE[y]) in pixels}
+
+
+def outline(cells):
+    """cells + a 1-pixel outline around the silhouette (not on the diagonals, so the corners come out rounded)."""
+    out = dict(cells)
+    for (x, y), color in cells.items():
+        for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            neighbour = (x + dx, y + dy)
+            if neighbour not in cells and neighbour not in out:
+                dark = tuple(int(c * OUTLINE_SHADE) for c in color[:3])
+                out[neighbour] = dark + (255,)
+    return out
+
+
 def render(pixels):
+    cells = outline(enlarge(pixels))
+    xs = [x for x, _ in cells]
+    ys = [y for _, y in cells]
+    # centre the silhouette (with its outline) in the icon
+    ox = (SIZE - (max(xs) - min(xs) + 1)) // 2 - min(xs)
+    oy = (SIZE - (max(ys) - min(ys) + 1)) // 2 - min(ys)
     img = Image.new("RGBA", (SIZE, SIZE), CLEAR)
     px = img.load()
-    for (x, y), color in plate().items():
-        px[x, y] = color
-    for (x, y), color in pixels.items():
-        px[x, y] = color
+    for (x, y), color in cells.items():
+        px[x + ox, y + oy] = color
     return img
 
 
@@ -422,7 +442,7 @@ def main():
             img.resize((SIZE * 12, SIZE * 12), Image.NEAREST).save(os.path.join(preview_dir, category + "_x12.png"))
 
     if preview_dir:
-        # one overview: five by two on a dark and a light checker so that transparency and the plate can be judged
+        # one overview: five by four on a dark ground so that the transparency can be judged
         scale = 8
         cell = SIZE * scale
         sheet = Image.new("RGBA", (cell * 5, cell * ((len(order) + 4) // 5)), (60, 60, 66, 255))

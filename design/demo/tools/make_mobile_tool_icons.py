@@ -3,9 +3,8 @@
 
 Usage: make_mobile_tool_icons.py <out_dir> [--preview <preview_dir>]
 
-Hand-drawn like the category extension icons (036): the same iron plate (a dark 1-pixel outline, light at the top left, dark at the
-bottom right) with a 10x10 picture on it, so the tools look like the family of the extensions and the other tools. The plate and the
-helpers are the ones of make_category_extension_icons.py. Files are named <tool>.png. Development-time tool: not shipped in the mod.
+Hand-drawn like the category extension icons (036): a 10x10 picture, enlarged to 12x12 and outlined (no background plate, like the
+trash can and the tag manager). The enlarging, the outline and the helpers are the ones of make_category_extension_icons.py. Files are named <tool>.png. Development-time tool: not shipped in the mod.
 """
 import os
 import sys
