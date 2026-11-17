@@ -1,0 +1,243 @@
+src/main/java/pnnh/mcfloatingbackpack/inventory/LenientStacks.java
+  s_9aefe4a2760245::t_d13092e5cb087d 14,20-24
+src/main/java/pnnh/mcfloatingbackpack/snapshot/TimedWindow.java
+  s_9aefe4a2760245::t_37a63feda75286 1-56
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotCapacity.java
+  s_9aefe4a2760245::t_37a63feda75286 1-59
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotCapacityTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-70
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotConfig.java
+  s_9aefe4a2760245::t_7d9f2b2827f8a6 1-56
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileFurnaceWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 33
+src/test/java/pnnh/mcfloatingbackpack/resources/TankWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 67
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileCraftingWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 31
+src/test/java/pnnh/mcfloatingbackpack/resources/VersionCheckResourcesTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 70
+src/main/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotScreenState.java
+  s_9aefe4a2760245::t_f0d7db1d93575f 11,54-59,98-102,106,111-114,122-155,280-290,306,376-395,439-442
+specs/057-snapshot-retention/contracts/storage.md
+  s_9aefe4a2760245::t_396db260da45e8 1-73
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotService.java
+  s_9aefe4a2760245::t_e56abdbe929751 3,22-23,25,34-42,51-54,57,59,67-71,73,76-77,84-85,87-94,100,115-179,184,191,198-201,204,206,209-218,223,228,238-243,247,260,273,281,283,285-289,293,296-301,306-336
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackSortWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 28
+src/test/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotResultTextTest.java
+  s_9aefe4a2760245::t_7a0cd5e3da5d6b 30-32,36-45
+  s_9aefe4a2760245::t_2353f98234ec18 46-47
+src/test/java/pnnh/mcfloatingbackpack/inventory/LostCellsTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-41
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotRequestRulesTest.java
+  s_9aefe4a2760245::t_09debd40dce48f 33-34
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotRetentionTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-57
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_b574ade08068ee 309
+  s_9aefe4a2760245::t_09debd40dce48f 321
+  s_9aefe4a2760245::t_760c0fc2505b18 155,303-308,310-320
+src/test/java/pnnh/mcfloatingbackpack/snapshot/VersionOrderTest.java
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 1-38
+src/test/java/pnnh/mcfloatingbackpack/snapshot/VersionPagingTest.java
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 1-78
+src/main/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerEvents.java
+  s_9aefe4a2760245::t_7d9f2b2827f8a6 32
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotState.java
+  s_9aefe4a2760245::t_37a63feda75286 1-120
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotKind.java
+  s_9aefe4a2760245::t_37a63feda75286 1-73
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotStore.java
+  s_9aefe4a2760245::t_2b574a4dc0bef5 33-36,44-45,47-50,77-83,89-98,107-113,115-117,124,126-134,136-350,431-434,441,443-445,453-456,473-478,500-503
+  s_9aefe4a2760245::t_514b9d8fa47add 519-521
+src/test/java/pnnh/mcfloatingbackpack/resources/SnapshotCapacityWiringTest.java
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 1-65
+specs/057-snapshot-retention/quickstart.md
+  s_9aefe4a2760245::t_1d35b6a4f6db76 31
+  s_9aefe4a2760245::t_232d55dd15c910 1-30,32-44
+src/test/java/pnnh/mcfloatingbackpack/snapshot/TimedWindowTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-55
+specs/057-snapshot-retention/tasks.md
+  s_9aefe4a2760245::t_c7794c4c0ff2a5 16,20-31,35-39,45-49,53-59,63-67,71-78,82-83,87-90
+  s_9aefe4a2760245::t_8257dd07e7bde2 1-15,17-19,32-34,40-44,50-52,60-62,68-70,79-81,84-86,91-109
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotSettingsTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-45
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotCommands.java
+  s_9aefe4a2760245::t_e84bb78e3caf81 87,99,300-306,308
+  s_9aefe4a2760245::t_09debd40dce48f 345
+  s_9aefe4a2760245::t_3ce6dd6ad45c94 335-336,343-344,346-350
+  s_9aefe4a2760245::t_8b314a2d2c97b9 351
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionUiResourcesTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 125
+src/main/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotScreen.java
+  s_9aefe4a2760245::t_a25d28953d811a 70-73,113-114,129-133,140-182,317-318,417,419-421,482-485,544-548,640-644,647-649,656-672,674-677
+  s_9aefe4a2760245::t_7a0cd5e3da5d6b 759
+README_CN.md
+  s_9aefe4a2760245::t_30e42c783a45c3 44
+src/main/java/pnnh/mcfloatingbackpack/snapshot/VersionPaging.java
+  s_9aefe4a2760245::t_a46f886615d415 1-50
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotRetention.java
+  s_9aefe4a2760245::t_37a63feda75286 1-39
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotSettings.java
+  s_9aefe4a2760245::t_37a63feda75286 1-24
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchResourcesTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 108
+src/test/java/pnnh/mcfloatingbackpack/resources/LightWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 105
+src/main/java/pnnh/mcfloatingbackpack/version/VersionDebug.java
+  s_9aefe4a2760245::t_7d9f2b2827f8a6 16,59-62
+  s_9aefe4a2760245::t_efc1e57c607cd1 63-64
+specs/057-snapshot-retention/data-model.md
+  s_9aefe4a2760245::t_396db260da45e8 1-66
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotListingTest.java
+  s_9aefe4a2760245::t_37a63feda75286 26
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchPrefixResourcesTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 104
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotNotices.java
+  s_9aefe4a2760245::t_7d9f2b2827f8a6 1-2,4-5,7-8,16-18,21-27,31-42,44-75,100-138
+  s_9aefe4a2760245::t_bc1465bd6c7a23 3,6,9-15,19-20,28-30,43,76-99
+src/main/java/pnnh/mcfloatingbackpack/snapshot/UpgradePlan.java
+  s_9aefe4a2760245::t_37a63feda75286 1-43
+specs/057-snapshot-retention/plan.md
+  s_9aefe4a2760245::t_a6f7956837ba32 13
+  s_9aefe4a2760245::t_bec7b562549cf8 2,4-6,8,17,19,21,23,25,27,29,31,33,35-37,49-54,67-71,106-107,109-111
+  s_9aefe4a2760245::t_b6bd29b1dadb34 11,96,101
+  s_9aefe4a2760245::t_ea2364cb798090 1,3,7,9,14-15,18,20,22,24,26,30,32,34,38-48,55-66,72-89,91-95,97-100,102-105,108,112
+  s_9aefe4a2760245::t_5c3d53842de4f1 10,12,16,28
+  s_9aefe4a2760245::t_6fde99aea10c79 90
+src/main/java/pnnh/mcfloatingbackpack/version/ModVersion.java
+  s_9aefe4a2760245::t_a54bca334619d9 1-18
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotServer.java
+  s_9aefe4a2760245::t_3ce6dd6ad45c94 96,101,182-184,187,189
+  s_9aefe4a2760245::t_8d19ec69ccce75 87-92,94-95,97-100,102-103
+src/main/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotResultText.java
+  s_9aefe4a2760245::t_7a0cd5e3da5d6b 22-36,46-49
+.specify/feature.json
+  s_9aefe4a2760245::t_d3be3f4e19cc2b 1
+src/test/java/pnnh/mcfloatingbackpack/snapshot/UpgradePlanTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-51
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotRequestRules.java
+  s_9aefe4a2760245::t_a46f886615d415 10-11,31-33
+  s_9aefe4a2760245::t_5023b27166eec1 34-35
+src/test/java/pnnh/mcfloatingbackpack/resources/JukeboxWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 111
+src/test/java/pnnh/mcfloatingbackpack/snapshot/ThrottleTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-27
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_bc1465bd6c7a23 101,104-105
+  s_9aefe4a2760245::t_d13092e5cb087d 97-98,102-103,111
+  s_9aefe4a2760245::t_003a66541dce68 99-100
+specs/057-snapshot-retention/spec.md
+  s_9aefe4a2760245::t_b6bd29b1dadb34 162
+  s_9aefe4a2760245::t_a6f7956837ba32 130,207
+  s_9aefe4a2760245::t_5c3d53842de4f1 66,181,232
+  s_9aefe4a2760245::t_d3be3f4e19cc2b 1-65,67-129,131-161,163-180,182-206,208-231,233-250
+src/test/java/pnnh/mcfloatingbackpack/resources/ItemTooltipWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 87
+specs/057-snapshot-retention/contracts/config-and-texts.md
+  s_9aefe4a2760245::t_6fde99aea10c79 54
+  s_9aefe4a2760245::t_cb6278e2763183 1-53,55-58
+src/main/java/pnnh/mcfloatingbackpack/diag/DiagConfig.java
+  s_9aefe4a2760245::t_7d9f2b2827f8a6 7,20-21
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotAccessTest.java
+  s_9aefe4a2760245::t_37a63feda75286 21
+specs/057-snapshot-retention/research.md
+  s_9aefe4a2760245::t_6fde99aea10c79 109
+  s_9aefe4a2760245::t_5c3d53842de4f1 1-76,78,80,82,86-108,110-125
+  s_9aefe4a2760245::t_b6bd29b1dadb34 77,79,81,83-85
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/VersionRow.java
+  s_9aefe4a2760245::t_a46f886615d415 3-7
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsContractTest.java
+  s_9aefe4a2760245::t_09debd40dce48f 112
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_b574ade08068ee 309
+  s_9aefe4a2760245::t_eb0f960402e8fd 155,318
+  s_9aefe4a2760245::t_09debd40dce48f 321
+  s_9aefe4a2760245::t_d9254a2064a47b 303-308,310-317,319-320
+src/test/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotScreenLayoutTest.java
+  s_9aefe4a2760245::t_b574ade08068ee 123,137-138
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 122,124-136,139-150
+src/main/java/pnnh/mcfloatingbackpack/snapshot/VersionOrder.java
+  s_9aefe4a2760245::t_7d9f2b2827f8a6 1-51
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotCodecs.java
+  s_9aefe4a2760245::t_a46f886615d415 11,59-61,69-71,77,82-90
+specs/057-snapshot-retention/checklists/requirements.md
+  s_9aefe4a2760245::t_d3be3f4e19cc2b 1-35
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotFilesTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 16-17,28-41
+  s_9aefe4a2760245::t_f29f147206b4c7 42-43
+src/test/java/pnnh/mcfloatingbackpack/resources/SnapshotRetentionResourcesTest.java
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 1-91
+specs/057-snapshot-retention/contracts/protocol-and-ui.md
+  s_9aefe4a2760245::t_6fde99aea10c79 56
+  s_9aefe4a2760245::t_be6e019efff71d 1-55,57
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotStateTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-70
+src/test/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotScreenStateTest.java
+  s_9aefe4a2760245::t_09debd40dce48f 97,189
+  s_9aefe4a2760245::t_8f6eb6a92b5b58 33,53,68,98,114,146,153,179,270-274,276-286,288-303,305-310,312-324,326-333,336-344,346-351
+  s_9aefe4a2760245::t_d4f54326e49341 275,287,304,311,325,334-335,345
+src/test/java/pnnh/mcfloatingbackpack/resources/SnapshotNoticesWiringTest.java
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 1-21,23-24,27-28,30-37,41-68
+  s_9aefe4a2760245::t_bc1465bd6c7a23 22,25-26,29,38-40
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotOps.java
+  s_9aefe4a2760245::t_3ce6dd6ad45c94 21,58-61,157-158,160,164,166-167,169,171,176
+docs/plan/snapshot-retention.md
+  s_9aefe4a2760245::t_6fde99aea10c79 82
+  s_9aefe4a2760245::t_30e42c783a45c3 3
+specs/057-snapshot-retention/contracts/rules.md
+  s_9aefe4a2760245::t_b6bd29b1dadb34 46
+  s_9aefe4a2760245::t_396db260da45e8 1-45,47-56
+src/test/java/pnnh/mcfloatingbackpack/snapshot/SnapshotKindTest.java
+  s_9aefe4a2760245::t_f09e0d3ea127de 1-47
+README.md
+  s_9aefe4a2760245::t_30e42c783a45c3 44
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotFiles.java
+  s_9aefe4a2760245::t_37a63feda75286 12,41-43,46,48-49,52-69,71-73,75,79,82
+src/test/java/pnnh/mcfloatingbackpack/resources/DowngradeProtectionResourcesTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 132
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 118
+src/main/java/pnnh/mcfloatingbackpack/snapshot/Throttle.java
+  s_9aefe4a2760245::t_37a63feda75286 1-24
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 237,247
+src/test/java/pnnh/mcfloatingbackpack/resources/SnapshotRetentionWiringTest.java
+  s_9aefe4a2760245::t_ba27ed6b23cf5a 1-102
+src/test/java/pnnh/mcfloatingbackpack/resources/GreyCellWiringTest.java
+  s_9aefe4a2760245::t_8e8c89c8c97cbd 86
+src/main/java/pnnh/mcfloatingbackpack/inventory/LostCells.java
+  s_9aefe4a2760245::t_bc1465bd6c7a23 5-7
+  s_9aefe4a2760245::t_37a63feda75286 1-4,8-30
+src/main/java/pnnh/mcfloatingbackpack/snapshot/SnapshotMeta.java
+  s_9aefe4a2760245::t_37a63feda75286 8-9,13-14,16-26
+src/main/java/pnnh/mcfloatingbackpack/client/snapshot/SnapshotScreenLayout.java
+  s_9aefe4a2760245::t_1a9d1486453b68 19,29,31,132,136,143
+  s_9aefe4a2760245::t_ee0414807ce67d 28,30,32-33,64-66,81-84,137-142,144-149,155
+  s_9aefe4a2760245::t_b574ade08068ee 63
+specs/057-snapshot-retention/DELIVERY.md
+  s_9aefe4a2760245::t_c7794c4c0ff2a5 1-68,70-73
+  s_9aefe4a2760245::t_dba0b0ab3289c0 69
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_9aefe4a2760245::t_29c667282abd73 48
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotVersionsPayload.java
+  s_9aefe4a2760245::t_73387edcaca46d 6,15,17-22,29-32,35-48
+src/main/java/pnnh/mcfloatingbackpack/snapshot/net/SnapshotVersionsRequestPayload.java
+  s_9aefe4a2760245::t_ec8fda1ecccdb1 15-16,21-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "79b976d0c1ddd09896efec6f9736c5d43c7beb7b",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
