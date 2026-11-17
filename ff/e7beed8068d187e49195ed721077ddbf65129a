@@ -1,0 +1,49 @@
+src/main/java/pnnh/mcfloatingbackpack/tank/TankCatalog.java
+  s_9aefe4a2760245::t_d06c51a4c7327c 9-12,43-46,48-55,58
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeResourcesTest.java
+  s_9aefe4a2760245::t_1561a20748afd8 18,86,89-91
+src/test/java/pnnh/mcfloatingbackpack/tank/TankCatalogTest.java
+  s_9aefe4a2760245::t_1561a20748afd8 17,20,22-29,33-40,49,68
+README_CN.md
+  s_9aefe4a2760245::t_5329c47def4089 39
+src/main/java/pnnh/mcfloatingbackpack/item/PipeItem.java
+  s_9aefe4a2760245::t_eef75e1eb82348 28-30,107-111,121,128,134,140-141,144-146
+src/test/java/pnnh/mcfloatingbackpack/tank/TankPlacementTest.java
+  s_9aefe4a2760245::t_1561a20748afd8 53
+src/main/java/pnnh/mcfloatingbackpack/tank/TankBar.java
+  s_9aefe4a2760245::t_40530a21ab1069 4-5,9-11
+README.md
+  s_9aefe4a2760245::t_5329c47def4089 39
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_9aefe4a2760245::t_d06c51a4c7327c 72
+src/main/resources/data/mcfloatingbackpack/recipe/gold_honey_tank.json
+  s_9aefe4a2760245::t_d06c51a4c7327c 5-6,8-9
+src/test/java/pnnh/mcfloatingbackpack/tank/TankBarTest.java
+  s_9aefe4a2760245::t_a97cf10fdf628b 22
+docs/plan/fluid-tanks.md
+  s_9aefe4a2760245::t_5329c47def4089 20,22-23
+  s_9aefe4a2760245::t_c4a211a3ed9b01 25
+src/main/resources/data/mcfloatingbackpack/recipe/gold_milk_tank.json
+  s_9aefe4a2760245::t_d06c51a4c7327c 5-6,8-9
+src/test/java/pnnh/mcfloatingbackpack/resources/TankResourcesTest.java
+  s_9aefe4a2760245::t_1561a20748afd8 22,48,80,83,86,125,132-155
+design/demo/tools/shrink_tank_pipe_icons.py
+  s_9aefe4a2760245::t_b4e663990145cb 7,18
+  s_9aefe4a2760245::t_804b09c156a470 1-6,8-17,19-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "ffe7beed8068d187e49195ed721077ddbf65129a",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
