@@ -50,7 +50,7 @@ class TankPlacementTest {
                 checked++;
             }
         }
-        assertEquals(5 * 19, checked);
+        assertEquals(5 * 12, checked);
     }
 
     @Test

@@ -14,22 +14,30 @@ import org.junit.jupiter.api.Test;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.tank.TankCatalog.Tank;
 
-/** 048: the 19 tanks, their capacities and which backpack takes which tier. */
+/** 048, 056: the 12 tanks, their capacities and which backpack takes which tier. */
 class TankCatalogTest {
     @Test
-    void thereAreNineteenTanksInTierThenLiquidOrder() {
+    void thereAreTwelveTanksInTierThenLiquidOrder() {
         List<Tank> all = TankCatalog.all();
-        assertEquals(19, all.size());
-        assertEquals(new Tank(FluidKind.WATER, BackpackTier.LEATHER), all.get(0));
-        assertEquals(new Tank(FluidKind.HONEY, BackpackTier.LEATHER), all.get(3));
-        assertEquals(new Tank(FluidKind.WATER, BackpackTier.IRON), all.get(4));
-        assertEquals(new Tank(FluidKind.HONEY, BackpackTier.NETHERITE), all.get(18));
-        assertEquals(19, new HashSet<>(all).size());
+        assertEquals(List.of(
+                new Tank(FluidKind.WATER, BackpackTier.LEATHER),
+                new Tank(FluidKind.WATER, BackpackTier.IRON), new Tank(FluidKind.OIL, BackpackTier.IRON), new Tank(FluidKind.LAVA, BackpackTier.IRON),
+                new Tank(FluidKind.WATER, BackpackTier.GOLD), new Tank(FluidKind.OIL, BackpackTier.GOLD), new Tank(FluidKind.LAVA, BackpackTier.GOLD),
+                new Tank(FluidKind.MILK, BackpackTier.GOLD), new Tank(FluidKind.HONEY, BackpackTier.GOLD),
+                new Tank(FluidKind.WATER, BackpackTier.NETHERITE), new Tank(FluidKind.OIL, BackpackTier.NETHERITE),
+                new Tank(FluidKind.LAVA, BackpackTier.NETHERITE)), all);
+        assertEquals(12, new HashSet<>(all).size());
     }
 
     @Test
-    void leatherHasNoLavaTankAndNothingElseIsMissing() {
-        assertFalse(TankCatalog.exists(FluidKind.LAVA, BackpackTier.LEATHER));
+    void waterHasFourTiersOilAndLavaStartAtIronAndMilkAndHoneyAreGoldOnly() {
+        for (BackpackTier tier : TankCatalog.tiers()) {
+            assertTrue(TankCatalog.exists(FluidKind.WATER, tier));
+            assertEquals(tier != BackpackTier.LEATHER, TankCatalog.exists(FluidKind.OIL, tier), "oil " + tier);
+            assertEquals(tier != BackpackTier.LEATHER, TankCatalog.exists(FluidKind.LAVA, tier), "lava " + tier);
+            assertEquals(tier == BackpackTier.GOLD, TankCatalog.exists(FluidKind.MILK, tier), "milk " + tier);
+            assertEquals(tier == BackpackTier.GOLD, TankCatalog.exists(FluidKind.HONEY, tier), "honey " + tier);
+        }
         int existing = 0;
         for (BackpackTier tier : TankCatalog.tiers()) {
             for (FluidKind kind : FluidKind.values()) {
@@ -38,7 +46,7 @@ class TankCatalogTest {
                 }
             }
         }
-        assertEquals(19, existing);
+        assertEquals(12, existing);
         for (FluidKind kind : FluidKind.values()) {
             assertFalse(TankCatalog.exists(kind, BackpackTier.DIAMOND), "no diamond tanks");
         }
@@ -57,7 +65,7 @@ class TankCatalogTest {
     void itemIdsFollowTierThenLiquid() {
         assertEquals("leather_water_tank", TankCatalog.itemId(FluidKind.WATER, BackpackTier.LEATHER));
         assertEquals("iron_oil_tank", TankCatalog.itemId(FluidKind.OIL, BackpackTier.IRON));
-        assertEquals("netherite_honey_tank", TankCatalog.itemId(FluidKind.HONEY, BackpackTier.NETHERITE));
+        assertEquals("gold_honey_tank", TankCatalog.itemId(FluidKind.HONEY, BackpackTier.GOLD));
         Set<String> ids = new HashSet<>();
         for (Tank tank : TankCatalog.all()) {
             assertTrue(ids.add(TankCatalog.itemId(tank.kind(), tank.tier())));

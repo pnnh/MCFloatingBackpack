@@ -15,6 +15,7 @@ import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 
 import pnnh.mcfloatingbackpack.pipe.PipeKind;
+import pnnh.mcfloatingbackpack.tank.TankCatalog;
 
 /** 049: the three pipes have all their files, in the shapes contracts/recipes-and-assets.md fixes. */
 class PipeResourcesTest {
@@ -82,10 +83,12 @@ class PipeResourcesTest {
     }
 
     @Test
-    void aPipeIsCheaperThanTheIronTankOfTheSameLiquid() throws IOException {
+    void aPipeIsCheaperThanTheCheapestTankOfTheSameLiquid() throws IOException {
         for (PipeKind kind : PipeKind.values()) {
             String pipe = pattern(read(DATA.resolve("recipe/" + kind.itemId() + ".json"))).replaceAll("[/ ]", "");
-            String tank = pattern(read(DATA.resolve("recipe/iron_" + kind.fluid().id() + "_tank.json"))).replaceAll("[/ ]", "");
+            // 056: the lowest tank there is of the liquid (milk and honey only have a gold one)
+            TankCatalog.Tank lowest = TankCatalog.all().stream().filter(t -> t.kind() == kind.fluid()).findFirst().orElseThrow();
+            String tank = pattern(read(DATA.resolve("recipe/" + TankCatalog.itemId(lowest.kind(), lowest.tier()) + ".json"))).replaceAll("[/ ]", "");
             assertTrue(pipe.length() < tank.length(), kind + ": " + pipe + " vs " + tank);
         }
     }

@@ -69,7 +69,7 @@ public final class ModItems {
     /** 038: the five universal extensions, one for each backpack tier, in the order of the tiers; ids are {@code <tier>_general_extension}. */
     public static final Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> UNIVERSAL_EXTENSIONS = registerUniversalExtensions();
 
-    /** 048: the 19 liquid tanks, in the order of {@link TankCatalog#all()}; ids are {@code <tier>_<liquid>_tank}. */
+    /** 048, 056: the 12 liquid tanks, in the order of {@link TankCatalog#all()}; ids are {@code <tier>_<liquid>_tank}. */
     public static final Map<TankCatalog.Tank, DeferredHolder<Item, TankItem>> TANKS = registerTanks();
 
     /** 049: the pipes (water, oil, lava), in the order of {@link PipeKind}; ids are {@code <liquid>_pipe}. */

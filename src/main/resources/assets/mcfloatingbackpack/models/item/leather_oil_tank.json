@@ -1,6 +1,0 @@
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "mcfloatingbackpack:item/leather_oil_tank"
-  }
-}

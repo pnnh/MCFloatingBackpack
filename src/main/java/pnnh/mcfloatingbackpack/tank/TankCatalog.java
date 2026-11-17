@@ -6,9 +6,10 @@ import java.util.List;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 
 /**
- * 048: which tanks exist, how much each holds, and which backpack tier takes which tank tier. A tank's tier is a
- * {@link BackpackTier}; only leather, iron, gold and netherite have tanks (no diamond), and no leather lava tank.
- * Pure logic, no Minecraft types.
+ * 048, 056: which tanks exist, how much each holds, and which backpack tier takes which tank tier. A tank's tier is a
+ * {@link BackpackTier}; only leather, iron, gold and netherite have tanks (no diamond). 056 cut the 19 tanks of 048 and 050 down to 12:
+ * water has all four tiers, oil and lava have iron, gold and netherite (no leather), and milk and honey have the gold tank only (so
+ * they go into a gold or better backpack, which is what {@link #allowedIn} already says). Pure logic, no Minecraft types.
  */
 public final class TankCatalog {
     /** One kind of tank. */
@@ -39,12 +40,22 @@ public final class TankCatalog {
         return TIERS;
     }
 
-    /** Whether a tank of this kind and tier exists: every combination of the four tiers and five liquids but the leather lava tank. */
+    /**
+     * Whether a tank of this kind and tier exists (056): water in all four tiers; oil and lava in iron, gold and netherite; milk and
+     * honey in gold only.
+     */
     public static boolean exists(FluidKind kind, BackpackTier tier) {
-        return TIERS.contains(tier) && !(kind == FluidKind.LAVA && tier == BackpackTier.LEATHER);
+        if (!TIERS.contains(tier)) {
+            return false;
+        }
+        return switch (kind) {
+            case WATER -> true;
+            case OIL, LAVA -> tier != BackpackTier.LEATHER;
+            case MILK, HONEY -> tier == BackpackTier.GOLD;
+        };
     }
 
-    /** All 19 tanks, tier first and then liquid. */
+    /** All 12 tanks, tier first and then liquid. */
     public static List<Tank> all() {
         return ALL;
     }

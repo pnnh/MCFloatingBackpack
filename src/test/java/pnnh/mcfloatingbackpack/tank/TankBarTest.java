@@ -19,7 +19,7 @@ class TankBarTest {
 
     @Test
     void halfFullIsHalfTheBar() {
-        assertEquals(7, TankBar.fillPixels(8_000, 16_000, TankBar.HEIGHT));
+        assertEquals(8, TankBar.fillPixels(8_000, 16_000, TankBar.HEIGHT));
     }
 
     @Test

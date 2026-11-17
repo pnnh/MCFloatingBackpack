@@ -25,6 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import pnnh.mcfloatingbackpack.diag.DiagLog;
+import pnnh.mcfloatingbackpack.diag.DiagLog.Side;
+import pnnh.mcfloatingbackpack.diag.LogLevel;
 import pnnh.mcfloatingbackpack.pipe.PipeActions;
 import pnnh.mcfloatingbackpack.pipe.PipeKind;
 
@@ -101,6 +104,11 @@ public class PipeItem extends Item {
                 : InteractionResult.FAIL;
     }
 
+    /** 056: one line in the server log (DEBUG) saying what a right click with a pipe came to, so a "nothing happens" can be traced. */
+    private void trace(ServerPlayer player, String what) {
+        DiagLog.log(Side.SERVER, LogLevel.DEBUG, "{} pipe use by {}: {}", kind.itemId(), player.getGameProfile().getName(), what);
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -110,25 +118,32 @@ public class PipeItem extends Item {
         }
         // 050: sneaking fills an empty container from the tank, whatever is pointed at (the block's and the entity's own interactions pass first)
         if (player.isShiftKeyDown()) {
+            trace(serverPlayer, "sneaking: fill an empty container");
             return PipeActions.discharge(serverPlayer, kind) == PipeActions.Result.DONE
                     ? InteractionResultHolder.success(stack)
                     : InteractionResultHolder.fail(stack);
         }
         // milk and honey are taken from a cow and a beehive (see interactLivingEntity and useOn), not from a source block
         if (!kind.hasBlockForm()) {
+            trace(serverPlayer, "no block form: nothing to take from a source block");
             return InteractionResultHolder.pass(stack);
         }
         // like an empty bucket: look through the water to its surface (only source blocks), so a lake bed under it does not get in the way
         BlockHitResult hit = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
         if (hit.getType() != HitResult.Type.BLOCK) {
+            trace(serverPlayer, "no source block in reach (the ray hit " + hit.getType() + ")");
             return InteractionResultHolder.pass(stack);
         }
         BlockPos pos = hit.getBlockPos();
         Direction face = hit.getDirection();
         if (!level.mayInteract(player, pos) || !player.mayUseItemAt(pos.relative(face), face, stack)) {
+            // vanilla says nothing here either (spawn protection, world border, adventure mode); the log does
+            trace(serverPlayer, "refused at " + pos + ": not allowed to interact there (game mode " + serverPlayer.gameMode.getGameModeForPlayer() + ")");
             return InteractionResultHolder.fail(stack);
         }
-        return switch (PipeActions.absorb(serverPlayer, kind, hit)) {
+        PipeActions.Result result = PipeActions.absorb(serverPlayer, kind, hit);
+        trace(serverPlayer, "at " + pos + " (" + level.getBlockState(pos).getBlock().getDescriptionId() + "): " + result);
+        return switch (result) {
             case NOT_FOR_THIS_PIPE -> InteractionResultHolder.pass(stack);
             case REFUSED -> InteractionResultHolder.fail(stack);
             case DONE -> InteractionResultHolder.success(stack);

@@ -19,7 +19,7 @@ import pnnh.mcfloatingbackpack.tank.FluidKind;
 import pnnh.mcfloatingbackpack.tank.TankCatalog;
 import pnnh.mcfloatingbackpack.tank.TankCatalog.Tank;
 
-/** 048: the 19 tanks have all their files, in the shapes contracts/recipes-and-assets.md fixes. */
+/** 048, 056: the 12 tanks have all their files, in the shapes contracts/recipes-and-assets.md fixes. */
 class TankResourcesTest {
     private static final Path RES = Path.of("src/main/resources");
     private static final Path ASSETS = RES.resolve("assets/mcfloatingbackpack");
@@ -45,7 +45,7 @@ class TankResourcesTest {
 
     @Test
     void everyTankHasAModelATextureAndARecipe() throws IOException {
-        assertEquals(19, TankCatalog.all().size());
+        assertEquals(12, TankCatalog.all().size());
         for (Tank tank : TankCatalog.all()) {
             String id = id(tank);
             String model = read(ASSETS.resolve("models/item/" + id + ".json"));
@@ -77,13 +77,13 @@ class TankResourcesTest {
     @Test
     void thereAreNoTankFilesForTheOtherNames() throws IOException {
         try (var stream = Files.list(ASSETS.resolve("models/item"))) {
-            assertEquals(19, stream.filter(p -> p.getFileName().toString().endsWith("_tank.json")).count());
+            assertEquals(12, stream.filter(p -> p.getFileName().toString().endsWith("_tank.json")).count());
         }
         try (var stream = Files.list(DATA.resolve("recipe"))) {
-            assertEquals(19, stream.filter(p -> p.getFileName().toString().endsWith("_tank.json")).count());
+            assertEquals(12, stream.filter(p -> p.getFileName().toString().endsWith("_tank.json")).count());
         }
         try (var stream = Files.list(ASSETS.resolve("textures/item"))) {
-            assertEquals(19, stream.filter(p -> p.getFileName().toString().endsWith("_tank.png")).count());
+            assertEquals(12, stream.filter(p -> p.getFileName().toString().endsWith("_tank.png")).count());
         }
     }
 
@@ -122,15 +122,37 @@ class TankResourcesTest {
     }
 
     @Test
-    void goldTanksAreAnIronTankInARingOfEightGoldIngots() throws IOException {
+    void goldTanksAreAnIronTankInARingOfEightGoldIngotsAndTheMilkAndHoneyOnesTheirContainer() throws IOException {
         for (Tank tank : TankCatalog.all()) {
             if (tank.tier() != BackpackTier.GOLD) {
                 continue;
             }
             String recipe = read(DATA.resolve("recipe/" + id(tank) + ".json"));
-            assertEquals("AAA/ATA/AAA", pattern(recipe));
             assertTrue(recipe.contains("\"minecraft:gold_ingot\""));
-            assertTrue(recipe.contains("\"mcfloatingbackpack:iron_" + tank.kind().id() + "_tank\""), id(tank));
+            if (tank.kind() == FluidKind.MILK || tank.kind() == FluidKind.HONEY) {
+                // 056: there is no iron milk or honey tank any more; the gold one is made from the full container
+                assertEquals("AAA/ACA/AAA", pattern(recipe));
+                assertTrue(recipe.contains("\"" + container(tank.kind()) + "\""), id(tank));
+            } else {
+                assertEquals("AAA/ATA/AAA", pattern(recipe));
+                assertTrue(recipe.contains("\"mcfloatingbackpack:iron_" + tank.kind().id() + "_tank\""), id(tank));
+            }
+        }
+    }
+
+    /** 056: the seven tanks that were cut have no model, texture, recipe, name or protection entry left. */
+    @Test
+    void theSevenCutTanksAreGoneEverywhere() throws IOException {
+        for (String name : List.of("leather_oil", "leather_milk", "leather_honey", "iron_milk", "iron_honey", "netherite_milk", "netherite_honey")) {
+            for (String path : List.of(
+                    "assets/mcfloatingbackpack/models/item/" + name + "_tank.json",
+                    "assets/mcfloatingbackpack/textures/item/" + name + "_tank.png",
+                    "data/mcfloatingbackpack/recipe/" + name + "_tank.json")) {
+                assertFalse(Files.exists(RES.resolve(path)), path);
+            }
+            assertFalse(read(ASSETS.resolve("lang/en_us.json")).contains(name + "_tank"), name);
+            assertFalse(read(ASSETS.resolve("lang/zh_cn.json")).contains(name + "_tank"), name);
+            assertFalse(read(DATA.resolve("tags/item/never_trash.json")).contains(name + "_tank"), name);
         }
     }
 
