@@ -1,0 +1,29 @@
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionResourcesTest.java
+  s_9aefe4a2760245::t_385bba606e4128 117
+design/demo/tools/make_category_extension_icons.py
+  s_9aefe4a2760245::t_54e92a140778dd 392
+  s_9aefe4a2760245::t_4786e975ba32a1 110-113
+  s_9aefe4a2760245::t_dfa7b33316da40 9-13,23,30-40,44,46,51,56-60,62,64,66,68,71-73,78,82-85,87,89,91,93,95,99,387-391,393-407,409-414,417-418,445
+design/demo/tools/make_universal_extension_icons.py
+  s_9aefe4a2760245::t_dfa7b33316da40 10,39-40,47,54
+src/test/java/pnnh/mcfloatingbackpack/resources/UniversalExtensionResourcesTest.java
+  s_9aefe4a2760245::t_385bba606e4128 97
+design/demo/tools/make_mobile_tool_icons.py
+  s_9aefe4a2760245::t_54e92a140778dd 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "2afed3071c8b2cb14e8dc812600a8d7d2af434aa",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
