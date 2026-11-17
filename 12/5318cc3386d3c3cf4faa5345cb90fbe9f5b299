@@ -1,0 +1,19 @@
+.github/release-notes/v0.1.0.md
+  s_9aefe4a2760245::t_7532dbf8e31c2d 10-14,17,29-33,36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "125318cc3386d3c3cf4faa5345cb90fbe9f5b299",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
