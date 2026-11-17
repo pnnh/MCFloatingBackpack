@@ -1,0 +1,19 @@
+docs/plan/release-process.md
+  s_9aefe4a2760245::t_9336e89c519ac5 3,32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f4bbe9d6600851fecbe09e03f3a7d2b1467d11f0",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
