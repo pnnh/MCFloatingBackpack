@@ -50,8 +50,7 @@ public record BackpackContents(
         int dataRevision) {
     public static final Codec<BackpackContents> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    ItemStack.OPTIONAL_CODEC
-                            .listOf()
+                    LenientStacks.LIST
                             .fieldOf("items")
                             .forGetter(BackpackContents::items),
                     ItemStack.OPTIONAL_CODEC

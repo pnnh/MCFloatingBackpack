@@ -23,7 +23,7 @@ public final class ExtensionRowsCodecs {
     private static final Codec<Row<ItemStack>> ROW_CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
                     Codec.STRING.fieldOf("category").forGetter(Row::category),
-                    ItemStack.OPTIONAL_CODEC.listOf().fieldOf("cells").forGetter(Row::cells))
+                    pnnh.mcfloatingbackpack.inventory.LenientStacks.LIST.fieldOf("cells").forGetter(Row::cells))
             .apply(instance, Row::new));
 
     public static final Codec<RowSet<ItemStack>> CODEC = RecordCodecBuilder.create(instance -> instance

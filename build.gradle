@@ -147,6 +147,8 @@ def serverOrDataRun = gradle.startParameter.taskNames.any {
 
 dependencies {
     testImplementation "org.junit.jupiter:junit-jupiter:5.11.4"
+    // 056: Mojang's serialization library (the same version the game runs on), for the tests of the codecs that need no game classes
+    testImplementation "com.mojang:datafixerupper:8.0.16"
     testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
     // 008: compile-time-only JEI API access for the optional @JeiPlugin in compat/jei/. Not

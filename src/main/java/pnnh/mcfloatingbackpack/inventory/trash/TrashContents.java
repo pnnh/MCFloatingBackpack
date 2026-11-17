@@ -28,7 +28,7 @@ public record TrashContents(List<ItemStack> groups) {
     public static final int MAX_GROUP_ENCODED_BYTES = 96 * 1024;
 
     public static final Codec<TrashContents> CODEC =
-            ItemStack.OPTIONAL_CODEC.listOf().xmap(TrashContents::new, TrashContents::groups);
+            pnnh.mcfloatingbackpack.inventory.LenientStacks.LIST.xmap(TrashContents::new, TrashContents::groups);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, TrashContents> STREAM_CODEC =
             ItemStack.OPTIONAL_STREAM_CODEC

@@ -24,9 +24,9 @@ public record ToolAreaContents(List<ItemStack> left, List<ItemStack> right, List
 
     public static final Codec<ToolAreaContents> CODEC = RecordCodecBuilder.create(instance -> instance
             .group(
-                    ItemStack.OPTIONAL_CODEC.listOf().optionalFieldOf("left", List.of()).forGetter(ToolAreaContents::left),
-                    ItemStack.OPTIONAL_CODEC.listOf().optionalFieldOf("right", List.of()).forGetter(ToolAreaContents::right),
-                    ItemStack.OPTIONAL_CODEC.listOf().optionalFieldOf("bottom", List.of()).forGetter(ToolAreaContents::bottom))
+                    LenientStacks.LIST.optionalFieldOf("left", List.of()).forGetter(ToolAreaContents::left),
+                    LenientStacks.LIST.optionalFieldOf("right", List.of()).forGetter(ToolAreaContents::right),
+                    LenientStacks.LIST.optionalFieldOf("bottom", List.of()).forGetter(ToolAreaContents::bottom))
             .apply(instance, ToolAreaContents::normalize));
 
     /** Each list is capped at {@link #MAX_TOOL_SLOTS}; the vanilla list codec throws a DecoderException beyond that. */
