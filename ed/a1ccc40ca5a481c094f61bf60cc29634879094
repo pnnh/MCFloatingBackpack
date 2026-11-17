@@ -1,0 +1,40 @@
+src/main/java/pnnh/mcfloatingbackpack/inventory/LenientLists.java
+  s_9aefe4a2760245::t_d166279bda016c 1-62
+build.gradle
+  s_9aefe4a2760245::t_594f7c1746bcb4 150-151
+src/main/java/pnnh/mcfloatingbackpack/inventory/trash/TrashContents.java
+  s_9aefe4a2760245::t_d166279bda016c 31
+src/main/java/pnnh/mcfloatingbackpack/inventory/extension/ExtensionRowsCodecs.java
+  s_9aefe4a2760245::t_d166279bda016c 26
+docs/plan/snapshot-retention.md
+  s_9aefe4a2760245::t_d7ed6d32f7b2bf 103
+  s_9aefe4a2760245::t_4cdba919420d4c 1-2,4-18,20-23,28-36,38-40,43-54,57-59,61-63,65,70-72,74-78,80-81,83-98,100-102,106,111
+  s_9aefe4a2760245::t_57fe9d1ab0c022 3,19,24-27,37,41,55-56,60,64,66-69,73,79,82,99,104-105,107-110,112
+  s_9aefe4a2760245::t_44ae512ea548f1 42
+src/main/java/pnnh/mcfloatingbackpack/inventory/LenientStacks.java
+  s_9aefe4a2760245::t_d166279bda016c 1-25
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackContents.java
+  s_9aefe4a2760245::t_d166279bda016c 53
+src/main/java/pnnh/mcfloatingbackpack/inventory/ToolAreaContents.java
+  s_9aefe4a2760245::t_d166279bda016c 27-29
+src/test/java/pnnh/mcfloatingbackpack/resources/LenientStacksWiringTest.java
+  s_9aefe4a2760245::t_d6f5da903936c7 1-40
+src/test/java/pnnh/mcfloatingbackpack/inventory/LenientListsTest.java
+  s_9aefe4a2760245::t_d166279bda016c 1-98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "eda1ccc40ca5a481c094f61bf60cc29634879094",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
