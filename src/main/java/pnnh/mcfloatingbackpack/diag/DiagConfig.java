@@ -4,7 +4,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
  * The server config (the world's {@code serverconfig/mcfloatingbackpack-server.toml}): the log level of this mod's server-side
- * diagnostics, and (057) the {@code [snapshots]} section. The client's own level is in the client config ({@code CompatConfig.LOG_LEVEL}).
+ * diagnostics, and (057) the {@code [snapshots]} section, and (058) the {@code [compat]} section. The client's own level is in the client config ({@code CompatConfig.LOG_LEVEL}).
  */
 public final class DiagConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -19,6 +19,8 @@ public final class DiagConfig {
         BUILDER.pop();
         // 057: the [snapshots] section
         pnnh.mcfloatingbackpack.snapshot.SnapshotConfig.define(BUILDER);
+        // 058: the [compat] section
+        pnnh.mcfloatingbackpack.compat.ThirdPartyConfig.define(BUILDER);
         SERVER_SPEC = BUILDER.build();
     }
 

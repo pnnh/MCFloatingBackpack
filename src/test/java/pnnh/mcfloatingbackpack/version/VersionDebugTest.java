@@ -15,6 +15,7 @@ class VersionDebugTest {
 
     @AfterEach
     void clear() {
+        System.clearProperty("mcfloatingbackpack.debug.fakeModVersion");
         System.clearProperty(ACCEPT);
         System.clearProperty(MARKER);
     }
@@ -49,5 +50,20 @@ class VersionDebugTest {
         assertNull(VersionDebug.worldMarkerRevisionOverride());
         System.setProperty(MARKER, "");
         assertNull(VersionDebug.worldMarkerRevisionOverride());
+    }
+
+    @Test
+    void fakeModVersionsAreEmptyUnlessGiven() {
+        assertTrue(VersionDebug.fakeModVersions().isEmpty());
+    }
+
+    @Test
+    void fakeModVersionsAreCommaSeparatedModIdEqualsVersion() {
+        System.setProperty("mcfloatingbackpack.debug.fakeModVersion", "integratedterminals=2.0.0, integrateddynamics = 1.39.1+x ,broken,=5,empty=,a=b=c");
+        java.util.Map<String, String> fake = VersionDebug.fakeModVersions();
+        assertEquals("2.0.0", fake.get("integratedterminals"));
+        assertEquals("1.39.1+x", fake.get("integrateddynamics"));
+        assertEquals("b=c", fake.get("a"));
+        assertEquals(3, fake.size());
     }
 }

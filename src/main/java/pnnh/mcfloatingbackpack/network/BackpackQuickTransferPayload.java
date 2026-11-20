@@ -1,5 +1,7 @@
 package pnnh.mcfloatingbackpack.network;
 
+import java.util.Optional;
+
 import io.netty.handler.codec.DecoderException;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -12,6 +14,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.compat.MenuOwner;
+import pnnh.mcfloatingbackpack.compat.NetworkStorageBridges;
 import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
@@ -167,6 +170,13 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
         for (int index : sources) {
             ItemStack stack = backpack.getStackInSlot(index);
             if (stack.isEmpty()) {
+                continue;
+            }
+            // 058: a mod whose network is not made of slots (Integrated Terminals) may take the stack by its own way; when none does, the
+            // generic path below runs, as before.
+            Optional<ItemStack> viaBridge = NetworkStorageBridges.tryInsert(player, player.containerMenu, stack);
+            if (viaBridge.isPresent()) {
+                backpack.setStackInSlot(index, viaBridge.get());
                 continue;
             }
             OpenContainerDelivery.Result<ItemStack> result =

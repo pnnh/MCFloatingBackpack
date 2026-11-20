@@ -105,6 +105,24 @@ class DependencyRulesTest {
         assertEquals(1, DependencyRules.checkImports(List.of(file)).size());
     }
 
+    @Test
+    void anIntegratedTerminalsImportOutsideItsCompatFolderFails() {
+        // 058: org.cyclops.* is not on the whitelist, so it counts as a third-party type like any other.
+        String code = "import org.cyclops.integratedterminals.inventory.container.ContainerTerminalStorageBase;\n";
+        assertEquals(1, DependencyRules.checkImports(List.of(new SourceFile("src/main/java/pnnh/mcfloatingbackpack/compat/IntegratedTerminalsBridge.java", code))).size());
+        assertEquals(1, DependencyRules.checkImports(List.of(new SourceFile("src/main/java/pnnh/mcfloatingbackpack/network/X.java", code))).size());
+        assertEquals(List.of(), DependencyRules.checkImports(List.of(new SourceFile(
+                "src/main/java/pnnh/mcfloatingbackpack/compat/integratedterminals/IntegratedTerminalsBridge.java", code))));
+    }
+
+    @Test
+    void theIntegratedTerminalsCoordinatesAreCheckedLikeTheOthers() {
+        for (String config : new String[] {"implementation", "runtimeOnly", "api", "jarJar"}) {
+            assertEquals(1, DependencyRules.checkBuildGradle(config + " \"maven.modrinth:integrated-terminals:1.21.1-1.11.2\"\n").size(), config);
+        }
+        assertEquals(List.of(), DependencyRules.checkBuildGradle("compileOnly(\"maven.modrinth:integrated-terminals:1.21.1-1.11.2\") {\n    transitive = false\n}\n"));
+    }
+
     // --- build.gradle ------------------------------------------------------------------------------------------
 
     @Test

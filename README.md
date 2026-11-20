@@ -51,6 +51,18 @@ A floating backpack mod for **Minecraft 1.21.1 + NeoForge**. Like the bag window
 - The client config `config/mcfloatingbackpack-client.toml` can lower or switch off the compatibility per mod; the server config is `serverconfig/mcfloatingbackpack-server.toml` in the world folder.
 - Both configs have a diagnostics log level (`OFF`/`ERROR`/`WARN`/`INFO`/`DEBUG`). When something goes wrong (say, a backpack disappears), raise it and `latest.log` will have more to go on.
 
+**Other storage mods** (Ctrl+click or drag in the panel moves items between it and the open screen):
+
+| Mod | Panel → its container | Its container → panel | How | Verified versions of the mod |
+|---|---|---|---|---|
+| Sophisticated Storage | yes | yes | the generic path (any screen with real slots), checked in the game with 1.6.13 | any |
+| Applied Energistics 2 | yes, into an ME terminal | not verified, not expected to work | the generic path, checked in the game with 19.2.20 (panel → terminal only) | any |
+| Integrated Terminals | yes, on the item storage page only | not supported yet | active compatibility of this mod: the items go straight into the terminal's item network | `[1.11.0, 1.12.0)`, with Integrated Dynamics `[1.39.0, 1.40.0)` and Common Capabilities `[2.11.0, 2.12.0)` |
+
+- Active compatibility (the Integrated Terminals row) is only on for the versions listed. With any other version it is switched off (the panel still works on that mod's screens in the generic way, which does nothing in an Integrated Terminals terminal), the server log has a warning, and every operator gets one in chat at login (in a single player world: cheats on). `[compat] allowUntestedVersions` in the server config turns it on anyway; **the other mod may then have changed in a way this mod does not expect and the server may crash, so back up the world first** and set it back to `false` if anything goes wrong.
+- **Key conflict in Integrated Terminals' screens:** Integrated Terminals' own "balance crafting grid" key is also `B` by default, and on its terminal screens it takes the key before this mod does, so `B` does not open the panel there. Rebind either of the two keys in the controls menu (this mod's key is "Toggle floating backpack"); the panel then works on those screens like on any other.
+- The per-mod levels (`compat.modLevels`) are a **client** setting. On a dedicated server the parts that run on the server (taking items from and giving them to other mods' screens, the Curios and Accessories back slots, and putting items into an Integrated Terminals terminal) cannot be switched off separately yet. Setting `integratedterminals=OFF` on a client only hides the panel on that mod's screen; `GENERIC` does not turn the server's part off.
+
 ## Multiplayer
 
 - The client and the server **must use the same network protocol version**, or the client cannot join.

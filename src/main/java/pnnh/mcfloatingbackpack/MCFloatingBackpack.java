@@ -81,6 +81,10 @@ public class MCFloatingBackpack {
             modEventBus.addListener(
                     (net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) -> event.enqueueWork(AccessoriesCompat::registerAccessories));
         }
+        // 058: Integrated Terminals' item network takes items from the panel, but only when that mod is there; nothing of it loads otherwise.
+        if (ModList.get().isLoaded("integratedterminals")) {
+            pnnh.mcfloatingbackpack.compat.integratedterminals.IntegratedTerminalsCompat.register();
+        }
         // 024: the auto pickup. Low priority, so Sophisticated Backpacks and Traveler's Backpack (normal) have run first.
         NeoForge.EVENT_BUS.addListener(
                 EventPriority.LOW, (ItemEntityPickupEvent.Pre event) -> AutoPickupEvents.onItemPickup(event));
@@ -96,6 +100,8 @@ public class MCFloatingBackpack {
                 VersionNetwork.onLogin(player);
                 // 057: the notice of a change of the mod's version, and what could not be read of the player's backpacks
                 pnnh.mcfloatingbackpack.snapshot.SnapshotNotices.onLogin(player);
+                // 058: an operator is told about third-party mods outside the versions this mod was verified with
+                pnnh.mcfloatingbackpack.compat.ThirdPartyNotices.onLogin(player);
             }
         });
         // 057: the player's data has just been read: how many stacks of the backpacks in it could not be read is counted for them.
@@ -126,6 +132,10 @@ public class MCFloatingBackpack {
         // 030: backpack snapshots, kept outside the world: started with the server, checked once a second, written out when it stops.
         NeoForge.EVENT_BUS.addListener((ServerStartingEvent event) -> SnapshotService.start(event.getServer()));
         NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> SnapshotService.stop());
+        // 058: which third-party compatibilities are on (the versions of the mods installed, against the ones this mod was verified with).
+        NeoForge.EVENT_BUS.addListener(
+                (ServerStartingEvent event) -> pnnh.mcfloatingbackpack.compat.ThirdPartyCompatService.start(event.getServer()));
+        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> pnnh.mcfloatingbackpack.compat.ThirdPartyCompatService.stop());
         NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post event) -> {
             // Every tick: a backpack coming into or going out of a main hand, with the time (see MainHandTrace).
             for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {

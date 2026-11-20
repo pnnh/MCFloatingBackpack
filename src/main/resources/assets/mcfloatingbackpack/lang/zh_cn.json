@@ -318,5 +318,13 @@
   "gui.mcfloatingbackpack.snapshot.version.row_plain": "%s前  %s 格有物品",
   "gui.mcfloatingbackpack.snapshot.version.none_of_kind": "没有这一类",
   "gui.mcfloatingbackpack.snapshot.result.restored_lost": "已给 %s 一只新背包（%s）。其中 %s 格因物品已不存在无法恢复；原始快照文件仍保留，回到旧版本可以完整恢复。",
-  "command.mcfloatingbackpack.restore.lost": "已给 %s 一只新背包，内容是 %s 号快照（背包 %s）。其中 %s 格因物品已不存在无法恢复；原始快照文件仍保留，回到旧版本可以完整恢复。原背包没有改动。"
+  "command.mcfloatingbackpack.restore.lost": "已给 %s 一只新背包，内容是 %s 号快照（背包 %s）。其中 %s 格因物品已不存在无法恢复；原始快照文件仍保留，回到旧版本可以完整恢复。原背包没有改动。",
+  "message.mcfloatingbackpack.compat.untested": "%1$s：已装的 %3$s %4$s %5$s（已验证：%6$s）。%2$s",
+  "message.mcfloatingbackpack.compat.state.off": "主动兼容未启用：浮动面板在它的界面上仍可用，只是不会直接把物品存入它的网络。",
+  "message.mcfloatingbackpack.compat.state.forced": "主动兼容已被服务端配置 allowUntestedVersions 强制启用，风险自负：请先备份存档，出问题先把它改回 false。",
+  "message.mcfloatingbackpack.compat.verdict.below": "比我们验证过的所有版本都低",
+  "message.mcfloatingbackpack.compat.verdict.above": "比我们验证过的所有版本都高",
+  "message.mcfloatingbackpack.compat.verdict.gap": "落在我们验证过的两段版本之间",
+  "message.mcfloatingbackpack.compat.verdict.unknown": "的版本号无法判断",
+  "message.mcfloatingbackpack.compat.failed": "%1$s：兼容代码出错（%2$s），已关闭，直到服务器重启。没有丢失物品，详情见服务器日志。"
 }

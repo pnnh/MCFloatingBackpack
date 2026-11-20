@@ -318,5 +318,13 @@
   "gui.mcfloatingbackpack.snapshot.version.row_plain": "%s ago  %s items",
   "gui.mcfloatingbackpack.snapshot.version.none_of_kind": "None of this kind",
   "gui.mcfloatingbackpack.snapshot.result.restored_lost": "Gave %s a new backpack of %s. %s stack(s) could not be restored because the items no longer exist; the snapshot file is kept, restore it in the old version to get everything back.",
-  "command.mcfloatingbackpack.restore.lost": "Gave %s a new backpack with snapshot #%s of %s. %s stack(s) could not be restored because the item no longer exists; the snapshot file is kept, restore it in the old version to get everything back. The original backpack is unchanged."
+  "command.mcfloatingbackpack.restore.lost": "Gave %s a new backpack with snapshot #%s of %s. %s stack(s) could not be restored because the item no longer exists; the snapshot file is kept, restore it in the old version to get everything back. The original backpack is unchanged.",
+  "message.mcfloatingbackpack.compat.untested": "%1$s: the installed %3$s %4$s %5$s (verified with: %6$s). %2$s",
+  "message.mcfloatingbackpack.compat.state.off": "Active compatibility is off. The floating panel still works on its screens in the generic way, but it will not put items straight into its network.",
+  "message.mcfloatingbackpack.compat.state.forced": "Active compatibility was FORCED ON by allowUntestedVersions in the server config, at your own risk: back up the world, and if something goes wrong set it back to false first.",
+  "message.mcfloatingbackpack.compat.verdict.below": "is older than every version this mod was verified with",
+  "message.mcfloatingbackpack.compat.verdict.above": "is newer than every version this mod was verified with",
+  "message.mcfloatingbackpack.compat.verdict.gap": "lies between two of the version ranges this mod was verified with",
+  "message.mcfloatingbackpack.compat.verdict.unknown": "has a version number that cannot be read",
+  "message.mcfloatingbackpack.compat.failed": "%1$s: the compatibility code failed (%2$s) and was switched off until the server restarts. Nothing was lost; the details are in the server log."
 }

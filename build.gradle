@@ -99,6 +99,14 @@ neoForge {
             server()
             programArgument '--nogui'
             systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+            // 058: the same -Pmcfb.<name> forwarding as the client run (a dedicated server is where the third-party version warnings are read:
+            // -Pmcfb.fakeModVersion=integratedterminals=2.0.0 ./gradlew runServer).
+            project.properties.each { key, value ->
+                if (key.toString().startsWith('mcfb.') && value != null) {
+                    String name = key.toString().substring('mcfb.'.length())
+                    systemProperty name == 'acceptDowngrade' ? 'mcfloatingbackpack.acceptDowngrade' : 'mcfloatingbackpack.debug.' + name, value.toString()
+                }
+            }
         }
 
         gameTestServer {
@@ -187,6 +195,24 @@ dependencies {
     }
     compileOnly "org.jspecify:jspecify:1.0.0"
 
+    // 058: compile-time-only Integrated Terminals and what its classes extend or mention (Integrated Dynamics for the network types, Common
+    // Capabilities for IngredientComponent, Cyclops Core for the container base class), for compat/integratedterminals/. Same versions as the
+    // localRuntime lines below (a test keeps them equal and inside the range table). transitive = false: the Modrinth maven has no usable
+    // dependency metadata and nothing here may reach the published jar. cyclops-core is the Modrinth version id, not a number: the same number
+    // has a Forge and a Fabric file too (see the localRuntime line).
+    compileOnly("maven.modrinth:integrated-terminals:1.21.1-1.11.2") {
+        transitive = false
+    }
+    compileOnly("maven.modrinth:integrated-dynamics:1.21.1-1.39.1") {
+        transitive = false
+    }
+    compileOnly("maven.modrinth:common-capabilities:1.21.1-2.11.6") {
+        transitive = false
+    }
+    compileOnly("maven.modrinth:cyclops-core:mbABgx56") {
+        transitive = false
+    }
+
     if (!cleanRuntime) {
         // 004：精妙背包与旅行者背包，用来对照面板的行数、滚动与尺寸；CurseMaven 的 file id 要与各自 mod 要求的 core 版本配套。
         localRuntime "curse.maven:sophisticated-core-618298:9385313"
@@ -201,6 +227,27 @@ dependencies {
         // 049：PneumaticCraft: Repressurized——开发运行里的原油来源（它的 pneumaticcraft:oil 带 #c:crude_oil 标签），用来测油管。
         // 只在开发运行时存在；主代码不引用它的任何类型（只认标签），所以不需要 compileOnly；不进发布的 jar（宪法 VII）。
         localRuntime "maven.modrinth:pneumaticcraft-repressurized:8.2.24"
+
+        // 058：精妙存储（箱子、木桶等，与精妙背包同一个 core，1.6.13 要求 core >= 1.5.23，正好是上面那一版）与集成终端（Integrated Terminals）。
+        // 只在开发运行时存在，用来对照面板在它们的界面上的行为（Ctrl 点击与拖动的快速存取）；主代码不引用它们的任何类型，不进发布的 jar（宪法 VII）。
+        // 集成终端依赖：cyclops-core、common-capabilities、integrated-dynamics、integrated-tunnels（Modrinth 的 maven 不解析传递依赖，要逐个写出）；
+        // integrated-crafting 对玩家是可选的，但开发运行里要装：NeoForge 在客户端启动时按名字加载所有模组里的 @GameTestHolder 类，集成终端自带的 gametest 类引用 integratedcrafting 的类（不装就 NoClassDefFoundError）。
+        localRuntime "maven.modrinth:sophisticated-storage:1.21.1-1.6.13.2216"
+        // cyclops-core 在 Modrinth 上同一个版本号有 NeoForge、Fabric、Forge 三个文件，按版本号取会拿到 Forge 的（"is for Minecraft Forge"，不被当成模组），
+        // 所以这一个用 Modrinth 的版本 id（mbABgx56 = 1.21.1-1.30.2 的 NeoForge 构建）。
+        localRuntime "maven.modrinth:cyclops-core:mbABgx56"
+        localRuntime "maven.modrinth:common-capabilities:1.21.1-2.11.6"
+        localRuntime "maven.modrinth:integrated-dynamics:1.21.1-1.39.1"
+        localRuntime "maven.modrinth:integrated-tunnels:1.21.1-1.13.1"
+        localRuntime "maven.modrinth:integrated-terminals:1.21.1-1.11.2"
+        localRuntime "maven.modrinth:integrated-crafting:1.21.1-1.8.1"
+        // Refined Storage 2：Integrated Dynamics 的 jar 里有它的兼容 gametest 类（GameTestsAspectsRefinedStorage），NeoForge 在客户端启动时会按名字加载所有
+        // 模组里的 @GameTestHolder 类，缺 refinedstorage 的类就 NoClassDefFoundError；所以开发运行里也装它（玩家不需要）。
+        localRuntime "maven.modrinth:refined-storage:lHHiI26k"
+
+        // 058：应用能源 2（AE2）与它必需的 GuideME：用来看通用路径在 ME 终端上的行为（服务端 quickMoveStack 是否把物品插进 ME 网络）。
+        localRuntime "maven.modrinth:ae2:19.2.20"
+        localRuntime "maven.modrinth:guideme:21.1.22"
 
         // 010：光影（Iris 1.8.12 声明依赖的正是 Sodium 0.6.13）；光影包放在 run/shaderpacks/，见 design/demo/tools/fetch_shaderpack.sh。
         if (!serverOrDataRun) {

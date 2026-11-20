@@ -77,6 +77,37 @@ and other container GUIs so items can be moved between them.
     ordering="NONE"
     side="CLIENT"
 
+# 058: Integrated Terminals (items from the panel into a terminal's item network) and what it needs. Never required, and the range is
+# deliberately [0,): the versions this mod was verified with are kept in our own code (compat/ThirdPartyTable), which warns the server's
+# operators about the others. A narrower range here would make FML refuse to start the game when a newer version is installed.
+[[dependencies.${mod_id}]]
+    modId="integratedterminals"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="integrateddynamics"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="commoncapabilities"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="cyclopscore"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
 [modproperties."${mod_id}"."yumi:entrypoints"]
     "lambdynlights:initializer" = "pnnh.mcfloatingbackpack.compat.lambdynlights.BackpackDynamicLight"
 

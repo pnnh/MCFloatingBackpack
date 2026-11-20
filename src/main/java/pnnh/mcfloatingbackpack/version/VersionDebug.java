@@ -14,6 +14,8 @@ package pnnh.mcfloatingbackpack.version;
  *   <li>{@code stampRevision=N}: 040, every backpack save stamps the data revision N instead of the current one (99 makes a backpack
  *       that looks as if a newer version had saved it, to try the downgrade protection out);
  *   <li>{@code timedSnapshotSeconds=N}: 057, the timed snapshots of the backpacks are written every N seconds instead of every 15 minutes;
+ *   <li>{@code fakeModVersion=modid=X[,modid=Y...]}: 058, a third-party mod that is installed is taken to have the version X (only in the
+ *       check of which versions this mod's compatibility was verified with; a mod that is not installed stays not installed);
  *   <li>{@code worldMarkerRevision=N}: 041, the world marker is written with the data revision N instead of the current one (99 makes a
  *       world that the next start without the switch refuses); only when N is higher than the marker already is.
  * </ul>
@@ -60,6 +62,30 @@ public final class VersionDebug {
     public static Integer timedSnapshotSecondsOverride() {
         Integer seconds = parseInt(System.getProperty(PREFIX + "timedSnapshotSeconds"));
         return seconds == null || seconds < 1 ? null : seconds;
+    }
+
+    /** 058: the versions to pretend third-party mods have, mod id to version text; empty when the switch is not given. Entries without a {@code =} or with an empty side are skipped. */
+    public static java.util.Map<String, String> fakeModVersions() {
+        return parseFakeVersions(System.getProperty(PREFIX + "fakeModVersion"));
+    }
+
+    static java.util.Map<String, String> parseFakeVersions(String value) {
+        java.util.Map<String, String> out = new java.util.LinkedHashMap<>();
+        if (value == null) {
+            return out;
+        }
+        for (String entry : value.split(",")) {
+            int equals = entry.indexOf('=');
+            if (equals < 0) {
+                continue;
+            }
+            String modId = entry.substring(0, equals).trim();
+            String version = entry.substring(equals + 1).trim();
+            if (!modId.isEmpty() && !version.isEmpty()) {
+                out.put(modId, version);
+            }
+        }
+        return out;
     }
 
     private static Integer parseInt(String value) {
