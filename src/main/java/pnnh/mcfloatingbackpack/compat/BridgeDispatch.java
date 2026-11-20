@@ -2,6 +2,7 @@ package pnnh.mcfloatingbackpack.compat;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import pnnh.mcfloatingbackpack.inventory.QuickTransferLogic;
@@ -11,7 +12,10 @@ import pnnh.mcfloatingbackpack.inventory.QuickTransferLogic;
  * delivery to an open container asks this first; when nothing answers the generic path of 012 runs). Written over abstract players,
  * menus and stacks like {@code OpenContainerDelivery}, so the tests drive it with fakes.
  *
- * <p>A bridge is only asked while its compatibility is on ({@link CompatRuntimeState#isActive}). Whatever goes wrong inside a bridge (a
+ * <p>A bridge is only asked while its compatibility is on ({@link CompatRuntimeState#isActive}: the version check, the server config's
+ * allowUntestedVersions, no failure in this run) <em>and</em> the server's level for its mod lets mod-specific code run
+ * ({@code levelAllows}, 059: FULL only). A bridge skipped because of the level has not failed: nothing is reported and the state is not
+ * touched, so it is asked again as soon as the level allows. Whatever goes wrong inside a bridge (a
  * {@link LinkageError} such as a missing method after the other mod changed, any {@link RuntimeException}, a remainder that is not part
  * of what was given) switches that compatibility off for the rest of the run, reports it once, and leaves the stack where it was: the
  * caller then takes the generic path. The bridge gets a copy of the stack, never the original.
@@ -41,12 +45,15 @@ public final class BridgeDispatch<P, M, S> {
     private final Supplier<CompatRuntimeState> state;
     private final QuickTransferLogic.StackOps<S> ops;
     private final FailureListener listener;
+    private final Predicate<String> levelAllows;
 
     public BridgeDispatch(
             Supplier<? extends Collection<? extends Bridge<P, M, S>>> bridges,
             Supplier<CompatRuntimeState> state,
             QuickTransferLogic.StackOps<S> ops,
-            FailureListener listener) {
+            FailureListener listener,
+            Predicate<String> levelAllows) {
+        this.levelAllows = levelAllows;
         this.bridges = bridges;
         this.state = state;
         this.ops = ops;
@@ -62,7 +69,7 @@ public final class BridgeDispatch<P, M, S> {
             return Optional.empty();
         }
         for (Bridge<P, M, S> bridge : bridges.get()) {
-            if (!current.isActive(bridge.modId())) {
+            if (!current.isActive(bridge.modId()) || !levelAllows.test(bridge.modId())) {
                 continue;
             }
             try {

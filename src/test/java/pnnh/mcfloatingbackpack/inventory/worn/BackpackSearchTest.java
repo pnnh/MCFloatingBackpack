@@ -26,6 +26,8 @@ class BackpackSearchTest {
     private static final class Fake {
         String main = "";
         String off = "";
+        /** 059: the player of a client (false: the server's). */
+        boolean client;
         final String[] inventory = new String[36];
         final Map<Integer, String[]> worn = new HashMap<>();
         final Map<Integer, boolean[]> hidden = new HashMap<>();
@@ -72,7 +74,7 @@ class BackpackSearchTest {
         }
     };
 
-    private static final class FakeSource implements WornSource<Fake, String> {
+    private static class FakeSource implements WornSource<Fake, String> {
         final int id;
         final int order;
         boolean active = true;
@@ -290,5 +292,63 @@ class BackpackSearchTest {
         assertEquals(0, search.resolve(f).slot());
         f.worn.put(CHEST, new String[] {""});
         assertEquals(Kind.INVENTORY, search.resolve(f).kind());
+    }
+
+    // --- 059: a source that answers differently on the server and on a client ---------------------------------
+
+    /** Active for a client's player; for the server's only when {@code serverOn} says so (the server config's level). */
+    private static final class SideSource extends FakeSource {
+        boolean serverOn;
+
+        SideSource(int id, int order) {
+            super(id, order);
+        }
+
+        @Override
+        public boolean active(Fake p) {
+            return p.client || serverOn;
+        }
+    }
+
+    private static Fake serverPlayer() {
+        return new Fake().wearing(CURIOS, BACKPACK);
+    }
+
+    private static Fake clientPlayer() {
+        Fake player = new Fake().wearing(CURIOS, BACKPACK);
+        player.client = true;
+        return player;
+    }
+
+    @Test
+    void aSourceCanBeOffForTheServersPlayerAndOnForAClientsPlayer() {
+        SideSource curios = new SideSource(CURIOS, 10);
+        BackpackSearch<Fake, String> search = search(new FakeSource(CHEST, 0), curios);
+        assertNull(search.firstWorn(serverPlayer()), "off on the server");
+        assertNotNull(search.firstWorn(clientPlayer()), "on for a client");
+        curios.serverOn = true;
+        assertNotNull(search.firstWorn(serverPlayer()));
+    }
+
+    @Test
+    void resolveAndActiveSourceAskAboutThePlayer() {
+        SideSource curios = new SideSource(CURIOS, 10);
+        BackpackSearch<Fake, String> search = search(new FakeSource(CHEST, 0), curios);
+        assertNull(search.resolve(serverPlayer()));
+        assertNotNull(search.resolve(clientPlayer()));
+        assertNull(search.activeSource(CURIOS, serverPlayer()));
+        assertNotNull(search.activeSource(CURIOS, clientPlayer()));
+        // the answer without a player is the one of the source's own active()
+        assertNotNull(search.activeSource(CURIOS));
+    }
+
+    @Test
+    void aSourceThatDoesNotCareAboutThePlayerBehavesAsBefore() {
+        FakeSource curios = new FakeSource(CURIOS, 10);
+        BackpackSearch<Fake, String> search = search(new FakeSource(CHEST, 0), curios);
+        assertNotNull(search.firstWorn(serverPlayer()));
+        curios.active = false;
+        assertNull(search.firstWorn(serverPlayer()));
+        assertNull(search.activeSource(CURIOS, serverPlayer()));
     }
 }

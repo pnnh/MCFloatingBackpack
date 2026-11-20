@@ -91,8 +91,11 @@ class BridgeDispatchTest {
 
     private final List<String> failures = new ArrayList<>();
 
+    private Predicate<String> levelAllows = modId -> true;
+
     private BridgeDispatch<String, String, Stack> dispatch(CompatRuntimeState state, FakeBridge... bridges) {
-        return new BridgeDispatch<>(() -> List.of(bridges), () -> state, OPS, (modId, cause) -> failures.add(modId + ":" + cause.getClass().getSimpleName()));
+        return new BridgeDispatch<>(() -> List.of(bridges), () -> state, OPS,
+                (modId, cause) -> failures.add(modId + ":" + cause.getClass().getSimpleName()), modId -> levelAllows.test(modId));
     }
 
     private static CompatRuntimeState stateWith(boolean allowUntested, String version, String... modIds) {
@@ -152,7 +155,7 @@ class BridgeDispatchTest {
     @Test
     void noStateYetMeansNothingIsOn() {
         FakeBridge bridge = new FakeBridge("m", menu -> true, (menu, stack) -> Stack.EMPTY);
-        BridgeDispatch<String, String, Stack> noState = new BridgeDispatch<>(() -> List.of(bridge), () -> null, OPS, (id, e) -> { });
+        BridgeDispatch<String, String, Stack> noState = new BridgeDispatch<>(() -> List.of(bridge), () -> null, OPS, (id, e) -> { }, id -> true);
         assertEquals(Optional.empty(), noState.tryInsert("p", "terminal", STONE));
     }
 
@@ -264,5 +267,45 @@ class BridgeDispatchTest {
         } catch (OutOfMemoryError expected) {
             assertTrue(failures.isEmpty());
         }
+    }
+
+    // --- 059: the server's level ---------------------------------------------------------------------------------
+
+    @Test
+    void aBridgeWhoseModIsNotAtFullIsSkippedWithoutAFailure() {
+        FakeBridge bridge = new FakeBridge("m", menu -> true, (menu, stack) -> Stack.EMPTY);
+        CompatRuntimeState state = active("m");
+        levelAllows = modId -> false;
+        assertEquals(Optional.empty(), dispatch(state, bridge).tryInsert("p", "terminal", STONE));
+        assertEquals(0, bridge.handlesCalls);
+        assertTrue(failures.isEmpty());
+        assertEquals(Optional.of(CompatStatus.ACTIVE), state.status("m"));
+    }
+
+    @Test
+    void aBridgeIsAskedAgainWhenTheLevelAllowsItAgain() {
+        FakeBridge bridge = new FakeBridge("m", menu -> true, (menu, stack) -> Stack.EMPTY);
+        BridgeDispatch<String, String, Stack> dispatch = dispatch(active("m"), bridge);
+        levelAllows = modId -> false;
+        assertEquals(Optional.empty(), dispatch.tryInsert("p", "terminal", STONE));
+        levelAllows = modId -> true;
+        assertEquals(Optional.of(Stack.EMPTY), dispatch.tryInsert("p", "terminal", STONE));
+    }
+
+    @Test
+    void theLevelIsAskedPerMod() {
+        FakeBridge first = new FakeBridge("a", menu -> true, (menu, stack) -> Stack.EMPTY);
+        FakeBridge second = new FakeBridge("b", menu -> true, (menu, stack) -> Stack.EMPTY);
+        levelAllows = modId -> "b".equals(modId);
+        assertEquals(Optional.of(Stack.EMPTY), dispatch(active("a", "b"), first, second).tryInsert("p", "terminal", STONE));
+        assertEquals(0, first.insertCalls);
+        assertEquals(1, second.insertCalls);
+    }
+
+    @Test
+    void aForcedBridgeStillNeedsTheLevel() {
+        FakeBridge bridge = new FakeBridge("m", menu -> true, (menu, stack) -> Stack.EMPTY);
+        levelAllows = modId -> false;
+        assertEquals(Optional.empty(), dispatch(stateWith(true, "3.0.0", "m"), bridge).tryInsert("p", "terminal", STONE));
     }
 }

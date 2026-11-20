@@ -85,10 +85,20 @@ public final class BackpackSearch<P, S> {
         return null;
     }
 
+    /** Like {@link #activeSource(int)}, asking for this player (059: the server and a client may answer differently). */
+    public WornSource<P, S> activeSource(int id, P player) {
+        for (WornSource<P, S> source : sources) {
+            if (source.id() == id) {
+                return source.active(player) ? source : null;
+            }
+        }
+        return null;
+    }
+
     /** The first backpack worn, or {@code null}. */
     public Hit firstWorn(P player) {
         for (WornSource<P, S> source : sources) {
-            if (!source.active()) {
+            if (!source.active(player)) {
                 continue;
             }
             int slots = source.slotCount(player);

@@ -13,11 +13,10 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.NetworkStorageBridges;
 import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
-import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
+import pnnh.mcfloatingbackpack.compat.ServerCompatDenials;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
@@ -163,7 +162,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             backpackToInventory(player.getInventory(), backpack, sources);
             return;
         }
-        if (!ServerCompatGate.allows(Action.DELIVER_TO_CONTAINER, MenuOwner.ownerOf(player.containerMenu))) {
+        if (!ServerCompatDenials.allows(player, player.containerMenu, Action.DELIVER_TO_CONTAINER)) {
             return;
         }
         ContainerMenuAccess menu = new ContainerMenuAccess(player);

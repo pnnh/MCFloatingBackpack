@@ -17,8 +17,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.compat.MenuOwner;
-import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
+import pnnh.mcfloatingbackpack.compat.ServerCompatDenials;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
@@ -112,7 +111,7 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
     private static void add(ServerPlayer player, BackpackRef ref, BackpackInventory backpack, boolean screenOpen) {
         AbstractContainerMenu menu = player.containerMenu;
         boolean viaMenu = screenOpen && menu != null;
-        if (viaMenu && !ServerCompatGate.allows(Action.USE_MENU_CURSOR, MenuOwner.ownerOf(menu))) {
+        if (viaMenu && !ServerCompatDenials.allows(player, menu, Action.USE_MENU_CURSOR)) {
             return;
         }
         PanelCursor cursor = PanelCursor.of(screenOpen, menu, backpack);
@@ -167,7 +166,7 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
     private static void take(ServerPlayer player, BackpackRef ref, BackpackInventory backpack, int index, boolean screenOpen) {
         AbstractContainerMenu menu = player.containerMenu;
         boolean viaMenu = screenOpen && menu != null;
-        if (viaMenu && !ServerCompatGate.allows(Action.USE_MENU_CURSOR, MenuOwner.ownerOf(menu))) {
+        if (viaMenu && !ServerCompatDenials.allows(player, menu, Action.USE_MENU_CURSOR)) {
             return;
         }
         PanelCursor cursor = PanelCursor.of(screenOpen, menu, backpack);

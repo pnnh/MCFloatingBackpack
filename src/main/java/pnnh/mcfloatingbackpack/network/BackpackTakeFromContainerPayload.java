@@ -11,9 +11,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
-import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
+import pnnh.mcfloatingbackpack.compat.ServerCompatDenials;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
@@ -71,7 +70,7 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
                 return;
             }
             AbstractContainerMenu menu = player.containerMenu;
-            if (!ServerCompatGate.allows(Action.TAKE_FROM_CONTAINER, MenuOwner.ownerOf(menu))) {
+            if (!ServerCompatDenials.allows(player, menu, Action.TAKE_FROM_CONTAINER)) {
                 return;
             }
             // Same precondition as the other quick transfers: nothing on the cursor. The menu must be an

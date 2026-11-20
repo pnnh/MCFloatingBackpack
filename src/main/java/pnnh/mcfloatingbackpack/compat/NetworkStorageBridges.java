@@ -14,12 +14,13 @@ import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
  * 058: the registered {@link NetworkStorageBridge}s and the one question the delivery of stacks to an open container asks before it takes
  * the generic path: "does a bridge take this stack into this menu?". Registration happens when the mod loads (only for mods that are
  * installed); whether a bridge may run is decided at every call by {@link CompatRuntimeState}, which only exists once the server has
- * started. The rules are in {@link BridgeDispatch}.
+ * started, and (059) by the server's level for the mod ({@link ServerCompatLevels}: only FULL lets a bridge run). The rules are in {@link BridgeDispatch}.
  */
 public final class NetworkStorageBridges {
     private static final List<NetworkStorageBridge> BRIDGES = new CopyOnWriteArrayList<>();
     private static final BridgeDispatch<ServerPlayer, AbstractContainerMenu, ItemStack> DISPATCH =
-            new BridgeDispatch<>(() -> BRIDGES, ThirdPartyCompatService::state, ItemStackTransferOps.INSTANCE, ThirdPartyNotices::failed);
+            new BridgeDispatch<>(() -> BRIDGES, ThirdPartyCompatService::state, ItemStackTransferOps.INSTANCE, ThirdPartyNotices::failed,
+                    ServerCompatLevels::specificAdaptation);
 
     private NetworkStorageBridges() {
     }

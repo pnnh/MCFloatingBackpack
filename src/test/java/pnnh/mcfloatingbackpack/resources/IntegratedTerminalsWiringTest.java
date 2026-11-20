@@ -27,7 +27,7 @@ class IntegratedTerminalsWiringTest {
         String payload = read("network/BackpackQuickTransferPayload.java");
         int bridge = payload.indexOf("NetworkStorageBridges.tryInsert(player, player.containerMenu, stack)");
         int generic = payload.indexOf("OpenContainerDelivery.deliver(ItemStackTransferOps.INSTANCE, menu, stack)");
-        int gate = payload.indexOf("ServerCompatGate.allows(Action.DELIVER_TO_CONTAINER");
+        int gate = payload.indexOf("ServerCompatDenials.allows(player, player.containerMenu, Action.DELIVER_TO_CONTAINER)");
         assertTrue(gate > 0 && bridge > gate && generic > bridge, "gate, then bridge, then the generic path");
         String between = payload.substring(bridge, generic);
         assertTrue(between.contains("backpack.setStackInSlot(index, viaBridge.get());") && between.contains("continue;"));

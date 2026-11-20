@@ -40,8 +40,19 @@ final class AccessoriesWornSource implements WornSource<LivingEntity, ItemStack>
 
     @Override
     public boolean active() {
-        // asked at every search, so a changed setting takes effect at once; on a dedicated server the (client) config is not loaded and this is FULL
+        // the client's own question (nothing says whose backpack it is): the client config, FULL where that is not loaded
         return CompatConfig.policy().specificAdaptation("accessories");
+    }
+
+    @Override
+    public boolean active(LivingEntity entity) {
+        // asked at every search, so a changed setting takes effect at once. 059: on the server the server config's level counts too (the
+        // stricter of it and the client config's, which a dedicated server does not have); a client goes by its own config alone, so what
+        // it draws and what it looks for stay as the player set them
+        if (entity.level().isClientSide()) {
+            return active();
+        }
+        return pnnh.mcfloatingbackpack.compat.ServerCompatLevels.specificAdaptation("accessories");
     }
 
     /** The entity's back slot, or {@code null} if it has none (no Accessories data, no such slot, anything unexpected). */

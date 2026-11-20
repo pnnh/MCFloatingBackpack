@@ -81,6 +81,9 @@ public class MCFloatingBackpack {
             modEventBus.addListener(
                     (net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) -> event.enqueueWork(AccessoriesCompat::registerAccessories));
         }
+        // 059: the server's levels for the mods (the server config's modLevels, and the client's where it can be read) decide what the
+        // gate allows in the menus of other mods.
+        pnnh.mcfloatingbackpack.compat.ServerCompatGate.setLevelSource(pnnh.mcfloatingbackpack.compat.ServerCompatLevels::effective);
         // 058: Integrated Terminals' item network takes items from the panel, but only when that mod is there; nothing of it loads otherwise.
         if (ModList.get().isLoaded("integratedterminals")) {
             pnnh.mcfloatingbackpack.compat.integratedterminals.IntegratedTerminalsCompat.register();
@@ -92,6 +95,10 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((PlayerContainerEvent.Close event) -> {
             if (event.getEntity() instanceof ServerPlayer player && event.getContainer() == player.inventoryMenu) {
                 CreativeCursorBridge.onClose(player);
+            }
+            // 059: a closed screen: the next refusal of the server's compat level is told to the player again
+            if (event.getEntity() instanceof ServerPlayer player) {
+                pnnh.mcfloatingbackpack.compat.ServerCompatDenials.forget(player.getUUID());
             }
         });
         // 039: at login the server tells the player which version of this mod it runs (see VersionNetwork).
@@ -114,6 +121,7 @@ public class MCFloatingBackpack {
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
                 PlayerVersions.forget(player.getUUID());
+                pnnh.mcfloatingbackpack.compat.ServerCompatDenials.forget(player.getUUID());
                 pnnh.mcfloatingbackpack.snapshot.SnapshotNotices.onLogout(player.getUUID());
                 CreativeCursorBridge.onLogout(player);
                 BackpackWatchService.forget(player.getUUID());

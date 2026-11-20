@@ -13,9 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
-import pnnh.mcfloatingbackpack.compat.MenuOwner;
 import pnnh.mcfloatingbackpack.compat.ServerCompatGate.Action;
-import pnnh.mcfloatingbackpack.compat.ServerCompatGate;
+import pnnh.mcfloatingbackpack.compat.ServerCompatDenials;
 import pnnh.mcfloatingbackpack.inventory.BackpackClickLogic;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
@@ -139,7 +138,7 @@ public record BackpackClickPayload(
             DiagLog.record(serverPlayer.getUUID(), "click " + area + "#" + payload.slotIndex() + (payload.rightClick() ? " right" : " left")
                     + (payload.swapHand() ? " swapHand" : "") + (viaMenu ? " viaMenu(" + menu.getClass().getSimpleName() + ")" : "")
                     + " ref=" + ref + " | " + state(serverPlayer, menu, inventory, area, payload.slotIndex()));
-            if (viaMenu && !ServerCompatGate.allows(Action.USE_MENU_CURSOR, MenuOwner.ownerOf(menu))) {
+            if (viaMenu && !ServerCompatDenials.allows(serverPlayer, menu, Action.USE_MENU_CURSOR)) {
                 return;
             }
 

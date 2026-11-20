@@ -18,6 +18,15 @@ public interface WornSource<P, S> {
     /** Asked at every search, not when the source is registered, so a setting that is changed takes effect at once. Cheap. */
     boolean active();
 
+    /**
+     * 059: the same question for one player, which is what a search really asks: a source may answer differently on the server (where the
+     * server config's level counts) and on a client (which only has its own config), and the player says which side this is. The default
+     * is {@link #active()}.
+     */
+    default boolean active(P player) {
+        return active();
+    }
+
     /** How many slots of this source may hold a backpack. */
     int slotCount(P player);
 

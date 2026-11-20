@@ -78,13 +78,13 @@ public final class WornBackpacks {
         if (hit == null) {
             return null;
         }
-        WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(hit.sourceId());
+        WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(hit.sourceId(), entity);
         return source == null ? null : new Found(source.get(entity, hit.slot()), hit.hidden());
     }
 
     /** The worn source with this number, if it is registered and active; {@code null} for a stale reference or a mod that is not there. */
-    public static WornSource<LivingEntity, ItemStack> activeSource(int id) {
-        return SEARCH.activeSource(id);
+    public static WornSource<LivingEntity, ItemStack> activeSource(int id, LivingEntity entity) {
+        return SEARCH.activeSource(id, entity);
     }
 
     // The three below take a Player and not a LivingEntity on purpose: BackpackRef calls them, and a class that stays free of
@@ -97,13 +97,13 @@ public final class WornBackpacks {
 
     /** What a reference into a worn source points at: the stack, or the empty stack for a source that is not there or a slot out of range. */
     public static ItemStack get(Player player, int sourceId, int slot) {
-        WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(sourceId);
+        WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(sourceId, player);
         return source == null ? ItemStack.EMPTY : source.get(player, slot);
     }
 
     /** Writes a stack back into a worn source; nothing happens for a source that is not there. */
     public static void set(Player player, int sourceId, int slot, ItemStack stack) {
-        WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(sourceId);
+        WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(sourceId, player);
         if (source != null) {
             source.set(player, slot, stack);
         }

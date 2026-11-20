@@ -1,6 +1,7 @@
 package pnnh.mcfloatingbackpack.resources;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -137,11 +138,15 @@ class ThirdPartyDriftTest {
     }
 
     @Test
-    void theReadmesSayThePerModLevelsAreAClientSetting() throws IOException {
-        assertTrue(read("README.md").contains("are a **client** setting"));
-        assertTrue(read("README_CN.md").contains("是**客户端**配置"));
-        assertTrue(read("README.md").contains("allowUntestedVersions") && read("README.md").contains("back up the world"));
-        assertTrue(read("README_CN.md").contains("allowUntestedVersions") && read("README_CN.md").contains("备份存档"));
+    void theReadmesDescribeTheServersPerModLevels() throws IOException {
+        String en = read("README.md");
+        String cn = read("README_CN.md");
+        assertTrue(en.contains("serverconfig/mcfloatingbackpack-server.toml") && en.contains("**stricter**") && en.contains("once for each screen they open"));
+        assertTrue(cn.contains("serverconfig/mcfloatingbackpack-server.toml") && cn.contains("**更严**") && cn.contains("每打开一次界面"));
+        assertFalse(en.contains("cannot be switched off separately yet") || en.contains("are a **client** setting"));
+        assertFalse(cn.contains("暂时还不能单独关闭") || cn.contains("是**客户端**配置"));
+        assertTrue(en.contains("allowUntestedVersions") && en.contains("back up the world"));
+        assertTrue(cn.contains("allowUntestedVersions") && cn.contains("备份存档"));
     }
 
     // --- build.gradle ------------------------------------------------------------------------------------------
