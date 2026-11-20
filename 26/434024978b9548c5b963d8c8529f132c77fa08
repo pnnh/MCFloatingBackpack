@@ -1,0 +1,114 @@
+src/main/java/pnnh/mcfloatingbackpack/compat/DenialThrottle.java
+  s_9aefe4a2760245::t_68db8923296440 1-28
+src/main/java/pnnh/mcfloatingbackpack/compat/EffectiveLevel.java
+  s_9aefe4a2760245::t_68db8923296440 1-26
+src/test/java/pnnh/mcfloatingbackpack/compat/EffectiveLevelTest.java
+  s_9aefe4a2760245::t_68db8923296440 1-65
+specs/059-server-compat-levels/checklists/requirements.md
+  s_9aefe4a2760245::t_f738701c94d0d1 1-35
+specs/059-server-compat-levels/data-model.md
+  s_9aefe4a2760245::t_409c234b4fefde 1-37
+src/main/java/pnnh/mcfloatingbackpack/inventory/worn/WornSource.java
+  s_9aefe4a2760245::t_b2df2586975613 21-29
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_9aefe4a2760245::t_a5a5dbb596d29b 17,141
+specs/059-server-compat-levels/contracts/config-and-texts.md
+  s_9aefe4a2760245::t_409c234b4fefde 1-41
+src/test/java/pnnh/mcfloatingbackpack/compat/BridgeDispatchTest.java
+  s_9aefe4a2760245::t_731a7a152692b9 94-95,97-98,158,271-310
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_0b77c0e3f03a89 84-86,99-102,124
+README_CN.md
+  s_9aefe4a2760245::t_fb8c3cadad36c8 64
+specs/059-server-compat-levels/research.md
+  s_9aefe4a2760245::t_409c234b4fefde 1-55
+src/test/java/pnnh/mcfloatingbackpack/resources/ServerCompatWiringTest.java
+  s_9aefe4a2760245::t_fb8c3cadad36c8 1-156
+specs/059-server-compat-levels/tasks.md
+  s_9aefe4a2760245::t_81a8775ebe4bee 1-16,18-20,27-29,37-43,48-56,61-63,66-68,71-73,79-81,83,86-105
+  s_9aefe4a2760245::t_b13a3b896f28d3 82,84-85
+  s_9aefe4a2760245::t_84d9a6f394f8e8 17,21-26,30-36,44-47,57-60,64-65,69-70,74-78
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackCursorGesturePayload.java
+  s_9aefe4a2760245::t_a5a5dbb596d29b 19,104
+src/main/java/pnnh/mcfloatingbackpack/compat/curios/CuriosWornSource.java
+  s_9aefe4a2760245::t_fb000339011cc0 46,50-58
+  s_9aefe4a2760245::t_4571cb17a8564e 59-60
+src/main/java/pnnh/mcfloatingbackpack/compat/BridgeDispatch.java
+  s_9aefe4a2760245::t_731a7a152692b9 5,15-18,48,54-56,72
+src/main/java/pnnh/mcfloatingbackpack/compat/NetworkStorageBridges.java
+  s_9aefe4a2760245::t_731a7a152692b9 17,22-23
+specs/059-server-compat-levels/DELIVERY.md
+  s_9aefe4a2760245::t_b13a3b896f28d3 3,5,7-57
+  s_9aefe4a2760245::t_68db8923296440 1-2,4,6
+README.md
+  s_9aefe4a2760245::t_fb8c3cadad36c8 64
+specs/059-server-compat-levels/spec.md
+  s_9aefe4a2760245::t_1c3c6445d6994a 1-198
+specs/059-server-compat-levels/plan.md
+  s_9aefe4a2760245::t_198dd0b23ea0a2 2,4-6,8,16,18,20,22,24,26,28,30,32,34-36,48-53,64-68,88-89,91-93
+  s_9aefe4a2760245::t_409c234b4fefde 1,3,7,9-15,17,19,21,23,25,27,29,31,33,37-47,54-63,69-87,90,94
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_0b77c0e3f03a89 329-330
+src/test/java/pnnh/mcfloatingbackpack/resources/ServerCompatResourcesTest.java
+  s_9aefe4a2760245::t_fb8c3cadad36c8 1-53
+src/test/java/pnnh/mcfloatingbackpack/resources/IntegratedTerminalsWiringTest.java
+  s_9aefe4a2760245::t_b9261f7982e2ae 30
+src/test/java/pnnh/mcfloatingbackpack/resources/ThirdPartyDriftTest.java
+  s_9aefe4a2760245::t_fb8c3cadad36c8 4,141-149
+.specify/feature.json
+  s_9aefe4a2760245::t_a28bc94715d11d 1
+src/test/java/pnnh/mcfloatingbackpack/compat/DenialThrottleTest.java
+  s_9aefe4a2760245::t_68db8923296440 1-64
+docs/plan/third-party-compat.md
+  s_9aefe4a2760245::t_84d9a6f394f8e8 3
+src/main/java/pnnh/mcfloatingbackpack/compat/ServerCompatDenials.java
+  s_9aefe4a2760245::t_0b77c0e3f03a89 1-44
+src/main/java/pnnh/mcfloatingbackpack/compat/ServerCompatLevels.java
+  s_9aefe4a2760245::t_0b77c0e3f03a89 1-51
+src/main/java/pnnh/mcfloatingbackpack/network/MergePanelCursorPayload.java
+  s_9aefe4a2760245::t_a5a5dbb596d29b 14,47
+src/main/java/pnnh/mcfloatingbackpack/inventory/worn/WornBackpacks.java
+  s_9aefe4a2760245::t_b2df2586975613 81,86-87,100,106
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTakeFromContainerPayload.java
+  s_9aefe4a2760245::t_a5a5dbb596d29b 15,73
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_0b77c0e3f03a89 329-330
+src/test/java/pnnh/mcfloatingbackpack/inventory/worn/BackpackSearchTest.java
+  s_9aefe4a2760245::t_4a603f872eb496 29-30,77,296-353
+specs/059-server-compat-levels/quickstart.md
+  s_9aefe4a2760245::t_409c234b4fefde 1-34
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackQuickTransferPayload.java
+  s_9aefe4a2760245::t_a5a5dbb596d29b 19,165
+src/main/java/pnnh/mcfloatingbackpack/inventory/worn/BackpackSearch.java
+  s_9aefe4a2760245::t_b2df2586975613 88-97,101
+specs/059-server-compat-levels/contracts/levels-and-gate.md
+  s_9aefe4a2760245::t_409c234b4fefde 1-47
+src/main/java/pnnh/mcfloatingbackpack/compat/ServerCompatGate.java
+  s_9aefe4a2760245::t_731a7a152692b9 3-4,6-11,26-27,31-40,43
+src/test/java/pnnh/mcfloatingbackpack/compat/ServerCompatGateTest.java
+  s_9aefe4a2760245::t_731a7a152692b9 5-7,13-17,19,35-61
+src/main/java/pnnh/mcfloatingbackpack/compat/ThirdPartyConfig.java
+  s_9aefe4a2760245::t_0b77c0e3f03a89 3-4,8-11,15,23-37,60-66
+  s_9aefe4a2760245::t_88ce5a5b012ae2 67-68
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashPayload.java
+  s_9aefe4a2760245::t_a5a5dbb596d29b 20,114,169
+src/main/java/pnnh/mcfloatingbackpack/compat/accessories/AccessoriesWornSource.java
+  s_9aefe4a2760245::t_fb000339011cc0 43,47-55
+  s_9aefe4a2760245::t_9e304297fbb3eb 56-57
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "26434024978b9548c5b963d8c8529f132c77fa08",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
