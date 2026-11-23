@@ -329,5 +329,7 @@
   "message.mcfloatingbackpack.compat.failed": "%1$s: the compatibility code failed (%2$s) and was switched off until the server restarts. Nothing was lost; the details are in the server log.",
   "message.mcfloatingbackpack.compat.server_off": "This server does not allow the floating backpack to exchange items with %1$s screens (a server setting).",
   "curios.identifier.floating_backpack": "Floating Backpack",
-  "accessories.slot.floating_backpack": "Floating Backpack"
+  "accessories.slot.floating_backpack": "Floating Backpack",
+  "message.mcfloatingbackpack.orphaned.returned": "%1$s backpack(s) were in a slot of Accessories that no longer exists. They are back in your inventory.",
+  "message.mcfloatingbackpack.orphaned.dropped": "%1$s backpack(s) were in a slot of Accessories that no longer exists. They are back in your inventory (%2$s did not fit and lie at your feet)."
 }

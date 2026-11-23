@@ -87,6 +87,26 @@ public class MCFloatingBackpack {
             // 036: and not equipped by the right click that opens the panel (Accessories does that by default; see BackpackAccessory).
             modEventBus.addListener(
                     (net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) -> event.enqueueWork(AccessoriesCompat::registerAccessories));
+            // 062: a backpack that lay in a slot type of Accessories that is gone (Accessories drops it) is given back when the player logs in.
+            // The data file is read when it is loaded (any thread), the check comes a moment after the login or when the player leaves.
+            NeoForge.EVENT_BUS.addListener((PlayerEvent.LoadFromFile event) -> {
+                if (event.getEntity() instanceof ServerPlayer player) {
+                    pnnh.mcfloatingbackpack.compat.accessories.OrphanedBackpacks.onPlayerDataRead(
+                            player.getUUID(), new java.io.File(event.getPlayerDirectory(), event.getPlayerUUID() + ".dat"));
+                }
+            });
+            NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
+                if (event.getEntity() instanceof ServerPlayer player) {
+                    pnnh.mcfloatingbackpack.compat.accessories.OrphanedBackpacks.onLogin(player);
+                }
+            });
+            NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedOutEvent event) -> {
+                if (event.getEntity() instanceof ServerPlayer player) {
+                    pnnh.mcfloatingbackpack.compat.accessories.OrphanedBackpacks.onLogout(player);
+                }
+            });
+            NeoForge.EVENT_BUS.addListener((ServerTickEvent.Post event) -> pnnh.mcfloatingbackpack.compat.accessories.OrphanedBackpacks.tick(event.getServer()));
+            NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> pnnh.mcfloatingbackpack.compat.accessories.OrphanedBackpacks.clear());
         }
         // 059: the server's levels for the mods (the server config's modLevels, and the client's where it can be read) decide what the
         // gate allows in the menus of other mods.

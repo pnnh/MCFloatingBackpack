@@ -25,9 +25,10 @@ public final class WornSlotsConfig {
                         "Read before the data packs are loaded, so a change needs a RESTART of the game or the server. On a multiplayer",
                         "server the server's value decides what the players see (the server sends the slots over).",
                         "This is not the FULL / GENERIC / OFF level of compat.modLevels: it decides what this mod adds, not what its code does.",
-                        "WARNING: turning a switch off removes the slot, and what lies in it is left to the accessory mod. Tested: Curios hands the",
-                        "item back to the player; Accessories does NOT (the item is gone). TAKE EVERY BACKPACK OUT OF THE SLOT FIRST. (A backpack",
-                        "that is lost this way can still be restored from its snapshot: see the snapshot window and /mcfloatingbackpack snapshot.)")
+                        "WARNING: turning a switch off removes the slot, and what lies in it is left to the accessory mod. Curios hands the item back",
+                        "to the player; Accessories drops it, so this mod gives a floating backpack that lay in such a slot back when the player next",
+                        "logs in (only while its compatibility with Accessories is at FULL on the server). Taking the backpack out first is still the",
+                        "safe way. (A backpack that is lost anyway can be restored from its snapshot: /mcfloatingbackpack snapshot.)")
                 .push("slots");
         CURIOS = builder.comment("Add the Floating Backpack slot to Curios (only has an effect when Curios is installed).")
                 .define("curios", true);

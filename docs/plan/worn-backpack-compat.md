@@ -79,6 +79,7 @@
 | 033 curios-back | **已实现**（2026-11-09，待游戏内验证）：`curios:back` 标签、无条件的玩家后背槽分配、`compat/curios/` 的来源（读写、隐藏渲染、`modLevels`）；Curios 一侧不需要渲染抑制 |
 | 034 accessories-back | **已实现**（2026-11-09，待游戏内验证）：`accessories:back` 标签、`compat/accessories/` 的来源（读写、隐藏渲染、`modLevels`）与**自己写的空渲染器**（不用 `registerNoRenderer`，避开 `forceNullRenderReplacement`）；三个来源全部完成 |
 | 061 worn-backpack-slots | **已实现**（2026-11-23，待用户确认）：Curios、Accessories 各加专用槽位 `floating_backpack` 与通用 `charm` 槽的支持，每个槽位类型最多一只；每个槽位类型一个来源（`BackpackRef.Source` 追加 4 个）；专用槽由启动配置里的按模组开关控制（见 [third-party-compat.md](./third-party-compat.md) 第 8 节）；`specs/061-worn-backpack-slots/` |
+| 062 accessories-orphaned-backpacks | **已实现**（2026-11-23，待用户确认）：Accessories 在槽位类型消失时丢物品，登录时从玩家数据文件里找出浮动背包还给玩家（有编号按编号、无编号按数量去重；档位 FULL 才做；`specs/062-accessories-orphaned-backpacks/`） |
 
 ## 验证步骤的结果（2026-11-09）
 

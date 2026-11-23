@@ -329,5 +329,7 @@
   "message.mcfloatingbackpack.compat.failed": "%1$s：兼容代码出错（%2$s），已关闭，直到服务器重启。没有丢失物品，详情见服务器日志。",
   "message.mcfloatingbackpack.compat.server_off": "这台服务器不允许浮动背包与 %1$s 的界面交换物品（服务器设置）。",
   "curios.identifier.floating_backpack": "浮动背包",
-  "accessories.slot.floating_backpack": "浮动背包"
+  "accessories.slot.floating_backpack": "浮动背包",
+  "message.mcfloatingbackpack.orphaned.returned": "有 %1$s 只背包原来放在 Accessories 里已不存在的槽位中，已放回你的物品栏。",
+  "message.mcfloatingbackpack.orphaned.dropped": "有 %1$s 只背包原来放在 Accessories 里已不存在的槽位中，已还给你（物品栏放不下的 %2$s 只掉在了你脚边）。"
 }

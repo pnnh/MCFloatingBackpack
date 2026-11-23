@@ -38,7 +38,7 @@
 
 ## 如实说明的取舍与风险
 
-1. **Accessories 会丢槽位里的物品**（见上表）：是它自己的行为，不是我们的代码；**不替它处理**。README 与配置注释都写了"先取下背包再关开关"，并指出背包内容可以从 030 的快照恢复（`/mcfloatingbackpack snapshot`、快照窗口）。若要更保险，另开 feature：在玩家数据读入时（`PlayerEvent.LoadFromFile`，057 已有）检测并保护 Accessories 数据里被孤立的背包。
+1. **Accessories 会丢槽位里的物品**（见上表）：是它自己的行为，不是我们的代码。**已由 062 处理**（`specs/062-accessories-orphaned-backpacks/`：登录时从玩家数据文件里找出并归还）；下面是 061 当时的记录。README 与配置注释都写了"先取下背包再关开关"，并指出背包内容可以从 030 的快照恢复（`/mcfloatingbackpack snapshot`、快照窗口）。若要更保险，另开 feature：在玩家数据读入时（`PlayerEvent.LoadFromFile`，057 已有）检测并保护 Accessories 数据里被孤立的背包。
 2. 客户端对"第二只"的判断没起作用（只是视觉上的一帧）。
 3. 宪法 VII 的修订是我起草的，**需要用户确认措辞**。
 4. 容器环境改动已还原：启动配置两项都恢复为 true，测试用的数据包 `t61` 已删除，客户端停在标题界面；Accessories 的首次启动界面选了"Original"（`accessories.json5` 变了，只影响开发容器）。
