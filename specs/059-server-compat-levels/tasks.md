@@ -80,7 +80,7 @@
 ## Phase 9: 游戏内验证与交付
 
 - [X] T032 游戏内验证（AI 自动验证，容器，quickstart 第二节 A 的情形 1～8；改服务端配置前备份 `/work/run/config/mcfloatingbackpack-server.toml`；**情形 5（不重开世界热改）是 FR-004 的唯一证据，必须做；若热读不成立，停下来回 research R5**）：每项写实际验证了什么，做不了的写"未验证"
-- [ ] T033 游戏内验证（专用服务器，quickstart 第二节 B 的情形 9、10；用 `scripts/ai-gui/multi-setup.sh` 建 `mcfb-srv` + `mcfb-c1`，服务端 `online-mode=false`）；起不来或资源不够就写"未验证"并说明原因，不硬凑
+- [ ] T033（2026-11-23 补验证了情形 9：专用服务器上 `curios=OFF` 热改，`B` 不再认 Curios 槽里的背包，改回又认；情形 10 仍未验证，见 061 的 DELIVERY）游戏内验证（专用服务器，quickstart 第二节 B 的情形 9、10；用 `scripts/ai-gui/multi-setup.sh` 建 `mcfb-srv` + `mcfb-c1`，服务端 `online-mode=false`）；起不来或资源不够就写"未验证"并说明原因，不硬凑
 - [X] T034 `specs/059-server-compat-levels/DELIVERY.md`（中文）：基线与完成后的类数与用例数、与 spec/plan 的偏离、每个游戏内验证项验证了什么 / 没验证什么、协议号仍 21 与 `DataRevision` 仍 6 的理由、已知局限（客户端不知道服务端档位；背部层不一致；提示限流只在内存）、宪法复查
 - [X] T035 最终检查：`./gradlew compileJava test` 与 `./gradlew build -PcleanRuntime -PnoJei` 全部通过；容器里的配置已还原；无临时修改残留；**不提交、不打 tag**
 - [ ] T036 用户确认：真机上被拒绝时的提示文字与时机、README 说明；**只有用户明确确认才勾**

@@ -60,12 +60,29 @@ public final class OpenContainerDelivery {
 
     /**
      * @param leftover what did not go into the container (to be put back in the backpack)
-     * @param conserved the item total over all menu slots plus the stack was the same before and after
+     * @param conserved nothing was duplicated or lost: the item total over all menu slots plus the stack was
+     *     the same before and after, <em>or</em> it shrank by no more than what the menu took (see {@code absorbed})
+     * @param absorbed items the menu took that are no longer in any of its slots (a network terminal's
+     *     {@code quickMoveStack} puts them into the network, 063); 0 when the total was exactly the same
      * @param error exception thrown by the menu, if any (swallowed; the temp slot was still cleaned up)
      * @param skipped no parking slot was usable, nothing was tried
      * @param swapped an occupied slot had to be emptied for the duration of the call
      */
-    public record Result<T>(T leftover, boolean conserved, RuntimeException error, boolean skipped, boolean swapped) {
+    public record Result<T>(
+            T leftover, boolean conserved, int absorbed, RuntimeException error, boolean skipped, boolean swapped) {
+    }
+
+    /**
+     * Classifies the item total over the menu's slots plus the delivered stack, before and after.
+     * Equal: conserved. Smaller by at most {@code taken} (what the menu took): the menu moved items
+     * somewhere its slots do not show, which is fine (absorbed). Larger, or smaller by more than it took:
+     * inconsistent (a duplication, or something else vanished too).
+     *
+     * @return the absorbed count, or -1 when inconsistent
+     */
+    static int absorbedOrInconsistent(int before, int after, int taken) {
+        int shrank = before - after;
+        return shrank >= 0 && shrank <= taken ? shrank : -1;
     }
 
     /** A menu has an "open container" when it has slots that are not the player's inventory. */
@@ -111,12 +128,12 @@ public final class OpenContainerDelivery {
 
     public static <T> Result<T> deliver(QuickTransferLogic.StackOps<T> ops, MenuAccess<T> menu, T source) {
         if (ops.isEmpty(source)) {
-            return new Result<>(ops.empty(), true, null, true, false);
+            return new Result<>(ops.empty(), true, 0, null, true, false);
         }
         List<SlotView> views = menu.slots(source);
         Optional<Choice> choice = selectTempSlot(views);
         if (choice.isEmpty()) {
-            return new Result<>(source, true, null, true, false);
+            return new Result<>(source, true, 0, null, true, false);
         }
         int index = choice.get().menuIndex();
         boolean swapped = choice.get().displace();
@@ -146,7 +163,9 @@ public final class OpenContainerDelivery {
         }
 
         int after = totalOf(ops, menu, views, source) + ops.count(leftover);
-        return new Result<>(leftover, before == after, error, false, swapped);
+        int taken = ops.count(source) - ops.count(leftover);
+        int absorbed = absorbedOrInconsistent(before, after, taken);
+        return new Result<>(leftover, absorbed >= 0, Math.max(absorbed, 0), error, false, swapped);
     }
 
     private static <T> int totalOf(QuickTransferLogic.StackOps<T> ops, MenuAccess<T> menu, List<SlotView> views, T kind) {

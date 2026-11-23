@@ -29,11 +29,20 @@
 | 老存档 | `back` 里的老背包不受影响 ✓（本机世界里 `back` 的背包一直在） |
 | 开关关闭后槽里的东西 | **Curios：还给玩家**（专用槽里的下界合金、金背包回到了物品栏）✓；**Accessories：物品消失**（专用槽里的两只背包，一只带内容，重启后既不在物品栏、地上也没有，重新打开开关也没回来；玩家数据里没有）⚠ |
 
-## 没验证的
+## 补验证（2026-11-23，容器 `mcfb-c1`，其中专用服务器用 `mcfb-srv` 加 `mcfb-c1` 作客户端 P1）
 
-- Curios 的多格同类型限制（只验证了 Accessories 一侧；`BackpackCurioItem` 的逻辑与 Accessories 的相同，只有接线测试与读字节码）：本机的数据包没能把 Curios 的 `back` 调成两格。
-- 专用服务器上开关在启动时被读取、联机客户端开关与服务端不同时的表现：没有起 `mcfb-srv`（STARTUP 配置的语义来自 FML 的源码与注释；本机是集成服务器）。
-- `curios=GENERIC` 的游戏内表现：来源的 `active(entity)` 与 059 是同一套代码，只有单元测试与接线测试。
+| 项 | 结果 |
+|---|---|
+| **Curios 同类型最多一只** | 用 `curios-common.toml` 的 `slots = ["id=back;size=2;operation=SET","id=charm;size=3;operation=SET"]` 把 `back` 调成 2 格、`charm` 调成 3 格，再用一个数据包把 `charm` 分配给玩家。`back` 第一格有背包时，**第二个 `back` 格放不进**（物品留在光标上）；`charm` 里已有一只时，**另一个 `charm` 格放不进**；`back`、专用、`charm` 各放一只**可以同时放**（关闭界面再打开仍在）✓ |
+| **Curios 的 `charm` 槽** | 同上，能放浮动背包 ✓（Curios 默认没有 `charm` 槽，是数据包分配的） |
+| **`curios=GENERIC`** | 客户端设 `curios=GENERIC`：上面被拒的第二个 `back` **放得进去**（不限制），关闭再打开仍在 ✓ |
+| **专用服务器：开关在启动时被读取** | `mcfb-srv` 上 `curios=true`：日志 "Loaded 11 curio slots"，客户端 P1 的 Curios 里有专用槽；改成 `curios=false` 重启：服务端日志 **"Loaded 10 curio slots"**（槽位数据在服务端线程出现之前就已加载，所以 SERVER 配置读不到，STARTUP 配置读得到），P1 的客户端（它自己的开关是 true）**没有**专用槽——联机时以服务端为准 ✓；槽里的背包由 Curios 还回了 P1 的快捷栏 ✓ |
+| **专用服务器：`B` 键与档位（059 的情形 9）** | 背包放进专用服务器上的 Curios 专用槽，`B` 打开的就是它 ✓；服务端 `[compat].modLevels = ["curios=OFF"]`（热改，不重开世界）：`B` **不再认**它（面板不开）；改回空列表：又认了 ✓ |
+
+## 仍没验证的
+
+- 059 的情形 10（服务端 `sophisticatedstorage=OFF`，精妙存储箱子上 Ctrl+点击被拒并提示）：这次没做（要放置精妙存储箱子，容器里放置方块的按键绑定要先改），059 的 T033 因此仍未勾。
+- 联机时客户端的 Accessories 一侧（只验证了 Curios）；`accessories=GENERIC` 在 Accessories 上的游戏内表现。
 - 装饰（cosmetic）槽放入时的判断；Accessories 的"组"在别的整合包里的排布。
 
 ## 如实说明的取舍与风险

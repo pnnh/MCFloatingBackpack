@@ -188,6 +188,15 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                         stack.getItem(),
                         result.error());
             }
+            if (result.conserved() && result.absorbed() > 0) {
+                // 063: a network terminal (AE2 ME, ...) put them into its network, outside every menu slot. Not a problem.
+                MCFloatingBackpack.LOGGER.debug(
+                        "Quick transfer into open container: {} of {} {} went outside the menu slots (menu {})",
+                        result.absorbed(),
+                        stack.getCount(),
+                        stack.getItem(),
+                        menu.menu().getClass().getName());
+            }
             if (!result.conserved()) {
                 MCFloatingBackpack.LOGGER.error(
                         "Quick transfer into open container changed the item total (menu {}, item {}, delivered {}, left over {})",

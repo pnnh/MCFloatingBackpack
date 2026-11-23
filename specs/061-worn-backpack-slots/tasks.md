@@ -42,11 +42,11 @@
 **Independent Test**: quickstart 情形 4。
 
 - [X] T011 [US2] `…/compat/curios/BackpackCurioItem.java`（`ICurioItem.canEquip`，装饰格放行、异常放行、`enforced` 与来源的 `active(entity)` 同一个判断）；`CuriosCompat.registerCurios()`（通用 setup、物品已存在时对五个等级调 `CuriosApi.registerCurio`，**只在 Curios 已加载时**）；`…/compat/accessories/BackpackAccessory.java` 加 `canEquip`；`MCFloatingBackpack` 里把 `registerCurios` 接到通用 setup（与 `registerAccessories` 同处）；纯判断全部走 `SlotLimit`；接线测试：`registerCurio` 只在 Curios 路径、`canEquipFromUse` 不覆盖、`SlotLimit` 被两处使用、没有 tick 里的清理
-- [ ] T012 [US2]（Accessories 一侧已验证；Curios 多格未验证，见 DELIVERY） 游戏内验证（quickstart 二、4）：把 `charm` 调成多格（数据包），同类型第二只放不进；不同类型各一只放得进；`curios=GENERIC` 不拦；命令绕过后多出的一只不被动；记下装饰格的观察（研究 R4 风险）
+- [X] T012 [US2]（Accessories 一侧先验证，Curios 多格 2026-11-23 补验证，见 DELIVERY） 游戏内验证（quickstart 二、4）：把 `charm` 调成多格（数据包），同类型第二只放不进；不同类型各一只放得进；`curios=GENERIC` 不拦；命令绕过后多出的一只不被动；记下装饰格的观察（研究 R4 风险）
 
 ## Phase 5: User Story 3 - `charm` 槽 (Priority: P2)
 
-- [ ] T013 [US3]（Accessories 的 `charm` 已验证；Curios 的 `charm` 没验证，见 DELIVERY） 游戏内验证（quickstart 二、5）：Accessories 的 `charm`、Curios（数据包给玩家分配 `charm` 仅用于验证，验证后撤掉）；`B` 键、渲染、每类一只
+- [X] T013 [US3]（Accessories 与 Curios 的 `charm` 都已验证，见 DELIVERY） 游戏内验证（quickstart 二、5）：Accessories 的 `charm`、Curios（数据包给玩家分配 `charm` 仅用于验证，验证后撤掉）；`B` 键、渲染、每类一只
 
 ## Phase 6: User Story 4 - 启动开关 (Priority: P2)
 
@@ -54,7 +54,7 @@
 
 ## Phase 7: User Story 5 - 档位、文档与测试 (Priority: P3)
 
-- [ ] T015 [US5]（老存档已验证；GENERIC、专用服务器、联机客户端没验证，见 DELIVERY） 游戏内验证（quickstart 二、8～10）：`curios=GENERIC` 来源不生效且物品不动、改回恢复；专用服务器上开关在启动时被读取、档位同样生效（`mcfb-srv`）；联机客户端开关与服务端不同时的实际表现；老存档 `back` 里的背包仍可用
+- [X] T015 [US5]（老存档、`curios=GENERIC`、专用服务器的开关读取与联机以服务端为准都已验证，见 DELIVERY 的补验证） 游戏内验证（quickstart 二、8～10）：`curios=GENERIC` 来源不生效且物品不动、改回恢复；专用服务器上开关在启动时被读取、档位同样生效（`mcfb-srv`）；联机客户端开关与服务端不同时的实际表现；老存档 `back` 里的背包仍可用
 - [X] T016 [US5] README.md 与 README_CN.md 兼容说明：三类位置（`back`、专用、`charm`）、每类一只、开关的位置/默认/重启/联机以服务端为准/关闭后的警告（按 T014 的结果）、客户端档位在联机时只影响视觉；配置注释同步
 - [X] T017 [US5] `docs/plan/third-party-compat.md` 记设计原则（档位管适配代码，"向第三方注册内容"走按模组的启动配置）；`docs/plan/worn-backpack-compat.md` 与 `docs/plan/README.md` 的状态
 - [ ] T018 [US5] 宪法 VII 修订（MINOR 2.3.0）：加子节"Registering content into another mod's data"，改 Sync Impact Report 与版本号；**措辞需用户确认后才算完成**（先写草案，在最终回复里请用户确认；用户确认后才勾）

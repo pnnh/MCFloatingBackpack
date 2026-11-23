@@ -32,7 +32,13 @@ class OpenContainerDeliveryTest {
         CRAFTING,
         REFUSE,
         THROW_AFTER_PARTIAL,
-        NEVER_CONVERGES
+        NEVER_CONVERGES,
+        /** A network terminal: takes up to {@code networkBudget} items out of the menu into "the network" (063). */
+        NETWORK,
+        /** Buggy: moves the stack into the container and conjures an extra item as well. */
+        DUPLICATES,
+        /** Buggy: swallows the stack into "the network" and also deletes one item already in the container. */
+        LOSES_OTHERS
     }
 
     static final class FakeSlot {
@@ -54,6 +60,7 @@ class OpenContainerDeliveryTest {
         final List<FakeSlot> slots = new ArrayList<>();
         final Mode mode;
         int quickMoveCalls;
+        int networkBudget = Integer.MAX_VALUE;
 
         FakeMenu(Mode mode, int containerSize) {
             this.mode = mode;
@@ -136,6 +143,25 @@ class OpenContainerDeliveryTest {
                     moveInto(menuIndex, indices(false, -1));
                     throw new IllegalStateException("mod menu blew up");
                 }
+                case NETWORK: {
+                    int n = Math.min(networkBudget, original.count());
+                    if (n == 0) {
+                        return FakeStack.EMPTY;
+                    }
+                    networkBudget -= n;
+                    slots.get(menuIndex).stack = n == original.count() ? FakeStack.EMPTY : new FakeStack(original.kind(), original.count() - n, 64);
+                    return original;
+                }
+                case DUPLICATES: {
+                    int moved = moveInto(menuIndex, indices(false, -1));
+                    slots.get(0).stack = new FakeStack(original.kind(), slots.get(0).stack.count() + 5, 64);
+                    return moved > 0 ? original : FakeStack.EMPTY;
+                }
+                case LOSES_OTHERS: {
+                    slots.get(0).stack = FakeStack.EMPTY;
+                    slots.get(menuIndex).stack = FakeStack.EMPTY;
+                    return original;
+                }
                 case CRAFTING: {
                     int moved = moveInto(menuIndex, indices(false, -1));
                     if (moved == 0) {
@@ -159,6 +185,71 @@ class OpenContainerDeliveryTest {
             }
             return n;
         }
+    }
+
+    @Test
+    void ordinaryContainerIsConservedAndAbsorbsNothing() {
+        FakeMenu menu = new FakeMenu(Mode.CHEST, 6);
+        Result<FakeStack> r = deliver(menu, new FakeStack(1, 40, 64));
+        assertTrue(r.conserved());
+        assertEquals(0, r.absorbed());
+    }
+
+    @Test
+    void networkTerminalAbsorbingEverythingIsNotAnInconsistency() {
+        FakeMenu menu = new FakeMenu(Mode.NETWORK, 6);
+        Result<FakeStack> r = deliver(menu, new FakeStack(1, 40, 64));
+        assertTrue(QuickTransferLogicTest.OPS.isEmpty(r.leftover()));
+        assertTrue(r.conserved());
+        assertEquals(40, r.absorbed());
+        assertEquals(0, menu.total(1));
+    }
+
+    @Test
+    void networkTerminalTakingOnlyPartLeavesTheRestAndAbsorbsThePart() {
+        FakeMenu menu = new FakeMenu(Mode.NETWORK, 6);
+        menu.networkBudget = 25;
+        Result<FakeStack> r = deliver(menu, new FakeStack(1, 40, 64));
+        assertEquals(15, r.leftover().count());
+        assertTrue(r.conserved());
+        assertEquals(25, r.absorbed());
+    }
+
+    @Test
+    void networkTerminalTakingNothingIsConservedWithNothingAbsorbed() {
+        FakeMenu menu = new FakeMenu(Mode.NETWORK, 6);
+        menu.networkBudget = 0;
+        Result<FakeStack> r = deliver(menu, new FakeStack(1, 40, 64));
+        assertEquals(40, r.leftover().count());
+        assertTrue(r.conserved());
+        assertEquals(0, r.absorbed());
+    }
+
+    @Test
+    void aMenuThatConjuresItemsIsStillInconsistent() {
+        FakeMenu menu = new FakeMenu(Mode.DUPLICATES, 6);
+        Result<FakeStack> r = deliver(menu, new FakeStack(1, 40, 64));
+        assertFalse(r.conserved());
+        assertEquals(0, r.absorbed());
+    }
+
+    @Test
+    void aMenuThatAlsoLosesOtherItemsIsStillInconsistent() {
+        FakeMenu menu = new FakeMenu(Mode.LOSES_OTHERS, 6);
+        menu.slots.get(0).stack = new FakeStack(1, 30, 64);
+        Result<FakeStack> r = deliver(menu, new FakeStack(1, 10, 64));
+        // 10 delivered and taken, 30 already inside vanished too: the total shrank by 40, more than the 10 taken.
+        assertFalse(r.conserved());
+    }
+
+    @Test
+    void classificationBoundaries() {
+        assertEquals(0, OpenContainerDelivery.absorbedOrInconsistent(50, 50, 10));
+        assertEquals(10, OpenContainerDelivery.absorbedOrInconsistent(50, 40, 10));
+        assertEquals(-1, OpenContainerDelivery.absorbedOrInconsistent(50, 39, 10));
+        assertEquals(-1, OpenContainerDelivery.absorbedOrInconsistent(50, 51, 10));
+        assertEquals(0, OpenContainerDelivery.absorbedOrInconsistent(50, 50, 0));
+        assertEquals(-1, OpenContainerDelivery.absorbedOrInconsistent(50, 49, 0));
     }
 
     private static Result<FakeStack> deliver(FakeMenu menu, FakeStack source) {
