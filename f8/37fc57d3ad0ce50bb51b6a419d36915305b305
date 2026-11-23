@@ -1,0 +1,200 @@
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetworkTakePayload.java
+  s_9aefe4a2760245::t_3450013f4140ab 28-30,33,42,77-78
+  s_9aefe4a2760245::t_9717563a79b8f5 1-21,23-27,31-32,34-41,43-76,79-111
+  s_9aefe4a2760245::t_07834cf85eb498 22
+src/test/java/pnnh/mcfloatingbackpack/resources/ServerCompatWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 154
+src/test/java/pnnh/mcfloatingbackpack/compat/ThirdPartyTableTest.java
+  s_9aefe4a2760245::t_c28765786defe0 73-82
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelRenderer.java
+  s_9aefe4a2760245::t_e8acd132aab65c 17
+  s_9aefe4a2760245::t_b40f4a0f34141d 196-199
+  s_9aefe4a2760245::t_88da9fe5a35af4 200
+src/main/java/pnnh/mcfloatingbackpack/client/compat/NetworkHeld.java
+  s_9aefe4a2760245::t_f456bd8ed156f2 1-16
+specs/060-network-terminal-take/contracts/request-and-server.md
+  s_9aefe4a2760245::t_ff62635c002465 1-19,21-31,33-67,69
+  s_9aefe4a2760245::t_f2904e566391e9 20,68
+  s_9aefe4a2760245::t_bce57fdb86572a 32
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsContractTest.java
+  s_9aefe4a2760245::t_6a420a52177a7a 112
+specs/060-network-terminal-take/DELIVERY.md
+  s_9aefe4a2760245::t_598b4e88cbe819 74-79
+  s_9aefe4a2760245::t_84adc57d0047c5 70-73,80
+  s_9aefe4a2760245::t_ec86ec71a9686c 10
+  s_9aefe4a2760245::t_5cd6c88b07f58e 3,5,7-9,11-18,20-51,68-69,81-86,88-91
+  s_9aefe4a2760245::t_074c151c52897c 1-2,4,6
+  s_9aefe4a2760245::t_3d04fe90723e1e 19
+  s_9aefe4a2760245::t_c1feff9e3f43a8 52-67,87
+src/main/java/pnnh/mcfloatingbackpack/client/compat/NetworkTerminalClients.java
+  s_9aefe4a2760245::t_b624cb9f1a1605 1-16,18-30,32-40,42-50,93-101
+  s_9aefe4a2760245::t_4bddeed183c990 17,31,41
+  s_9aefe4a2760245::t_f456bd8ed156f2 51-92
+src/main/java/pnnh/mcfloatingbackpack/compat/ThirdPartyTable.java
+  s_9aefe4a2760245::t_c28765786defe0 30-36
+README.md
+  s_9aefe4a2760245::t_6a420a52177a7a 59-60,62
+src/test/java/pnnh/mcfloatingbackpack/resources/LightWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 105
+src/main/templates/META-INF/neoforge.mods.toml
+  s_9aefe4a2760245::t_c4cb2d0f2efccb 111-118
+src/main/java/pnnh/mcfloatingbackpack/client/ClientSetup.java
+  s_9aefe4a2760245::t_d48927e7af0fb4 38-44
+src/test/java/pnnh/mcfloatingbackpack/resources/VersionCheckResourcesTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 70
+src/main/java/pnnh/mcfloatingbackpack/client/compat/ScreenSlots.java
+  s_9aefe4a2760245::t_4bddeed183c990 1-25
+src/main/java/pnnh/mcfloatingbackpack/compat/NetworkTakeRules.java
+  s_9aefe4a2760245::t_8506f0607ffa33 7,18-26
+  s_9aefe4a2760245::t_c4cb2d0f2efccb 1-6,8-17,27-55
+specs/060-network-terminal-take/tasks.md
+  s_9aefe4a2760245::t_5cd6c88b07f58e 74-77
+  s_9aefe4a2760245::t_4be6ec78363eb9 1-16,20-22,29-35,44-52,57-61,64-66,71-73,78-95
+  s_9aefe4a2760245::t_9082a34e65911e 17-19,23-28,36-43,53-56,62-63,67-70
+README_CN.md
+  s_9aefe4a2760245::t_6a420a52177a7a 59-60,62
+src/test/java/pnnh/mcfloatingbackpack/resources/DowngradeProtectionResourcesTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 132
+specs/060-network-terminal-take/checklists/requirements.md
+  s_9aefe4a2760245::t_90600a2220e3d7 1-34
+  s_9aefe4a2760245::t_dc1a93089e252a 35
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionUiResourcesTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 125
+src/main/java/pnnh/mcfloatingbackpack/client/compat/NetworkTerminalClient.java
+  s_9aefe4a2760245::t_b624cb9f1a1605 1-7,10-12,31
+  s_9aefe4a2760245::t_4bddeed183c990 8-9,13-17
+  s_9aefe4a2760245::t_f456bd8ed156f2 18-30
+src/main/java/pnnh/mcfloatingbackpack/compat/integratedterminals/IntegratedTerminalsClient.java
+  s_9aefe4a2760245::t_b624cb9f1a1605 1-5,7-14,16-17,19-21,27-31,34-35,38-39,47,92-93
+  s_9aefe4a2760245::t_87593e7fd62209 6,15,22-26,32-33,40-46,48
+  s_9aefe4a2760245::t_f456bd8ed156f2 18,36-37,49-91
+src/main/java/pnnh/mcfloatingbackpack/compat/integratedterminals/IntegratedTerminalsBridge.java
+  s_9aefe4a2760245::t_3450013f4140ab 83
+  s_9aefe4a2760245::t_b624cb9f1a1605 23-25,63-69,71-82,87-93
+  s_9aefe4a2760245::t_07834cf85eb498 70
+  s_9aefe4a2760245::t_3d04fe90723e1e 84-86
+  s_9aefe4a2760245::t_fa5aa9c59ddb4d 94
+src/main/java/pnnh/mcfloatingbackpack/client/panel/QuickTransferInput.java
+  s_9aefe4a2760245::t_3450013f4140ab 102
+  s_9aefe4a2760245::t_89e07498392c00 5,28,104
+  s_9aefe4a2760245::t_4bddeed183c990 96-101,103
+  s_9aefe4a2760245::t_399e294ef2346e 19-20
+specs/060-network-terminal-take/quickstart.md
+  s_9aefe4a2760245::t_ff62635c002465 1-42
+src/main/java/pnnh/mcfloatingbackpack/client/compat/NetworkEntry.java
+  s_9aefe4a2760245::t_b624cb9f1a1605 1-10
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_9aefe4a2760245::t_b40f4a0f34141d 35,612-615
+  s_9aefe4a2760245::t_52450f344df791 616-617
+src/test/java/pnnh/mcfloatingbackpack/resources/TankWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 67
+.specify/feature.json
+  s_9aefe4a2760245::t_1fbcf4c0b3a77f 1
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileFurnaceWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 33
+src/main/java/pnnh/mcfloatingbackpack/compat/ClientCompatVersions.java
+  s_9aefe4a2760245::t_67e4a5c3a38b1d 10
+  s_9aefe4a2760245::t_b624cb9f1a1605 1-9,11-29
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchResourcesTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 108
+specs/060-network-terminal-take/plan.md
+  s_9aefe4a2760245::t_09034aa9e62a21 1,3,7,9-17,19,21,23,25,27,29,31,33,35,39-49,56-65,71-94,97,101
+  s_9aefe4a2760245::t_269a961eadcbd5 2,4-6,8,18,20,22,24,26,28,30,32,34,36-38,50-55,66-70,95-96,98-100
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 237,247
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchPrefixResourcesTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 104
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_399e294ef2346e 91-94
+src/main/java/pnnh/mcfloatingbackpack/compat/integratedterminals/IntegratedTerminalsCompat.java
+  s_9aefe4a2760245::t_b624cb9f1a1605 17-22
+src/test/java/pnnh/mcfloatingbackpack/resources/ThirdPartyDriftTest.java
+  s_9aefe4a2760245::t_1be81d4e13276f 136-138
+  s_9aefe4a2760245::t_a24c9e6225ebbf 40-41,156,172,176,233-240
+  s_9aefe4a2760245::t_68db2829b56dce 241
+specs/060-network-terminal-take/research.md
+  s_9aefe4a2760245::t_894d679b5d5313 5,90-95
+  s_9aefe4a2760245::t_ff62635c002465 1-4,6-89
+  s_9aefe4a2760245::t_f2904e566391e9 96-103
+src/main/java/pnnh/mcfloatingbackpack/compat/BridgeDispatch.java
+  s_9aefe4a2760245::t_3450013f4140ab 44-45,47
+  s_9aefe4a2760245::t_761dbbecbeb6ad 37-43,46,48-56,123-142,146-191
+  s_9aefe4a2760245::t_8506f0607ffa33 143-145
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 118
+src/main/java/pnnh/mcfloatingbackpack/compat/NetworkStorageBridges.java
+  s_9aefe4a2760245::t_761dbbecbeb6ad 41-56
+src/test/java/pnnh/mcfloatingbackpack/compat/NetworkTakeRulesTest.java
+  s_9aefe4a2760245::t_3f8b23daaa0f88 24-29
+  s_9aefe4a2760245::t_c28765786defe0 1-23,30-90
+src/test/java/pnnh/mcfloatingbackpack/rules/DependencyRulesTest.java
+  s_9aefe4a2760245::t_14130ead1d32b9 126-142
+src/main/java/pnnh/mcfloatingbackpack/compat/ae2/Ae2Client.java
+  s_9aefe4a2760245::t_399e294ef2346e 1-16,18-27,30-39
+  s_9aefe4a2760245::t_87593e7fd62209 17,28-29
+src/main/java/pnnh/mcfloatingbackpack/compat/ae2/Ae2Compat.java
+  s_9aefe4a2760245::t_399e294ef2346e 1-24
+build.gradle
+  s_9aefe4a2760245::t_074c151c52897c 216-221
+specs/060-network-terminal-take/contracts/client-and-compat.md
+  s_9aefe4a2760245::t_ff62635c002465 1-8,13-16,18-25,27,30,37-42,44-57
+  s_9aefe4a2760245::t_79bd0e22acf3fb 58-63
+  s_9aefe4a2760245::t_894d679b5d5313 9-12,17,26,28-29,31-36,43
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileCraftingWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 31
+src/main/java/pnnh/mcfloatingbackpack/compat/ae2/Ae2Bridge.java
+  s_9aefe4a2760245::t_399e294ef2346e 1-68
+specs/060-network-terminal-take/data-model.md
+  s_9aefe4a2760245::t_ff62635c002465 1-10,12-19,21-36
+  s_9aefe4a2760245::t_894d679b5d5313 11
+  s_9aefe4a2760245::t_8da4146f574db8 20
+src/test/java/pnnh/mcfloatingbackpack/resources/GreyCellWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 86
+src/test/java/pnnh/mcfloatingbackpack/compat/BridgeDispatchTest.java
+  s_9aefe4a2760245::t_c28765786defe0 312-405,408-414,425-528
+  s_9aefe4a2760245::t_3f8b23daaa0f88 406-407,415-424
+  s_9aefe4a2760245::t_0a41f259f37141 96-97
+src/test/java/pnnh/mcfloatingbackpack/resources/SnapshotCapacityWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 55
+specs/060-network-terminal-take/spec.md
+  s_9aefe4a2760245::t_0d861f0ecc48d0 69,130,132,161,182
+  s_9aefe4a2760245::t_54fac23ada61c7 1-68,70-129,131,133-145,147-160,162-181,183-186
+  s_9aefe4a2760245::t_dc1a93089e252a 146
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_9aefe4a2760245::t_9717563a79b8f5 48,107-111
+src/test/java/pnnh/mcfloatingbackpack/resources/ItemTooltipWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 87
+docs/plan/third-party-compat.md
+  s_9aefe4a2760245::t_9082a34e65911e 3
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackSortWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 28
+src/test/java/pnnh/mcfloatingbackpack/resources/NetworkTakeWiringTest.java
+  s_9aefe4a2760245::t_3f8b23daaa0f88 70,72,74,96-97,118,126-146
+  s_9aefe4a2760245::t_0291cf3a445629 51
+  s_9aefe4a2760245::t_14130ead1d32b9 1-30,32-34,36-50,52-69,71,73,75-95,98-116,120-122,147-197
+  s_9aefe4a2760245::t_87593e7fd62209 31,35,123-125
+  s_9aefe4a2760245::t_3d04fe90723e1e 117,119
+src/test/java/pnnh/mcfloatingbackpack/resources/JukeboxWiringTest.java
+  s_9aefe4a2760245::t_9717563a79b8f5 111
+src/main/java/pnnh/mcfloatingbackpack/client/panel/NetworkHeldDrop.java
+  s_9aefe4a2760245::t_b40f4a0f34141d 1-67
+src/test/java/pnnh/mcfloatingbackpack/resources/IntegratedTerminalsWiringTest.java
+  s_9aefe4a2760245::t_6a420a52177a7a 51
+  s_9aefe4a2760245::t_1be81d4e13276f 88-89,94-95,98
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f837fc57d3ad0ce50bb51b6a419d36915305b305",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
