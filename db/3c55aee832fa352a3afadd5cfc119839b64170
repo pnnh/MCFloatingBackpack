@@ -1,0 +1,135 @@
+src/test/java/pnnh/mcfloatingbackpack/resources/AccessoriesBackResourcesTest.java
+  s_9aefe4a2760245::t_08377dad3b59f5 64-75
+specs/061-worn-backpack-slots/contracts/data-files.md
+  s_9aefe4a2760245::t_a865fe6b3363e5 1-51
+src/main/resources/data/mcfloatingbackpack/accessories/group/chest.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-9
+src/main/java/pnnh/mcfloatingbackpack/compat/accessories/AccessoriesCompat.java
+  s_9aefe4a2760245::t_ddd2e4e2a240d0 7,22-25
+src/main/java/pnnh/mcfloatingbackpack/compat/WornSlotsConfig.java
+  s_9aefe4a2760245::t_38b95916c792af 30
+  s_9aefe4a2760245::t_110a45adf7558e 28-29
+  s_9aefe4a2760245::t_45c107973314cb 1-27,31-46,48-49
+  s_9aefe4a2760245::t_08377dad3b59f5 47
+src/main/java/pnnh/mcfloatingbackpack/inventory/worn/BackpackSearch.java
+  s_9aefe4a2760245::t_7d880a1ff14e82 114-133
+specs/061-worn-backpack-slots/checklists/requirements.md
+  s_9aefe4a2760245::t_ed7c441c0dcbf7 1-34
+  s_9aefe4a2760245::t_06fd7f092dc654 35
+docs/plan/third-party-compat.md
+  s_9aefe4a2760245::t_c27d3e9e678ebd 157-164
+specs/061-worn-backpack-slots/tasks.md
+  s_9aefe4a2760245::t_e94acaccb2402a 36,53,58-59,61
+  s_9aefe4a2760245::t_aa6ea8e6d3bde3 60
+  s_9aefe4a2760245::t_5176590350f606 45,49,57,62
+  s_9aefe4a2760245::t_1fe8fe992aef1e 1-35,37-44,46-48,50-52,54-56,63-72
+specs/061-worn-backpack-slots/research.md
+  s_9aefe4a2760245::t_a865fe6b3363e5 40
+  s_9aefe4a2760245::t_97047a5bdbc791 1-39,41-72
+src/main/java/pnnh/mcfloatingbackpack/compat/accessories/AccessoriesWornSource.java
+  s_9aefe4a2760245::t_ddd2e4e2a240d0 15,28-37,41,46-47,68,71
+src/main/resources/data/curios/tags/item/floating_backpack.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-10
+specs/061-worn-backpack-slots/DELIVERY.md
+  s_9aefe4a2760245::t_e94acaccb2402a 1-6,8-48
+  s_9aefe4a2760245::t_5176590350f606 7
+src/main/java/pnnh/mcfloatingbackpack/inventory/worn/WornBackpacks.java
+  s_9aefe4a2760245::t_7d880a1ff14e82 98-102
+src/main/resources/data/mcfloatingbackpack/curios/slots/floating_backpack.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-10
+src/main/java/pnnh/mcfloatingbackpack/inventory/worn/SlotLimit.java
+  s_9aefe4a2760245::t_45c107973314cb 1-24
+docs/plan/worn-backpack-compat.md
+  s_9aefe4a2760245::t_872233cead7111 81
+src/main/java/pnnh/mcfloatingbackpack/diag/BackpackWatchService.java
+  s_9aefe4a2760245::t_7d880a1ff14e82 84-88
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_85c1a49309b5d6 330-332
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackRefTest.java
+  s_9aefe4a2760245::t_08377dad3b59f5 70
+src/main/java/pnnh/mcfloatingbackpack/compat/curios/CuriosWornSource.java
+  s_9aefe4a2760245::t_ddd2e4e2a240d0 18,31-43,47,52-53,73,75
+README.md
+  s_9aefe4a2760245::t_38b95916c792af 43
+specs/061-worn-backpack-slots/contracts/sources-and-limit.md
+  s_9aefe4a2760245::t_a865fe6b3363e5 1-44
+src/main/resources/data/accessories/tags/item/floating_backpack.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-10
+src/main/resources/data/mcfloatingbackpack/accessories/slot/floating_backpack.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-14
+src/main/resources/data/accessories/tags/item/charm.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-10
+src/main/resources/data/mcfloatingbackpack/curios/entities/player_floating_backpack.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-7
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_64d222d7d6231e 80-82
+  s_9aefe4a2760245::t_45c107973314cb 73-76
+src/main/java/pnnh/mcfloatingbackpack/compat/accessories/BackpackAccessory.java
+  s_9aefe4a2760245::t_64d222d7d6231e 6,9-13,21-25,32-55
+  s_9aefe4a2760245::t_2b1d91e9e07ab5 56
+specs/061-worn-backpack-slots/data-model.md
+  s_9aefe4a2760245::t_a865fe6b3363e5 1-37
+src/main/java/pnnh/mcfloatingbackpack/compat/SlotEnabledCondition.java
+  s_9aefe4a2760245::t_45c107973314cb 1-49
+src/test/java/pnnh/mcfloatingbackpack/inventory/worn/SlotLimitTest.java
+  s_9aefe4a2760245::t_10043af092f33c 1-32
+src/test/java/pnnh/mcfloatingbackpack/inventory/BackpackRefSourcesTest.java
+  s_9aefe4a2760245::t_10043af092f33c 1-43
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_85c1a49309b5d6 330-332
+src/main/java/pnnh/mcfloatingbackpack/compat/curios/CuriosCompat.java
+  s_9aefe4a2760245::t_ddd2e4e2a240d0 3,16-20
+  s_9aefe4a2760245::t_64d222d7d6231e 22-36
+  s_9aefe4a2760245::t_14a166d4c5777a 21
+src/test/java/pnnh/mcfloatingbackpack/resources/WornSlotsResourcesTest.java
+  s_9aefe4a2760245::t_10043af092f33c 1-123
+src/main/java/pnnh/mcfloatingbackpack/compat/curios/BackpackCurioItem.java
+  s_9aefe4a2760245::t_64d222d7d6231e 1-59
+docs/plan/README.md
+  s_9aefe4a2760245::t_c27d3e9e678ebd 15
+src/test/java/pnnh/mcfloatingbackpack/inventory/worn/BackpackSearchTest.java
+  s_9aefe4a2760245::t_a491ee59286709 142-165
+src/main/resources/data/mcfloatingbackpack/accessories/entity/player_floating_backpack.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-8
+README_CN.md
+  s_9aefe4a2760245::t_38b95916c792af 43
+src/test/java/pnnh/mcfloatingbackpack/resources/WornSlotsWiringTest.java
+  s_9aefe4a2760245::t_ab31248d7bfb4d 75-82,84-113
+  s_9aefe4a2760245::t_10043af092f33c 1-74,114
+  s_9aefe4a2760245::t_3a9325f04134ed 83
+.specify/feature.json
+  s_9aefe4a2760245::t_ed7c441c0dcbf7 1
+.specify/memory/constitution.md
+  s_9aefe4a2760245::t_722c88a2e4602f 3-15,263-275,335
+src/main/java/pnnh/mcfloatingbackpack/compat/WornSlotsSwitches.java
+  s_9aefe4a2760245::t_08377dad3b59f5 1-25
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackRef.java
+  s_9aefe4a2760245::t_45c107973314cb 30-38
+specs/061-worn-backpack-slots/spec.md
+  s_9aefe4a2760245::t_ed7c441c0dcbf7 1-192
+src/test/java/pnnh/mcfloatingbackpack/compat/WornSlotsSwitchesTest.java
+  s_9aefe4a2760245::t_08377dad3b59f5 1-34
+specs/061-worn-backpack-slots/quickstart.md
+  s_9aefe4a2760245::t_06fd7f092dc654 1-29
+src/main/resources/data/curios/tags/item/charm.json
+  s_9aefe4a2760245::t_ecdc819358bc42 1-10
+specs/061-worn-backpack-slots/plan.md
+  s_9aefe4a2760245::t_457df603dcdee3 1,3,7,9-15,17,19,21,23,25,27,29,31,33,37-47,54-62,68-96,99,103-106
+  s_9aefe4a2760245::t_e97d18a9293462 2,4-6,8,16,18,20,22,24,26,28,30,32,34-36,48-53,63-67,97-98,100-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "db3c55aee832fa352a3afadd5cfc119839b64170",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
