@@ -61,7 +61,18 @@ class AccessoriesBackResourcesTest {
 
     @Test
     void thereIsNoSlotAssignmentBecauseAccessoriesGivesPlayersABackSlotItself() {
-        assertFalse(Files.exists(ROOT.resolve("data/mcfloatingbackpack/accessories")), "Accessories already assigns its back slot to players");
+        // 061: the folder exists now (the dedicated slot's files), but nothing in it assigns the back slot
+        Path ours = ROOT.resolve("data/mcfloatingbackpack/accessories");
+        if (Files.exists(ours)) {
+            try (java.util.stream.Stream<Path> files = Files.walk(ours)) {
+                for (Path file : (Iterable<Path>) files.filter(Files::isRegularFile)::iterator) {
+                    String text = Files.readString(file, java.nio.charset.StandardCharsets.UTF_8);
+                    assertFalse(text.contains("\"back\""), "Accessories already assigns its back slot to players: " + file);
+                }
+            } catch (java.io.IOException e) {
+                throw new java.io.UncheckedIOException(e);
+            }
+        }
         assertFalse(Files.exists(ROOT.resolve("data/accessories/accessories")), "nothing of ours belongs in Accessories' own data folder");
     }
 }

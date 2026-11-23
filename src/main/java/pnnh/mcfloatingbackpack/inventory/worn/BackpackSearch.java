@@ -111,6 +111,26 @@ public final class BackpackSearch<P, S> {
         return null;
     }
 
+    /**
+     * 061: every backpack worn, not only the first (the first is the one the panel key opens; the others lie in their slots all the same).
+     * For diagnostics and the like, which must see all of them. In the order of the sources.
+     */
+    public java.util.List<Hit> allWorn(P player) {
+        java.util.List<Hit> found = new java.util.ArrayList<>();
+        for (WornSource<P, S> source : sources) {
+            if (!source.active(player)) {
+                continue;
+            }
+            int slots = source.slotCount(player);
+            for (int slot = 0; slot < slots; slot++) {
+                if (probe.isBackpack(source.get(player, slot))) {
+                    found.add(new Hit(Kind.WORN, source.id(), slot, source.hiddenRender(player, slot)));
+                }
+            }
+        }
+        return found;
+    }
+
     /** Main hand, then off hand, then the first backpack worn, then the inventory (the lowest index); {@code null} if there is none. */
     public Hit resolve(P player) {
         if (probe.isBackpack(probe.mainHand(player))) {

@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "mcfloatingbackpack:leather_floating_backpack",
+    "mcfloatingbackpack:iron_floating_backpack",
+    "mcfloatingbackpack:gold_floating_backpack",
+    "mcfloatingbackpack:diamond_floating_backpack",
+    "mcfloatingbackpack:netherite_floating_backpack"
+  ]
+}

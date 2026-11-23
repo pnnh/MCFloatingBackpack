@@ -1,5 +1,18 @@
 <!--
 Sync Impact Report
+- Version change: 2.2.1 -> 2.3.0 (MINOR: a rule is added to principle VII for a kind of interaction the levels cannot control)
+- Modified principles: VII. Minimal Dependencies, Opt-Out Compatibility. New subsection "Registering content in another
+  mod's data": the setting "mod id -> FULL / GENERIC / OFF" decides what this mod's code does with another mod. Adding
+  content to another mod's data (a slot in Curios or Accessories, say) is decided when the data packs load, which is before
+  the server config is read (and the client config is not loaded on a dedicated server), so a level cannot control it. Such
+  an addition is controlled by a per-mod boolean in a start-up config (read the moment it is registered, default on, a
+  change needs a restart). Found while planning spec 061 (the dedicated slot of Curios and Accessories); the user chose it
+  ("not forced, and can be switched off").
+- Added principles: none. Added sections: the subsection above. Removed sections: none.
+- Templates reviewed, no change needed: .specify/templates/*, AGENTS.md, CLAUDE.md
+- Follow-up TODOs: none. Pending: the user's confirmation of the wording (spec 061, task T018).
+
+Previous report (2.2.0 -> 2.2.1):
 - Version change: 2.2.0 -> 2.2.1 (PATCH: the rule about development-only runtime dependencies is reworded)
 - Modified principles: none. Additional Constraints, the development-only dependencies bullet: it required them
   to be "enabled by a Gradle switch" (-PcompatRuntime, -PshaderRuntime, -PnoJei). With one switch per mod set a
@@ -247,6 +260,19 @@ each level changes. A decision that gates item movement and depends on this sett
 MUST be made on the server; a client-side setting only resolves client-side
 conflicts and is not a security boundary (principle II).
 
+#### Registering content in another mod's data
+
+The levels above decide what this mod's *code* does with another mod. Adding *content* to
+another mod's data (a slot type for Curios or Accessories, a tag, a data condition) is
+decided when the data packs load, before the server config is read, and the client config
+does not exist on a dedicated server, so a level cannot control it. Such an addition MUST be
+controlled by a **per-mod boolean in a start-up config** (the config type that is read the
+moment it is registered), which is on by default, takes effect after a restart, and is
+independent of the levels. The data it adds MUST carry a data condition that reads that
+switch, nothing of it may be forced, and its comment MUST say what a restart removes and what
+happens to what lay in it (verified in a game, not assumed). Content that only
+*describes* items of this mod to another mod (a tag, say) is not covered by this rule.
+
 The rules on required dependencies, `compat/<modid>/` and `neoforge.mods.toml` MUST
 be checked by an automated test, not by review alone.
 
@@ -306,4 +332,4 @@ Amendments change this file and bump the version:
 - MINOR: add a principle or a constraint.
 - PATCH: wording that does not change a rule.
 
-**Version**: 2.2.1 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-09
+**Version**: 2.3.0 | **Ratified**: 2026-10-23 | **Last Amended**: 2026-11-23

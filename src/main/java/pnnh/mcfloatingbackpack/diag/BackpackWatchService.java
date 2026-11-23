@@ -81,6 +81,11 @@ public final class BackpackWatchService {
                 note(now, slot.getItem(), "open container slot " + slot.index);
             }
         }
+        // 061: every backpack worn, not only the first (a second one in another accessory slot is not "gone")
+        for (pnnh.mcfloatingbackpack.inventory.worn.BackpackSearch.Hit hit : pnnh.mcfloatingbackpack.inventory.worn.WornBackpacks.allWornPlayer(player)) {
+            note(now, pnnh.mcfloatingbackpack.inventory.worn.WornBackpacks.get(player, hit.sourceId(), hit.slot()),
+                    "worn: " + BackpackRef.Source.values()[hit.sourceId()] + " slot " + hit.slot());
+        }
         BackpackRef resolved = BackpackRef.resolve(player);
         if (resolved != null) {
             note(now, resolved.getStack(player), "worn or held: " + resolved.source());

@@ -12,7 +12,7 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.worn.WornSource;
 
 /**
- * 034: the back slot of Accessories (Wisp Forest) as a place a floating backpack can be worn, after the chest slot and the Curios back
+ * 034, 061: a slot type of Accessories (Wisp Forest: {@code back}, and since 061 the dedicated slot and {@code charm}) as a place a floating backpack can be worn, after the chest slot and the Curios back
  * slot. Only the real stacks count (not the cosmetic ones), and the player's "do not draw this slot" switch is reported as
  * {@link #hiddenRender}, which makes the back layer draw nothing while the backpack is still the one worn.
  *
@@ -25,17 +25,26 @@ import pnnh.mcfloatingbackpack.inventory.worn.WornSource;
  */
 final class AccessoriesWornSource implements WornSource<LivingEntity, ItemStack> {
     /** The Accessories slot type this source reads. */
-    private static final String SLOT = "back";
+    private final String slot;
+    private final BackpackRef.Source source;
+    private final int order;
+
+    /** 061: one source for each slot type a backpack can be worn in: {@code back} (034), the dedicated {@code floating_backpack} and {@code charm}. */
+    AccessoriesWornSource(String slot, BackpackRef.Source source, int order) {
+        this.slot = slot;
+        this.source = source;
+        this.order = order;
+    }
 
     @Override
     public int id() {
-        return BackpackRef.Source.ACCESSORIES.ordinal();
+        return source.ordinal();
     }
 
     @Override
     public int order() {
-        // after the chest (0) and the Curios back slot (10)
-        return 20;
+        // after the chest (0) and the Curios slots (10 to 12)
+        return order;
     }
 
     @Override
@@ -56,10 +65,10 @@ final class AccessoriesWornSource implements WornSource<LivingEntity, ItemStack>
     }
 
     /** The entity's back slot, or {@code null} if it has none (no Accessories data, no such slot, anything unexpected). */
-    private static AccessoriesContainer container(LivingEntity entity) {
+    private AccessoriesContainer container(LivingEntity entity) {
         try {
             AccessoriesCapability capability = AccessoriesCapability.get(entity);
-            return capability == null ? null : capability.getContainers().get(SLOT);
+            return capability == null ? null : capability.getContainers().get(slot);
         } catch (RuntimeException e) {
             return null;
         }

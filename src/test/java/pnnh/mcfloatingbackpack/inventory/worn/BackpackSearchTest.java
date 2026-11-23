@@ -140,6 +140,30 @@ class BackpackSearchTest {
     }
 
     @Test
+    void allWornListsEveryBackpackInEverySourceNotOnlyTheFirst() {
+        // 061: the diagnostics must see the backpacks that are not the first one worn (a second source, a second slot of one source)
+        BackpackSearch<Fake, String> search = allThree();
+        Fake player = new Fake().wearing(CHEST, "").wearing(CURIOS, "", BACKPACK, BACKPACK).wearing(ACCESSORIES, BACKPACK);
+        java.util.List<Hit> found = search.allWorn(player);
+        assertEquals(3, found.size());
+        assertEquals(new Hit(Kind.WORN, CURIOS, 1, false), found.get(0));
+        assertEquals(new Hit(Kind.WORN, CURIOS, 2, false), found.get(1));
+        assertEquals(new Hit(Kind.WORN, ACCESSORIES, 0, false), found.get(2));
+        assertEquals(CURIOS, search.firstWorn(player).sourceId(), "the first one is still the first in the order");
+    }
+
+    @Test
+    void allWornSkipsSourcesThatAreNotActiveAndIsEmptyWithNothingWorn() {
+        FakeSource curios = new FakeSource(CURIOS, 10);
+        BackpackSearch<Fake, String> search = search(new FakeSource(CHEST, 0), curios, new FakeSource(ACCESSORIES, 20));
+        Fake player = new Fake().wearing(CURIOS, BACKPACK);
+        assertEquals(1, search.allWorn(player).size());
+        curios.active = false;
+        assertTrue(search.allWorn(player).isEmpty());
+        assertTrue(search.allWorn(new Fake()).isEmpty());
+    }
+
+    @Test
     void theChestComesFirstThenTheFirstSourceAfterItThenTheNext() {
         BackpackSearch<Fake, String> search = allThree();
         Fake all = new Fake().wearing(CHEST, BACKPACK).wearing(CURIOS, BACKPACK).wearing(ACCESSORIES, BACKPACK);

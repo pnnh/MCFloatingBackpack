@@ -327,5 +327,7 @@
   "message.mcfloatingbackpack.compat.verdict.gap": "lies between two of the version ranges this mod was verified with",
   "message.mcfloatingbackpack.compat.verdict.unknown": "has a version number that cannot be read",
   "message.mcfloatingbackpack.compat.failed": "%1$s: the compatibility code failed (%2$s) and was switched off until the server restarts. Nothing was lost; the details are in the server log.",
-  "message.mcfloatingbackpack.compat.server_off": "This server does not allow the floating backpack to exchange items with %1$s screens (a server setting)."
+  "message.mcfloatingbackpack.compat.server_off": "This server does not allow the floating backpack to exchange items with %1$s screens (a server setting).",
+  "curios.identifier.floating_backpack": "Floating Backpack",
+  "accessories.slot.floating_backpack": "Floating Backpack"
 }

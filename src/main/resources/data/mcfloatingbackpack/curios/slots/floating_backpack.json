@@ -1,0 +1,10 @@
+{
+  "neoforge:conditions": [
+    { "type": "mcfloatingbackpack:slot_enabled", "mod": "curios" }
+  ],
+  "size": 1,
+  "operation": "SET",
+  "order": 85,
+  "icon": "mcfloatingbackpack:slot/floating_backpack",
+  "validators": ["curios:tag"]
+}

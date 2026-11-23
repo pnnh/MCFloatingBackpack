@@ -1,0 +1,14 @@
+{
+  "neoforge:conditions": [
+    { "type": "mcfloatingbackpack:slot_enabled", "mod": "accessories" }
+  ],
+  "replace": false,
+  "amount": 1,
+  "operation": "set",
+  "order": 810,
+  "icon": "mcfloatingbackpack:gui/slot/floating_backpack",
+  "validators": [
+    "accessories:tag",
+    "accessories:component"
+  ]
+}

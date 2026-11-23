@@ -4,6 +4,7 @@ import io.wispforest.accessories.api.AccessoriesAPI;
 
 import net.minecraft.world.item.Item;
 
+import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.worn.WornBackpacks;
 import pnnh.mcfloatingbackpack.item.ModItems;
 
@@ -18,7 +19,10 @@ public final class AccessoriesCompat {
 
     /** Adds the Accessories back slot to the places a backpack is worn (see {@code WornBackpacks}); both sides run it. */
     public static void register() {
-        WornBackpacks.register(new AccessoriesWornSource());
+        WornBackpacks.register(new AccessoriesWornSource("back", BackpackRef.Source.ACCESSORIES, 20));
+        // 061: the dedicated slot and the charm slot, after it (see CuriosCompat.register)
+        WornBackpacks.register(new AccessoriesWornSource("floating_backpack", BackpackRef.Source.ACCESSORIES_DEDICATED, 21));
+        WornBackpacks.register(new AccessoriesWornSource("charm", BackpackRef.Source.ACCESSORIES_CHARM, 22));
     }
 
     /**

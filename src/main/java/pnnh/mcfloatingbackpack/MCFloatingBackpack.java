@@ -70,9 +70,16 @@ public class MCFloatingBackpack {
         ExtensionPacks.registerTier(
                 stack -> stack.getItem() instanceof UniversalExtensionItem universal ? universal.tierId() : null);
         BackpackNetwork.register(modEventBus);
+        // 061: whether this mod adds its own slot to Curios and Accessories is a start-up setting, read the moment it is registered (before
+        // any data pack is loaded); the condition the slot files carry reads it.
+        modContainer.registerConfig(ModConfig.Type.STARTUP, pnnh.mcfloatingbackpack.compat.WornSlotsConfig.SPEC);
+        pnnh.mcfloatingbackpack.compat.SlotEnabledCondition.register(modEventBus);
         // 033: a backpack can be worn in Curios' back slot, but only when Curios is there; nothing of it loads otherwise.
         if (ModList.get().isLoaded("curios")) {
             CuriosCompat.register();
+            // 061: and a slot type takes one floating backpack at most (the items exist at the common setup)
+            modEventBus.addListener(
+                    (net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent event) -> event.enqueueWork(CuriosCompat::registerCurios));
         }
         // 034: and in Accessories' back slot, after Curios' (the client also registers its renderers, in ClientSetup).
         if (ModList.get().isLoaded("accessories")) {

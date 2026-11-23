@@ -95,6 +95,11 @@ public final class WornBackpacks {
         return SEARCH.resolve(player);
     }
 
+    /** 061: every backpack worn by the player (see {@link BackpackSearch#allWorn}); taken as a {@code Player} like the methods around it. */
+    public static java.util.List<BackpackSearch.Hit> allWornPlayer(Player player) {
+        return SEARCH.allWorn(player);
+    }
+
     /** What a reference into a worn source points at: the stack, or the empty stack for a source that is not there or a slot out of range. */
     public static ItemStack get(Player player, int sourceId, int slot) {
         WornSource<LivingEntity, ItemStack> source = SEARCH.activeSource(sourceId, player);

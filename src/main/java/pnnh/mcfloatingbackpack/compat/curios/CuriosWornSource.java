@@ -15,7 +15,7 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.worn.WornSource;
 
 /**
- * 033: the back slot of Curios (the official 9.x) as a place a floating backpack can be worn, after the chest slot. Only the real
+ * 033, 061: a slot type of Curios (the official 9.x: {@code back}, and since 061 the dedicated slot and {@code charm}) as a place a floating backpack can be worn, after the chest slot. Only the real
  * stacks count (not the cosmetic ones); a slot Curios has switched off counts as empty; and the player's "do not draw this slot"
  * switch is reported as {@link #hiddenRender}, which makes the back layer draw nothing while the backpack is still the one worn.
  *
@@ -28,17 +28,29 @@ import pnnh.mcfloatingbackpack.inventory.worn.WornSource;
  */
 final class CuriosWornSource implements WornSource<LivingEntity, ItemStack> {
     /** The Curios slot type this source reads. */
-    private static final String SLOT = "back";
+    private final String slot;
+    private final BackpackRef.Source source;
+    private final int order;
+
+    /**
+     * 061: one source for each slot type a backpack can be worn in: {@code back} (033), the dedicated {@code floating_backpack} and
+     * {@code charm}. Each has its own {@link BackpackRef.Source} and a fixed order, so a slot type only ever walks its own slots.
+     */
+    CuriosWornSource(String slot, BackpackRef.Source source, int order) {
+        this.slot = slot;
+        this.source = source;
+        this.order = order;
+    }
 
     @Override
     public int id() {
-        return BackpackRef.Source.CURIOS.ordinal();
+        return source.ordinal();
     }
 
     @Override
     public int order() {
-        // after the chest (0); the Accessories back slot will be 20
-        return 10;
+        // after the chest (0); the Accessories slots are 20 and up
+        return order;
     }
 
     @Override
@@ -58,9 +70,9 @@ final class CuriosWornSource implements WornSource<LivingEntity, ItemStack> {
         return pnnh.mcfloatingbackpack.compat.ServerCompatLevels.specificAdaptation("curios");
     }
 
-    private static Optional<ICurioStacksHandler> handler(LivingEntity entity) {
+    private Optional<ICurioStacksHandler> handler(LivingEntity entity) {
         try {
-            return CuriosApi.getCuriosInventory(entity).flatMap(inventory -> inventory.getStacksHandler(SLOT));
+            return CuriosApi.getCuriosInventory(entity).flatMap(inventory -> inventory.getStacksHandler(slot));
         } catch (RuntimeException e) {
             return Optional.empty();
         }

@@ -1,0 +1,8 @@
+{
+  "neoforge:conditions": [
+    { "type": "mcfloatingbackpack:slot_enabled", "mod": "accessories" }
+  ],
+  "replace": false,
+  "entities": ["minecraft:player"],
+  "slots": ["floating_backpack"]
+}

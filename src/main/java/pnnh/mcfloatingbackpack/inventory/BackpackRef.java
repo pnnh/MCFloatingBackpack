@@ -27,7 +27,15 @@ public record BackpackRef(Source source, int invIndex) {
         /** 033: worn in the back slot of Curios. Added at the end, so no ordinal before it changes. */
         CURIOS(true),
         /** 034: worn in the back slot of Accessories. Added at the end, so no ordinal before it changes. */
-        ACCESSORIES(true);
+        ACCESSORIES(true),
+        /** 061: worn in the dedicated "floating backpack" slot of Curios. Added at the end, so no ordinal before it changes. */
+        CURIOS_DEDICATED(true),
+        /** 061: worn in the charm slot of Curios. */
+        CURIOS_CHARM(true),
+        /** 061: worn in the dedicated "floating backpack" slot of Accessories. */
+        ACCESSORIES_DEDICATED(true),
+        /** 061: worn in the charm slot of Accessories. */
+        ACCESSORIES_CHARM(true);
 
         private final boolean worn;
 
