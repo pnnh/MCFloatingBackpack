@@ -2,6 +2,7 @@ package pnnh.mcfloatingbackpack.client.panel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.lwjgl.glfw.GLFW;
 
@@ -15,6 +16,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.client.FloatingPanelEvents;
+import pnnh.mcfloatingbackpack.client.compat.NetworkEntry;
+import pnnh.mcfloatingbackpack.client.compat.NetworkTerminalClients;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferGesture.Hit;
 import pnnh.mcfloatingbackpack.client.panel.QuickTransferGesture.Side;
 import pnnh.mcfloatingbackpack.compat.ContainerScreenCompat;
@@ -22,6 +25,7 @@ import pnnh.mcfloatingbackpack.client.panel.trash.TrashPanelInput;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashRequest;
 import pnnh.mcfloatingbackpack.network.BackpackQuickTransferPayload;
+import pnnh.mcfloatingbackpack.network.BackpackNetworkTakePayload;
 import pnnh.mcfloatingbackpack.network.BackpackTakeFromContainerPayload;
 import pnnh.mcfloatingbackpack.network.BackpackTrashPayload;
 
@@ -88,6 +92,15 @@ public final class QuickTransferInput {
         }
         if (!FloatingPanelState.get().isVisible() || !supports(screen) || !cursorIsEmpty(screen)) {
             return false;
+        }
+        // 060: an entry of a network terminal's list (Integrated Terminals, AE2) is not a slot of the server's menu: the press is turned into a
+        // request for one stack of that item. It is a click, not the start of a drag (the entries are not a row of slots to sweep over), so
+        // it never reaches the gesture.
+        Optional<NetworkEntry> entry = NetworkTerminalClients.entryAt((AbstractContainerScreen<?>) screen, mouseX, mouseY);
+        if (entry.isPresent()) {
+            PacketDistributor.sendToServer(new BackpackNetworkTakePayload(
+                    ((AbstractContainerScreen<?>) screen).getMenu().containerId, entry.get().what(), entry.get().handle(), 0));
+            return true;
         }
         Hit hit = screenSlotAt((AbstractContainerScreen<?>) screen, mouseX, mouseY);
         if (hit == null) {

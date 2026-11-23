@@ -27,7 +27,13 @@ public final class ThirdPartyTable {
                     new Requirement("commoncapabilities", "Common Capabilities", List.of(VersionRange.of("2.11.0", "2.12.0")))),
             null);
 
-    public static final List<ThirdPartyCompat> ALL = List.of(INTEGRATED_TERMINALS_ROW);
+    public static final String AE2 = "ae2";
+
+    /** 060: Applied Energistics 2 19.2.x (tried with 19.2.20): taking items out of an ME terminal's grid into the backpack. GuideME, which it needs, is not listed. */
+    public static final ThirdPartyCompat AE2_ROW = new ThirdPartyCompat(
+            AE2, "Applied Energistics 2", List.of(VersionRange.of("19.2.0", "19.3.0")), List.of(), null);
+
+    public static final List<ThirdPartyCompat> ALL = List.of(INTEGRATED_TERMINALS_ROW, AE2_ROW);
 
     private ThirdPartyTable() {
     }

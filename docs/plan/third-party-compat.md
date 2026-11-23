@@ -1,6 +1,6 @@
 # 第三方模组的主动兼容与版本管理（规划，2026-11-20）
 
-状态：方案已定，范围与版本管理的取舍都已与用户确认（第 2 节与第 6 节，2026-11-20）；**058 已实现，待游戏内验证与用户确认**（规格与交付记录见 specs/058-third-party-compat/；按模组的服务端档位见 specs/059-server-compat-levels/，反向顺延 060）。建议编号 058。按 Spec Kit 一个 feature 做：specify → plan → tasks → implement，每一步等用户说"继续"。
+状态：方案已定，范围与版本管理的取舍都已与用户确认（第 2 节与第 6 节，2026-11-20）；**058 已实现，待游戏内验证与用户确认**（规格与交付记录见 specs/058-third-party-compat/；按模组的服务端档位见 specs/059-server-compat-levels/，反向见 specs/060-network-terminal-take/）。建议编号 058。按 Spec Kit 一个 feature 做：specify → plan → tasks → implement，每一步等用户说"继续"。
 
 ## 1. 已验证的事实（容器 `mcfb-c1`，2026-11-20，AI 自动验证 + 读源码）
 

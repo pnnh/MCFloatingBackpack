@@ -14,6 +14,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
+import pnnh.mcfloatingbackpack.client.compat.NetworkHeld;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragGesture.Preview;
 import pnnh.mcfloatingbackpack.client.panel.pickup.PickupPanelRenderer;
 import pnnh.mcfloatingbackpack.client.panel.search.SearchContext;
@@ -192,6 +193,11 @@ public final class FloatingPanelRenderer {
         }
 
         ItemStack cursor = cursorStack(minecraft);
+        if (cursor.isEmpty()) {
+            // 060: an entry picked up on a network terminal's own cursor (Integrated Terminals) is not the menu's carried stack; the terminal draws
+            // it under the panel, so it is drawn again here, above the panel, at the same place.
+            cursor = NetworkHeldDrop.heldOn(minecraft, minecraft.screen).map(NetworkHeld::asStack).orElse(ItemStack.EMPTY);
+        }
         if (!cursor.isEmpty()) {
             // 013: while a drag-distribute is previewed the cursor shows what would be left over.
             Preview<ItemStack> preview = PanelDragInput.preview();

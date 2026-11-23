@@ -70,4 +70,14 @@ class ThirdPartyTableTest {
                 List.of(new Requirement("b", "b", List.of(r("1", "3"), r("2", "4")))), null);
         assertEquals(1, ThirdPartyTable.validate(List.of(bad)).size());
     }
+
+    @Test
+    void ae2RowHoldsTheTriedStretchAndNeedsNothingElse() {
+        ThirdPartyCompat row = ThirdPartyTable.AE2_ROW;
+        assertEquals("ae2", row.modId());
+        assertEquals(List.of(r("19.2.0", "19.3.0")), row.supported());
+        assertEquals(List.of(), row.also());
+        assertTrue(ThirdPartyTable.ALL.contains(row));
+        assertTrue(r("19.2.0", "19.3.0").contains(pnnh.mcfloatingbackpack.compat.ThirdPartyVersion.parse("19.2.20").orElseThrow()));
+    }
 }

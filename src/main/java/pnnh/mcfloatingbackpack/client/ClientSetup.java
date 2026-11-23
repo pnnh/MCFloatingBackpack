@@ -35,6 +35,13 @@ public final class ClientSetup {
             if (ModList.get().isLoaded("accessories")) {
                 AccessoriesClientCompat.registerRenderers();
             }
+            // 060: the recognisers of the entries of a network terminal's list (Ctrl+click takes one stack into the backpack)
+            if (ModList.get().isLoaded("integratedterminals")) {
+                pnnh.mcfloatingbackpack.compat.integratedterminals.IntegratedTerminalsCompat.registerClient();
+            }
+            if (ModList.get().isLoaded("ae2")) {
+                pnnh.mcfloatingbackpack.compat.ae2.Ae2Compat.registerClient();
+            }
         }));
         BackpackRenderEvents.register(modEventBus);
         // 043: what search terms providers gave is cached per item; a language switch, F3+T or a resource pack reloads the resources,

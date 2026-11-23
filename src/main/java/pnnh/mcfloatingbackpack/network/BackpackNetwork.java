@@ -45,7 +45,7 @@ public final class BackpackNetwork {
         versionCheck.playToClient(VersionHelloPayload.TYPE, VersionHelloPayload.STREAM_CODEC, VersionHelloPayload::handleClient);
         versionCheck.playToServer(VersionReportPayload.TYPE, VersionReportPayload.STREAM_CODEC, VersionReportPayload::handleServer);
 
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("21");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("22");
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(
                 CreativeCursorReportPayload.TYPE,
@@ -104,6 +104,11 @@ public final class BackpackNetwork {
                 BackpackTakeFromContainerPayload.TYPE,
                 BackpackTakeFromContainerPayload.STREAM_CODEC,
                 BackpackTakeFromContainerPayload::handleServer);
+        // 060: take one stack of an entry of a network terminal's list (Integrated Terminals, AE2) into the backpack
+        registrar.playToServer(
+                BackpackNetworkTakePayload.TYPE,
+                BackpackNetworkTakePayload.STREAM_CODEC,
+                BackpackNetworkTakePayload::handleServer);
         registrar.playToServer(
                 BackpackCursorGesturePayload.TYPE,
                 BackpackCursorGesturePayload.STREAM_CODEC,

@@ -88,6 +88,10 @@ public class MCFloatingBackpack {
         if (ModList.get().isLoaded("integratedterminals")) {
             pnnh.mcfloatingbackpack.compat.integratedterminals.IntegratedTerminalsCompat.register();
         }
+        // 060: AE2's ME network gives items to the panel, but only when AE2 is there; nothing of it loads otherwise.
+        if (ModList.get().isLoaded("ae2")) {
+            pnnh.mcfloatingbackpack.compat.ae2.Ae2Compat.register();
+        }
         // 024: the auto pickup. Low priority, so Sophisticated Backpacks and Traveler's Backpack (normal) have run first.
         NeoForge.EVENT_BUS.addListener(
                 EventPriority.LOW, (ItemEntityPickupEvent.Pre event) -> AutoPickupEvents.onItemPickup(event));

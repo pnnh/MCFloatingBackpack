@@ -123,6 +123,23 @@ class DependencyRulesTest {
         assertEquals(List.of(), DependencyRules.checkBuildGradle("compileOnly(\"maven.modrinth:integrated-terminals:1.21.1-1.11.2\") {\n    transitive = false\n}\n"));
     }
 
+    @Test
+    void anAe2ImportOutsideItsCompatFolderFails() {
+        // 060: appeng.* is not on the whitelist either.
+        String code = "import appeng.menu.me.common.MEStorageMenu;\n";
+        assertEquals(1, DependencyRules.checkImports(List.of(new SourceFile("src/main/java/pnnh/mcfloatingbackpack/compat/Ae2Bridge.java", code))).size());
+        assertEquals(1, DependencyRules.checkImports(List.of(new SourceFile("src/main/java/pnnh/mcfloatingbackpack/network/X.java", code))).size());
+        assertEquals(List.of(), DependencyRules.checkImports(List.of(new SourceFile("src/main/java/pnnh/mcfloatingbackpack/compat/ae2/Ae2Bridge.java", code))));
+    }
+
+    @Test
+    void theAe2CoordinateIsCheckedLikeTheOthers() {
+        for (String config : new String[] {"implementation", "runtimeOnly", "api", "jarJar"}) {
+            assertEquals(1, DependencyRules.checkBuildGradle(config + " \"maven.modrinth:ae2:19.2.20\"\n").size(), config);
+        }
+        assertEquals(List.of(), DependencyRules.checkBuildGradle("compileOnly(\"maven.modrinth:ae2:19.2.20\") {\n    transitive = false\n}\n"));
+    }
+
     // --- build.gradle ------------------------------------------------------------------------------------------
 
     @Test

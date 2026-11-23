@@ -34,6 +34,26 @@ public final class BridgeDispatch<P, M, S> {
          * @return what did not fit, empty when all of it went in; never anything but a part of {@code stack}
          */
         S insert(P player, M menu, S stack);
+
+        /** 060: whether this bridge takes stacks out of this menu's network (the page is one it supports). Changes nothing. */
+        default boolean handlesTake(M menu) {
+            return false;
+        }
+
+        /**
+         * 060: takes up to {@code what}'s count of its item (a full stack unless the client named less) out of the network; {@code handle} is
+         * whatever the mod's own client code said about the entry (an opaque number).
+         *
+         * @return what was taken, empty if nothing; never anything but the same item and never more than the count asked for
+         */
+        default S take(P player, M menu, S what, long handle) {
+            throw new UnsupportedOperationException("this bridge does not take");
+        }
+
+        /** 060: puts what the backpack could not hold back into the network; returns what the network did not take back. */
+        default S giveBack(P player, M menu, S stack, long handle) {
+            throw new UnsupportedOperationException("this bridge does not take");
+        }
     }
 
     /** Told once per mod and run when its bridge failed. */
@@ -99,5 +119,74 @@ public final class BridgeDispatch<P, M, S> {
             return true;
         }
         return ops.sameKind(rest, given) && ops.count(rest) <= ops.count(given);
+    }
+
+    /**
+     * 060: asks the bridges, in order, to take a stack out of the open menu's network (the first that handles it answers).
+     *
+     * @return empty when no bridge handled it (nothing happened); otherwise what was taken (possibly empty: the bridge tried and found
+     *     nothing)
+     */
+    public Optional<S> tryTake(P player, M menu, S what, long handle) {
+        CompatRuntimeState current = state.get();
+        if (current == null || ops.isEmpty(what)) {
+            return Optional.empty();
+        }
+        for (Bridge<P, M, S> bridge : bridges.get()) {
+            if (!current.isActive(bridge.modId()) || !levelAllows.test(bridge.modId())) {
+                continue;
+            }
+            try {
+                if (!bridge.handlesTake(menu)) {
+                    continue;
+                }
+                // {what}'s count is the amount asked for (the caller clamped it to 1..a full stack)
+                int asked = Math.max(1, Math.min(ops.count(what), NetworkTakeRules.amountFor(ops, what)));
+                S taken = bridge.take(player, menu, ops.withCount(what, asked), handle);
+                if (!NetworkTakeRules.legalTake(ops, what, taken, asked)) {
+                    throw new IllegalStateException("the bridge of " + bridge.modId() + " returned something that is not a part of the stack asked for");
+                }
+                return Optional.of(taken);
+            } catch (LinkageError | RuntimeException failure) {
+                if (current.fail(bridge.modId())) {
+                    listener.onFailure(bridge.modId(), failure);
+                }
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * 060: gives back to the network what the backpack could not hold.
+     *
+     * @return empty when no bridge handled it (all of it is still the caller's); otherwise what the network did not take back
+     */
+    public Optional<S> tryGiveBack(P player, M menu, S stack, long handle) {
+        CompatRuntimeState current = state.get();
+        if (current == null || ops.isEmpty(stack)) {
+            return Optional.empty();
+        }
+        for (Bridge<P, M, S> bridge : bridges.get()) {
+            if (!current.isActive(bridge.modId()) || !levelAllows.test(bridge.modId())) {
+                continue;
+            }
+            try {
+                if (!bridge.handlesTake(menu)) {
+                    continue;
+                }
+                S rest = bridge.giveBack(player, menu, ops.withCount(stack, ops.count(stack)), handle);
+                if (!NetworkTakeRules.legalTake(ops, stack, rest, ops.count(stack))) {
+                    throw new IllegalStateException("the bridge of " + bridge.modId() + " returned something that is not a part of what it was given back");
+                }
+                return Optional.of(rest);
+            } catch (LinkageError | RuntimeException failure) {
+                if (current.fail(bridge.modId())) {
+                    listener.onFailure(bridge.modId(), failure);
+                }
+                return Optional.empty();
+            }
+        }
+        return Optional.empty();
     }
 }

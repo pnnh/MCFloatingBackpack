@@ -32,6 +32,7 @@ import pnnh.mcfloatingbackpack.client.panel.DeleteKeyInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelConfig;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelInput;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelRenderer;
+import pnnh.mcfloatingbackpack.client.panel.NetworkHeldDrop;
 import pnnh.mcfloatingbackpack.client.panel.FloatingPanelState;
 import pnnh.mcfloatingbackpack.client.panel.HostScreenManager;
 import pnnh.mcfloatingbackpack.client.panel.PanelDragInput;
@@ -606,6 +607,12 @@ public final class FloatingPanelEvents {
         // 027: the creative inventory's cursor, as it is before this click.
         CreativeCursorClient.flush();
         if (!hostsPanel(event.getScreen())) {
+            return;
+        }
+        // 060: what the player picked up on a network terminal's own cursor is dropped into the backpack by a click on the panel.
+        if (NetworkHeldDrop.tryDrop(event.getScreen(), event.getButton(), event.getMouseX(), event.getMouseY())) {
+            FloatingPanelInput.markPressConsumed(event.getButton());
+            event.setCanceled(true);
             return;
         }
         if (FloatingPanelInput.onMouseButton(

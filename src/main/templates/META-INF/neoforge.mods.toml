@@ -108,6 +108,14 @@ and other container GUIs so items can be moved between them.
     ordering="NONE"
     side="BOTH"
 
+# 060: Applied Energistics 2 (items out of an ME terminal into the backpack, and the version table). Optional, and [0,) for the same reason as above.
+[[dependencies.${mod_id}]]
+    modId="ae2"
+    type="optional"
+    versionRange="[0,)"
+    ordering="NONE"
+    side="BOTH"
+
 [modproperties."${mod_id}"."yumi:entrypoints"]
     "lambdynlights:initializer" = "pnnh.mcfloatingbackpack.compat.lambdynlights.BackpackDynamicLight"
 

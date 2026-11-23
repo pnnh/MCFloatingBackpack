@@ -38,4 +38,20 @@ public final class NetworkStorageBridges {
         }
         return DISPATCH.tryInsert(player, menu, stack);
     }
+
+    /** 060: what a bridge took out of the open menu's network; empty when no bridge handled it. See {@link BridgeDispatch#tryTake}. */
+    public static Optional<ItemStack> tryTake(ServerPlayer player, AbstractContainerMenu menu, ItemStack what, long handle) {
+        if (BRIDGES.isEmpty()) {
+            return Optional.empty();
+        }
+        return DISPATCH.tryTake(player, menu, what, handle);
+    }
+
+    /** 060: what the network did not take back; empty when no bridge handled it (all of it is still the caller's). */
+    public static Optional<ItemStack> tryGiveBack(ServerPlayer player, AbstractContainerMenu menu, ItemStack stack, long handle) {
+        if (BRIDGES.isEmpty()) {
+            return Optional.empty();
+        }
+        return DISPATCH.tryGiveBack(player, menu, stack, handle);
+    }
 }

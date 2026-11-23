@@ -37,7 +37,8 @@ class ThirdPartyDriftTest {
     private static final Map<String, String> SLUG = Map.of(
             "integratedterminals", "integrated-terminals",
             "integrateddynamics", "integrated-dynamics",
-            "commoncapabilities", "common-capabilities");
+            "commoncapabilities", "common-capabilities",
+            "ae2", "ae2");
 
     private static String read(String path) throws IOException {
         return Files.readString(Path.of(path), StandardCharsets.UTF_8);
@@ -132,9 +133,9 @@ class ThirdPartyDriftTest {
 
     @Test
     void theReadmeCheckFailsWhenARangeOrARowIsMissing() {
-        assertEquals(4, checkReadme("x", "nothing").size());
-        assertEquals(List.of(), checkReadme("x", "Integrated Terminals [1.11.0, 1.12.0) [1.39.0, 1.40.0) [2.11.0, 2.12.0)"));
-        assertEquals(1, checkReadme("x", "Integrated Terminals [1.11.0, 1.13.0) [1.39.0, 1.40.0) [2.11.0, 2.12.0)").size());
+        assertEquals(6, checkReadme("x", "nothing").size());
+        assertEquals(List.of(), checkReadme("x", "Integrated Terminals [1.11.0, 1.12.0) [1.39.0, 1.40.0) [2.11.0, 2.12.0) Applied Energistics 2 [19.2.0, 19.3.0)"));
+        assertEquals(1, checkReadme("x", "Integrated Terminals [1.11.0, 1.13.0) [1.39.0, 1.40.0) [2.11.0, 2.12.0) Applied Energistics 2 [19.2.0, 19.3.0)").size());
     }
 
     @Test
@@ -152,7 +153,7 @@ class ThirdPartyDriftTest {
     // --- build.gradle ------------------------------------------------------------------------------------------
 
     private static final Pattern GRADLE_LINE =
-            Pattern.compile("(?m)^\\s*(compileOnly|localRuntime)\\(?\\s*\"maven\\.modrinth:([a-z-]+):([^\"]+)\"(\\)\\s*\\{\\s*transitive\\s*=\\s*false\\s*\\})?");
+            Pattern.compile("(?m)^\\s*(compileOnly|localRuntime)\\(?\\s*\"maven\\.modrinth:([a-z0-9-]+):([^\"]+)\"(\\)\\s*\\{\\s*transitive\\s*=\\s*false\\s*\\})?");
 
     /** The version of a gradle coordinate such as {@code 1.21.1-1.11.2}: the Minecraft version in front is not the mod's. */
     private static Optional<ThirdPartyVersion> modVersion(String coordinateVersion) {
@@ -168,11 +169,11 @@ class ThirdPartyDriftTest {
             Map<String, String> into = m.group(1).equals("compileOnly") ? compileOnly : localRuntime;
             into.put(m.group(2), m.group(3));
             if (m.group(1).equals("compileOnly") && (m.group(2).startsWith("integrated-") || m.group(2).equals("common-capabilities")
-                    || m.group(2).equals("cyclops-core")) && m.group(4) == null) {
+                    || m.group(2).equals("cyclops-core") || m.group(2).equals("ae2")) && m.group(4) == null) {
                 problems.add("compileOnly " + m.group(2) + " needs { transitive = false }");
             }
         }
-        for (String slug : List.of("integrated-terminals", "integrated-dynamics", "common-capabilities", "cyclops-core")) {
+        for (String slug : List.of("integrated-terminals", "integrated-dynamics", "common-capabilities", "cyclops-core", "ae2")) {
             if (!compileOnly.containsKey(slug)) {
                 problems.add("no compileOnly line for " + slug);
             }
@@ -228,5 +229,14 @@ class ThirdPartyDriftTest {
         // a compileOnly line is gone
         assertTrue(checkGradle(gradle.replace("compileOnly(\"maven.modrinth:cyclops-core:mbABgx56\")", "// gone(\"maven.modrinth:cyclops-core:mbABgx56\")"))
                 .stream().anyMatch(p -> p.contains("cyclops-core")));
+    }
+
+    @Test
+    void theAe2LinesAreCheckedToo() throws IOException {
+        String gradle = read("build.gradle");
+        assertTrue(checkGradle(gradle.replace("localRuntime \"maven.modrinth:ae2:19.2.20\"", "localRuntime \"maven.modrinth:ae2:19.3.0\"")).size() >= 2,
+                "a development run on a version nobody tried, and a compileOnly that differs");
+        assertEquals(1, checkGradle(gradle.replace("compileOnly(\"maven.modrinth:ae2:19.2.20\") {\n        transitive = false\n    }",
+                "compileOnly \"maven.modrinth:ae2:19.2.20\"")).size());
     }
 }

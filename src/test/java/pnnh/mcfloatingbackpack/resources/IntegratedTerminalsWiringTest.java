@@ -48,7 +48,7 @@ class IntegratedTerminalsWiringTest {
         }
         assertEquals(List.of(), offenders);
         try (Stream<Path> files = Files.list(SRC.resolve("compat/integratedterminals"))) {
-            assertEquals(2, files.count(), "the bridge and its entry point");
+            assertEquals(3, files.count(), "the bridge, the client recogniser (060) and the entry points");
         }
     }
 
@@ -85,14 +85,16 @@ class IntegratedTerminalsWiringTest {
     }
 
     @Test
-    void theClientAndTheProtocolAreNotChanged() throws IOException {
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"21\")"));
+    void theClientKnowsNoThirdPartyTypeAndTheServersBridgeInterface() throws IOException {
+        // 060 added a client recogniser registry, so the client code mentions the mod only by name in the set-up (isLoaded) and never by type.
         try (Stream<Path> files = Files.walk(SRC.resolve("client"))) {
             for (Path file : (Iterable<Path>) files.filter(p -> p.toString().endsWith(".java"))::iterator) {
                 String text = Files.readString(file, StandardCharsets.UTF_8);
                 assertFalse(text.contains("NetworkStorageBridge"), file.toString());
-                assertFalse(text.contains("integratedterminals"), file.toString());
+                assertFalse(text.contains("org.cyclops."), file.toString());
+                assertFalse(text.contains("import appeng."), file.toString());
             }
         }
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"22\")"));
     }
 }

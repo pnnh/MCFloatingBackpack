@@ -93,7 +93,8 @@ class BridgeDispatchTest {
 
     private Predicate<String> levelAllows = modId -> true;
 
-    private BridgeDispatch<String, String, Stack> dispatch(CompatRuntimeState state, FakeBridge... bridges) {
+    @SafeVarargs
+    private BridgeDispatch<String, String, Stack> dispatch(CompatRuntimeState state, BridgeDispatch.Bridge<String, String, Stack>... bridges) {
         return new BridgeDispatch<>(() -> List.of(bridges), () -> state, OPS,
                 (modId, cause) -> failures.add(modId + ":" + cause.getClass().getSimpleName()), modId -> levelAllows.test(modId));
     }
@@ -307,5 +308,222 @@ class BridgeDispatchTest {
         FakeBridge bridge = new FakeBridge("m", menu -> true, (menu, stack) -> Stack.EMPTY);
         levelAllows = modId -> false;
         assertEquals(Optional.empty(), dispatch(stateWith(true, "3.0.0", "m"), bridge).tryInsert("p", "terminal", STONE));
+    }
+
+    // --- 060: taking out of a network and giving back -------------------------------------------------------------
+
+    /** The same stacks with another maximum stack size. */
+    static final class MaxOps implements QuickTransferLogic.StackOps<Stack> {
+        private final int max;
+
+        MaxOps(int max) {
+            this.max = max;
+        }
+
+        @Override
+        public Stack empty() {
+            return OPS.empty();
+        }
+
+        @Override
+        public boolean isEmpty(Stack s) {
+            return OPS.isEmpty(s);
+        }
+
+        @Override
+        public int count(Stack s) {
+            return OPS.count(s);
+        }
+
+        @Override
+        public int maxStack(Stack s) {
+            return max;
+        }
+
+        @Override
+        public boolean sameKind(Stack a, Stack b) {
+            return OPS.sameKind(a, b);
+        }
+
+        @Override
+        public Stack withCount(Stack s, int count) {
+            return OPS.withCount(s, count);
+        }
+    }
+
+    /** A bridge that takes with the answers the test gives. */
+    static final class TakeBridge implements BridgeDispatch.Bridge<String, String, Stack> {
+        final String id;
+        final java.util.function.BiFunction<Stack, Long, Stack> takes;
+        final java.util.function.BiFunction<Stack, Long, Stack> givesBack;
+        boolean handlesTake = true;
+        int takeCalls;
+        int giveBackCalls;
+        Stack lastWhat;
+        long lastHandle = -1;
+
+        TakeBridge(String id, java.util.function.BiFunction<Stack, Long, Stack> takes, java.util.function.BiFunction<Stack, Long, Stack> givesBack) {
+            this.id = id;
+            this.takes = takes;
+            this.givesBack = givesBack;
+        }
+
+        @Override
+        public String modId() {
+            return id;
+        }
+
+        @Override
+        public boolean handles(String menu) {
+            return false;
+        }
+
+        @Override
+        public Stack insert(String player, String menu, Stack stack) {
+            throw new AssertionError("the store path is not this bridge's");
+        }
+
+        @Override
+        public boolean handlesTake(String menu) {
+            return handlesTake;
+        }
+
+        @Override
+        public Stack take(String player, String menu, Stack what, long handle) {
+            takeCalls++;
+            lastWhat = what;
+            lastHandle = handle;
+            return takes.apply(what, handle);
+        }
+
+        @Override
+        public Stack giveBack(String player, String menu, Stack stack, long handle) {
+            giveBackCalls++;
+            return givesBack.apply(stack, handle);
+        }
+    }
+
+    /** The count of a request is how much is asked for (the server clamps it to a full stack of 64 first). */
+    private static final Stack ASK = new Stack(1, 64);
+
+    @Test
+    void aBridgeThatTakesAnswersWithWhatItTook() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> new Stack(what.kind(), 64), (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.of(new Stack(1, 64)), dispatch(active("m"), bridge).tryTake("p", "terminal", ASK, 7L));
+        assertEquals(7L, bridge.lastHandle);
+        assertEquals(ASK, bridge.lastWhat);
+    }
+
+    @Test
+    void theCountOfTheRequestIsTheMostTheBridgeMayGive() {
+        Stack tenAsked = new Stack(1, 10);
+        TakeBridge exact = new TakeBridge("m", (what, handle) -> new Stack(what.kind(), 10), (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.of(new Stack(1, 10)), dispatch(active("m"), exact).tryTake("p", "terminal", tenAsked, 0L));
+        assertEquals(tenAsked, exact.lastWhat, "the bridge is asked for exactly that many");
+        TakeBridge greedy = new TakeBridge("m", (what, handle) -> new Stack(what.kind(), 11), (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.empty(), dispatch(active("m"), greedy).tryTake("p", "terminal", tenAsked, 0L), "more than asked is a broken bridge");
+    }
+
+    @Test
+    void aTakeThatFindsNothingIsStillHandled() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> Stack.EMPTY, (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.of(Stack.EMPTY), dispatch(active("m"), bridge).tryTake("p", "terminal", ASK, 0L));
+    }
+
+    @Test
+    void noBridgeNotActiveOrNotHandlingMeansNobodyTookIt() {
+        assertEquals(Optional.empty(), dispatch(active("m")).tryTake("p", "terminal", ASK, 0L));
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> new Stack(what.kind(), 5), (s, h) -> Stack.EMPTY);
+        bridge.handlesTake = false;
+        assertEquals(Optional.empty(), dispatch(active("m"), bridge).tryTake("p", "terminal", ASK, 0L));
+        bridge.handlesTake = true;
+        assertEquals(Optional.empty(), dispatch(stateWith(false, "3.0.0", "m"), bridge).tryTake("p", "terminal", ASK, 0L));
+        assertEquals(Optional.empty(), dispatch(CompatRuntimeState.empty(), bridge).tryTake("p", "terminal", ASK, 0L));
+        assertEquals(0, bridge.takeCalls);
+    }
+
+    @Test
+    void aTakeOfAnEmptyStackIsNeverAsked() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> new Stack(what.kind(), 5), (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.empty(), dispatch(active("m"), bridge).tryTake("p", "terminal", Stack.EMPTY, 0L));
+        assertEquals(0, bridge.takeCalls);
+    }
+
+    @Test
+    void aTakeThatReturnsSomethingIllegalIsAFailure() {
+        TakeBridge otherItem = new TakeBridge("a", (what, handle) -> new Stack(99, 5), (s, h) -> Stack.EMPTY);
+        TakeBridge tooMuch = new TakeBridge("b", (what, handle) -> new Stack(what.kind(), 65), (s, h) -> Stack.EMPTY);
+        TakeBridge nothingAtAll = new TakeBridge("c", (what, handle) -> null, (s, h) -> Stack.EMPTY);
+        for (TakeBridge bridge : new TakeBridge[] {otherItem, tooMuch, nothingAtAll}) {
+            failures.clear();
+            CompatRuntimeState state = active(bridge.id);
+            assertEquals(Optional.empty(), dispatch(state, bridge).tryTake("p", "terminal", ASK, 0L), bridge.id);
+            assertEquals(1, failures.size(), bridge.id);
+            assertEquals(Optional.of(CompatStatus.FAILED), state.status(bridge.id));
+        }
+    }
+
+    @Test
+    void aTakeThatThrowsSwitchesTheBridgeOffAndItIsNotAskedAgain() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> {
+            throw new NoSuchMethodError("gone");
+        }, (s, h) -> Stack.EMPTY);
+        BridgeDispatch<String, String, Stack> dispatch = dispatch(active("m"), bridge);
+        assertEquals(Optional.empty(), dispatch.tryTake("p", "terminal", ASK, 0L));
+        assertEquals(Optional.empty(), dispatch.tryTake("p", "terminal", ASK, 0L));
+        assertEquals(1, bridge.takeCalls);
+        assertEquals(List.of("m:NoSuchMethodError"), failures);
+    }
+
+    @Test
+    void theBridgeIsSkippedWhileTheLevelDoesNotAllowItAndIsNotAFailure() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> new Stack(what.kind(), 5), (s, h) -> Stack.EMPTY);
+        levelAllows = modId -> false;
+        CompatRuntimeState state = active("m");
+        assertEquals(Optional.empty(), dispatch(state, bridge).tryTake("p", "terminal", ASK, 0L));
+        assertEquals(Optional.empty(), dispatch(state, bridge).tryGiveBack("p", "terminal", new Stack(1, 3), 0L));
+        assertEquals(0, bridge.takeCalls + bridge.giveBackCalls);
+        assertTrue(failures.isEmpty());
+        assertEquals(Optional.of(CompatStatus.ACTIVE), state.status("m"));
+    }
+
+    @Test
+    void aGiveBackAnswersWithWhatTheNetworkDidNotTake() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> Stack.EMPTY, (s, h) -> new Stack(s.kind(), 2));
+        assertEquals(Optional.of(new Stack(1, 2)), dispatch(active("m"), bridge).tryGiveBack("p", "terminal", new Stack(1, 10), 3L));
+        TakeBridge all = new TakeBridge("m", (what, handle) -> Stack.EMPTY, (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.of(Stack.EMPTY), dispatch(active("m"), all).tryGiveBack("p", "terminal", new Stack(1, 10), 3L));
+    }
+
+    @Test
+    void aGiveBackThatReturnsMoreOrAnotherItemOrNullIsAFailure() {
+        TakeBridge more = new TakeBridge("a", (what, handle) -> Stack.EMPTY, (s, h) -> new Stack(s.kind(), s.count() + 1));
+        TakeBridge other = new TakeBridge("b", (what, handle) -> Stack.EMPTY, (s, h) -> new Stack(99, 1));
+        TakeBridge nothing = new TakeBridge("c", (what, handle) -> Stack.EMPTY, (s, h) -> null);
+        for (TakeBridge bridge : new TakeBridge[] {more, other, nothing}) {
+            failures.clear();
+            assertEquals(Optional.empty(), dispatch(active(bridge.id), bridge).tryGiveBack("p", "terminal", new Stack(1, 10), 0L), bridge.id);
+            assertEquals(1, failures.size(), bridge.id);
+        }
+    }
+
+    @Test
+    void aGiveBackOfNothingIsNeverAsked() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> Stack.EMPTY, (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.empty(), dispatch(active("m"), bridge).tryGiveBack("p", "terminal", Stack.EMPTY, 0L));
+        assertEquals(0, bridge.giveBackCalls);
+    }
+
+    @Test
+    void theStorePathIsNotAskedWhenABridgeOnlyTakes() {
+        TakeBridge bridge = new TakeBridge("m", (what, handle) -> Stack.EMPTY, (s, h) -> Stack.EMPTY);
+        assertEquals(Optional.empty(), dispatch(active("m"), bridge).tryInsert("p", "terminal", STONE));
+    }
+
+    @Test
+    void aBridgeWithoutTakeSupportIsNotAFailureWhenOnlyTheStorePathExists() {
+        FakeBridge storeOnly = new FakeBridge("m", menu -> true, (menu, stack) -> Stack.EMPTY);
+        assertEquals(Optional.empty(), dispatch(active("m"), storeOnly).tryTake("p", "terminal", ASK, 0L));
+        assertTrue(failures.isEmpty(), "the default handlesTake is false, so take is never called");
     }
 }

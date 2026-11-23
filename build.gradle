@@ -213,6 +213,12 @@ dependencies {
         transitive = false
     }
 
+    // 060: compile-time-only Applied Energistics 2, for compat/ae2/ (taking items out of an ME terminal into the backpack). Same version as the
+    // localRuntime line below (a test keeps them equal and inside the range table); transitive = false so nothing of it reaches the published jar.
+    compileOnly("maven.modrinth:ae2:19.2.20") {
+        transitive = false
+    }
+
     if (!cleanRuntime) {
         // 004：精妙背包与旅行者背包，用来对照面板的行数、滚动与尺寸；CurseMaven 的 file id 要与各自 mod 要求的 core 版本配套。
         localRuntime "curse.maven:sophisticated-core-618298:9385313"

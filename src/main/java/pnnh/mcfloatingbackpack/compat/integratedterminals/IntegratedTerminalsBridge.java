@@ -20,6 +20,9 @@ import pnnh.mcfloatingbackpack.compat.ThirdPartyTable;
  * client, and the network's items are not slots), so the generic path of 012 does not work; this does what the terminal itself does for such
  * a click, an insert into the network's channel the terminal has selected.
  *
+ * <p>060: it also takes stacks out of the same page's network ({@link #take}, {@link #giveBack}), for the Ctrl+click on an entry of the
+ * terminal's list.
+ *
  * <p>Only the item storage page counts: the crafting page (a subclass of the storage page's class) and the ender chest page (another class)
  * are left to the generic path, and so are pages for other kinds of ingredient. This class and {@link IntegratedTerminalsCompat} are the
  * only code that touches Integrated Terminals types (constitution VII); they are never loaded when the mod is not installed.
@@ -55,6 +58,38 @@ final class IntegratedTerminalsBridge implements NetworkStorageBridge {
             return null;
         }
         return storage.getIngredientNetwork().getComponent() == IngredientComponent.ITEMSTACK ? storage : null;
+    }
+
+    /** 060: the same page and the same conditions as the store path. */
+    @Override
+    public boolean handlesTake(AbstractContainerMenu menu) {
+        return itemStorageTab(menu) != null;
+    }
+
+    /**
+     * 060: takes up to the asked count (a full stack at most) of the item out of the channel the terminal has selected, the way its own client would ask for it, and
+     * answers with what the network really gave (the network may hold less, or nothing).
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public ItemStack take(ServerPlayer player, AbstractContainerMenu menu, ItemStack what, long handle) {
+        TerminalStorageTabIngredientComponentServer<?, ?> tab = itemStorageTab(menu);
+        if (tab == null) {
+            return ItemStack.EMPTY;
+        }
+        INetworkIngredientsChannel<ItemStack, Integer> network = ((TerminalStorageTabIngredientComponentServer<ItemStack, Integer>) tab)
+                .getIngredientNetwork()
+                .getChannel(((ContainerTerminalStorageBase<?>) menu).getSelectedChannel());
+        ItemStack prototype = what.copyWithCount(Math.max(1, Math.min(what.getCount(), what.getMaxStackSize())));
+        // The match is on the item and its data only. The "exact" condition also matches the amount (the network answers nothing when it
+        // holds fewer than the prototype's count), so an entry of 27 would never give its 27: the amount is only how much we ask for.
+        return network.extract(prototype, IngredientComponent.ITEMSTACK.getMatcher().getExactMatchNoQuantityCondition(), false);
+    }
+
+    /** 060: what the backpack could not hold goes back the way it came in; the answer is what the network did not take back. */
+    @Override
+    public ItemStack giveBack(ServerPlayer player, AbstractContainerMenu menu, ItemStack stack, long handle) {
+        return insert(player, menu, stack);
     }
 
     @SuppressWarnings("unchecked")
