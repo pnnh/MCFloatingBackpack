@@ -9,7 +9,7 @@
 
 A floating backpack mod for **Minecraft 1.21.1 + NeoForge**. Like the bag windows of an MMO, a draggable, resizable panel floats above the game screen and stays there when you open a chest, the inventory or another mod's backpack screen, so you can move items between them directly.
 
-> **Status**: early development (version 0.1.0), not released yet. The features are fully usable, but interfaces, save formats and the network protocol may still change before a release. **Back up your world before updating the mod.**
+> **Status**: early development (version 0.2.0, see the [releases](https://github.com/pnnh/MCFloatingBackpack/releases)). The features are fully usable, but interfaces, save formats and the network protocol may still change before 1.0. **Back up your world before updating the mod; downgrading is not supported.**
 
 | | |
 |---|---|
