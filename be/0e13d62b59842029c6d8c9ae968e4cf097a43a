@@ -1,0 +1,94 @@
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_9aefe4a2760245::t_225e5772b717ce 66-67
+src/test/java/pnnh/mcfloatingbackpack/inventory/nesting/NestedOriginsTest.java
+  s_9aefe4a2760245::t_0915e6f4345db8 1-61
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_9aefe4a2760245::t_3a6f129624f491 123-131
+specs/064-no-nested-backpacks/plan.md
+  s_9aefe4a2760245::t_ce12dfc9b8a1ab 1-60
+specs/021-trash-can/spec.md
+  s_9aefe4a2760245::t_936f33419e27d9 102,238
+specs/064-no-nested-backpacks/spec.md
+  s_9aefe4a2760245::t_e0ad94ce001076 108,125,140,155
+  s_9aefe4a2760245::t_ebdeb46914c273 1-107,109-124,126-139,141-154,156-160
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTakeFromContainerPayload.java
+  s_9aefe4a2760245::t_b1c9b872d91dfd 96,105-106,108-109,116-120,138
+src/main/java/pnnh/mcfloatingbackpack/inventory/nesting/NestedOrigins.java
+  s_9aefe4a2760245::t_94f7a2dded6e38 1-49
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackQuickTransferPayload.java
+  s_9aefe4a2760245::t_b1c9b872d91dfd 105-106,141-144,161
+  s_9aefe4a2760245::t_585898afc9fb34 153-157
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetworkTakePayload.java
+  s_9aefe4a2760245::t_b1c9b872d91dfd 77-83
+specs/064-no-nested-backpacks/tasks.md
+  s_9aefe4a2760245::t_74a966400f375c 1-28,30-32
+  s_9aefe4a2760245::t_df9b6adf1d2412 29,33
+  s_9aefe4a2760245::t_04b593320424a4 34
+specs/064-no-nested-backpacks/checklists/requirements.md
+  s_9aefe4a2760245::t_ebdeb46914c273 1-36
+src/main/java/pnnh/mcfloatingbackpack/inventory/nesting/BackpackNesting.java
+  s_9aefe4a2760245::t_23497e0c35eb12 150-156,161-201
+  s_9aefe4a2760245::t_0915e6f4345db8 208
+  s_9aefe4a2760245::t_94f7a2dded6e38 1-149,202-207,209-220
+  s_9aefe4a2760245::t_f74bd4552b609b 157-160
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashSendPayload.java
+  s_9aefe4a2760245::t_3a6f129624f491 128-139,141-143
+  s_9aefe4a2760245::t_be62f04ea2b655 140
+src/main/java/pnnh/mcfloatingbackpack/MCFloatingBackpack.java
+  s_9aefe4a2760245::t_e76809ed8493a3 137-138
+  s_9aefe4a2760245::t_23497e0c35eb12 133-134,160-161
+src/test/java/pnnh/mcfloatingbackpack/resources/NestingWiringTest.java
+  s_9aefe4a2760245::t_0915e6f4345db8 1-98
+README.md
+  s_9aefe4a2760245::t_a2f2a758d9a388 44
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackTrashPayload.java
+  s_9aefe4a2760245::t_3a6f129624f491 127-133,194-195,213
+specs/064-no-nested-backpacks/data-model.md
+  s_9aefe4a2760245::t_ce12dfc9b8a1ab 1-21
+README_CN.md
+  s_9aefe4a2760245::t_a2f2a758d9a388 44
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackOpenRequestPayload.java
+  s_9aefe4a2760245::t_23497e0c35eb12 79-80,84-85
+specs/064-no-nested-backpacks/contracts/nesting-rules.md
+  s_9aefe4a2760245::t_ce12dfc9b8a1ab 1-42
+specs/064-no-nested-backpacks/research.md
+  s_9aefe4a2760245::t_e0ad94ce001076 1-65
+specs/064-no-nested-backpacks/quickstart.md
+  s_9aefe4a2760245::t_ce12dfc9b8a1ab 1-15
+.specify/feature.json
+  s_9aefe4a2760245::t_ebdeb46914c273 1
+src/test/java/pnnh/mcfloatingbackpack/inventory/nesting/NestingRulesTest.java
+  s_9aefe4a2760245::t_0915e6f4345db8 1-132
+src/main/java/pnnh/mcfloatingbackpack/item/FloatingBackpackItem.java
+  s_9aefe4a2760245::t_3a6f129624f491 55-64
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_9aefe4a2760245::t_225e5772b717ce 66-67
+docs/plan/no-nested-backpacks.md
+  s_9aefe4a2760245::t_936f33419e27d9 1-28
+specs/064-no-nested-backpacks/DELIVERY.md
+  s_9aefe4a2760245::t_df9b6adf1d2412 1-57
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_9aefe4a2760245::t_be62f04ea2b655 26-27,147-163,294-301
+  s_9aefe4a2760245::t_4f56ab332fdd37 302
+src/main/java/pnnh/mcfloatingbackpack/inventory/nesting/NestingRules.java
+  s_9aefe4a2760245::t_94f7a2dded6e38 1-76
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackCursorGesturePayload.java
+  s_9aefe4a2760245::t_3a6f129624f491 116-123,127
+  s_9aefe4a2760245::t_be62f04ea2b655 124-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "be0e13d62b59842029c6d8c9ae968e4cf097a43a",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
