@@ -1,0 +1,25 @@
+README.md
+  s_9aefe4a2760245::t_bcf512e3b33d96 12
+.github/release-notes/v0.2.0.md
+  s_9aefe4a2760245::t_bcf512e3b33d96 1-41
+gradle.properties
+  s_9aefe4a2760245::t_bcf512e3b33d96 28
+README_CN.md
+  s_9aefe4a2760245::t_bcf512e3b33d96 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "f2def2f787380069a772afe725e1a89c94ce0489",
+  "prompts": {},
+  "sessions": {
+    "s_9aefe4a2760245": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "48d90204-caa4-4c1c-8d56-1c633be7693d",
+        "model": "claude-sonnet-5-5"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
