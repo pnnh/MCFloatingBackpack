@@ -102,7 +102,8 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             if (direction == Direction.TO_BACKPACK) {
                 int protectedIndex = QuickTransferRequest.protectedInventoryIndex(
                         holderOf(ref), ref.invIndex(), player.getInventory().selected);
-                inventoryToBackpack(player.getInventory(), backpack, payload.slots(), protectedIndex);
+                pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(
+                        player, inventoryToBackpack(player.getInventory(), backpack, payload.slots(), protectedIndex));
             } else {
                 backpackOut(player, backpack, payload.slots());
             }
@@ -137,7 +138,10 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
     }
 
     /** Player inventory indices -> backpack slots. The backpack item itself is never moved. */
-    static void inventoryToBackpack(Inventory inventory, BackpackInventory backpack, int[] sources, int protectedIndex) {
+    static pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict inventoryToBackpack(
+            Inventory inventory, BackpackInventory backpack, int[] sources, int protectedIndex) {
+        pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict refusedNesting =
+                pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK;
         for (int index : sources) {
             if (index == protectedIndex) {
                 continue;
@@ -146,9 +150,15 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             if (stack.isEmpty()) {
                 continue;
             }
+            // 064: a floating backpack (or an item with one inside) stays where it is; the player is told once per request.
+            if (pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.isRisky(stack)) {
+                refusedNesting = pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.check(stack);
+                continue;
+            }
             // 035: into the rows that take the stack first, then into the tier capacity's cells.
             inventory.setItem(index, backpack.insertIntoMain(stack));
         }
+        return refusedNesting;
     }
 
     /**

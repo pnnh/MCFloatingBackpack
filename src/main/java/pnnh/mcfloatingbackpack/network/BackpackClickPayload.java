@@ -23,6 +23,8 @@ import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.extension.ExtensionPackRules;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
+import pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting;
+import pnnh.mcfloatingbackpack.inventory.nesting.NestingRules;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaContents;
 import pnnh.mcfloatingbackpack.inventory.ToolAreaRules;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
@@ -141,6 +143,23 @@ public record BackpackClickPayload(
             if (viaMenu && !ServerCompatDenials.allows(serverPlayer, menu, Action.USE_MENU_CURSOR)) {
                 return;
             }
+
+            // 064: a floating backpack (or an item with one inside) goes into no area of a floating backpack, except back into the one
+            // it was just taken out of (an older version's nesting is kept, never added to). A refused click changes nothing.
+            ItemStack nestingHeld = viaMenu
+                    ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
+                    : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+            boolean nestingHeldRisky = false;
+            if (!nestingHeld.isEmpty()) {
+                NestingRules.Verdict nesting = BackpackNesting.refusal(serverPlayer, ref, nestingHeld);
+                if (nesting != NestingRules.Verdict.OK) {
+                    BackpackNesting.tell(serverPlayer, nesting);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                    return;
+                }
+                nestingHeldRisky = BackpackNesting.isRisky(nestingHeld);
+            }
+            ItemStack nestingSlotBefore = inventory.getStackInSlot(area, payload.slotIndex()).copy();
 
             // 016: what goes into a tool area is the server's call. Since 021 the right area takes one trash can and the
             // bottom area one tag manager and (024) the left area one auto pickup (ToolAreaRules); a refused click changes nothing.
@@ -270,6 +289,15 @@ public record BackpackClickPayload(
                 serverPlayer.getInventory().setChanged();
             } else {
                 BackpackClickLogic.applyTo(inventory, area, payload.slotIndex(), payload.rightClick());
+            }
+
+            // 064: the record of what was taken out is used up by putting it back, and made when a nested item is picked up.
+            if (nestingHeldRisky) {
+                BackpackNesting.forget(serverPlayer.getUUID());
+            }
+            if (!nestingSlotBefore.isEmpty()
+                    && !ItemStack.matches(nestingSlotBefore, inventory.getStackInSlot(area, payload.slotIndex()))) {
+                BackpackNesting.rememberTakenOut(serverPlayer, ref, nestingSlotBefore);
             }
 
             ref.saveInventory(serverPlayer, inventory);

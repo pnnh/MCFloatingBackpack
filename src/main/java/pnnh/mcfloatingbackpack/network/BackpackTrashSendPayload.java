@@ -125,6 +125,22 @@ public record BackpackTrashSendPayload(byte source, boolean confirmed, int conta
             case MAIN_SLOTS -> collectMain(backpack, payload.slots());
             case MENU_SLOT -> collectMenu(player, menu, payload.containerId(), payload.slots()[0]);
         };
+        // 064: a floating backpack (or an item with one inside) does not go into the trash can.
+        pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict refused = pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK;
+        List<Take> allowed = new ArrayList<>();
+        for (Take take : takes) {
+            pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict verdict =
+                    pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.refusalAlways(take.stack());
+            if (verdict == pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK) {
+                allowed.add(take);
+            } else {
+                refused = verdict;
+            }
+        }
+        takes = allowed;
+        if (refused != pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK) {
+            pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(player, refused);
+        }
         if (takes.isEmpty()) {
             return;
         }

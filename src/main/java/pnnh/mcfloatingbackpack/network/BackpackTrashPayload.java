@@ -124,6 +124,13 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
         if (held.isEmpty()) {
             return; // the cursor changed since the client decided (for example it was emptied)
         }
+        // 064: the trash can's groups are kept in the backpack too, so a floating backpack does not go in (whatever its origin).
+        pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict nesting =
+                pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.refusalAlways(held);
+        if (nesting != pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK) {
+            pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(player, nesting);
+            return;
+        }
         if (tooLarge(player, held)) {
             player.sendSystemMessage(Component.translatable("message.mcfloatingbackpack.prefix")
                     .withStyle(ChatFormatting.GOLD)
@@ -184,6 +191,8 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
         int before = total(backpack, ItemStack.EMPTY);
         backpack.setTrash(new TrashContents(taken.groups()));
         cursor.set(taken.taken().copy());
+        // 064: a backpack an older version left in the trash can may come out, and go back into this backpack only.
+        pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.rememberTakenOut(player, ref, taken.taken());
         int after = total(backpack, cursor.get());
         if (before != after) {
             MCFloatingBackpack.LOGGER.error("Trash can take changed the item total (before {}, after {})", before, after);
@@ -201,7 +210,7 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
                 ItemStackTransferOps.INSTANCE,
                 backpack.trash().groups(),
                 slots,
-                backpack::mainTargetOrder,
+                backpack::mainTargetOrderInternal,
                 backpack::getStackInSlot,
                 (stack, index) -> backpack.setStackInSlot(index, stack));
         backpack.setTrash(new TrashContents(left));

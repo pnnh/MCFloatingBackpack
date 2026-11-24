@@ -74,6 +74,13 @@ public record BackpackNetworkTakePayload(int containerId, ItemStack what, long h
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
+            // 064: a floating backpack (or an item with one inside) is not taken out of the network into a backpack.
+            pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict nesting =
+                    pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.check(payload.what());
+            if (nesting != pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK) {
+                pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(player, nesting);
+                return;
+            }
             int amount = NetworkTakeRules.amountFor(ItemStackTransferOps.INSTANCE, payload.what(), payload.amount());
             var taken = NetworkStorageBridges.tryTake(player, menu, payload.what().copyWithCount(Math.max(1, amount)), payload.handle());
             if (taken.isEmpty() || taken.get().isEmpty()) {

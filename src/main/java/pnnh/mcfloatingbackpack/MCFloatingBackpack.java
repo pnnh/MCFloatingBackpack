@@ -130,8 +130,12 @@ public class MCFloatingBackpack {
             // 059: a closed screen: the next refusal of the server's compat level is told to the player again
             if (event.getEntity() instanceof ServerPlayer player) {
                 pnnh.mcfloatingbackpack.compat.ServerCompatDenials.forget(player.getUUID());
+                // 064: what was taken out of a backpack's panel is no longer remembered once the screen is closed
+                pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.forget(player.getUUID());
             }
         });
+        // 064: what the nesting rule remembers is per running world
+        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.clear());
         // 039: at login the server tells the player which version of this mod it runs (see VersionNetwork).
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {
@@ -153,6 +157,8 @@ public class MCFloatingBackpack {
             if (event.getEntity() instanceof ServerPlayer player) {
                 PlayerVersions.forget(player.getUUID());
                 pnnh.mcfloatingbackpack.compat.ServerCompatDenials.forget(player.getUUID());
+                pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.forget(player.getUUID());
+                pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.forgetNoted(player.getUUID());
                 pnnh.mcfloatingbackpack.snapshot.SnapshotNotices.onLogout(player.getUUID());
                 CreativeCursorBridge.onLogout(player);
                 BackpackWatchService.forget(player.getUUID());

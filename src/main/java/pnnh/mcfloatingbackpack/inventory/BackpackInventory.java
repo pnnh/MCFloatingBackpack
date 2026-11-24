@@ -120,6 +120,15 @@ public final class BackpackInventory {
      * second is {@code 0..size()-1}, as it always was.
      */
     public List<int[]> mainTargetOrder(ItemStack stack) {
+        // 064: a floating backpack, or an item with one inside, is not let into the main area as a new arrival (nothing to try).
+        if (pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.isRisky(stack)) {
+            return List.of(new int[0], new int[0], new int[0]);
+        }
+        return mainTargetOrderInternal(stack);
+    }
+
+    /** {@link #mainTargetOrder} without the nesting rule (064): for what moves around inside this backpack, such as the trash can's restore. */
+    public List<int[]> mainTargetOrderInternal(ItemStack stack) {
         if (visibleCategories.isEmpty()) {
             int[] all = new int[size()];
             for (int i = 0; i < all.length; i++) {

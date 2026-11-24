@@ -63,6 +63,8 @@
   "message.mcfloatingbackpack.limit.trash_can": "Only one Trash Can fits in this area",
   "message.mcfloatingbackpack.limit.tag_manager": "Only one Tag Manager fits in this area",
   "message.mcfloatingbackpack.trash.too_large": "This item carries too much data to fit in the Trash Can",
+  "message.mcfloatingbackpack.nesting.refused": "A floating backpack cannot go into another floating backpack",
+  "message.mcfloatingbackpack.nesting.contains": "That item has a floating backpack inside; it cannot go into a floating backpack",
   "key.mcfloatingbackpack.delete_to_trash": "Delete to Trash Can",
   "trash.mcfloatingbackpack.icon.dump": "Dump trash",
   "trash.mcfloatingbackpack.dump.tooltip": "Move the items in the main area whose category is tagged as trash into the Trash Can. Protected items and items with extra data (enchantments, names, contents...) are skipped.",

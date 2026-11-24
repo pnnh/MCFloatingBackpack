@@ -52,6 +52,16 @@ public class FloatingBackpackItem extends Item implements Equipable {
         return null;
     }
 
+    /**
+     * 064: a floating backpack does not go into another container item (a shulker box, a bundle, a Traveler's Backpack...): the
+     * inner backpack's whole contents would be copied into it. Those ask this method; Sophisticated Backpacks only when its server
+     * config {@code containerItemsDisallowed} is on.
+     */
+    @Override
+    public boolean canFitInsideContainerItems() {
+        return false;
+    }
+
     @Override
     public EquipmentSlot getEquipmentSlot() {
         return EquipmentSlot.CHEST;

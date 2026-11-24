@@ -113,6 +113,18 @@ public record BackpackCursorGesturePayload(byte mode, int[] slots, boolean scree
                 return; // the cursor changed since the client decided (for example it was emptied)
             }
 
+            // 064: a floating backpack (or an item with one inside) is not spread over the slots, unless it is what was just taken out of this one.
+            if (mode == Mode.DISTRIBUTE_LEFT || mode == Mode.DISTRIBUTE_RIGHT) {
+                pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict nesting =
+                        pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.refusal(player, ref, held);
+                if (nesting != pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK) {
+                    pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(player, nesting);
+                    return;
+                }
+                if (pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.isRisky(held)) {
+                    pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.forget(player.getUUID()); // the record is used up
+                }
+            }
             int before = total(backpack, held);
             DiagLog.record(player.getUUID(), "cursor gesture " + mode + " slots=" + payload.slots().length + " held=" + DiagLog.stack(held)
                     + " viaMenu=" + cursor.usesMenu() + " hand=" + DiagLog.stack(player.getMainHandItem()));

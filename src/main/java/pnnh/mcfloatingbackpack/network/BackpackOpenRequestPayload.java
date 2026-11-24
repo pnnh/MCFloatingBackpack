@@ -76,10 +76,13 @@ public record BackpackOpenRequestPayload(boolean wantOpen, int sourceOrdinal, in
             }
             // 026: opening is the use that registers a backpack (and the one the registry may refuse).
             // 040: and the only one that can confirm the use of a backpack saved by a newer version (see BackpackGate.acquireForOpen).
-            if (BackpackGate.acquireForOpen(serverPlayer, resolved).isEmpty()) {
+            java.util.Optional<pnnh.mcfloatingbackpack.inventory.BackpackInventory> opened = BackpackGate.acquireForOpen(serverPlayer, resolved);
+            if (opened.isEmpty()) {
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }
+            // 064: a backpack an older version left with a floating backpack inside it is only noted in the log.
+            pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.noteLegacy(serverPlayer, resolved, opened.get());
             BackpackNetwork.sendSession(serverPlayer, true, resolved);
         });
     }

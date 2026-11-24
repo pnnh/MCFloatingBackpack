@@ -93,7 +93,7 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
                 return;
 
             }
-            takeIntoBackpack(player, backpack, payload.menuSlots());
+            pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(player, takeIntoBackpack(player, backpack, payload.menuSlots()));
 
             ref.saveInventory(player, backpack);
             player.getInventory().setChanged();
@@ -102,14 +102,22 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
         });
     }
 
-    static void takeIntoBackpack(ServerPlayer player, BackpackInventory backpack, int[] menuSlots) {
+    static pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict takeIntoBackpack(
+            ServerPlayer player, BackpackInventory backpack, int[] menuSlots) {
         ContainerMenuAccess access = new ContainerMenuAccess(player);
+        pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict refusedNesting =
+                pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK;
         for (int menuIndex : menuSlots) {
             // Slots of the player's own inventory go through 011's request; here only the container's slots.
             if (!access.isExternalSlot(menuIndex)) {
                 continue;
             }
             ItemStack before = access.get(menuIndex).copy();
+            // 064: a floating backpack (or an item with one inside) stays in the container.
+            if (pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.isRisky(before)) {
+                refusedNesting = pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.check(before);
+                continue;
+            }
             ContainerToBackpack.Result result = ContainerToBackpack.take(
                     ItemStackTransferOps.INSTANCE,
                     access.slotAccess(menuIndex),
@@ -127,5 +135,6 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
                         result.dropped());
             }
         }
+        return refusedNesting;
     }
 }
