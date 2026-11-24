@@ -37,6 +37,14 @@ public final class SearchContext {
         }
 
         @Override
+        public int[] displayOrder() {
+            // 066: after the sort button on the "all" tab the cells are shown in the items' order
+            return pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isAllSelected()
+                    ? pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.get().sortOrder()
+                    : null;
+        }
+
+        @Override
         public boolean hasItem(int slot) {
             return !ClientBackpackView.get().getStackInSlot(slot).isEmpty();
         }

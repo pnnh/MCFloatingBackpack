@@ -21,6 +21,8 @@ import pnnh.mcfloatingbackpack.inventory.ContainerMenuAccess;
 import pnnh.mcfloatingbackpack.inventory.ContainerToBackpack;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.inventory.combined.AllContext;
+import pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions;
 import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
@@ -53,8 +55,10 @@ public record BackpackNetworkTakePayload(int containerId, ItemStack what, long h
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = PanelTargets.resolve(player);
-            if (ref == null || !ref.stillValid(player)) {
+            // 066: on the "all" tab the stack goes into the members one after the other
+            boolean inAll = PanelTargets.inAll(player);
+            BackpackRef ref = inAll ? null : PanelTargets.resolve(player);
+            if (!inAll && (ref == null || !ref.stillValid(player))) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
@@ -70,11 +74,21 @@ public record BackpackNetworkTakePayload(int containerId, ItemStack what, long h
                     || payload.what().isEmpty()) {
                 return;
             }
-            BackpackInventory backpack = BackpackGate.acquireForPanel(player, ref).orElse(null);
-            if (backpack == null) {
-                BackpackNetwork.sendSession(player, false, null);
-                return;
+            AllContext all = null;
+            BackpackInventory backpack = null;
+            if (inAll) {
+                all = AllContext.begin(player, CombinedSessions.get(player.getUUID()).all().epoch());
+                if (all == null) {
+                    return;
+                }
+            } else {
+                backpack = BackpackGate.acquireForPanel(player, ref).orElse(null);
+                if (backpack == null) {
+                    BackpackNetwork.sendSession(player, false, null);
+                    return;
+                }
             }
+            java.util.function.UnaryOperator<ItemStack> insert = inAll ? all::insertIntoMain : backpack::insertIntoMain;
             // 064: a floating backpack (or an item with one inside) is not taken out of the network into a backpack.
             pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict nesting =
                     pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.check(payload.what());
@@ -89,7 +103,7 @@ public record BackpackNetworkTakePayload(int containerId, ItemStack what, long h
             }
             ItemStack stack = taken.get();
             int count = stack.getCount();
-            ItemStack left = backpack.insertIntoMain(stack.copy());
+            ItemStack left = insert.apply(stack.copy());
             int backToNetwork = 0;
             ItemStack unplaced = left;
             if (!left.isEmpty()) {
@@ -109,6 +123,11 @@ public record BackpackNetworkTakePayload(int containerId, ItemStack what, long h
             NetworkTakeRules.Split split = NetworkTakeRules.distribute(count, left.getCount(), unplaced.getCount());
             if (split.total() != count) {
                 MCFloatingBackpack.LOGGER.error("Taking out of a network terminal changed the item total (taken {}, split {})", count, split);
+            }
+            if (inAll) {
+                all.finish();
+                menu.broadcastChanges();
+                return;
             }
             ref.saveInventory(player, backpack);
             player.getInventory().setChanged();

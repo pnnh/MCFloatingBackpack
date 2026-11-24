@@ -21,10 +21,20 @@ public final class PanelTargets {
 
     public static BackpackRef resolve(Player player) {
         CombinedSessions.Session session = CombinedSessions.get(player.getUUID());
+        if (session != null && session.inAll()) {
+            // 066: the "all" tab has no single backpack: whatever asks here for one gets none (the panel is closed), and the requests that
+            // can work on the tab ask AllContext instead, before they ask here
+            return null;
+        }
         if (session != null && decision(player, session) == PanelTargetRules.Decision.TARGET) {
             return session.target();
         }
         return BackpackRef.resolve(player);
+    }
+
+    /** 066: whether the player's combined panel is on the "all" tab. */
+    public static boolean inAll(Player player) {
+        return CombinedSessions.inAll(player.getUUID());
     }
 
     /** Whether the session's target still holds (looks at the target alone: the member table is not worked out). */

@@ -34,11 +34,22 @@ public final class ClientPlacement {
 
     /** Whether the stack can be put into the main-area cell {@code slot} of the backpack the panel shows. */
     public static boolean canPlace(ClientBackpackView view, int slot, ItemStack stack) {
-        RowView rows = view.rowView();
+        // 066: on the "all" tab the cell number is a flat one: the rule of the member it is in, on that member's own rows and tags
+        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView combined = pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.get();
+        if (pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isAllSelected()) {
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.Slice slice = combined.sliceOfFlat(slot);
+            int local = combined.localOf(slot);
+            return slice == null || local < 0 || canPlaceIn(slice.rows(), slice.slots().size(), slice.tags(), local, stack);
+        }
+        return canPlaceIn(view.rowView(), view.slotCount(), view.tags(), slot, stack);
+    }
+
+    private static boolean canPlaceIn(
+            RowView rows, int slotCount, pnnh.mcfloatingbackpack.inventory.tags.ItemTags tags, int slot, ItemStack stack) {
         if (rows.visibleCategories().isEmpty() || stack.isEmpty() || slot < rows.baseCapacity()) {
             return true;
         }
-        if (view.slotCount() != rows.baseCapacity() + rows.visibleCategories().size() * ExtensionCategories.ROW_CELLS) {
+        if (slotCount != rows.baseCapacity() + rows.visibleCategories().size() * ExtensionCategories.ROW_CELLS) {
             return true;
         }
         // 039: a row of a category this version does not know (it was made by a newer version): say yes and let the server decide.
@@ -49,7 +60,7 @@ public final class ClientPlacement {
             return true;
         }
         return ExtensionRules.canPlace(
-                rows.visibleCategories(), rows.baseCapacity(), slot, stack, new ItemCategoryMatcher(view.tags()));
+                rows.visibleCategories(), rows.baseCapacity(), slot, stack, new ItemCategoryMatcher(tags));
     }
 
     /** Whether the data tags of all the categories have been bound in the client's item registry (they arrive with the world's tags). */

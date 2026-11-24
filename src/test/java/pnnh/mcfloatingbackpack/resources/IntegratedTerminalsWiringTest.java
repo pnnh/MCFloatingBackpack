@@ -30,7 +30,7 @@ class IntegratedTerminalsWiringTest {
         int gate = payload.indexOf("ServerCompatDenials.allows(player, player.containerMenu, Action.DELIVER_TO_CONTAINER)");
         assertTrue(gate > 0 && bridge > gate && generic > bridge, "gate, then bridge, then the generic path");
         String between = payload.substring(bridge, generic);
-        assertTrue(between.contains("backpack.setStackInSlot(index, viaBridge.get());") && between.contains("continue;"));
+        assertTrue(between.contains("backpack.set(index, viaBridge.get());") && between.contains("continue;"));
     }
 
     @Test
@@ -95,6 +95,6 @@ class IntegratedTerminalsWiringTest {
                 assertFalse(text.contains("import appeng."), file.toString());
             }
         }
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"23\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
     }
 }

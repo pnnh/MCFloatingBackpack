@@ -64,7 +64,7 @@ class TankWiringTest {
     void theDataRevisionIsFiveSince054AndTheProtocolIs20() throws IOException {
         assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;")); // 051 raised it from 2 (048 introduced 2)
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"23\")"));
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"24\")"));
         assertTrue(network.contains("registrar.playToClient(\n                BackpackFluidsPayload.TYPE,"), "a server-to-client packet");
         assertTrue(network.contains("BackpackFluidsPayload::handleClient"));
     }
@@ -87,12 +87,12 @@ class TankWiringTest {
     void theServerAsksTheTankRuleAfterTheToolAreaRuleAndBeforeItChangesAnything() throws IOException {
         String click = read(SRC.resolve("network/BackpackClickPayload.java"));
         int toolRule = click.indexOf("ToolAreaRules.canPlace(");
-        int tankRule = click.indexOf("TankItem.check(inventory, area, held, payload.slotIndex())");
+        int tankRule = click.indexOf("TankItem.check(inventory, area, held, slot)");
         int change = click.indexOf("BackpackMenuBridge.clickWithMenuCarried(");
         assertTrue(toolRule > 0 && tankRule > toolRule && change > tankRule, "tool area rule, tank rule, then the change");
         String branch = click.substring(tankRule, change);
         assertTrue(branch.contains("displayClientMessage(TankItem.refusal(verdict, held), true)"), "the player is told why");
-        assertTrue(branch.contains("sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex())"), "a refusal is rolled back");
+        assertTrue(branch.contains("sendSlotUpdate(serverPlayer, ref, area, slot)"), "a refusal is rolled back");
         assertTrue(branch.contains("return;"));
     }
 

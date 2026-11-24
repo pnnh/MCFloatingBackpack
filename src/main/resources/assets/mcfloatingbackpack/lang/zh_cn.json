@@ -355,7 +355,12 @@
   "gui.mcfloatingbackpack.combined.place.offhand": "副手",
   "gui.mcfloatingbackpack.combined.place.inventory": "物品栏第 %s 格",
   "gui.mcfloatingbackpack.combined.capacity": "%s 格",
-  "gui.mcfloatingbackpack.combined.b_active": "按 B 会打开这一只",
-  "gui.mcfloatingbackpack.tools_active_only": "移动工具只对按 B 打开的背包生效",
+  "gui.mcfloatingbackpack.combined.b_active": "主背包：自动拾取和移动工具作用于这一只",
+  "gui.mcfloatingbackpack.combined.all": "全部",
+  "gui.mcfloatingbackpack.combined.all.tooltip": "全部：连接的 %s 只背包合成一个网格",
+  "gui.mcfloatingbackpack.combined.all.tier": "由 %s 连接",
+  "gui.mcfloatingbackpack.combined.all.from": "来自 %s（%s）",
+  "message.mcfloatingbackpack.combined.flushed": "手里的物品已放回背包或物品栏，放不下的落在了脚下",
+  "gui.mcfloatingbackpack.tools_active_only": "移动工具只对主背包生效",
   "tooltip.mcfloatingbackpack.combined": "连接你身上不高于它自身档位的浮动背包。穿戴后按联合背包键打开"
 }

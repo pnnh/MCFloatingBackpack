@@ -135,7 +135,12 @@ public final class ClientBackpackView {
      * column setting (007): {@code ceil(capacity / visibleCols)}, not a fixed 9-wide division.
      */
     public int rows() {
-        int cols = Math.max(1, FloatingPanelState.get().getVisibleCols());
+        int cols = FloatingPanelState.get().mainCols();
+        // 066: on the "all" tab the grid has a block for each backpack, each from a new row (and filler cells in the last row of a block)
+        int[] base = FloatingPanelState.get().baseMap();
+        if (base != null) {
+            return Math.max(1, (base.length + cols - 1) / cols);
+        }
         return Math.max(1, (slots.size() + cols - 1) / cols);
     }
 
@@ -263,6 +268,39 @@ public final class ClientBackpackView {
         }
         reportCounts();
         FloatingPanelState.get().setTotalRows(rows());
+    }
+
+    /**
+     * 066: the "all" tab's grid: the main areas of all the members one after the other (the flat cell numbers), no tool areas, and the tab's
+     * in-memory cursor. The view is then what the panel shows, not one backpack's mirror.
+     */
+    public void applyCombined(List<ItemStack> flat, ItemStack syncedCursor) {
+        int count = Math.max(1, flat.size());
+        NonNullList<ItemStack> next = NonNullList.withSize(count, ItemStack.EMPTY);
+        for (int i = 0; i < flat.size(); i++) {
+            ItemStack stack = flat.get(i);
+            next.set(i, stack == null || stack.isEmpty() ? ItemStack.EMPTY : stack.copy());
+        }
+        slots = next;
+        rowView = RowView.none(count);
+        for (PanelArea area : PanelArea.values()) {
+            if (area.isTool()) {
+                tools.put(area, NonNullList.withSize(0, ItemStack.EMPTY));
+            }
+        }
+        cursor = syncedCursor == null || syncedCursor.isEmpty() ? ItemStack.EMPTY : syncedCursor.copy();
+        tags = pnnh.mcfloatingbackpack.inventory.tags.ItemTags.EMPTY;
+        trash = pnnh.mcfloatingbackpack.inventory.trash.TrashContents.EMPTY;
+        pickupBlacklist = pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist.EMPTY;
+        fluids = pnnh.mcfloatingbackpack.tank.FluidStore.EMPTY;
+        activeRef = null;
+        reportCounts();
+        FloatingPanelState.get().setTotalRows(rows());
+    }
+
+    /** 066: the in-memory cursor of the "all" tab changed (only the cursor). */
+    public void applyCursor(ItemStack syncedCursor) {
+        cursor = syncedCursor == null || syncedCursor.isEmpty() ? ItemStack.EMPTY : syncedCursor.copy();
     }
 
     public void applySlotUpdate(PanelArea area, int slotIndex, ItemStack stack, ItemStack syncedCursor) {

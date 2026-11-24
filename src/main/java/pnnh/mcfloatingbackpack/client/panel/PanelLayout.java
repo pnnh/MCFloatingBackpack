@@ -35,8 +35,10 @@ public final class PanelLayout {
     private final int[] scroll;
     /** 042: the slots the main area shows while a search is on (ascending, packed from the top left); null = all of them. */
     private final int[] mainMap;
+    /** 066: the main area takes the whole inside of the panel (the side columns and the bottom row are part of it): the "all" tab. */
+    private final boolean full;
 
-    private PanelLayout(int posX, int posY, int cols, int rows, int[] counts, int[] scroll, int[] mainMap) {
+    private PanelLayout(int posX, int posY, int cols, int rows, int[] counts, int[] scroll, int[] mainMap, boolean full) {
         this.posX = posX;
         this.posY = posY;
         this.cols = Math.max(1, cols);
@@ -44,6 +46,7 @@ public final class PanelLayout {
         this.counts = counts.clone();
         this.scroll = scroll.clone();
         this.mainMap = mainMap;
+        this.full = full;
     }
 
     /**
@@ -53,7 +56,7 @@ public final class PanelLayout {
      * @param scroll scroll offset (in cells) of each area, indexed the same way
      */
     public static PanelLayout of(int posX, int posY, int cols, int rows, int[] counts, int[] scroll) {
-        return new PanelLayout(posX, posY, cols, rows, counts, scroll, null);
+        return new PanelLayout(posX, posY, cols, rows, counts, scroll, null, false);
     }
 
     /**
@@ -63,7 +66,42 @@ public final class PanelLayout {
      * changed, and must not be changed by the caller afterwards. Null is the plain layout.
      */
     public static PanelLayout of(int posX, int posY, int cols, int rows, int[] counts, int[] scroll, int[] mainMap) {
-        return new PanelLayout(posX, posY, cols, rows, counts, scroll, mainMap);
+        return new PanelLayout(posX, posY, cols, rows, counts, scroll, mainMap, false);
+    }
+
+    /**
+     * 066: the same panel, but the main area is the whole inside of it: {@code cols + 2} columns and {@code rows + 1} rows, which is where the
+     * side columns and the bottom row were (they are not there: no cell, no hit). The panel's own size ({@link #width()}, {@link #height()})
+     * stays what it is for {@code cols} and {@code rows}.
+     */
+    public static PanelLayout ofFull(int posX, int posY, int cols, int rows, int[] counts, int[] scroll, int[] mainMap) {
+        return new PanelLayout(posX, posY, cols, rows, counts, scroll, mainMap, true);
+    }
+
+    /** 066: the position in the main map (or the plain slot order) of the visible cell {@code ordinal}, scroll applied; may be past the end. */
+    public int mainPosition(int ordinal) {
+        return (ordinal / mainCols() + scroll(PanelArea.MAIN)) * mainCols() + ordinal % mainCols();
+    }
+
+    /** 066: the slot at a position of the main map (or of the plain slot order), or -1 for a filler cell or beyond the end. */
+    public int slotAtPosition(int position) {
+        if (position < 0) {
+            return -1;
+        }
+        if (mainMap != null) {
+            return position < mainMap.length ? mainMap[position] : -1;
+        }
+        return position < counts[PanelArea.MAIN.ordinal()] ? position : -1;
+    }
+
+    /** The columns of the main area: the panel's, or in the full layout two more. */
+    public int mainCols() {
+        return full ? cols + 2 : cols;
+    }
+
+    /** The rows of the main area: the panel's, or in the full layout one more. */
+    public int mainRows() {
+        return full ? rows + 1 : rows;
     }
 
     /** Whole panel width: the main columns plus one column on each side. */
@@ -95,6 +133,9 @@ public final class PanelLayout {
     public Rect rect(PanelArea area) {
         int x0 = posX + PAD_X;
         int y0 = posY + PAD_TOP;
+        if (full) {
+            return area == PanelArea.MAIN ? new Rect(x0, y0, mainCols() * SLOT, mainRows() * SLOT) : new Rect(x0, y0, 0, 0);
+        }
         return switch (area) {
             case MAIN -> new Rect(x0 + SLOT, y0, cols * SLOT, rows * SLOT);
             case LEFT -> new Rect(x0, y0, SLOT, rows * SLOT);
@@ -105,6 +146,9 @@ public final class PanelLayout {
 
     /** Number of cells the area currently shows (some may be fillers beyond its capacity). */
     public int visibleCount(PanelArea area) {
+        if (full) {
+            return area == PanelArea.MAIN ? mainCols() * mainRows() : 0;
+        }
         return switch (area) {
             case MAIN -> cols * rows;
             case LEFT, RIGHT -> rows;
@@ -125,13 +169,13 @@ public final class PanelLayout {
 
     /** Virtual row count of the main area after reflowing its slots over the visible columns. */
     public int mainTotalRows() {
-        return Math.max(1, (slotCount(PanelArea.MAIN) + cols - 1) / cols);
+        return Math.max(1, (slotCount(PanelArea.MAIN) + mainCols() - 1) / mainCols());
     }
 
     /** Largest scroll offset of the area: main and side columns scroll rows, the bottom row scrolls columns. */
     public int maxScroll(PanelArea area) {
         return switch (area) {
-            case MAIN -> Math.max(0, mainTotalRows() - rows);
+            case MAIN -> Math.max(0, mainTotalRows() - mainRows());
             case LEFT, RIGHT, BOTTOM -> Math.max(0, counts[area.ordinal()] - visibleCount(area));
         };
     }
@@ -153,11 +197,11 @@ public final class PanelLayout {
      */
     public int slotIndex(PanelArea area, int ordinal) {
         if (area == PanelArea.MAIN && mainMap != null) {
-            int position = (ordinal / cols + scroll(area)) * cols + ordinal % cols;
+            int position = (ordinal / mainCols() + scroll(area)) * mainCols() + ordinal % mainCols();
             return ordinal >= 0 && position >= 0 && position < mainMap.length ? mainMap[position] : -1;
         }
         int index = switch (area) {
-            case MAIN -> (ordinal / cols + scroll(area)) * cols + ordinal % cols;
+            case MAIN -> (ordinal / mainCols() + scroll(area)) * mainCols() + ordinal % mainCols();
             case LEFT, RIGHT, BOTTOM -> scroll(area) + ordinal;
         };
         return index >= 0 && index < counts[area.ordinal()] ? index : -1;
@@ -166,7 +210,7 @@ public final class PanelLayout {
     public int cellX(PanelArea area, int ordinal) {
         Rect r = rect(area);
         return switch (area) {
-            case MAIN -> r.x() + ordinal % cols * SLOT;
+            case MAIN -> r.x() + ordinal % mainCols() * SLOT;
             case LEFT, RIGHT -> r.x();
             case BOTTOM -> r.x() + ordinal * SLOT;
         };
@@ -175,7 +219,7 @@ public final class PanelLayout {
     public int cellY(PanelArea area, int ordinal) {
         Rect r = rect(area);
         return switch (area) {
-            case MAIN -> r.y() + ordinal / cols * SLOT;
+            case MAIN -> r.y() + ordinal / mainCols() * SLOT;
             case LEFT, RIGHT -> r.y() + ordinal * SLOT;
             case BOTTOM -> r.y();
         };
@@ -201,7 +245,7 @@ public final class PanelLayout {
         int col = (int) ((x - r.x()) / SLOT);
         int row = (int) ((y - r.y()) / SLOT);
         int ordinal = switch (area) {
-            case MAIN -> row * cols + col;
+            case MAIN -> row * mainCols() + col;
             case LEFT, RIGHT -> row;
             case BOTTOM -> col;
         };

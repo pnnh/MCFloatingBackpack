@@ -236,6 +236,20 @@ public final class FloatingPanelRenderer {
      */
     private static void drawTitleIcon(
             GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
+        // 066: on the "all" tab the icon is the combined backpack's, and there is no number or hidden-content dot (they belong to one backpack)
+        if (state.isAllMode()) {
+            BackpackTier combinedTier = BackpackTier.values()[Math.min(
+                    Math.max(pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().combinedTier(), 0), BackpackTier.values().length - 1)];
+            graphics.renderItem(new ItemStack(ModItems.COMBINED_BACKPACKS.get(combinedTier).get()), state.getPosX() + 4, state.getPosY() + 1);
+            if (state.hitsTitleIcon(mouseX, mouseY)) {
+                graphics.renderTooltip(
+                        minecraft.font,
+                        Component.translatable("item.mcfloatingbackpack." + combinedTier.name().toLowerCase(java.util.Locale.ROOT) + "_combined_backpack"),
+                        mouseX,
+                        mouseY);
+            }
+            return;
+        }
         // 036: by the tier's own capacity; the main area is bigger than that once extension rows are placed.
         BackpackTier tier = BackpackTier.byCapacity(ClientBackpackView.get().baseCapacity());
         if (tier == null) {
@@ -365,15 +379,29 @@ public final class FloatingPanelRenderer {
         ClientBackpackView view = ClientBackpackView.get();
         PanelLayout layout = view.layout();
         PanelLayout.Hit hovered = layout.hit(mouseX, mouseY);
+        // 066: on the "all" tab every cell is washed in its backpack's colour, and the cell under the mouse lights its backpack's tab
+        boolean allTab = pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isAllSelected();
+        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView combinedView = pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.get();
+        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().setHoverMember(
+                allTab && hovered != null && hovered.area() == PanelArea.MAIN ? combinedView.memberOf(hovered.index()) : -1);
         Preview<ItemStack> preview = PanelDragInput.preview();
         PanelSelection selection = PanelSelection.get();
         // 037: the rows of the category extensions, once per frame; without rows none of the code that uses it runs.
         RowLayout rows = rowLayout(view);
-        ItemStack held = rows.hasRows() ? cursorStack(minecraft) : ItemStack.EMPTY;
+        // 066: on the "all" tab every member has its own rows: a layout for each, asked by the member a cell belongs to
+        RowLayout[] memberRows = allTab ? memberRowLayouts(combinedView) : null;
+        boolean anyRows = rows.hasRows();
+        if (memberRows != null) {
+            for (RowLayout memberLayout : memberRows) {
+                anyRows |= memberLayout.hasRows();
+            }
+        }
+        ItemStack held = anyRows ? cursorStack(minecraft) : ItemStack.EMPTY;
         // 042: while a query is on the main area shows the found slots packed together, so the rows' lines and corners (which
         // say where a row begins and ends in the full grid) are left out; and the cells that match are framed
         SearchState search = SearchState.get();
-        boolean searching = search.isFiltering();
+        // 066: a sorted grid no longer has a row's cells next to each other: only the colour is drawn then, as while searching
+        boolean searching = search.isFiltering() || (allTab && combinedView.sortOrder() != null);
         SearchQuery query = searching ? search.query() : SearchQuery.empty();
         for (PanelArea area : PanelArea.values()) {
             if (area == PanelArea.MAIN && (TagPanelState.get().isOpen() || PickupPanelState.get().isOpen())) {
@@ -394,15 +422,31 @@ public final class FloatingPanelRenderer {
                 int sx = layout.cellX(area, ordinal);
                 int sy = layout.cellY(area, ordinal);
                 drawSlotWell(graphics, sx, sy, wellColor(area));
+                if (allTab && area == PanelArea.MAIN) {
+                    int member = combinedView.memberOf(index);
+                    if (member >= 0) {
+                        graphics.fill(sx + 1, sy + 1, sx + PanelSlots.SLOT_SIZE - 1, sy + PanelSlots.SLOT_SIZE - 1,
+                                pnnh.mcfloatingbackpack.client.panel.combined.CombinedColors.wash(member));
+                    }
+                }
                 ItemStack stack = area == PanelArea.MAIN ? view.getStackInSlot(index) : view.getToolStack(area, index);
-                boolean ofARow = area == PanelArea.MAIN && rows.groupOf(index) >= 0;
-                if (ofARow) {
-                    drawRowDecor(graphics, rows, index, layout.cols(), sx, sy, searching);
+                RowLayout cellRows = rows;
+                int rowIndex = index;
+                if (allTab && area == PanelArea.MAIN) {
+                    int owner = combinedView.memberOf(index);
+                    cellRows = owner >= 0 && memberRows != null ? memberRows[owner] : rows;
+                    rowIndex = combinedView.localOf(index);
+                }
+                boolean ofARow = area == PanelArea.MAIN && cellRows.groupOf(rowIndex) >= 0;
+                if (ofARow && allTab && !searching) {
+                    drawRowDecorAll(graphics, layout, combinedView, memberRows, area, ordinal, index, sx, sy);
+                } else if (ofARow) {
+                    drawRowDecor(graphics, cellRows, rowIndex, layout.mainCols(), sx, sy, searching);
                 }
                 // 013 drag preview and 014 selection only exist in the main area.
                 int previewIndex = area == PanelArea.MAIN && preview != null ? preview.slots().indexOf(index) : -1;
                 if (ofARow && stack.isEmpty() && previewIndex < 0) {
-                    drawGhost(graphics, rows.categoryOf(index), sx, sy);
+                    drawGhost(graphics, cellRows.categoryOf(rowIndex), sx, sy, cellRows.baseCapacity());
                 }
                 if (previewIndex >= 0) {
                     // 013: the slot is part of the drag; show what it would hold after the release.
@@ -516,8 +560,8 @@ public final class FloatingPanelRenderer {
      * 037: a faint picture of the category's extension item in an empty cell of its row (what goes here). 038: for a universal row it
      * is the universal extension of the backpack's own tier. Nothing for an unknown category.
      */
-    private static void drawGhost(GuiGraphics graphics, String category, int sx, int sy) {
-        Item item = ghostItem(category);
+    private static void drawGhost(GuiGraphics graphics, String category, int sx, int sy, int baseCapacity) {
+        Item item = ghostItem(category, baseCapacity);
         if (item == null) {
             return;
         }
@@ -525,9 +569,69 @@ public final class FloatingPanelRenderer {
         graphics.blit(sx + 1, sy + 1, 0, 16, 16, sprite, 1.0F, 1.0F, 1.0F, GHOST_ALPHA);
     }
 
-    private static Item ghostItem(String category) {
+    /**
+     * 066: the same decoration on the "all" tab, where the backpacks' cells run on from one another and a row can start in the middle of a line:
+     * the lines are drawn where the cell above or to the left (as shown) is of another group of the same or another backpack.
+     */
+    private static void drawRowDecorAll(
+            GuiGraphics graphics,
+            PanelLayout layout,
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView combined,
+            RowLayout[] memberRows,
+            PanelArea area,
+            int ordinal,
+            int flat,
+            int sx,
+            int sy) {
+        int cols = layout.mainCols();
+        int member = combined.memberOf(flat);
+        RowLayout rows = memberRows[member];
+        int local = combined.localOf(flat);
+        String category = rows.categoryOf(local);
+        int size = PanelSlots.SLOT_SIZE;
+        graphics.fill(sx + 1, sy + 1, sx + size - 1, sy + size - 1, CategoryStyle.fill(category));
+        int edge = CategoryStyle.edge(category);
+        int position = layout.mainPosition(ordinal);
+        long key = groupKey(combined, memberRows, flat);
+        if (position < cols || groupKey(combined, memberRows, layout.slotAtPosition(position - cols)) != key) {
+            graphics.fill(sx, sy, sx + size, sy + 1, edge);
+        }
+        if (position % cols == 0 || groupKey(combined, memberRows, layout.slotAtPosition(position - 1)) != key) {
+            graphics.fill(sx, sy, sx + 1, sy + size, edge);
+        }
+        if (rows.isRowStart(local)) {
+            graphics.fill(sx + 1, sy + 1, sx + 4, sy + 4, edge);
+        }
+    }
+
+    /** Which row of which backpack a cell is in (the main cells of a backpack are one group), or -1 for no cell. */
+    private static long groupKey(
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView combined, RowLayout[] memberRows, int flat) {
+        if (flat < 0) {
+            return -1;
+        }
+        int member = combined.memberOf(flat);
+        if (member < 0) {
+            return -1;
+        }
+        return member * 1000L + memberRows[member].groupOf(combined.localOf(flat)) + 2;
+    }
+
+    /** 066: the rows of each member of the "all" tab, as the member told the client (for the colour, the corner and the faint picture of a row's cells). */
+    private static RowLayout[] memberRowLayouts(pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView combined) {
+        RowLayout[] layouts = new RowLayout[combined.memberCount()];
+        for (int i = 0; i < layouts.length; i++) {
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.Slice slice = combined.slice(i);
+            layouts[i] = slice == null
+                    ? new RowLayout(0, List.of())
+                    : new RowLayout(slice.rows().baseCapacity(), slice.rows().visibleCategories());
+        }
+        return layouts;
+    }
+
+    private static Item ghostItem(String category, int baseCapacity) {
         if (ExtensionCategories.GENERAL.equals(category)) {
-            BackpackTier tier = BackpackTier.byCapacity(ClientBackpackView.get().baseCapacity());
+            BackpackTier tier = BackpackTier.byCapacity(baseCapacity);
             var holder = tier == null ? null : ModItems.UNIVERSAL_EXTENSIONS.get(tier);
             return holder == null ? null : holder.get();
         }
@@ -548,6 +652,26 @@ public final class FloatingPanelRenderer {
         }
         ItemStack stack = hit.area() == PanelArea.MAIN ? view.getStackInSlot(hit.index()) : view.getToolStack(hit.area(), hit.index());
         boolean mainCovered = TagPanelState.get().isOpen() || PickupPanelState.get().isOpen();
+        // 066: on the "all" tab the tooltip of a cell ends with where it is: which backpack and where that is (an empty cell says it too)
+        if (hit.area() == PanelArea.MAIN
+                && pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isAllSelected()
+                && !mainCovered
+                && PanelDragInput.preview() == null
+                && !TrashConfirmState.get().isPending()) {
+            List<Component> lines = new ArrayList<>();
+            if (!stack.isEmpty() && cursorStack(minecraft).isEmpty()) {
+                lines.addAll(net.minecraft.client.gui.screens.Screen.getTooltipFromItem(minecraft, stack));
+            }
+            Component from = pnnh.mcfloatingbackpack.client.panel.combined.CombinedBarRenderer.fromText(
+                    pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.get().memberOf(hit.index()));
+            if (from != null) {
+                lines.add(from.copy().withStyle(ChatFormatting.GRAY));
+            }
+            if (!lines.isEmpty()) {
+                graphics.renderTooltip(minecraft.font, lines, java.util.Optional.empty(), mouseX, mouseY);
+                return true;
+            }
+        }
         if (!ItemTooltipRules.shouldShow(
                 hit.area(),
                 mainCovered,
@@ -576,14 +700,22 @@ public final class FloatingPanelRenderer {
         }
         ClientBackpackView view = ClientBackpackView.get();
         RowLayout rows = rowLayout(view);
+        PanelLayout.Hit hit = view.layout().hit(mouseX, mouseY);
+        int rowIndex = hit == null ? -1 : hit.index();
+        // 066: on the "all" tab the row is the one of the member the cell is in
+        if (hit != null && pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isAllSelected()) {
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView combined = pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.get();
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.Slice slice = combined.sliceOfFlat(hit.index());
+            rows = slice == null ? new RowLayout(0, List.of()) : new RowLayout(slice.rows().baseCapacity(), slice.rows().visibleCategories());
+            rowIndex = combined.localOf(hit.index());
+        }
         if (!rows.hasRows()) {
             return;
         }
-        PanelLayout.Hit hit = view.layout().hit(mouseX, mouseY);
-        if (hit == null || hit.area() != PanelArea.MAIN || rows.groupOf(hit.index()) < 0) {
+        if (hit == null || hit.area() != PanelArea.MAIN || rows.groupOf(rowIndex) < 0) {
             return;
         }
-        String category = rows.categoryOf(hit.index());
+        String category = rows.categoryOf(rowIndex);
         // 038: the universal row takes anything, so it says that instead of "only takes X"
         Component description = ExtensionCategories.GENERAL.equals(category)
                 ? Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".row.tooltip.general")
@@ -696,7 +828,7 @@ public final class FloatingPanelRenderer {
         int size = FloatingPanelState.CLOSE_BUTTON_SIZE;
         int x1 = state.titleBar().closeLeft();
         int x2 = x1 + size;
-        int y1 = state.getPosY() + 2;
+        int y1 = state.getPosY() + TitleBarLayout.BUTTON_TOP;
         int y2 = y1 + size;
         graphics.fill(x1, y1, x2, y2, COLOR_CLOSE_BUTTON);
         Component glyph = Component.literal("x");
@@ -712,12 +844,12 @@ public final class FloatingPanelRenderer {
     private static void drawSnapshotButton(GuiGraphics graphics, FloatingPanelState state, Minecraft minecraft, int mouseX, int mouseY) {
         TitleBarLayout buttons = state.titleBar();
         // 042: the open search box takes the snapshot button's place
-        if (!buttons.hasSnapshot() || SearchState.get().isOpen()) {
+        if (!buttons.hasSnapshot() || SearchState.get().isOpen() || state.isAllMode()) {
             return;
         }
         int size = TitleBarLayout.BUTTON_SIZE;
         int x1 = buttons.snapshotLeft();
-        int y1 = state.getPosY() + 2;
+        int y1 = state.getPosY() + TitleBarLayout.BUTTON_TOP;
         graphics.fill(x1, y1, x1 + size, y1 + size, COLOR_SNAPSHOT_BUTTON);
         // the box: a lid across the top and an outline below it
         graphics.fill(x1 + 2, y1 + 2, x1 + size - 2, y1 + 4, COLOR_CLOSE_GLYPH);
@@ -740,12 +872,12 @@ public final class FloatingPanelRenderer {
         }
         int size = TitleBarLayout.BUTTON_SIZE;
         int x1 = state.titleBar().sortLeft();
-        int y1 = state.getPosY() + 2;
+        int y1 = state.getPosY() + TitleBarLayout.BUTTON_TOP;
         graphics.fill(x1, y1, x1 + size, y1 + size, COLOR_SORT_BUTTON);
-        graphics.fill(x1 + 2, y1 + 2, x1 + size - 2, y1 + 3, COLOR_CLOSE_GLYPH);
-        graphics.fill(x1 + 2, y1 + 4, x1 + size - 4, y1 + 5, COLOR_CLOSE_GLYPH);
-        graphics.fill(x1 + 2, y1 + 6, x1 + size - 6, y1 + 7, COLOR_CLOSE_GLYPH);
-        graphics.fill(x1 + 2, y1 + 8, x1 + 4, y1 + 9, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 3, x1 + size - 2, y1 + 4, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 5, x1 + size - 4, y1 + 6, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 7, x1 + size - 6, y1 + 8, COLOR_CLOSE_GLYPH);
+        graphics.fill(x1 + 2, y1 + 9, x1 + 4, y1 + 10, COLOR_CLOSE_GLYPH);
         if (state.hitsSortButton(mouseX, mouseY)) {
             graphics.renderTooltip(
                     minecraft.font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".sort.tooltip"), mouseX, mouseY);

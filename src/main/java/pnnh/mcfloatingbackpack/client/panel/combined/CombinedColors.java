@@ -17,6 +17,11 @@ public final class CombinedColors {
         return PALETTE.length;
     }
 
+    /** 066: the same colour as a faint wash for a cell of the "all" grid (under the items, the search frame and the selection). */
+    public static int wash(int position) {
+        return 0x40000000 | (argb(position) & 0x00FFFFFF);
+    }
+
     /** The colour as opaque ARGB for the tab at {@code position} (0-based); positions past the palette wrap round. */
     public static int argb(int position) {
         int index = Math.floorMod(position, PALETTE.length);

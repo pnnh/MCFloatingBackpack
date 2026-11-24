@@ -18,10 +18,10 @@ class TitleBarLayoutTest {
         assertEquals(104, PanelLayout.width(3));
         assertFalse(layout.hasClose());
         assertTrue(layout.hasSnapshot());
-        assertEquals(91, layout.snapshotLeft());
-        assertEquals(79, layout.searchLeft());
-        assertEquals(67, layout.sortLeft());
-        assertEquals(67, layout.textRightLimit());
+        assertEquals(89, layout.snapshotLeft());
+        assertEquals(75, layout.searchLeft());
+        assertEquals(61, layout.sortLeft());
+        assertEquals(61, layout.textRightLimit());
         assertEquals(23, layout.boxLeft());
         assertEquals(101, layout.boxRight());
     }
@@ -31,23 +31,23 @@ class TitleBarLayoutTest {
         TitleBarLayout layout = at(4);
         assertEquals(122, PanelLayout.width(4));
         assertTrue(layout.hasClose());
-        assertEquals(109, layout.closeLeft());
-        assertEquals(97, layout.snapshotLeft());
-        assertEquals(85, layout.searchLeft());
-        assertEquals(73, layout.sortLeft());
+        assertEquals(107, layout.closeLeft());
+        assertEquals(93, layout.snapshotLeft());
+        assertEquals(79, layout.searchLeft());
+        assertEquals(65, layout.sortLeft());
         assertEquals(23, layout.boxLeft());
-        assertEquals(107, layout.boxRight());
+        assertEquals(105, layout.boxRight());
     }
 
     @Test
     void nineColumns() {
         TitleBarLayout layout = at(9);
         assertEquals(212, PanelLayout.width(9));
-        assertEquals(199, layout.closeLeft());
-        assertEquals(187, layout.snapshotLeft());
-        assertEquals(175, layout.searchLeft());
-        assertEquals(163, layout.sortLeft());
-        assertEquals(197, layout.boxRight());
+        assertEquals(197, layout.closeLeft());
+        assertEquals(183, layout.snapshotLeft());
+        assertEquals(169, layout.searchLeft());
+        assertEquals(155, layout.sortLeft());
+        assertEquals(195, layout.boxRight());
     }
 
     @Test
@@ -92,7 +92,7 @@ class TitleBarLayoutTest {
             TitleBarLayout layout = at(cols);
             assertEquals(layout.searchLeft() - TitleBarLayout.GAP - TitleBarLayout.BUTTON_SIZE, layout.sortLeft(), "cols " + cols);
         }
-        assertEquals(TitleBarLayout.of(0, 70, true).searchLeft() - 12, TitleBarLayout.of(0, 70, true).sortLeft());
+        assertEquals(TitleBarLayout.of(0, 70, true).searchLeft() - TitleBarLayout.GAP - TitleBarLayout.BUTTON_SIZE, TitleBarLayout.of(0, 70, true).sortLeft());
     }
 
     @Test

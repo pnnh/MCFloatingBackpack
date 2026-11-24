@@ -31,6 +31,10 @@ import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.item.TankItem;
 import pnnh.mcfloatingbackpack.tank.TankPlacement;
+import pnnh.mcfloatingbackpack.inventory.combined.AllAddressing;
+import pnnh.mcfloatingbackpack.inventory.combined.AllContext;
+import pnnh.mcfloatingbackpack.inventory.combined.AllRequestRules;
+import pnnh.mcfloatingbackpack.inventory.combined.CursorLoan;
 import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
@@ -46,7 +50,8 @@ public record BackpackClickPayload(
         boolean screenOpen,
         boolean panelOpen,
         int sourceOrdinal,
-        int invIndex)
+        int invIndex,
+        int epoch)
         implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackClickPayload> TYPE =
             new CustomPacketPayload.Type<>(
@@ -66,6 +71,8 @@ public record BackpackClickPayload(
                         buf.writeByte(flags);
                         buf.writeVarInt(payload.sourceOrdinal());
                         buf.writeVarInt(payload.invIndex());
+                        // 066: 0 for a single backpack's tab; for the "all" tab the epoch the client's flat cell numbers were made with
+                        buf.writeVarInt(payload.epoch());
                     },
                     buf -> {
                         byte area = buf.readByte();
@@ -73,6 +80,7 @@ public record BackpackClickPayload(
                         int flags = buf.readByte();
                         int sourceOrdinal = buf.readVarInt();
                         int invIndex = buf.readVarInt();
+                        int epoch = buf.readVarInt();
                         return new BackpackClickPayload(
                                 area,
                                 slotIndex,
@@ -81,7 +89,8 @@ public record BackpackClickPayload(
                                 (flags & 4) != 0,
                                 (flags & 8) != 0,
                                 sourceOrdinal,
-                                invIndex);
+                                invIndex,
+                                epoch);
                     });
 
     @Override
@@ -96,12 +105,24 @@ public record BackpackClickPayload(
                 return;
             }
             PanelArea area = PanelArea.fromByte(payload.area());
+            // 066: on the "all" tab the slot number is a flat cell number of the whole grid
+            boolean inAll = PanelTargets.inAll(serverPlayer);
             if (area == null
                     || !payload.panelOpen()
                     || payload.slotIndex() < 0
-                    || payload.slotIndex() >= (area.isTool() ? ToolAreaContents.MAX_TOOL_SLOTS : BackpackInventory.MAX_MAIN_SLOTS)) {
+                    || payload.slotIndex() >= (inAll
+                            ? AllAddressing.MAX_MEMBERS * BackpackInventory.MAX_MAIN_SLOTS
+                            : area.isTool() ? ToolAreaContents.MAX_TOOL_SLOTS : BackpackInventory.MAX_MAIN_SLOTS)) {
                 DiagLog.record(serverPlayer.getUUID(), "click ignored: bad request area=" + payload.area() + " slot=" + payload.slotIndex()
                         + " panelOpen=" + payload.panelOpen());
+                return;
+            }
+            if (inAll) {
+                handleAll(payload, serverPlayer, area);
+                return;
+            }
+            if (!AllRequestRules.epochOk(false, 0, payload.epoch())) {
+                DiagLog.record(serverPlayer.getUUID(), "click ignored: it was made for the all tab (epoch " + payload.epoch() + "), the panel is not on it");
                 return;
             }
 
@@ -146,175 +167,220 @@ public record BackpackClickPayload(
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }
-            AbstractContainerMenu menu = serverPlayer.containerMenu;
-            boolean viaMenu = payload.screenOpen() && menu != null;
-            DiagLog.record(serverPlayer.getUUID(), "click " + area + "#" + payload.slotIndex() + (payload.rightClick() ? " right" : " left")
-                    + (payload.swapHand() ? " swapHand" : "") + (viaMenu ? " viaMenu(" + menu.getClass().getSimpleName() + ")" : "")
-                    + " ref=" + ref + " | " + state(serverPlayer, menu, inventory, area, payload.slotIndex()));
-            if (viaMenu && !ServerCompatDenials.allows(serverPlayer, menu, Action.USE_MENU_CURSOR)) {
+            applyClick(serverPlayer, payload, ref, inventory, area, payload.slotIndex(), null);
+        });
+    }
+
+    private static void settle(CursorLoan loan, BackpackInventory inventory) {
+        if (loan != null) {
+            loan.settle(inventory);
+        }
+    }
+
+    /**
+     * 066: a click on a cell of the "all" tab: the flat cell number is looked up to a member and the cell in it, and the click is carried out on
+     * that member exactly as on a single backpack's tab, with the tab's in-memory cursor lent to it for the request.
+     */
+    private static void handleAll(BackpackClickPayload payload, ServerPlayer serverPlayer, PanelArea area) {
+        if (area != PanelArea.MAIN) {
+            DiagLog.record(serverPlayer.getUUID(), "click ignored: the all tab has only the main area (area " + area + ")");
+            return;
+        }
+        AllContext context = AllContext.begin(serverPlayer, payload.epoch());
+        if (context == null) {
+            return;
+        }
+        AllAddressing.Cell cell = context.addressing().locate(payload.slotIndex());
+        if (cell == null) {
+            context.abandon();
+            return;
+        }
+        BackpackInventory inventory = context.inventory(cell.member());
+        if (inventory == null) {
+            context.abandon();
+            return;
+        }
+        BackpackRef ref = context.ref(cell.member());
+        applyClick(serverPlayer, payload, ref, inventory, area, cell.local(), CursorLoan.borrow(context.all(), inventory));
+    }
+
+    /**
+     * What a click does to the backpack {@code ref}, whose inventory has been acquired: the menu's carried stack, the nesting rule, the tool
+     * area and category rules, the click itself, saving and the answer. {@code loan} is the "all" tab's in-memory cursor lent to the
+     * inventory (null on a single backpack's tab); it is taken back before each save so the backpack never holds it.
+     */
+    private static void applyClick(
+            ServerPlayer serverPlayer, BackpackClickPayload payload, BackpackRef ref, BackpackInventory inventory, PanelArea area, int slot, CursorLoan loan) {
+        AbstractContainerMenu menu = serverPlayer.containerMenu;
+        boolean viaMenu = payload.screenOpen() && menu != null;
+        DiagLog.record(serverPlayer.getUUID(), "click " + area + "#" + slot + (payload.rightClick() ? " right" : " left")
+                + (payload.swapHand() ? " swapHand" : "") + (viaMenu ? " viaMenu(" + menu.getClass().getSimpleName() + ")" : "")
+                + " ref=" + ref + " | " + state(serverPlayer, menu, inventory, area, slot));
+        if (viaMenu && !ServerCompatDenials.allows(serverPlayer, menu, Action.USE_MENU_CURSOR)) {
+            return;
+        }
+
+        // 064: a floating backpack (or an item with one inside) goes into no area of a floating backpack, except back into the one
+        // it was just taken out of (an older version's nesting is kept, never added to). A refused click changes nothing.
+        ItemStack nestingHeld = viaMenu
+                ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
+                : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+        boolean nestingHeldRisky = false;
+        if (!nestingHeld.isEmpty()) {
+            NestingRules.Verdict nesting = BackpackNesting.refusal(serverPlayer, ref, nestingHeld);
+            if (nesting != NestingRules.Verdict.OK) {
+                BackpackNesting.tell(serverPlayer, nesting);
+                BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                 return;
             }
+            nestingHeldRisky = BackpackNesting.isRisky(nestingHeld);
+        }
+        ItemStack nestingSlotBefore = inventory.getStackInSlot(area, slot).copy();
 
-            // 064: a floating backpack (or an item with one inside) goes into no area of a floating backpack, except back into the one
-            // it was just taken out of (an older version's nesting is kept, never added to). A refused click changes nothing.
-            ItemStack nestingHeld = viaMenu
+        // 016: what goes into a tool area is the server's call. Since 021 the right area takes one trash can and the
+        // bottom area one tag manager and (024) the left area one auto pickup (ToolAreaRules); a refused click changes nothing.
+        if (area.isTool()) {
+            ItemStack held = viaMenu
                     ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
                     : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
-            boolean nestingHeldRisky = false;
-            if (!nestingHeld.isEmpty()) {
-                NestingRules.Verdict nesting = BackpackNesting.refusal(serverPlayer, ref, nestingHeld);
-                if (nesting != NestingRules.Verdict.OK) {
-                    BackpackNesting.tell(serverPlayer, nesting);
-                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                    return;
-                }
-                nestingHeldRisky = BackpackNesting.isRisky(nestingHeld);
+            // 035: a pack from the panel's own cursor is already counted among the placed packs; one from the hand or the menu is not.
+            boolean heldIsCursor = viaMenu ? menu.getCarried().isEmpty() : !payload.swapHand();
+            if (!held.isEmpty()
+                    && !ExtensionPackRules.canPlace(inventory, held, heldIsCursor)) {
+                // 036: say why nothing happened (the backpack already has the most rows).
+                serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.limit.extension_rows"), true);
+                BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                return;
             }
-            ItemStack nestingSlotBefore = inventory.getStackInSlot(area, payload.slotIndex()).copy();
-
-            // 016: what goes into a tool area is the server's call. Since 021 the right area takes one trash can and the
-            // bottom area one tag manager and (024) the left area one auto pickup (ToolAreaRules); a refused click changes nothing.
-            if (area.isTool()) {
-                ItemStack held = viaMenu
-                        ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
-                        : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
-                // 035: a pack from the panel's own cursor is already counted among the placed packs; one from the hand or the menu is not.
-                boolean heldIsCursor = viaMenu ? menu.getCarried().isEmpty() : !payload.swapHand();
-                if (!held.isEmpty()
-                        && !ExtensionPackRules.canPlace(inventory, held, heldIsCursor)) {
-                    // 036: say why nothing happened (the backpack already has the most rows).
-                    serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.limit.extension_rows"), true);
-                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+            if (!held.isEmpty()
+                    && !ToolAreaRules.canPlace(
+                            area,
+                            held,
+                            slot,
+                            inventory.toolStacks(area),
+                            stack -> stack.is(ModItems.TRASH_CAN.get()),
+                            stack -> stack.is(ModItems.TAG_MANAGER.get()),
+                            stack -> stack.is(ModItems.AUTO_PICKUP.get()))) {
+                BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                return;
+            }
+            // 048: a liquid tank goes only into a backpack of its tier or higher, and counts only in the bottom area, one for each liquid
+            // that fits what is stored; the player is told why when it is refused.
+            if (!held.isEmpty()) {
+                TankPlacement.Verdict verdict = TankItem.check(inventory, area, held, slot);
+                if (verdict != TankPlacement.Verdict.OK) {
+                    serverPlayer.displayClientMessage(TankItem.refusal(verdict, held), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                     return;
                 }
-                if (!held.isEmpty()
-                        && !ToolAreaRules.canPlace(
+                // 052: a light (lantern and the like) counts in the bottom area, one only, whatever its kind
+                if (pnnh.mcfloatingbackpack.light.ToolLightRules.check(
                                 area,
                                 held,
-                                payload.slotIndex(),
+                                slot,
                                 inventory.toolStacks(area),
-                                stack -> stack.is(ModItems.TRASH_CAN.get()),
-                                stack -> stack.is(ModItems.TAG_MANAGER.get()),
-                                stack -> stack.is(ModItems.AUTO_PICKUP.get()))) {
-                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                                pnnh.mcfloatingbackpack.light.LightTags::isLight)
+                        != pnnh.mcfloatingbackpack.light.ToolLightRules.Verdict.OK) {
+                    serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.light.duplicate"), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                     return;
                 }
-                // 048: a liquid tank goes only into a backpack of its tier or higher, and counts only in the bottom area, one for each liquid
-                // that fits what is stored; the player is told why when it is refused.
-                if (!held.isEmpty()) {
-                    TankPlacement.Verdict verdict = TankItem.check(inventory, area, held, payload.slotIndex());
-                    if (verdict != TankPlacement.Verdict.OK) {
-                        serverPlayer.displayClientMessage(TankItem.refusal(verdict, held), true);
-                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                        return;
-                    }
-                    // 052: a light (lantern and the like) counts in the bottom area, one only, whatever its kind
-                    if (pnnh.mcfloatingbackpack.light.ToolLightRules.check(
-                                    area,
-                                    held,
-                                    payload.slotIndex(),
-                                    inventory.toolStacks(area),
-                                    pnnh.mcfloatingbackpack.light.LightTags::isLight)
-                            != pnnh.mcfloatingbackpack.light.ToolLightRules.Verdict.OK) {
-                        serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.light.duplicate"), true);
-                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                        return;
-                    }
-                    // 054: so does the mobile crafting table
-                    if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
-                                    PanelArea.RIGHT,
-                                    area,
-                                    held,
-                                    payload.slotIndex(),
-                                    inventory.toolStacks(area),
-                                    stack -> stack.is(ModItems.MOBILE_CRAFTING_TABLE.get()))
-                            != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
-                        serverPlayer.displayClientMessage(
-                                Component.translatable("message.mcfloatingbackpack.limit.mobile_crafting_table"), true);
-                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                        return;
-                    }
-                    // 055: and the mobile furnace
-                    if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
-                                    PanelArea.RIGHT,
-                                    area,
-                                    held,
-                                    payload.slotIndex(),
-                                    inventory.toolStacks(area),
-                                    stack -> stack.is(ModItems.MOBILE_FURNACE.get()))
-                            != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
-                        serverPlayer.displayClientMessage(
-                                Component.translatable("message.mcfloatingbackpack.limit.mobile_furnace"), true);
-                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                        return;
-                    }
-                    // 053: the mobile jukebox counts in the right area, one only
-                    if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
-                                    PanelArea.RIGHT,
-                                    area,
-                                    held,
-                                    payload.slotIndex(),
-                                    inventory.toolStacks(area),
-                                    stack -> stack.is(ModItems.MOBILE_JUKEBOX.get()))
-                            != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
-                        serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.limit.mobile_jukebox"), true);
-                        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                        return;
-                    }
+                // 054: so does the mobile crafting table
+                if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                PanelArea.RIGHT,
+                                area,
+                                held,
+                                slot,
+                                inventory.toolStacks(area),
+                                stack -> stack.is(ModItems.MOBILE_CRAFTING_TABLE.get()))
+                        != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                    serverPlayer.displayClientMessage(
+                            Component.translatable("message.mcfloatingbackpack.limit.mobile_crafting_table"), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                    return;
                 }
-            }
-
-            // 035: a cell of a category extension row only takes what fits its category (and a hidden row's or a missing cell takes
-            // nothing); taking out is always allowed. A refused click changes nothing.
-            if (!area.isTool()) {
-                ItemStack held = viaMenu
-                        ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
-                        : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
-                if (!held.isEmpty() && !inventory.canPlaceMain(payload.slotIndex(), held)) {
-                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
+                // 055: and the mobile furnace
+                if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                PanelArea.RIGHT,
+                                area,
+                                held,
+                                slot,
+                                inventory.toolStacks(area),
+                                stack -> stack.is(ModItems.MOBILE_FURNACE.get()))
+                        != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                    serverPlayer.displayClientMessage(
+                            Component.translatable("message.mcfloatingbackpack.limit.mobile_furnace"), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                    return;
+                }
+                // 053: the mobile jukebox counts in the right area, one only
+                if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                PanelArea.RIGHT,
+                                area,
+                                held,
+                                slot,
+                                inventory.toolStacks(area),
+                                stack -> stack.is(ModItems.MOBILE_JUKEBOX.get()))
+                        != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                    serverPlayer.displayClientMessage(Component.translatable("message.mcfloatingbackpack.limit.mobile_jukebox"), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                     return;
                 }
             }
+        }
 
-            if (viaMenu) {
-                BackpackMenuBridge.clickWithMenuCarried(
-                        inventory,
-                        menu,
-                        index -> inventory.getStackInSlot(area, index),
-                        (stack, index) -> inventory.setStackInSlot(area, index, stack),
-                        payload.slotIndex(),
-                        payload.rightClick());
-                menu.broadcastChanges();
-            } else if (payload.swapHand()) {
-                // Do not swap the backpack item itself out of the main hand into a slot.
-                ItemStack hand = serverPlayer.getMainHandItem();
-                if (FloatingBackpackItem.isBackpack(hand)) {
-                    ref.saveInventory(serverPlayer, inventory);
-                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-                    return;
-                }
-                ItemStack handCopy = hand.copy();
-                ItemStack slot = inventory.getStackInSlot(area, payload.slotIndex()).copy();
-                inventory.setStackInSlot(area, payload.slotIndex(), handCopy);
-                serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, slot);
-                serverPlayer.getInventory().setChanged();
-            } else {
-                BackpackClickLogic.applyTo(inventory, area, payload.slotIndex(), payload.rightClick());
+        // 035: a cell of a category extension row only takes what fits its category (and a hidden row's or a missing cell takes
+        // nothing); taking out is always allowed. A refused click changes nothing.
+        if (!area.isTool()) {
+            ItemStack held = viaMenu
+                    ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
+                    : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+            if (!held.isEmpty() && !inventory.canPlaceMain(slot, held)) {
+                BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                return;
             }
+        }
 
-            // 064: the record of what was taken out is used up by putting it back, and made when a nested item is picked up.
-            if (nestingHeldRisky) {
-                BackpackNesting.forget(serverPlayer.getUUID());
+        if (viaMenu) {
+            BackpackMenuBridge.clickWithMenuCarried(
+                    inventory,
+                    menu,
+                    index -> inventory.getStackInSlot(area, index),
+                    (stack, index) -> inventory.setStackInSlot(area, index, stack),
+                    slot,
+                    payload.rightClick());
+            menu.broadcastChanges();
+        } else if (payload.swapHand()) {
+            // Do not swap the backpack item itself out of the main hand into a slot.
+            ItemStack hand = serverPlayer.getMainHandItem();
+            if (FloatingBackpackItem.isBackpack(hand)) {
+                settle(loan, inventory);
+                ref.saveInventory(serverPlayer, inventory);
+                BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                return;
             }
-            if (!nestingSlotBefore.isEmpty()
-                    && !ItemStack.matches(nestingSlotBefore, inventory.getStackInSlot(area, payload.slotIndex()))) {
-                BackpackNesting.rememberTakenOut(serverPlayer, ref, nestingSlotBefore);
-            }
+            ItemStack handCopy = hand.copy();
+            ItemStack inSlot = inventory.getStackInSlot(area, slot).copy();
+            inventory.setStackInSlot(area, slot, handCopy);
+            serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, inSlot);
+            serverPlayer.getInventory().setChanged();
+        } else {
+            BackpackClickLogic.applyTo(inventory, area, slot, payload.rightClick());
+        }
 
-            ref.saveInventory(serverPlayer, inventory);
-            DiagLog.record(serverPlayer.getUUID(), "  -> saved | " + state(serverPlayer, menu, inventory, area, payload.slotIndex()));
-            BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, payload.slotIndex());
-        });
+        // 064: the record of what was taken out is used up by putting it back, and made when a nested item is picked up.
+        if (nestingHeldRisky) {
+            BackpackNesting.forget(serverPlayer.getUUID());
+        }
+        if (!nestingSlotBefore.isEmpty()
+                && !ItemStack.matches(nestingSlotBefore, inventory.getStackInSlot(area, slot))) {
+            BackpackNesting.rememberTakenOut(serverPlayer, ref, nestingSlotBefore);
+        }
+
+        settle(loan, inventory);
+        ref.saveInventory(serverPlayer, inventory);
+        DiagLog.record(serverPlayer.getUUID(), "  -> saved | " + state(serverPlayer, menu, inventory, area, slot));
+        BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
     }
 
     /** The things a click moves, in a few words: the slot, the panel's cursor, the menu's carried stack and the hand. */

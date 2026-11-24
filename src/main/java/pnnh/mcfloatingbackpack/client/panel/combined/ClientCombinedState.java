@@ -29,6 +29,10 @@ public final class ClientCombinedState {
     }
 
     private boolean active;
+    /** 066: the panel is on the "all" tab. */
+    private boolean allSelected;
+    /** 066: the member whose cell the mouse is over (its tab is lit), or -1. */
+    private int hoverMember = -1;
     private List<MemberView> members = List.of();
     private int selected = -1;
     private int combinedTier;
@@ -36,6 +40,8 @@ public final class ClientCombinedState {
     private int skippedNewer;
     private int skippedOverCap;
     private boolean loading;
+    /** 066: the epoch the server's last table said the "all" tab is at (0 on a single tab). */
+    private int allEpoch;
     private long loadingSinceMs;
     private boolean revealSelected;
     private int tabScroll;
@@ -59,6 +65,36 @@ public final class ClientCombinedState {
 
     public int selected() {
         return selected;
+    }
+
+    /** 066: whether the "all" tab is the one selected. */
+    public boolean isAllSelected() {
+        return active && allSelected;
+    }
+
+    /** 066: the tab strip's index of the selected tab: 0 is the "all" tab, the member tabs follow. */
+    public int selectedTabIndex() {
+        return allSelected ? 0 : selected + 1;
+    }
+
+    public int hoverMember() {
+        return hoverMember;
+    }
+
+    public void setHoverMember(int member) {
+        this.hoverMember = member;
+    }
+
+    /** 066: what the epoch of a request for the panel is: 0 on a single backpack's tab, the grid's on the "all" tab. */
+    public int requestEpoch() {
+        return isAllSelected() ? ClientCombinedView.get().epoch() : 0;
+    }
+
+    /** 066: all the members of an epoch have arrived and the grid is in the panel's view: the tab can be used. */
+    public void onAllReady(int epoch) {
+        if (isAllSelected() && epoch == allEpoch) {
+            loading = false;
+        }
     }
 
     public MemberView selectedMember() {
@@ -161,9 +197,13 @@ public final class ClientCombinedState {
         for (CombinedMembersPayload.Entry entry : payload.members()) {
             views.add(new MemberView(entry.ref(), entry.identity().orElse(null), entry.tier(), entry.name()));
         }
+        boolean wasAll = this.allSelected;
+        boolean wasActive = this.active;
         this.active = true;
         this.members = List.copyOf(views);
         this.selected = payload.selected();
+        this.allSelected = payload.all();
+        this.allEpoch = payload.allEpoch();
         this.combinedTier = payload.combinedTier();
         this.skippedTier = payload.skippedTier();
         this.skippedNewer = payload.skippedNewer();
@@ -171,7 +211,19 @@ public final class ClientCombinedState {
         // the panel shows the selected tab's backpack only once the contents of it have arrived
         MemberView now = selectedMember();
         boolean wasLoading = loading;
-        this.loading = now != null && !now.ref().equals(ClientBackpackView.get().getActiveRef());
+        if (payload.all()) {
+            // 066: the "all" tab is ready when every member of this epoch has arrived; a table of another epoch begins the wait again
+            ClientCombinedView view = ClientCombinedView.get();
+            if (!wasAll || !wasActive) {
+                enterAllPanel();
+            }
+            this.loading = !(view.ready() && view.epoch() == payload.allEpoch());
+        } else {
+            if (wasAll) {
+                ClientCombinedView.get().leave();
+            }
+            this.loading = now != null && !now.ref().equals(ClientBackpackView.get().getActiveRef());
+        }
         if (loading && !wasLoading) {
             loadingSinceMs = System.currentTimeMillis();
         }
@@ -187,8 +239,22 @@ public final class ClientCombinedState {
         }
     }
 
+    /** 066: the panel is now the "all" tab: it is up (no session payload says so), the search and the tag view start from nothing. */
+    private void enterAllPanel() {
+        pnnh.mcfloatingbackpack.client.panel.tags.TagOverviewState.get().resetView();
+        pnnh.mcfloatingbackpack.client.panel.search.SearchState.get().reset();
+        pnnh.mcfloatingbackpack.client.panel.PanelSelection.get().clear();
+        ClientCombinedView.get().enterAll();
+        FloatingPanelState.get().setVisible(true);
+        pnnh.mcfloatingbackpack.client.panel.HostScreenManager.ensure();
+    }
+
     /** The combined panel is over (the server said so, the panel was closed, or the world was left). */
     public void clear() {
+        ClientCombinedView.get().clear();
+        allSelected = false;
+        allEpoch = 0;
+        hoverMember = -1;
         active = false;
         members = List.of();
         selected = -1;

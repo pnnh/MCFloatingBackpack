@@ -30,7 +30,7 @@ class MobileFurnaceWiringTest {
     @Test
     void noPacketWasAddedAndTheProtocolIsStillTwenty() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"23\")"));
+        assertTrue(network.contains("versioned(\"24\")"));
         assertEquals(1, Pattern.compile("OpenToolPayload\\.TYPE").matcher(network).results().count());
         try (Stream<Path> files = Files.list(SRC.resolve("network"))) {
             assertFalse(files.anyMatch(f -> f.getFileName().toString().toLowerCase().contains("furnace")), "the furnace has no packet of its own");

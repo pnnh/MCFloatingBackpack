@@ -52,8 +52,10 @@ public final class CombinedBarInput {
             return true;
         }
         int tab = layout.hitTab(mouseX, mouseY, state.tabScroll());
-        if (tab >= 0) {
-            select(tab);
+        if (tab == 0) {
+            selectAll();
+        } else if (tab > 0) {
+            select(tab - 1);
         }
         return true;
     }
@@ -69,14 +71,35 @@ public final class CombinedBarInput {
         return true;
     }
 
-    private static void select(int index) {
+    /** 066: the "all" tab. Held on the "all" tab's own cursor is fine (the server gives it back); held on a container screen's is not. */
+    private static void selectAll() {
         ClientCombinedState state = ClientCombinedState.get();
-        if (index == state.selected() || state.loading()) {
+        if (state.isAllSelected() || state.loading()) {
             return;
         }
         Minecraft minecraft = Minecraft.getInstance();
-        // what is held (on the panel's cursor, or on a container screen's) would stay behind in the backpack it was taken from
         if (!FloatingPanelRenderer.cursorStack(minecraft).isEmpty()) {
+            if (minecraft.player != null) {
+                minecraft.player.displayClientMessage(Component.translatable("message.mcfloatingbackpack.combined.empty_cursor"), true);
+            }
+            return;
+        }
+        state.beginLoading();
+        PacketDistributor.sendToServer(CombinedSelectPayload.selectAll());
+    }
+
+    private static void select(int index) {
+        ClientCombinedState state = ClientCombinedState.get();
+        if ((index == state.selected() && !state.isAllSelected()) || state.loading()) {
+            return;
+        }
+        Minecraft minecraft = Minecraft.getInstance();
+        // what is held (on the panel's cursor, or on a container screen's) would stay behind in the backpack it was taken from; 066: the
+        // "all" tab's own cursor is given back by the server when the tab is left, only a container screen's carried stack stops the switch
+        boolean held = state.isAllSelected()
+                ? minecraft.player != null && !minecraft.player.containerMenu.getCarried().isEmpty()
+                : !FloatingPanelRenderer.cursorStack(minecraft).isEmpty();
+        if (held) {
             if (minecraft.player != null) {
                 minecraft.player.displayClientMessage(Component.translatable("message.mcfloatingbackpack.combined.empty_cursor"), true);
             }

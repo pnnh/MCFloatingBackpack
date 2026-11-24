@@ -501,7 +501,9 @@ public final class FloatingPanelInput {
                         screenOpen,
                         true,
                         ref.source().ordinal(),
-                        ref.invIndex()));
+                        ref.invIndex(),
+                        // 066: 0 on a single backpack's tab; on the "all" tab the epoch the flat cell numbers were made with
+                        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().requestEpoch()));
     }
 
     private static void stateClose() {
@@ -529,6 +531,12 @@ public final class FloatingPanelInput {
      * No prediction: what the panel shows next is the server's answer.
      */
     private static void sortBackpack() {
+        // 066: on the "all" tab the button only changes how the grid is shown: nothing is held back, nothing is sent
+        if (pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isAllSelected()) {
+            PanelSelection.get().clear();
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedView.get().sortNow();
+            return;
+        }
         Minecraft minecraft = Minecraft.getInstance();
         if (!FloatingPanelRenderer.cursorStack(minecraft).isEmpty()) {
             return;

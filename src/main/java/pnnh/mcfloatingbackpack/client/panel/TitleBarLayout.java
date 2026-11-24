@@ -31,7 +31,10 @@ public record TitleBarLayout(
         int textRightLimit,
         int boxLeft,
         int boxRight) {
-    public static final int BUTTON_SIZE = 10;
+    /** The buttons of the title bar (close, snapshot, magnifier, sort): 12 pixels, centred in the 17 pixel bar by {@link #BUTTON_TOP}. */
+    public static final int BUTTON_SIZE = 12;
+    /** Where the buttons start, below the top of the panel. */
+    public static final int BUTTON_TOP = 3;
     public static final int RIGHT_MARGIN = 3;
     public static final int GAP = 2;
     /** The number needs at least this much room (four characters) or the snapshot button gives way. */

@@ -126,7 +126,7 @@ public final class PanelSelectionInput {
                     i -> i < view.slotCount() && !view.getStackInSlot(i).isEmpty());
             if (slots.length > 0) {
                 // "TO_INVENTORY" means out of the backpack; the server picks the open container or the inventory.
-                PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_INVENTORY, slots));
+                PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_INVENTORY, slots, pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().requestEpoch()));
             }
         } else {
             // One last step so the slot under the release point counts.

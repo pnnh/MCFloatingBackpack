@@ -41,7 +41,7 @@ class ServerCompatWiringTest {
             assertFalse(text.contains("ServerCompatGate.allows("), entry + " asks the gate directly, so no notice is sent");
             total += calls;
         }
-        assertEquals(7, total, "six entries, the trash one asks twice");
+        assertEquals(8, total, "six entries, the trash one asks twice, the cursor gesture twice (066: the all tab has its own path)");
     }
 
     @Test
@@ -151,6 +151,6 @@ class ServerCompatWiringTest {
 
     @Test
     void theProtocolIsNotChanged() throws IOException {
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"23\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
     }
 }

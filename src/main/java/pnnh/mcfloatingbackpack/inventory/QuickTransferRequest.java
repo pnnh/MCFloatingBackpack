@@ -54,12 +54,17 @@ public final class QuickTransferRequest {
      * [0,35]; backpack side 1..backpackSize entries in [0,backpackSize-1].
      */
     public static boolean validate(Direction direction, int[] slots, int backpackSize) {
+        return validate(direction, slots, backpackSize, MAX_BACKPACK_SLOTS);
+    }
+
+    /** 066: the same with another cap on the backpack side (the "all" tab's flat grid is many backpacks long). */
+    public static boolean validate(Direction direction, int[] slots, int backpackSize, int cap) {
         if (direction == null || slots == null || slots.length == 0) {
             return false;
         }
         int bound = direction == Direction.TO_BACKPACK
                 ? INVENTORY_SLOTS
-                : Math.min(Math.max(backpackSize, 0), MAX_BACKPACK_SLOTS);
+                : Math.min(Math.max(backpackSize, 0), cap);
         if (slots.length > bound) {
             return false;
         }

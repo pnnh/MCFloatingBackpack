@@ -25,7 +25,7 @@ class CombinedBarLayoutTest {
         CombinedBarLayout layout = layout(40);
         assertEquals(new Rect(X, Y - CombinedBarLayout.BARS_H, W, CombinedBarLayout.BARS_H), layout.barsRect());
         assertEquals(Y, layout.barsRect().y() + layout.barsRect().h());
-        assertEquals(new Rect(X, Y - CombinedBarLayout.BARS_H, W, CombinedBarLayout.TITLE_H), layout.titleRect());
+        assertEquals(layout.tabBarRect(), layout.barsRect());
         assertEquals(new Rect(X, Y - CombinedBarLayout.TAB_H, W, CombinedBarLayout.TAB_H), layout.tabBarRect());
     }
 

@@ -23,10 +23,10 @@ import pnnh.mcfloatingbackpack.inventory.combined.CombinedMembers;
 /**
  * 065: the table of backpacks a combined backpack connects, as the server worked it out: one entry for each tab, which one is selected, and
  * how many were left out and why. Sent when the panel is opened or a tab is chosen, and afterwards only when the table changes (checked once
- * a second); {@code active = false} says the combined panel is over (the panel goes on as the ordinary one, or closes).
+ * a second); {@code allEpoch} (066) is 0 on a single backpack's tab, and on the "all" tab the epoch the member syncs that follow are made with ({@code selected} then means nothing); {@code active = false} says the combined panel is over (the panel goes on as the ordinary one, or closes).
  */
 public record CombinedMembersPayload(
-        boolean active, int combinedTier, int selected, int skippedTier, int skippedNewer, int skippedOverCap, List<Entry> members)
+        boolean active, int allEpoch, int combinedTier, int selected, int skippedTier, int skippedNewer, int skippedOverCap, List<Entry> members)
         implements CustomPacketPayload {
     /** One tab: where the backpack is (a {@link BackpackRef}), the identity it had (if any), its tier and the name given in an anvil. */
     public record Entry(int sourceOrdinal, int invIndex, Optional<UUID> identity, int tier, String name) {
@@ -45,6 +45,7 @@ public record CombinedMembersPayload(
     public static final StreamCodec<RegistryFriendlyByteBuf, CombinedMembersPayload> STREAM_CODEC = StreamCodec.of(
             (buf, payload) -> {
                 buf.writeBoolean(payload.active());
+                buf.writeVarInt(payload.allEpoch());
                 buf.writeByte(payload.combinedTier());
                 buf.writeVarInt(payload.selected() + 1);
                 buf.writeVarInt(payload.skippedTier());
@@ -61,6 +62,7 @@ public record CombinedMembersPayload(
             },
             buf -> {
                 boolean active = buf.readBoolean();
+                int allEpoch = buf.readVarInt();
                 int tier = buf.readByte();
                 int selected = buf.readVarInt() - 1;
                 int skippedTier = buf.readVarInt();
@@ -79,21 +81,30 @@ public record CombinedMembersPayload(
                     String name = buf.readUtf(CombinedCandidates.MAX_NAME);
                     members.add(new Entry(source, slot, identity, entryTier, name));
                 }
-                return new CombinedMembersPayload(active, tier, selected, skippedTier, skippedNewer, skippedOverCap, members);
+                return new CombinedMembersPayload(active, allEpoch, tier, selected, skippedTier, skippedNewer, skippedOverCap, members);
             });
 
     /** The combined panel is over. */
     public static CombinedMembersPayload inactive() {
-        return new CombinedMembersPayload(false, 0, -1, 0, 0, 0, List.of());
+        return new CombinedMembersPayload(false, 0, 0, -1, 0, 0, 0, List.of());
+    }
+
+    public boolean all() {
+        return allEpoch > 0;
     }
 
     public static CombinedMembersPayload of(int combinedTier, int selected, CombinedMembers.Result<BackpackRef> result) {
+        return of(combinedTier, selected, 0, result);
+    }
+
+    /** {@code allEpoch} 0 for a single tab ({@code selected} its place), else the "all" tab's epoch. */
+    public static CombinedMembersPayload of(int combinedTier, int selected, int allEpoch, CombinedMembers.Result<BackpackRef> result) {
         List<Entry> entries = new ArrayList<>(result.members().size());
         for (CombinedMembers.Member<BackpackRef> member : result.members()) {
             entries.add(new Entry(
                     member.ref().source().ordinal(), member.ref().invIndex(), Optional.ofNullable(member.identity()), member.tier(), member.customName()));
         }
-        return new CombinedMembersPayload(true, combinedTier, selected, result.skippedTier(), result.skippedNewer(), result.skippedOverCap(), entries);
+        return new CombinedMembersPayload(true, allEpoch, combinedTier, allEpoch > 0 ? -1 : selected, result.skippedTier(), result.skippedNewer(), result.skippedOverCap(), entries);
     }
 
     @Override

@@ -152,14 +152,15 @@ public final class SearchRenderer {
     private static void drawMagnifier(GuiGraphics graphics, FloatingPanelState panel, Minecraft minecraft, int mouseX, int mouseY) {
         int size = TitleBarLayout.BUTTON_SIZE;
         int x1 = panel.titleBar().searchLeft();
-        int y1 = panel.getPosY() + 2;
+        int y1 = panel.getPosY() + TitleBarLayout.BUTTON_TOP;
         graphics.fill(x1, y1, x1 + size, y1 + size, COLOR_BUTTON);
         // the lens: a ring of 5 by 5 pixels, and the handle running down to the right
-        graphics.fill(x1 + 3, y1 + 2, x1 + 6, y1 + 3, COLOR_GLYPH);
-        graphics.fill(x1 + 3, y1 + 6, x1 + 6, y1 + 7, COLOR_GLYPH);
-        graphics.fill(x1 + 2, y1 + 3, x1 + 3, y1 + 6, COLOR_GLYPH);
-        graphics.fill(x1 + 6, y1 + 3, x1 + 7, y1 + 6, COLOR_GLYPH);
-        graphics.fill(x1 + 6, y1 + 6, x1 + 8, y1 + 8, COLOR_GLYPH);
+        graphics.fill(x1 + 3, y1 + 2, x1 + 7, y1 + 3, COLOR_GLYPH);
+        graphics.fill(x1 + 3, y1 + 7, x1 + 7, y1 + 8, COLOR_GLYPH);
+        graphics.fill(x1 + 2, y1 + 3, x1 + 3, y1 + 7, COLOR_GLYPH);
+        graphics.fill(x1 + 7, y1 + 3, x1 + 8, y1 + 7, COLOR_GLYPH);
+        graphics.fill(x1 + 7, y1 + 7, x1 + 9, y1 + 9, COLOR_GLYPH);
+        graphics.fill(x1 + 9, y1 + 9, x1 + 10, y1 + 10, COLOR_GLYPH);
         if (panel.hitsSearchButton(mouseX, mouseY)) {
             graphics.renderTooltip(
                     minecraft.font, Component.translatable("panel." + MCFloatingBackpack.MOD_ID + ".search.tooltip"), mouseX, mouseY);
@@ -170,7 +171,7 @@ public final class SearchRenderer {
             GuiGraphics graphics, FloatingPanelState panel, Minecraft minecraft, SearchState state, int mouseX, int mouseY) {
         Font font = minecraft.font;
         TitleBarLayout bar = panel.titleBar();
-        int y1 = panel.getPosY() + 2;
+        int y1 = panel.getPosY() + TitleBarLayout.BUTTON_TOP;
         int y2 = y1 + TitleBarLayout.BUTTON_SIZE;
         int count = state.liveCount(SearchContext.source());
         String countText = String.valueOf(count);

@@ -137,6 +137,10 @@ public class MCFloatingBackpack {
         // 064: what the nesting rule remembers is per running world
         NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> {
             pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.clear();
+            // 066: what an "all" tab's cursor holds goes back to the players first
+            for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
+                pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.flush(player);
+            }
             // 065: no combined panel survives the server
             pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.clear();
         });
@@ -169,6 +173,8 @@ public class MCFloatingBackpack {
                 SERVER_MAIN_HAND.forget(player.getUUID());
                 // 049: the pipes' cooldowns
                 pnnh.mcfloatingbackpack.pipe.PipeCooldowns.forget(player.getUUID());
+                // 066: the "all" tab's cursor goes back into the player's backpacks or inventory before the player is saved
+                pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.flush(player);
                 BackpackGate.forget(player.getUUID());
                 // 030: what the player changed last is written as a snapshot now.
                 SnapshotService.get().ifPresent(service -> service.onLogout(player.getUUID()));

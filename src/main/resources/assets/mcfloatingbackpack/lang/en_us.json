@@ -355,7 +355,12 @@
   "gui.mcfloatingbackpack.combined.place.offhand": "Off hand",
   "gui.mcfloatingbackpack.combined.place.inventory": "Inventory slot %s",
   "gui.mcfloatingbackpack.combined.capacity": "%s slots",
-  "gui.mcfloatingbackpack.combined.b_active": "The B key opens this one",
-  "gui.mcfloatingbackpack.tools_active_only": "Mobile tools only work for the backpack the B key opens",
+  "gui.mcfloatingbackpack.combined.b_active": "Main backpack: auto pickup and the mobile tools work on this one",
+  "gui.mcfloatingbackpack.combined.all": "All",
+  "gui.mcfloatingbackpack.combined.all.tooltip": "All: the %s connected backpacks as one grid",
+  "gui.mcfloatingbackpack.combined.all.tier": "Connected by the %s",
+  "gui.mcfloatingbackpack.combined.all.from": "From %s (%s)",
+  "message.mcfloatingbackpack.combined.flushed": "What you held went back into your backpacks or inventory; what did not fit was dropped",
+  "gui.mcfloatingbackpack.tools_active_only": "Mobile tools only work for the main backpack",
   "tooltip.mcfloatingbackpack.combined": "Connects the floating backpacks you carry, up to its own tier. Wear it and press the combined key"
 }

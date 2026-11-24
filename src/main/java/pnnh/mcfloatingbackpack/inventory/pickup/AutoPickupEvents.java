@@ -11,7 +11,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.TriState;
 import net.neoforged.neoforge.event.entity.player.ItemEntityPickupEvent;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import pnnh.mcfloatingbackpack.MCFloatingBackpack;
 import pnnh.mcfloatingbackpack.inventory.BackpackContents;
@@ -19,10 +18,9 @@ import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
-import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.pickup.AutoPickupDecision.Outcome;
-import pnnh.mcfloatingbackpack.network.BackpackSlotUpdatePayload;
+import pnnh.mcfloatingbackpack.network.BackpackNetwork;
 
 /**
  * 024: the auto pickup on the server. It listens to {@code ItemEntityPickupEvent.Pre} (the event Sophisticated Backpacks and
@@ -122,15 +120,8 @@ public final class AutoPickupEvents {
         int moved = result.moved();
         Item item = stack.getItem();
         stack.shrink(moved);
-        for (int index : result.changedSlots()) {
-            PacketDistributor.sendToPlayer(
-                    player,
-                    new BackpackSlotUpdatePayload(
-                            PanelArea.MAIN.toByte(),
-                            index,
-                            inventory.getStackInSlot(index).copy(),
-                            inventory.getCursor().copy()));
-        }
+        // 066: through the one place that knows which backpack the open panel shows (a combined panel may show another one, or the all tab)
+        BackpackNetwork.sendPickupUpdate(player, ref, inventory, result.changedSlots());
         player.take(entity, moved);
         player.awardStat(Stats.ITEM_PICKED_UP.get(item), moved);
         player.onItemPickup(entity);

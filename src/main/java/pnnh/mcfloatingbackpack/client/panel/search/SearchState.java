@@ -25,6 +25,14 @@ public final class SearchState {
 
         boolean hasItem(int slot);
 
+        /**
+         * 066: the order the cells are shown in when it is not the slot order (the "all" tab after the sort button): display position -> slot;
+         * null for the slot order.
+         */
+        default int[] displayOrder() {
+            return null;
+        }
+
         /** 044: the categories that have items hidden (037) and in how many cells, for {@code /hidden}; nothing by default. */
         default List<HiddenSummaryRows.Line> hiddenLines() {
             return List.of();
@@ -104,12 +112,31 @@ public final class SearchState {
         }
         lastText = text;
         query = SearchQuery.parse(text);
-        int[] found = SearchResults.compute(query, source.slotCount(), source::matcherOf);
+        int[] found = compute(source);
         slots = found;
         PanelSelection.get().clear();
         FloatingPanelState state = FloatingPanelState.get();
         state.setSearchSlots(found);
         state.setScrollRow(0);
+    }
+
+    /** The cells that match the query now, in the order they are shown (066: the sort button's order on the "all" tab). */
+    private int[] compute(Source source) {
+        int[] order = source.displayOrder();
+        if (order == null) {
+            return SearchResults.compute(query, source.slotCount(), source::matcherOf);
+        }
+        int[] positions = SearchResults.compute(query, order.length, position -> source.matcherOf(order[position]));
+        return positions == null ? null : pnnh.mcfloatingbackpack.client.panel.combined.AllSearchMap.toFlat(positions, order);
+    }
+
+    /** 066: the results again for the same text (the display order changed); the selection and the scroll are left alone. */
+    public void refresh(Source source) {
+        if (query.isEmpty()) {
+            return;
+        }
+        slots = compute(source);
+        FloatingPanelState.get().setSearchSlots(slots);
     }
 
     /** 044: the command the query begins with (none, {@code /hidden}, or an unknown one). */

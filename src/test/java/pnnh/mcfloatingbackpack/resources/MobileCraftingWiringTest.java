@@ -28,7 +28,7 @@ class MobileCraftingWiringTest {
     @Test
     void theRequestIsRegisteredToTheServerOnTheProtocol20() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"23\")"));
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"24\")"));
         assertTrue(network.contains("registrar.playToServer(OpenToolPayload.TYPE, OpenToolPayload.STREAM_CODEC, OpenToolPayload::handleServer)"));
     }
 

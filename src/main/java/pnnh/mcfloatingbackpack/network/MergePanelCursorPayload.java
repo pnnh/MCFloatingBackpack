@@ -48,6 +48,21 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
             if (menu == null || !ServerCompatDenials.allows(serverPlayer, menu, Action.MERGE_CURSOR)) {
                 return;
             }
+            // 066: on the "all" tab the cursor is the tab's in-memory one: it goes onto the menu's carried stack if that is empty
+            if (PanelTargets.inAll(serverPlayer)) {
+                pnnh.mcfloatingbackpack.inventory.combined.AllState all =
+                        pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.get(serverPlayer.getUUID()).all();
+                if (all.cursor().isEmpty()) {
+                    return;
+                }
+                if (menu.getCarried().isEmpty()) {
+                    menu.setCarried(all.cursor().copy());
+                    all.setCursor(net.minecraft.world.item.ItemStack.EMPTY);
+                    menu.broadcastChanges();
+                    pnnh.mcfloatingbackpack.network.AllSync.sendCell(serverPlayer, all, -1, net.minecraft.world.item.ItemStack.EMPTY);
+                }
+                return;
+            }
             BackpackRef ref = PanelTargets.resolve(serverPlayer);
             if (ref == null || !ref.stillValid(serverPlayer)) {
                 return;

@@ -234,7 +234,7 @@ class PipeWiringTest {
     @Test
     void thereAreStillNoNewPacketsAndTheProtocolIsStill19() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"23\")"));
+        assertTrue(network.contains("versioned(\"24\")"));
         assertFalse(network.contains("Pipe"));
         assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;")); // 051 raised it from 2
     }
@@ -244,7 +244,7 @@ class PipeWiringTest {
     @Test
     void nothingNewWasAddedToTheNetworkTheDataOrTheBuildOutsideTheDevRuntime() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"23\")"), "the protocol is still 19");
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"24\")"), "the protocol is still 19");
         assertFalse(network.contains("Pipe"), "no pipe packet");
         assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;"), "the data revision is 6 since 055 (049 itself left it at 2)");
         String gradle = read(Path.of("build.gradle"));

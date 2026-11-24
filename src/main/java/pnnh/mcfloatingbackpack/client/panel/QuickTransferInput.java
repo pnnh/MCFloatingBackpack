@@ -261,14 +261,14 @@ public final class QuickTransferInput {
             }
         }
         if (!inventory.isEmpty()) {
-            PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_BACKPACK, toArray(inventory)));
+            PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_BACKPACK, toArray(inventory), pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().requestEpoch()));
         }
         if (!container.isEmpty() && activeScreen instanceof AbstractContainerScreen<?> screen) {
             PacketDistributor.sendToServer(
                     new BackpackTakeFromContainerPayload(screen.getMenu().containerId, toArray(container)));
         }
         if (!panel.isEmpty()) {
-            PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_INVENTORY, toArray(panel)));
+            PacketDistributor.sendToServer(BackpackQuickTransferPayload.of(Direction.TO_INVENTORY, toArray(panel), pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().requestEpoch()));
         }
         if (!trash.isEmpty()) {
             // The target is the backpack's main area, so no menu is involved.

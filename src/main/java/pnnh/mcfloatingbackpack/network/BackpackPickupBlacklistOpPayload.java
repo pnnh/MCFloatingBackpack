@@ -51,6 +51,10 @@ public record BackpackPickupBlacklistOpPayload(byte op, String tag) implements C
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
+            // 066: the "all" tab has no single backpack: what belongs to one backpack (trash can, tags, tidying, pickup blacklist) is ignored there
+            if (PanelTargets.inAll(player)) {
+                return;
+            }
             BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);

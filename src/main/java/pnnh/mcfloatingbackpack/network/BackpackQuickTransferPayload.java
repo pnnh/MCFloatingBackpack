@@ -28,14 +28,19 @@ import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeInventorySync;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Holder;
+import pnnh.mcfloatingbackpack.inventory.combined.AllAddressing;
+import pnnh.mcfloatingbackpack.inventory.combined.AllContext;
+import pnnh.mcfloatingbackpack.inventory.combined.AllRequestRules;
+import pnnh.mcfloatingbackpack.inventory.combined.BackpackSlots;
 import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
+import pnnh.mcfloatingbackpack.inventory.combined.SlotAccess;
 
 /**
  * Client request to quick-transfer stacks between the player's inventory (indices 0-35) and the
  * open floating backpack (011). {@code slots} are indices on the <em>source</em> side. The server
  * validates everything and re-resolves the backpack itself; nothing here is trusted.
  */
-public record BackpackQuickTransferPayload(byte direction, int[] slots) implements CustomPacketPayload {
+public record BackpackQuickTransferPayload(byte direction, int[] slots, int epoch) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<BackpackQuickTransferPayload> TYPE =
             new CustomPacketPayload.Type<>(
                     ResourceLocation.fromNamespaceAndPath(MCFloatingBackpack.MOD_ID, "quick_transfer"));
@@ -44,6 +49,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             StreamCodec.of(
                     (buf, payload) -> {
                         buf.writeByte(payload.direction());
+                        buf.writeVarInt(payload.epoch());
                         buf.writeVarInt(payload.slots().length);
                         for (int slot : payload.slots()) {
                             buf.writeVarInt(slot);
@@ -51,19 +57,25 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                     },
                     buf -> {
                         byte direction = buf.readByte();
+                        int epoch = buf.readVarInt();
                         int count = buf.readVarInt();
-                        if (count < 0 || count > QuickTransferRequest.MAX_BACKPACK_SLOTS) {
+                        if (count < 0 || count > AllAddressing.MAX_MEMBERS * QuickTransferRequest.MAX_BACKPACK_SLOTS) {
                             throw new DecoderException("quick transfer slot count out of range: " + count);
                         }
                         int[] slots = new int[count];
                         for (int i = 0; i < count; i++) {
                             slots[i] = buf.readVarInt();
                         }
-                        return new BackpackQuickTransferPayload(direction, slots);
+                        return new BackpackQuickTransferPayload(direction, slots, epoch);
                     });
 
     public static BackpackQuickTransferPayload of(Direction direction, int[] slots) {
-        return new BackpackQuickTransferPayload(direction.toByte(), slots);
+        return of(direction, slots, 0);
+    }
+
+    /** 066: {@code epoch} is 0 on a single backpack's tab; on the "all" tab its epoch (the backpack side's slots are then flat cell numbers). */
+    public static BackpackQuickTransferPayload of(Direction direction, int[] slots, int epoch) {
+        return new BackpackQuickTransferPayload(direction.toByte(), slots, epoch);
     }
 
     @Override
@@ -74,6 +86,14 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
     public static void handleServer(BackpackQuickTransferPayload payload, IPayloadContext context) {
         context.enqueueWork(() -> {
             if (!(context.player() instanceof ServerPlayer player)) {
+                return;
+            }
+            // 066: on the "all" tab the backpack side is the flat grid of all the members
+            if (PanelTargets.inAll(player)) {
+                handleAll(payload, player);
+                return;
+            }
+            if (!AllRequestRules.epochOk(false, 0, payload.epoch())) {
                 return;
             }
             // The server has no "panel is open" state (BackpackClickPayload's flag is client-reported),
@@ -118,6 +138,33 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
         });
     }
 
+    /** 066: a quick transfer between the player's inventory and the "all" grid. */
+    private static void handleAll(BackpackQuickTransferPayload payload, ServerPlayer player) {
+        if (!player.containerMenu.getCarried().isEmpty()) {
+            return;
+        }
+        AllContext context = AllContext.begin(player, payload.epoch());
+        if (context == null) {
+            return;
+        }
+        Direction direction = Direction.fromByte(payload.direction());
+        DiagLog.record(player.getUUID(), "all quick transfer " + direction + " slots=" + (payload.slots() == null ? 0 : payload.slots().length));
+        if (!QuickTransferRequest.validate(
+                direction, payload.slots(), context.addressing().total(), AllAddressing.MAX_MEMBERS * QuickTransferRequest.MAX_BACKPACK_SLOTS)) {
+            return;
+        }
+        if (direction == Direction.TO_BACKPACK) {
+            // a backpack in the inventory is never put into one (064), so there is no slot of the inventory to protect from itself
+            pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(
+                    player, inventoryToBackpack(player.getInventory(), context::insertIntoMain, payload.slots(), -1));
+        } else {
+            backpackOut(player, context.slots(), payload.slots());
+        }
+        context.finish();
+        player.containerMenu.broadcastChanges();
+        CreativeInventorySync.afterInventoryChange(player);
+    }
+
     private static Holder holderOf(BackpackRef ref) {
         // 032: anything worn (the chest, later an accessories mod's back slot) is not in inventory 0-35, so there is no index to protect.
         if (ref.source().isWorn()) {
@@ -141,6 +188,12 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
     /** Player inventory indices -> backpack slots. The backpack item itself is never moved. */
     static pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict inventoryToBackpack(
             Inventory inventory, BackpackInventory backpack, int[] sources, int protectedIndex) {
+        return inventoryToBackpack(inventory, backpack::insertIntoMain, sources, protectedIndex);
+    }
+
+    /** 066: the same into anything that takes a stack and returns what it did not take (a backpack, or the members of the "all" tab). */
+    static pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict inventoryToBackpack(
+            Inventory inventory, java.util.function.UnaryOperator<ItemStack> insertIntoMain, int[] sources, int protectedIndex) {
         pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict refusedNesting =
                 pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK;
         for (int index : sources) {
@@ -157,7 +210,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
                 continue;
             }
             // 035: into the rows that take the stack first, then into the tier capacity's cells.
-            inventory.setItem(index, backpack.insertIntoMain(stack));
+            inventory.setItem(index, insertIntoMain.apply(stack));
         }
         return refusedNesting;
     }
@@ -169,6 +222,11 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
      * backpack.
      */
     static void backpackOut(ServerPlayer player, BackpackInventory backpack, int[] sources) {
+        backpackOut(player, new BackpackSlots(backpack), sources);
+    }
+
+    /** 066: the same out of any list of cells (a backpack's main area, or the flat grid of the "all" tab). */
+    static void backpackOut(ServerPlayer player, SlotAccess<ItemStack> backpack, int[] sources) {
         if (!ContainerMenuAccess.hasOpenContainer(player)) {
             backpackToInventory(player.getInventory(), backpack, sources);
             return;
@@ -178,7 +236,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
         }
         ContainerMenuAccess menu = new ContainerMenuAccess(player);
         for (int index : sources) {
-            ItemStack stack = backpack.getStackInSlot(index);
+            ItemStack stack = backpack.get(index);
             if (stack.isEmpty()) {
                 continue;
             }
@@ -186,12 +244,12 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             // generic path below runs, as before.
             Optional<ItemStack> viaBridge = NetworkStorageBridges.tryInsert(player, player.containerMenu, stack);
             if (viaBridge.isPresent()) {
-                backpack.setStackInSlot(index, viaBridge.get());
+                backpack.set(index, viaBridge.get());
                 continue;
             }
             OpenContainerDelivery.Result<ItemStack> result =
                     OpenContainerDelivery.deliver(ItemStackTransferOps.INSTANCE, menu, stack);
-            backpack.setStackInSlot(index, result.leftover());
+            backpack.set(index, result.leftover());
             if (result.error() != null) {
                 MCFloatingBackpack.LOGGER.error(
                         "Quick transfer into open container threw (menu {}, item {}); items in the temporary slot were taken back",
@@ -224,15 +282,19 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
      * on purpose: {@code Inventory.add} discards what does not fit for players with infinite materials.
      */
     static void backpackToInventory(Inventory inventory, BackpackInventory backpack, int[] sources) {
+        backpackToInventory(inventory, new BackpackSlots(backpack), sources);
+    }
+
+    static void backpackToInventory(Inventory inventory, SlotAccess<ItemStack> backpack, int[] sources) {
         int[] targets = ascending(QuickTransferRequest.INVENTORY_SLOTS);
         for (int index : sources) {
-            ItemStack stack = backpack.getStackInSlot(index);
+            ItemStack stack = backpack.get(index);
             if (stack.isEmpty()) {
                 continue;
             }
             ItemStack rest = QuickTransferLogic.moveInto(
                     ItemStackTransferOps.INSTANCE, stack, targets, inventory::getItem, (s, i) -> inventory.setItem(i, s));
-            backpack.setStackInSlot(index, rest);
+            backpack.set(index, rest);
         }
     }
 }

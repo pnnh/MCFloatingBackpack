@@ -19,7 +19,7 @@ public final class FloatingPanelState {
     /** Pixel hit-box square at the bottom-right corner used to drag-resize the panel. */
     public static final int RESIZE_HANDLE_SIZE = 8;
     /** Pixel hit-box square near the top-right of the drag bar used to close the panel. */
-    public static final int CLOSE_BUTTON_SIZE = 10;
+    public static final int CLOSE_BUTTON_SIZE = TitleBarLayout.BUTTON_SIZE;
     /** Pixel hit-box square at the top-left of the drag bar showing the backpack-tier icon. */
     public static final int TITLE_ICON_SIZE = 12;
 
@@ -28,6 +28,9 @@ public final class FloatingPanelState {
     private boolean visible;
     /** 065: see {@link #setTopReserve}. */
     private int topReserve;
+    /** 066: see {@link #setBaseMapProvider}. */
+    private java.util.function.IntFunction<int[]> baseMapProvider;
+    private boolean allMode;
     private int posX = DEFAULT_POS_X;
     private int posY = DEFAULT_POS_Y;
     private int width = DEFAULT_WIDTH;
@@ -179,7 +182,7 @@ public final class FloatingPanelState {
                 (mouseY - resizeGrabOffsetY) + PanelSlots.SLOT_SIZE / 2, PanelSlots.SLOT_SIZE);
         int targetCols = clamp(resizeStartCols + deltaCols, MIN_VISIBLE_CELLS, PanelSlots.COLS);
         int targetRows = clamp(
-                resizeStartRows + deltaRows, MIN_VISIBLE_CELLS, Math.max(MIN_VISIBLE_CELLS, totalRows));
+                resizeStartRows + deltaRows, MIN_VISIBLE_CELLS, Math.max(MIN_VISIBLE_CELLS, maxVisibleRows()));
         // 017: a target that would show a solid filler cell is ignored, not adjusted: the size stays at the last
         // valid one until the drag reaches a valid target again. Columns and rows are judged on their own, and
         // the rows against the columns that were just adopted (the row limit depends on them).
@@ -229,7 +232,7 @@ public final class FloatingPanelState {
             return false;
         }
         int x1 = titleBar().closeLeft();
-        int y1 = posY + 2;
+        int y1 = posY + TitleBarLayout.BUTTON_TOP;
         return mouseX >= x1
                 && mouseX < x1 + CLOSE_BUTTON_SIZE
                 && mouseY >= y1
@@ -258,7 +261,8 @@ public final class FloatingPanelState {
     /** 031: the snapshot button; never hit when the bar is too narrow to show it. */
     public boolean hitsSnapshotButton(double mouseX, double mouseY) {
         TitleBarLayout bar = titleBar();
-        return bar.hasSnapshot() && hitsButton(bar.snapshotLeft(), mouseX, mouseY);
+        // 066: a snapshot belongs to one backpack: not on the "all" tab
+        return !allMode && bar.hasSnapshot() && hitsButton(bar.snapshotLeft(), mouseX, mouseY);
     }
 
     /** 042: the magnifier, left of the snapshot button (only drawn and hit while the search box is closed: the caller checks). */
@@ -272,7 +276,7 @@ public final class FloatingPanelState {
     }
 
     private boolean hitsButton(int left, double mouseX, double mouseY) {
-        int y1 = posY + 2;
+        int y1 = posY + TitleBarLayout.BUTTON_TOP;
         return mouseX >= left
                 && mouseX < left + TitleBarLayout.BUTTON_SIZE
                 && mouseY >= y1
@@ -282,7 +286,7 @@ public final class FloatingPanelState {
     /** 042: the open search box: from the tier icon to the close button (or the right end), as tall as the buttons. */
     public boolean hitsSearchBox(double mouseX, double mouseY) {
         TitleBarLayout bar = titleBar();
-        int y1 = posY + 2;
+        int y1 = posY + TitleBarLayout.BUTTON_TOP;
         return mouseX >= bar.boxLeft()
                 && mouseX < bar.boxRight()
                 && mouseY >= y1
@@ -293,7 +297,7 @@ public final class FloatingPanelState {
     public boolean hitsSearchClear(double mouseX, double mouseY) {
         TitleBarLayout bar = titleBar();
         int left = bar.boxRight() - SearchBoxLayout.RIGHT_INSET - SearchBoxLayout.CLEAR_SIZE;
-        int y1 = posY + 2;
+        int y1 = posY + TitleBarLayout.BUTTON_TOP;
         return mouseX >= left
                 && mouseX < left + SearchBoxLayout.CLEAR_SIZE
                 && mouseY >= y1
@@ -345,6 +349,14 @@ public final class FloatingPanelState {
 
     public int getScrollRow() {
         return scrollRow;
+    }
+
+    /**
+     * The most rows the panel is made to show: all the grid's rows. On the "all" tab the grid also fills the bottom row's place, so the panel
+     * shows one row more than {@code visibleRows}, and one fewer is the limit (otherwise the panel could be made one empty row taller than the grid).
+     */
+    private int maxVisibleRows() {
+        return allMode ? Math.max(1, totalRows - 1) : totalRows;
     }
 
     public void setTotalRows(int totalRows) {
@@ -428,7 +440,7 @@ public final class FloatingPanelState {
 
         // The MIN_VISIBLE_CELLS floor wins even on a screen too small to naturally fit it; only
         // the position gets squeezed (via clampToScreen / the posY fix-up below), not the size.
-        int rowsUpper = Math.max(MIN_VISIBLE_CELLS, Math.min(totalRows, fitRows));
+        int rowsUpper = Math.max(MIN_VISIBLE_CELLS, Math.min(maxVisibleRows(), fitRows));
         int colsUpper = Math.max(MIN_VISIBLE_CELLS, Math.min(PanelSlots.COLS, fitCols));
 
         if (sizePreferenceSet) {
@@ -461,8 +473,51 @@ public final class FloatingPanelState {
      * @param counts slot count of each area indexed by {@link pnnh.mcfloatingbackpack.inventory.PanelArea#ordinal()}
      */
     public PanelLayout layoutModel(int[] counts) {
-        return PanelLayout.of(posX, posY, visibleCols, visibleRows, counts,
-                new int[] {scrollRow, toolScroll[1], toolScroll[2], toolScroll[3]}, searchSlots);
+        int[] scroll = new int[] {scrollRow, toolScroll[1], toolScroll[2], toolScroll[3]};
+        if (allMode) {
+            // 066: the "all" tab's grid fills the whole inside of the panel
+            return PanelLayout.ofFull(posX, posY, visibleCols, visibleRows, counts, scroll, effectiveMainMap());
+        }
+        return PanelLayout.of(posX, posY, visibleCols, visibleRows, counts, scroll, effectiveMainMap());
+    }
+
+    /** 066: the columns of the main area as drawn: the panel's, or on the "all" tab two more (the side columns' place). */
+    public int mainCols() {
+        return Math.max(1, visibleCols) + (allMode ? 2 : 0);
+    }
+
+    /** 066: the rows of the main area as drawn: the panel's, or on the "all" tab one more (the bottom row's place). */
+    public int mainRows() {
+        return Math.max(1, visibleRows) + (allMode ? 1 : 0);
+    }
+
+    /**
+     * 066: where the main area's cells come from when no search is on: on the "all" tab the flat grid laid out over the visible columns (each
+     * backpack from a new row), asked for the current column count; null on a single backpack's tab.
+     */
+    public void setBaseMapProvider(java.util.function.IntFunction<int[]> provider) {
+        this.baseMapProvider = provider;
+        clampScroll();
+    }
+
+    /** 066: the main map when no search is on (null = every slot in order). */
+    public int[] baseMap() {
+        return baseMapProvider == null ? null : baseMapProvider.apply(mainCols());
+    }
+
+    /** 066: the map the main area shows: the search's, else the "all" tab's, else null (every slot in order). */
+    private int[] effectiveMainMap() {
+        return searchSlots != null ? searchSlots : baseMap();
+    }
+
+    /** 066: the panel shows the "all" tab: the numbers and buttons that belong to one backpack are not drawn or hit. */
+    public boolean isAllMode() {
+        return allMode;
+    }
+
+    public void setAllMode(boolean allMode) {
+        this.allMode = allMode;
+        clampScroll();
     }
 
     /**
@@ -481,15 +536,16 @@ public final class FloatingPanelState {
 
     /** 042: the rows the main area scrolls over: the whole backpack's, or the search results' packed over the visible columns. */
     private int mainScrollRows() {
-        if (searchSlots == null) {
+        int[] map = effectiveMainMap();
+        if (map == null) {
             return totalRows;
         }
-        int cols = Math.max(1, visibleCols);
-        return Math.max(1, (searchSlots.length + cols - 1) / cols);
+        int cols = mainCols();
+        return Math.max(1, (map.length + cols - 1) / cols);
     }
 
     private void clampScroll() {
-        scrollRow = AxisScroll.clamp(scrollRow, mainScrollRows(), Math.max(1, visibleRows));
+        scrollRow = AxisScroll.clamp(scrollRow, mainScrollRows(), mainRows());
         int sideVisible = Math.max(1, visibleRows);
         toolScroll[PanelArea.LEFT.ordinal()] =
                 AxisScroll.clamp(toolScroll[PanelArea.LEFT.ordinal()], toolCount[PanelArea.LEFT.ordinal()], sideVisible);

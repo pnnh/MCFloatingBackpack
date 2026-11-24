@@ -74,7 +74,7 @@ class NetworkTakeWiringTest {
         assertTrue(payload.contains("ByteBufCodecs.VAR_LONG") && payload.contains("ByteBufCodecs.VAR_INT, BackpackNetworkTakePayload::amount"));
         assertFalse(payload.contains("org.cyclops") || payload.contains("appeng."));
         assertTrue(read("network/BackpackNetwork.java").contains("BackpackNetworkTakePayload::handleServer"));
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"23\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
     }
 
     @Test
@@ -83,7 +83,7 @@ class NetworkTakeWiringTest {
         String[] order = {
             "PanelTargets.resolve(player)", "ServerCompatDenials.allows(player, menu, Action.TAKE_FROM_CONTAINER)", "menu.getCarried().isEmpty()",
             "menu.containerId != payload.containerId()", "BackpackGate.acquireForPanel(player, ref)", "NetworkStorageBridges.tryTake(",
-            "backpack.insertIntoMain(", "NetworkStorageBridges.tryGiveBack(", "new ContainerMenuAccess(player).fallback()", "ref.saveInventory(player, backpack)",
+            "insert.apply(stack.copy())", "NetworkStorageBridges.tryGiveBack(", "new ContainerMenuAccess(player).fallback()", "ref.saveInventory(player, backpack)",
             "BackpackNetwork.sendFullSync(player, ref)"};
         int at = -1;
         for (String step : order) {

@@ -16,6 +16,8 @@ import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.PanelArea;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeCursorBridge;
+import pnnh.mcfloatingbackpack.inventory.combined.AllState;
+import pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.snapshot.SnapshotRequestRules;
 import pnnh.mcfloatingbackpack.snapshot.net.SnapshotActionPayload;
@@ -45,7 +47,7 @@ public final class BackpackNetwork {
         versionCheck.playToClient(VersionHelloPayload.TYPE, VersionHelloPayload.STREAM_CODEC, VersionHelloPayload::handleClient);
         versionCheck.playToServer(VersionReportPayload.TYPE, VersionReportPayload.STREAM_CODEC, VersionReportPayload::handleServer);
 
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("23");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("24");
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(
                 CreativeCursorReportPayload.TYPE,
@@ -64,6 +66,15 @@ public final class BackpackNetwork {
                 CombinedMembersPayload.TYPE,
                 CombinedMembersPayload.STREAM_CODEC,
                 CombinedMembersPayload::handleClient);
+        // 066: the "all" tab: each member's main area, and a single cell with the in-memory cursor
+        registrar.playToClient(
+                CombinedMemberSyncPayload.TYPE,
+                CombinedMemberSyncPayload.STREAM_CODEC,
+                CombinedMemberSyncPayload::handleClient);
+        registrar.playToClient(
+                CombinedCellUpdatePayload.TYPE,
+                CombinedCellUpdatePayload.STREAM_CODEC,
+                CombinedCellUpdatePayload::handleClient);
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,
@@ -174,7 +185,7 @@ public final class BackpackNetwork {
     public static final int MAX_SYNC_BYTES = SnapshotRequestRules.MAX_PREVIEW_BYTES;
 
     /** 035: whether a payload encodes to no more than {@link #MAX_SYNC_BYTES}; logs when it does not. */
-    private static <P> boolean withinLimit(ServerPlayer player, StreamCodec<RegistryFriendlyByteBuf, P> codec, P payload, String what) {
+    static <P> boolean withinLimit(ServerPlayer player, StreamCodec<RegistryFriendlyByteBuf, P> codec, P payload, String what) {
         RegistryFriendlyByteBuf buf = new RegistryFriendlyByteBuf(Unpooled.buffer(), player.level().registryAccess());
         try {
             codec.encode(buf, payload);
@@ -206,6 +217,8 @@ public final class BackpackNetwork {
             if (BackpackGate.justResynced(player)) {
                 return;
             }
+            // 066: a closed panel gives up what the "all" tab's cursor holds
+            CombinedSessions.flush(player);
             BackpackGate.noteClosed(player.getUUID());
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;
@@ -213,6 +226,7 @@ public final class BackpackNetwork {
         BackpackInventory inventory = ref.loadInventory(player);
         BackpackSessionPayload session = BackpackSessionPayload.open(ref, inventory);
         if (!withinLimit(player, BackpackSessionPayload.STREAM_CODEC, session, "backpack session")) {
+            CombinedSessions.flush(player);
             BackpackGate.noteClosed(player.getUUID());
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;
@@ -251,6 +265,18 @@ public final class BackpackNetwork {
         if (ref == null || !ref.stillValid(player)) {
             return;
         }
+        // 066: the combined panel shows one backpack, or the "all" grid: an update of another backpack is not for the picture on the screen
+        CombinedSessions.Session combined = CombinedSessions.get(player.getUUID());
+        if (combined != null) {
+            BackpackRef normalized = ref.normalized(player.getInventory().selected);
+            if (combined.inAll()) {
+                sendAllMember(player, combined.all(), normalized);
+                return;
+            }
+            if (!normalized.equals(combined.target())) {
+                return;
+            }
+        }
         BackpackInventory inventory = ref.loadInventory(player);
         BackpackFullSyncPayload sync = BackpackFullSyncPayload.from(ref, inventory);
         if (!withinLimit(player, BackpackFullSyncPayload.STREAM_CODEC, sync, "backpack sync")) {
@@ -271,6 +297,18 @@ public final class BackpackNetwork {
             PacketDistributor.sendToPlayer(player, BackpackSessionPayload.closed());
             return;
         }
+        // 066: see sendFullSync
+        CombinedSessions.Session combined = CombinedSessions.get(player.getUUID());
+        if (combined != null) {
+            BackpackRef normalized = ref.normalized(player.getInventory().selected);
+            if (combined.inAll()) {
+                sendAllCell(player, combined.all(), normalized, area, slotIndex);
+                return;
+            }
+            if (!normalized.equals(combined.target())) {
+                return;
+            }
+        }
         BackpackInventory inventory = ref.loadInventory(player);
         ItemStack slotStack = slotIndex >= 0 && slotIndex < inventory.size(area)
                 ? inventory.getStackInSlot(area, slotIndex).copy()
@@ -278,5 +316,84 @@ public final class BackpackNetwork {
         PacketDistributor.sendToPlayer(
                 player,
                 new BackpackSlotUpdatePayload(area.toByte(), slotIndex, slotStack, inventory.getCursor().copy()));
+    }
+
+    /** 066: member {@code ref} of the "all" tab changed in a way that is not one cell (a full sync): send it again, or begin the tab again if its size changed. */
+    private static void sendAllMember(ServerPlayer player, AllState all, BackpackRef ref) {
+        int member = all.indexOf(ref);
+        if (member < 0) {
+            return;
+        }
+        BackpackInventory inventory = ref.loadInventory(player);
+        if (inventory.size() != all.members().get(member).mainSize) {
+            CombinedSessions.resyncAll(player);
+            return;
+        }
+        if (!AllSync.sendMember(player, all, member, inventory)) {
+            CombinedSessions.endAndTell(player);
+        }
+    }
+
+    /** 066: one cell of member {@code ref} (main area only) changed: tell the client by the cell's flat number, with the "all" tab's cursor. */
+    private static void sendAllCell(ServerPlayer player, AllState all, BackpackRef ref, PanelArea area, int slotIndex) {
+        int member = all.indexOf(ref);
+        if (member < 0) {
+            return;
+        }
+        if (area != PanelArea.MAIN || slotIndex < 0) {
+            AllSync.sendCell(player, all, -1, ItemStack.EMPTY);
+            return;
+        }
+        int flat = all.addressing().flatOf(member, slotIndex);
+        if (flat < 0) {
+            return;
+        }
+        AllState.Member state = all.members().get(member);
+        ItemStack stack = ref.loadInventory(player).getStackInSlot(slotIndex).copy();
+        // what the member's cell shows is now what the client has: the once-a-second comparison must not send the whole member for it
+        if (slotIndex < state.lastMain.size()) {
+            state.lastMain.set(slotIndex, stack.copy());
+            state.lastContents = ref.getStack(player).get(pnnh.mcfloatingbackpack.inventory.ModDataComponents.BACKPACK_CONTENTS.get());
+        }
+        AllSync.sendCell(player, all, flat, stack);
+    }
+
+    /**
+     * 066: the cells an auto pickup just wrote into the backpack at {@code ref}, for the panel that may be showing it: a single backpack's tab
+     * only if it is that backpack, the "all" tab by flat number. With no combined panel the same packets as before.
+     */
+    public static void sendPickupUpdate(ServerPlayer player, BackpackRef ref, BackpackInventory inventory, int[] changedSlots) {
+        CombinedSessions.Session combined = CombinedSessions.get(player.getUUID());
+        BackpackRef normalized = ref.normalized(player.getInventory().selected);
+        if (combined != null && combined.inAll()) {
+            AllState all = combined.all();
+            int member = all.indexOf(normalized);
+            if (member < 0) {
+                return;
+            }
+            AllState.Member state = all.members().get(member);
+            for (int index : changedSlots) {
+                int flat = all.addressing().flatOf(member, index);
+                if (flat < 0) {
+                    continue;
+                }
+                ItemStack stack = inventory.getStackInSlot(index).copy();
+                if (index < state.lastMain.size()) {
+                    state.lastMain.set(index, stack.copy());
+                }
+                AllSync.sendCell(player, all, flat, stack);
+            }
+            state.lastContents = ref.getStack(player).get(pnnh.mcfloatingbackpack.inventory.ModDataComponents.BACKPACK_CONTENTS.get());
+            return;
+        }
+        if (combined != null && !normalized.equals(combined.target())) {
+            return;
+        }
+        for (int index : changedSlots) {
+            PacketDistributor.sendToPlayer(
+                    player,
+                    new BackpackSlotUpdatePayload(
+                            PanelArea.MAIN.toByte(), index, inventory.getStackInSlot(index).copy(), inventory.getCursor().copy()));
+        }
     }
 }

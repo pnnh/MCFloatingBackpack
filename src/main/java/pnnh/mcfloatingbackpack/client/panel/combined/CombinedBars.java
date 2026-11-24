@@ -28,13 +28,25 @@ public final class CombinedBars {
         return font.plainSubstrByWidth(label(member), MAX_TEXT);
     }
 
-    /** The geometry for the panel where it is now and the tabs the server sent. */
+    /** 066: the first tab's words. */
+    public static net.minecraft.network.chat.Component allLabel() {
+        return net.minecraft.network.chat.Component.translatable("gui.mcfloatingbackpack.combined.all");
+    }
+
+    /** 066: the "+n" of the backpacks that are not connected, on the "all" tab; empty when there are none. */
+    public static String badge(ClientCombinedState state) {
+        return state.skippedTotal() > 0 ? "+" + state.skippedTotal() : "";
+    }
+
+    /** The geometry for the panel where it is now and the tabs the server sent: the "all" tab first, then one for each member. */
     public static CombinedBarLayout layout() {
         Font font = Minecraft.getInstance().font;
         ClientCombinedState state = ClientCombinedState.get();
-        int[] widths = new int[state.members().size()];
-        for (int i = 0; i < widths.length; i++) {
-            widths[i] = font.width(shown(font, state.members().get(i))) + TAB_EXTRA;
+        int[] widths = new int[state.members().size() + 1];
+        String badge = badge(state);
+        widths[0] = font.width(allLabel()) + TAB_EXTRA + (badge.isEmpty() ? 0 : font.width(badge) + 6);
+        for (int i = 1; i < widths.length; i++) {
+            widths[i] = font.width(shown(font, state.members().get(i - 1))) + TAB_EXTRA;
         }
         FloatingPanelState panel = FloatingPanelState.get();
         return CombinedBarLayout.of(panel.getPosX(), panel.getPosY(), panel.getWidth(), widths);

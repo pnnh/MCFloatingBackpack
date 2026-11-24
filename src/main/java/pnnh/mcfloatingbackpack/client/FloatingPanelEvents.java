@@ -141,6 +141,7 @@ public final class FloatingPanelEvents {
         JukeboxPlayback.reset();
         TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
+        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().clear(); // 066
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
         state.endDrag();
@@ -174,6 +175,7 @@ public final class FloatingPanelEvents {
         PanelDragInput.reset();
         PanelSelectionInput.reset();
         ClientBackpackView.get().clear();
+        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().clear(); // 066
         FloatingPanelState state = FloatingPanelState.get();
         state.setVisible(false);
         state.endDrag();
@@ -450,7 +452,8 @@ public final class FloatingPanelEvents {
             onCombinedKey(minecraft, state);
             return;
         }
-        if (state.isVisible()) {
+        // 066: with the combined panel up, the B key shows the ordinary panel in its place (the server ends the combined one); a second B closes it
+        if (state.isVisible() && !pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isActive()) {
             closePanel();
             return;
         }

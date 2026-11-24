@@ -65,8 +65,10 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = PanelTargets.resolve(player);
-            if (ref == null || !ref.stillValid(player)) {
+            // 066: on the "all" tab it goes into the members one after the other
+            boolean inAll = PanelTargets.inAll(player);
+            BackpackRef ref = inAll ? null : PanelTargets.resolve(player);
+            if (!inAll && (ref == null || !ref.stillValid(player))) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;
             }
@@ -83,6 +85,10 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
                 return;
             }
 
+            if (inAll) {
+                takeIntoAll(player, menu, payload);
+                return;
+            }
             // 026: every request into a backpack goes through the registry first.
 
             BackpackInventory backpack = BackpackGate.acquireForPanel(player, ref).orElse(null);
@@ -103,8 +109,35 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
         });
     }
 
+    /** 066: the same on the "all" tab: the stack goes to the members in order, each by its own rule; what was changed is saved and sent. */
+    private static void takeIntoAll(ServerPlayer player, AbstractContainerMenu menu, BackpackTakeFromContainerPayload payload) {
+        // the epoch is the tab's own: a request made before the table changed is not what the client meant (it carries no cell number, so the
+        // only thing to check is that the session is on the "all" tab and every member still holds)
+        pnnh.mcfloatingbackpack.inventory.combined.AllContext context = pnnh.mcfloatingbackpack.inventory.combined.AllContext.begin(
+                player, pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.get(player.getUUID()).all().epoch());
+        if (context == null) {
+            return;
+        }
+        pnnh.mcfloatingbackpack.inventory.combined.SlotAccess<ItemStack> cells = context.slots();
+        pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.tell(
+                player,
+                takeIntoBackpack(player, context::mainTargetOrder, cells::get, (s, i) -> cells.set(i, s), payload.menuSlots()));
+        context.finish();
+        menu.broadcastChanges();
+    }
+
     static pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict takeIntoBackpack(
             ServerPlayer player, BackpackInventory backpack, int[] menuSlots) {
+        return takeIntoBackpack(player, backpack::mainTargetOrder, backpack::getStackInSlot, (s, i) -> backpack.setStackInSlot(i, s), menuSlots);
+    }
+
+    /** 066: the same into anything that has target segments, a way to read a cell and a way to write one. */
+    static pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict takeIntoBackpack(
+            ServerPlayer player,
+            java.util.function.Function<ItemStack, java.util.List<int[]>> targetOrder,
+            java.util.function.IntFunction<ItemStack> getCell,
+            java.util.function.ObjIntConsumer<ItemStack> setCell,
+            int[] menuSlots) {
         ContainerMenuAccess access = new ContainerMenuAccess(player);
         pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict refusedNesting =
                 pnnh.mcfloatingbackpack.inventory.nesting.NestingRules.Verdict.OK;
@@ -122,9 +155,9 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
             ContainerToBackpack.Result result = ContainerToBackpack.take(
                     ItemStackTransferOps.INSTANCE,
                     access.slotAccess(menuIndex),
-                    backpack::mainTargetOrder,
-                    backpack::getStackInSlot,
-                    (s, i) -> backpack.setStackInSlot(i, s),
+                    targetOrder,
+                    getCell,
+                    setCell,
                     access.fallback());
             if (result.usedFallback() || result.dropped()) {
                 MCFloatingBackpack.LOGGER.warn(

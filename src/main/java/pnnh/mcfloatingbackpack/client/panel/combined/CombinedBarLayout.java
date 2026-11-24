@@ -1,15 +1,14 @@
 package pnnh.mcfloatingbackpack.client.panel.combined;
 
 /**
- * 065: the geometry of the combined bars: a title bar and, under it, a strip of tabs, hung on the top edge of the floating panel (above
+ * 065: the geometry of the combined bar: a strip of tabs (066: the first one is the "all" tab; the title bar of 065 is gone), hung on the top edge of the floating panel (above
  * it, outside its rectangle, like the trash can page hangs off its right edge). Pure arithmetic with no Minecraft types, so the hit tests
  * and the scrolling are unit-tested. Tab widths come from the caller (they depend on the font); everything else is fixed.
  */
 public final class CombinedBarLayout {
-    public static final int TITLE_H = 14;
     public static final int TAB_H = 16;
-    /** The two bars together: how far above the panel's top edge they reach. */
-    public static final int BARS_H = TITLE_H + TAB_H;
+    /** 066: the combined title bar is gone, the tab strip alone hangs above the panel: how far above the panel's top edge it reaches. */
+    public static final int BARS_H = TAB_H;
     public static final int ARROW_W = 10;
     public static final int TAB_GAP = 2;
     private static final int EDGE = 2;
@@ -56,15 +55,11 @@ public final class CombinedBarLayout {
         return new CombinedBarLayout(posX, posY, width, tabWidths);
     }
 
-    public Rect titleRect() {
-        return new Rect(posX, posY - BARS_H, width, TITLE_H);
-    }
-
     public Rect tabBarRect() {
         return new Rect(posX, posY - TAB_H, width, TAB_H);
     }
 
-    /** Both bars. */
+    /** The whole bar (066: the tab strip). */
     public Rect barsRect() {
         return new Rect(posX, posY - BARS_H, width, BARS_H);
     }

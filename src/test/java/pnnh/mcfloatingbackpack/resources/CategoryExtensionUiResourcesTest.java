@@ -101,7 +101,7 @@ class CategoryExtensionUiResourcesTest {
     void theClientGuessRunsTheServersRule() throws IOException {
         String guess = read(SRC.resolve("client/panel/ClientPlacement.java"));
         assertTrue(guess.contains("ExtensionRules.canPlace("));
-        assertTrue(guess.contains("new ItemCategoryMatcher(view.tags())"));
+        assertTrue(guess.contains("new ItemCategoryMatcher(tags)"));
         // the server's own check delegates to the same list version
         String rules = read(SRC.resolve("inventory/extension/ExtensionRules.java"));
         assertTrue(rules.contains("return canPlace(rows.visibleCategories(), baseCapacity, slot, stack, matcher);"));
@@ -122,6 +122,6 @@ class CategoryExtensionUiResourcesTest {
     @Test
     void thisFeatureAddsNoNetworkPacketAndKeepsTheProtocol() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"23\")"));
+        assertTrue(network.contains("versioned(\"24\")"));
     }
 }

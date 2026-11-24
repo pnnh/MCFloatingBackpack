@@ -204,7 +204,7 @@ public final class PanelDragInput {
     private static void send(Mode mode, int[] slots) {
         boolean screenOpen = ContainerScreenCompat.isOpenContainerScreen(Minecraft.getInstance().screen);
         CreativeCursorClient.flush(); // 027
-        PacketDistributor.sendToServer(BackpackCursorGesturePayload.of(mode, slots, screenOpen));
+        PacketDistributor.sendToServer(BackpackCursorGesturePayload.of(mode, slots, screenOpen, pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().requestEpoch()));
     }
 
     private static int[] toArray(List<Integer> list) {

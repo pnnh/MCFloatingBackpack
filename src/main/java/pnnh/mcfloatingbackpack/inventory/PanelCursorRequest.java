@@ -34,10 +34,15 @@ public final class PanelCursorRequest {
      * backpack has slots or {@link QuickTransferRequest#MAX_BACKPACK_SLOTS}; GATHER_ALL carries exactly one slot.
      */
     public static boolean validate(Mode mode, int[] slots, int backpackSize) {
+        return validate(mode, slots, backpackSize, QuickTransferRequest.MAX_BACKPACK_SLOTS);
+    }
+
+    /** 066: the same with another cap on the number of slots (the "all" tab's flat grid is many backpacks long). */
+    public static boolean validate(Mode mode, int[] slots, int backpackSize, int cap) {
         if (mode == null || slots == null || slots.length == 0) {
             return false;
         }
-        int size = Math.min(Math.max(backpackSize, 0), QuickTransferRequest.MAX_BACKPACK_SLOTS);
+        int size = Math.min(Math.max(backpackSize, 0), cap);
         if (slots.length > size || (mode == Mode.GATHER_ALL && slots.length != 1)) {
             return false;
         }
