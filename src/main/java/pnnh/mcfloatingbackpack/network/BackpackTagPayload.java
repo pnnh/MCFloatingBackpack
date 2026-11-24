@@ -27,6 +27,7 @@ import pnnh.mcfloatingbackpack.inventory.trash.TagProtection;
 import pnnh.mcfloatingbackpack.item.ModTags;
 import pnnh.mcfloatingbackpack.inventory.tags.TagRules;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 018: client asks to add a tag to, or remove it from, the item categories in the selected main-area slots. The
@@ -73,7 +74,7 @@ public record BackpackTagPayload(byte op, int[] slots, String tag) implements Cu
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

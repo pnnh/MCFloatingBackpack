@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "minecraft:sentry_armor_trim_smithing_template"
+  },
+  "base": {
+    "item": "mcfloatingbackpack:leather_combined_backpack"
+  },
+  "addition": {
+    "item": "minecraft:iron_block"
+  },
+  "result": {
+    "id": "mcfloatingbackpack:iron_combined_backpack",
+    "count": 1
+  }
+}

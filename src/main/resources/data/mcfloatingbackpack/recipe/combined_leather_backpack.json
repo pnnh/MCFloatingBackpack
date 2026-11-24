@@ -1,0 +1,24 @@
+{
+  "type": "mcfloatingbackpack:combined_crafting",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "M": {
+      "item": "minecraft:leather"
+    },
+    "B": {
+      "item": "mcfloatingbackpack:leather_floating_backpack"
+    }
+  },
+  "pattern": [
+    "EME",
+    "MBM",
+    "EME"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:leather_combined_backpack"
+  }
+}

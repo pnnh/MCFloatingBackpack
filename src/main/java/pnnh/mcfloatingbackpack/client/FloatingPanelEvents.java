@@ -121,6 +121,7 @@ public final class FloatingPanelEvents {
         JukeboxPanelState.get().collapse(); // 053: the page folds up, the music goes on
         TrashConfirmState.get().cancel();
         ClientBackpackView.get().clear();
+        pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().clear(); // 065
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.close());
         HostScreenManager.ensure();
     }
@@ -438,11 +439,17 @@ public final class FloatingPanelEvents {
         if (minecraft.screen instanceof ChatScreen) {
             return;
         }
-        if (!FloatingBackpackKeys.TOGGLE.matches(event.getKey(), event.getScanCode())) {
+        boolean toggleKey = FloatingBackpackKeys.TOGGLE.matches(event.getKey(), event.getScanCode());
+        boolean combinedKey = !toggleKey && FloatingBackpackKeys.COMBINED.matches(event.getKey(), event.getScanCode());
+        if (!toggleKey && !combinedKey) {
             return;
         }
 
         ensureConfigLoaded();
+        if (combinedKey) {
+            onCombinedKey(minecraft, state);
+            return;
+        }
         if (state.isVisible()) {
             closePanel();
             return;
@@ -463,6 +470,30 @@ public final class FloatingPanelEvents {
             return;
         }
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.open(ref));
+    }
+
+    /**
+     * 065: the combined key. With the combined panel up it closes the panel; otherwise it asks the server to open it (the server checks that a
+     * combined backpack is worn, that the feature is on and that there is a backpack to show). Without a combined backpack on the player the
+     * client says so itself, at once.
+     */
+    private static void onCombinedKey(Minecraft minecraft, FloatingPanelState state) {
+        if (state.isVisible() && pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().isActive()) {
+            closePanel();
+            return;
+        }
+        if (!allowsPanel(minecraft.screen)) {
+            if (minecraft.screen instanceof AbstractContainerScreen<?> container) {
+                chat(minecraft, Component.translatable(
+                        "message.mcfloatingbackpack.panel_off", MenuOwner.ownerOf(container.getMenu())));
+            }
+            return;
+        }
+        if (pnnh.mcfloatingbackpack.inventory.combined.WornCombined.tier(minecraft.player) < 0) {
+            minecraft.player.displayClientMessage(Component.translatable("message.mcfloatingbackpack.combined.need_worn"), true);
+            return;
+        }
+        PacketDistributor.sendToServer(pnnh.mcfloatingbackpack.network.CombinedSelectPayload.open());
     }
 
     // 018: while the tag text box has the focus the keyboard is the box's. These run before the screen (and the host
@@ -569,6 +600,10 @@ public final class FloatingPanelEvents {
         FloatingPanelState state = FloatingPanelState.get();
         // 022: with the confirmation dialog up the wheel does nothing anywhere, and is taken.
         if (state.isVisible() && scrollDeltaY != 0 && TrashConfirmState.get().isPending()) {
+            return true;
+        }
+        // 065: the wheel over the combined bars moves the tabs
+        if (state.isVisible() && pnnh.mcfloatingbackpack.client.panel.combined.CombinedBarInput.onScroll(scrollDeltaY, mouseX, mouseY)) {
             return true;
         }
         // 021: the wheel over the trash can panel (outside the floating panel's rectangle) does nothing, but is taken.

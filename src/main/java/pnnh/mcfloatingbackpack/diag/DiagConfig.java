@@ -21,6 +21,8 @@ public final class DiagConfig {
         pnnh.mcfloatingbackpack.snapshot.SnapshotConfig.define(BUILDER);
         // 058: the [compat] section
         pnnh.mcfloatingbackpack.compat.ThirdPartyConfig.define(BUILDER);
+        // 065: the [combined] section
+        pnnh.mcfloatingbackpack.inventory.combined.CombinedConfig.define(BUILDER);
         SERVER_SPEC = BUILDER.build();
     }
 

@@ -24,6 +24,16 @@ class HostKeyRouterTest {
     }
 
     @Test
+    void theCombinedKeyIsLeftToTheHandlerToo() {
+        String combined = "key.mcfloatingbackpack.combined";
+        assertEquals(KeyRole.TOGGLE, HostKeyRouter.classify(List.of(combined), TOGGLE, combined));
+        assertEquals(KeyRole.TOGGLE, HostKeyRouter.classify(List.of("key.jump", combined), TOGGLE, combined));
+        // without the third argument (or with none given) the combined key is just another bound key
+        assertEquals(KeyRole.YIELD, HostKeyRouter.classify(List.of(combined), TOGGLE));
+        assertEquals(KeyRole.YIELD, HostKeyRouter.classify(List.of(combined), TOGGLE, null));
+    }
+
+    @Test
     void aKeyWithNoBindingPassesThrough() {
         assertEquals(KeyRole.PASS, HostKeyRouter.classify(List.of(), TOGGLE));
     }

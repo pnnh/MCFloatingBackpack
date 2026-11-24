@@ -1,0 +1,24 @@
+{
+  "type": "mcfloatingbackpack:combined_crafting",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_pearl"
+    },
+    "M": {
+      "item": "minecraft:iron_ingot"
+    },
+    "B": {
+      "item": "mcfloatingbackpack:iron_floating_backpack"
+    }
+  },
+  "pattern": [
+    "EME",
+    "MBM",
+    "EME"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:iron_combined_backpack"
+  }
+}

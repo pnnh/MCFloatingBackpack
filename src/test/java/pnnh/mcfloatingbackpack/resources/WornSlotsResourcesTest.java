@@ -90,9 +90,14 @@ class WornSlotsResourcesTest {
                 JsonObject tag = json(RES.resolve("data/" + mod + "/tags/item/" + slot + ".json"));
                 assertFalse(tag.has("neoforge:conditions"), mod + ":" + slot);
                 List<String> values = strings(tag.getAsJsonArray("values"));
-                assertEquals(TIERS.length, values.size(), mod + ":" + slot);
+                // 065: the dedicated slot also takes the five combined backpacks; the back and charm slots do not
+                assertEquals(slot.equals(SLOT) ? 2 * TIERS.length : TIERS.length, values.size(), mod + ":" + slot);
                 for (String tier : TIERS) {
                     assertTrue(values.contains("mcfloatingbackpack:" + tier + "_floating_backpack"), mod + ":" + slot + " " + tier);
+                    assertEquals(
+                            slot.equals(SLOT),
+                            values.contains("mcfloatingbackpack:" + tier + "_combined_backpack"),
+                            mod + ":" + slot + " combined " + tier);
                 }
             }
         }

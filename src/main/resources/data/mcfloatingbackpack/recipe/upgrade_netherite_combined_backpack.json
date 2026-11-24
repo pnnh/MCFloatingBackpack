@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "minecraft:netherite_upgrade_smithing_template"
+  },
+  "base": {
+    "item": "mcfloatingbackpack:diamond_combined_backpack"
+  },
+  "addition": {
+    "item": "minecraft:netherite_block"
+  },
+  "result": {
+    "id": "mcfloatingbackpack:netherite_combined_backpack",
+    "count": 1
+  }
+}

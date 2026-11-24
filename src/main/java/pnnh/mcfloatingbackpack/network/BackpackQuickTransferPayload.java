@@ -28,6 +28,7 @@ import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
 import pnnh.mcfloatingbackpack.inventory.creative.CreativeInventorySync;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Direction;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest.Holder;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * Client request to quick-transfer stacks between the player's inventory (indices 0-35) and the
@@ -77,7 +78,7 @@ public record BackpackQuickTransferPayload(byte direction, int[] slots) implemen
             }
             // The server has no "panel is open" state (BackpackClickPayload's flag is client-reported),
             // so what can be checked is that a usable backpack exists on this player right now.
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

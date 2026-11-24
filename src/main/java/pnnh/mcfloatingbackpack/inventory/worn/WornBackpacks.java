@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.item.CombinedBackpackItem;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 
 /**
@@ -55,8 +56,45 @@ public final class WornBackpacks {
             BackpackRef.Source.OFF_HAND.ordinal(),
             BackpackRef.Source.INVENTORY.ordinal());
 
+    /**
+     * 065: the same places, asked for the combined backpack: a second search over the very same sources, with a probe that takes a combined
+     * backpack where the first takes a floating backpack. Only its worn part is used (the hands and the inventory are the first search's).
+     */
+    private static final BackpackSearch<LivingEntity, ItemStack> COMBINED_SEARCH = new BackpackSearch<>(
+            new BackpackSearch.Probe<>() {
+                @Override
+                public ItemStack mainHand(LivingEntity entity) {
+                    return ItemStack.EMPTY;
+                }
+
+                @Override
+                public ItemStack offHand(LivingEntity entity) {
+                    return ItemStack.EMPTY;
+                }
+
+                @Override
+                public int inventorySlots(LivingEntity entity) {
+                    return 0;
+                }
+
+                @Override
+                public ItemStack inventory(LivingEntity entity, int index) {
+                    return ItemStack.EMPTY;
+                }
+
+                @Override
+                public boolean isBackpack(ItemStack stack) {
+                    return CombinedBackpackItem.isCombined(stack);
+                }
+            },
+            BackpackRef.Source.MAIN_HAND.ordinal(),
+            BackpackRef.Source.OFF_HAND.ordinal(),
+            BackpackRef.Source.INVENTORY.ordinal());
+
     static {
-        SEARCH.register(new ChestWornSource());
+        ChestWornSource chest = new ChestWornSource();
+        SEARCH.register(chest);
+        COMBINED_SEARCH.register(chest);
     }
 
     private WornBackpacks() {
@@ -65,6 +103,7 @@ public final class WornBackpacks {
     /** Adds a source of worn backpacks (033, 034); call it from the mod's constructor. */
     public static void register(WornSource<LivingEntity, ItemStack> source) {
         SEARCH.register(source);
+        COMBINED_SEARCH.register(source);
     }
 
     /** Main hand, off hand, the first backpack worn, then the inventory; {@code null} if the player has none. */
@@ -98,6 +137,11 @@ public final class WornBackpacks {
     /** 061: every backpack worn by the player (see {@link BackpackSearch#allWorn}); taken as a {@code Player} like the methods around it. */
     public static java.util.List<BackpackSearch.Hit> allWornPlayer(Player player) {
         return SEARCH.allWorn(player);
+    }
+
+    /** 065: every combined backpack the player wears, in the order of the sources (taken as a {@code Player}, like the methods around it). */
+    public static java.util.List<BackpackSearch.Hit> allCombinedWornPlayer(Player player) {
+        return COMBINED_SEARCH.allWorn(player);
     }
 
     /** What a reference into a worn source points at: the stack, or the empty stack for a source that is not there or a slot out of range. */

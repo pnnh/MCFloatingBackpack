@@ -42,6 +42,10 @@ public final class DeleteKeyInput {
         if (minecraft.player == null) {
             return false;
         }
+        // 065: the combined panel is waiting for a tab's contents; a request now would reach the backpack of the new tab
+        if (pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().blocksRequests()) {
+            return false;
+        }
         FloatingPanelState panel = FloatingPanelState.get();
         ClientBackpackView view = ClientBackpackView.get();
         ScreenKind kind = kindOf(screen);

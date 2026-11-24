@@ -21,6 +21,7 @@ import pnnh.mcfloatingbackpack.inventory.ContainerMenuAccess;
 import pnnh.mcfloatingbackpack.inventory.ContainerToBackpack;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 060: client request to take one stack of an entry of a network terminal's list (Integrated Terminals, AE2) into the floating backpack.
@@ -52,7 +53,7 @@ public record BackpackNetworkTakePayload(int containerId, ItemStack what, long h
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

@@ -133,6 +133,8 @@ public final class FloatingPanelRenderer {
         RenderSystem.disableDepthTest();
 
         drawVanillaPanel(graphics, x, y, w, h);
+        // 065: the combined bars hang above the panel
+        pnnh.mcfloatingbackpack.client.panel.combined.CombinedBarRenderer.render(graphics, mouseX, mouseY);
         drawSlotsWithItems(graphics, mouseX, mouseY);
         drawScrollArrows(graphics, ClientBackpackView.get().layout());
         // 018: the expanded tag panel replaces the main area (its cells, selection and arrows are not drawn).
@@ -174,6 +176,8 @@ public final class FloatingPanelRenderer {
         if (!drawItemTooltip(graphics, minecraft, mouseX, mouseY)) {
             drawRowTooltip(graphics, minecraft, mouseX, mouseY);
         }
+        // 065: the tooltip of the tab under the mouse
+        pnnh.mcfloatingbackpack.client.panel.combined.CombinedBarRenderer.renderTooltip(graphics, mouseX, mouseY);
         // 021: the trash can panel hangs off the right edge, outside the rectangle everything above is drawn in.
         if (TrashPanelState.get().isOpen()) {
             TrashPanelRenderer.render(graphics, mouseX, mouseY);
@@ -418,6 +422,13 @@ public final class FloatingPanelRenderer {
                     if (area == PanelArea.BOTTOM) {
                         drawTankBar(graphics, view, stack, sx, sy);
                     }
+                }
+                // 065: a mobile tool in the combined panel on a backpack the B key does not open does nothing: it is drawn greyed out
+                if (area == PanelArea.RIGHT
+                        && !stack.isEmpty()
+                        && FloatingPanelInput.isMobileTool(stack)
+                        && pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().toolsDisabled()) {
+                    graphics.fill(sx + 1, sy + 1, sx + PanelSlots.SLOT_SIZE - 1, sy + PanelSlots.SLOT_SIZE - 1, 0xB0606060);
                 }
                 // 042: a cell the query found (a cell kept as an empty place is not found any more); the tool areas are framed, never filtered
                 boolean found = searching

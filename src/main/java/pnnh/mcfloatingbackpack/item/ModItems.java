@@ -75,6 +75,9 @@ public final class ModItems {
     /** 049: the pipes (water, oil, lava), in the order of {@link PipeKind}; ids are {@code <liquid>_pipe}. */
     public static final Map<PipeKind, DeferredHolder<Item, PipeItem>> PIPES = registerPipes();
 
+    /** 065: the combined backpacks, one for each tier, in the order of the tiers; ids are {@code <tier>_combined_backpack}. */
+    public static final Map<BackpackTier, DeferredHolder<Item, CombinedBackpackItem>> COMBINED_BACKPACKS = registerCombinedBackpacks();
+
     public static final DeferredHolder<CreativeModeTab, CreativeModeTab> TAB =
             CREATIVE_TABS.register(
                     "main",
@@ -84,6 +87,9 @@ public final class ModItems {
                             .displayItems((params, output) -> {
                                 for (BackpackTier tier : BackpackTier.values()) {
                                     output.accept(stackFor(tier));
+                                }
+                                for (DeferredHolder<Item, CombinedBackpackItem> combined : COMBINED_BACKPACKS.values()) {
+                                    output.accept(combined.get());
                                 }
                                 output.accept(TAG_MANAGER.get());
                                 output.accept(TRASH_CAN.get());
@@ -160,6 +166,18 @@ public final class ModItems {
                             () -> new UniversalExtensionItem(tier, new Item.Properties())));
         }
         return Collections.unmodifiableMap(extensions);
+    }
+
+    private static Map<BackpackTier, DeferredHolder<Item, CombinedBackpackItem>> registerCombinedBackpacks() {
+        Map<BackpackTier, DeferredHolder<Item, CombinedBackpackItem>> combined = new LinkedHashMap<>();
+        for (BackpackTier tier : BackpackTier.values()) {
+            combined.put(
+                    tier,
+                    ITEMS.register(
+                            CombinedBackpackItem.idOf(tier),
+                            () -> new CombinedBackpackItem(tier, CombinedBackpackItem.baseProperties())));
+        }
+        return Collections.unmodifiableMap(combined);
     }
 
     private static DeferredHolder<Item, FloatingBackpackItem> register(BackpackTier tier) {

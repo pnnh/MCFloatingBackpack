@@ -179,6 +179,6 @@ public final class PanelHostScreen extends Screen {
         for (KeyMapping mapping : bound) {
             names.add(mapping.getName());
         }
-        return HostKeyRouter.classify(names, FloatingBackpackKeys.TOGGLE.getName());
+        return HostKeyRouter.classify(names, FloatingBackpackKeys.TOGGLE.getName(), FloatingBackpackKeys.COMBINED.getName());
     }
 }

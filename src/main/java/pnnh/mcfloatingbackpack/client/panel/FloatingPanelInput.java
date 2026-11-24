@@ -115,6 +115,15 @@ public final class FloatingPanelInput {
             }
             // 042: a press anywhere but in the search box takes the keyboard away from it (its text and results stay).
             SearchInput.loseFocusIfOutside(state, mouseX, mouseY);
+            // 065: the combined bars lie above the panel's rectangle; a press on them is claimed here (a tab is chosen)
+            if (pnnh.mcfloatingbackpack.client.panel.combined.CombinedBarInput.onPress(button, mouseX, mouseY)) {
+                return true;
+            }
+            // 065: while the combined panel waits for the contents of a tab just chosen, the panel shows the previous one: a press on it would
+            // reach the backpack of the new one, so it is taken and does nothing
+            if (pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().blocksRequests() && state.contains(mouseX, mouseY)) {
+                return true;
+            }
             // 021: the trash can panel lies outside the floating panel's rectangle; a press on it is claimed here.
             if (TrashPanelInput.onPress(button, mouseX, mouseY)) {
                 return true;
@@ -187,6 +196,18 @@ public final class FloatingPanelInput {
                                 .is(ModItems.MOBILE_JUKEBOX.get())) {
                     TrashPanelState.get().collapse();
                     JukeboxPanelState.get().toggle();
+                    return true;
+                }
+                // 065: the mobile tools belong to the backpack the B key opens; the combined panel on another one has them dead
+                if (!isRight
+                        && toolHit.area() == PanelArea.RIGHT
+                        && pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().toolsDisabled()
+                        && isMobileTool(ClientBackpackView.get().getToolStack(toolHit.area(), toolHit.index()))) {
+                    Minecraft minecraft = Minecraft.getInstance();
+                    if (minecraft.player != null) {
+                        minecraft.player.displayClientMessage(
+                                net.minecraft.network.chat.Component.translatable("gui.mcfloatingbackpack.tools_active_only"), true);
+                    }
                     return true;
                 }
                 // 054: the same for a mobile crafting table, which has no page: the click asks the server for a vanilla crafting screen
@@ -423,6 +444,13 @@ public final class FloatingPanelInput {
 
     /** 052: the hint that a light needs LambDynamicLights was shown in this game session. */
     private static boolean lightNeedsModHinted;
+
+    /** 065: a mobile jukebox, crafting table or furnace. */
+    public static boolean isMobileTool(net.minecraft.world.item.ItemStack stack) {
+        return stack.is(ModItems.MOBILE_JUKEBOX.get())
+                || stack.is(ModItems.MOBILE_CRAFTING_TABLE.get())
+                || stack.is(ModItems.MOBILE_FURNACE.get());
+    }
 
     static void sendClick(int slotIndex, boolean rightClick) {
         sendClick(PanelArea.MAIN, slotIndex, rightClick);

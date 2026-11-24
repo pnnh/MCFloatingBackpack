@@ -86,12 +86,20 @@ public final class FloatingBackpackJeiPlugin implements IModPlugin {
                     return Collections.emptyList();
                 }
                 Rect2i panel = new Rect2i(state.getPosX(), state.getPosY(), state.getWidth(), state.getHeight());
-                if (!TrashPanelState.get().isOpen()) {
-                    return List.of(panel);
+                java.util.List<Rect2i> areas = new java.util.ArrayList<>();
+                areas.add(panel);
+                // 065: the combined bars hang above the panel, outside its rectangle
+                if (pnnh.mcfloatingbackpack.client.panel.combined.CombinedBars.shown()) {
+                    pnnh.mcfloatingbackpack.client.panel.combined.CombinedBarLayout.Rect bars =
+                            pnnh.mcfloatingbackpack.client.panel.combined.CombinedBars.layout().barsRect();
+                    areas.add(new Rect2i(bars.x(), bars.y(), bars.w(), bars.h()));
                 }
-                // 021: the trash can panel hangs off the right edge, outside the panel's rectangle.
-                PanelLayout.Rect trash = TrashPanelInput.layout().rect();
-                return List.of(panel, new Rect2i(trash.x(), trash.y(), trash.w(), trash.h()));
+                if (TrashPanelState.get().isOpen()) {
+                    // 021: the trash can panel hangs off the right edge, outside the panel's rectangle.
+                    PanelLayout.Rect trash = TrashPanelInput.layout().rect();
+                    areas.add(new Rect2i(trash.x(), trash.y(), trash.w(), trash.h()));
+                }
+                return areas;
             }
         });
     }

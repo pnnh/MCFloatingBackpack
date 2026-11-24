@@ -25,7 +25,7 @@ class BackpackSortWiringTest {
     @Test
     void theRequestIsRegisteredAndTheProtocolIs20() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"22\")"));
+        assertTrue(network.contains("versioned(\"23\")"));
         assertTrue(network.contains("BackpackSortPayload.TYPE, BackpackSortPayload.STREAM_CODEC, BackpackSortPayload::handleServer"));
         assertTrue(network.contains("registrar.playToServer(BackpackSortPayload.TYPE"), "a client-to-server request");
     }
@@ -34,7 +34,7 @@ class BackpackSortWiringTest {
     void theServerChecksEverythingTheOtherBatchActionsCheckBeforeItChangesAnything() throws IOException {
         String payload = read(SRC.resolve("network/BackpackSortPayload.java"));
         String handler = payload.substring(payload.indexOf("public static void handleServer"));
-        int resolve = handler.indexOf("BackpackRef.resolve(player)");
+        int resolve = handler.indexOf("PanelTargets.resolve(player)");
         int valid = handler.indexOf("stillValid(player)");
         int carried = handler.indexOf("getCarried().isEmpty()");
         int gate = handler.indexOf("BackpackGate.acquireForPanel(player, ref)");

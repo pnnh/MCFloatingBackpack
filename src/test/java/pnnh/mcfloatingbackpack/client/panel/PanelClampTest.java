@@ -52,4 +52,30 @@ class PanelClampTest {
         assertTrue(state.getPosY() >= 0);
         assertTrue(state.getPosY() <= 40 - FloatingPanelState.DRAG_BAR_HEIGHT);
     }
+
+    @Test
+    void aTopReserveKeepsTheHangingBarsOnScreen() {
+        state.setPos(40, -30);
+        state.setTopReserve(30);
+        try {
+            FloatingPanelState.clampToScreen(state, 400, 300);
+            assertEquals(30, state.getPosY());
+            state.setPos(40, 100);
+            FloatingPanelState.clampToScreen(state, 400, 300);
+            assertEquals(100, state.getPosY());
+            state.setPos(40, 10_000);
+            FloatingPanelState.clampToScreen(state, 400, 300);
+            assertEquals(300 - FloatingPanelState.DRAG_BAR_HEIGHT, state.getPosY());
+        } finally {
+            state.setTopReserve(0);
+        }
+    }
+
+    @Test
+    void withoutATopReserveNothingChanges() {
+        state.setTopReserve(0);
+        state.setPos(40, -30);
+        FloatingPanelState.clampToScreen(state, 400, 300);
+        assertEquals(0, state.getPosY());
+    }
 }

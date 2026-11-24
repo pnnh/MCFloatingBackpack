@@ -12,6 +12,7 @@ import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.inventory.BackpackInventory;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 047: the client asks the server to tidy the open backpack's main area. No fields: the server works out everything itself from the
@@ -36,7 +37,7 @@ public record BackpackSortPayload() implements CustomPacketPayload {
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

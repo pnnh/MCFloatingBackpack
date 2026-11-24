@@ -16,6 +16,7 @@ import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklist;
 import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklistRequest;
 import pnnh.mcfloatingbackpack.inventory.pickup.PickupBlacklistRequest.Op;
 import pnnh.mcfloatingbackpack.inventory.tags.TagRules;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 024: client asks to add a tag to, or remove it from, the pickup blacklist of the player's active backpack. Any check that
@@ -50,7 +51,7 @@ public record BackpackPickupBlacklistOpPayload(byte op, String tag) implements C
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

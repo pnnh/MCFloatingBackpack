@@ -30,6 +30,7 @@ import pnnh.mcfloatingbackpack.inventory.PanelCursorLogic.DragMode;
 import pnnh.mcfloatingbackpack.inventory.PanelCursorRequest;
 import pnnh.mcfloatingbackpack.inventory.PanelCursorRequest.Mode;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * Client request for a drag gesture on the floating panel while holding a stack on the cursor (013):
@@ -83,7 +84,7 @@ public record BackpackCursorGesturePayload(byte mode, int[] slots, boolean scree
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

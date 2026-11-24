@@ -28,6 +28,16 @@ public final class FloatingBackpackKeys {
             CATEGORY);
 
     /**
+     * 065: opens the combined panel (the tabs of the backpacks a worn Combined Backpack connects). UNIVERSAL, like the toggle, so it works
+     * while another screen or the host screen is open.
+     */
+    public static final KeyMapping COMBINED = new KeyMapping(
+            "key." + MCFloatingBackpack.MOD_ID + ".combined",
+            KeyConflictContext.UNIVERSAL,
+            InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_U),
+            CATEGORY);
+
+    /**
      * 022: deletes the stack under the mouse (or the selection) into the trash can. GUI context, so it is only live with
      * a screen open and the host screen's key forwarding (019), which looks at what a key does with no screen open,
      * does not take it for a key to hand back to the game. Backspace on macOS, where the Delete key is hard to come by.
@@ -54,6 +64,7 @@ public final class FloatingBackpackKeys {
 
     public static void registerKeys(RegisterKeyMappingsEvent event) {
         event.register(TOGGLE);
+        event.register(COMBINED);
         event.register(DELETE_TO_TRASH);
         event.register(SNAPSHOTS);
     }

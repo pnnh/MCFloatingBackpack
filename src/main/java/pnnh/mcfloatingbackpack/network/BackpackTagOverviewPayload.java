@@ -20,6 +20,7 @@ import pnnh.mcfloatingbackpack.inventory.tags.TagOverviewRequest.Op;
 import pnnh.mcfloatingbackpack.inventory.tags.TagOverviewRules;
 import pnnh.mcfloatingbackpack.inventory.tags.TagRules;
 import pnnh.mcfloatingbackpack.item.ModTags;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 025: client asks to add a tag to, remove a tag from, or clear all tags of one item category of the player's active
@@ -56,7 +57,7 @@ public record BackpackTagOverviewPayload(byte op, String itemId, String tag) imp
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

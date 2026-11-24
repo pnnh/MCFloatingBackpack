@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": {
+    "item": "minecraft:dune_armor_trim_smithing_template"
+  },
+  "base": {
+    "item": "mcfloatingbackpack:iron_combined_backpack"
+  },
+  "addition": {
+    "item": "minecraft:gold_block"
+  },
+  "result": {
+    "id": "mcfloatingbackpack:gold_combined_backpack",
+    "count": 1
+  }
+}

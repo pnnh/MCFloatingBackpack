@@ -74,9 +74,12 @@ public final class BackpackGate {
 
     public static void noteClosed(UUID player) {
         SESSIONS.closed(player);
+        // 065: a closed panel is a closed combined panel too
+        pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.end(player);
     }
 
     public static void forget(UUID player) {
+        pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.forget(player);
         WINDOWS.forgetPlayer(player);
         SESSIONS.closed(player);
         RESYNCED.remove(player);
@@ -104,6 +107,11 @@ public final class BackpackGate {
 
     /** The panel shows another backpack than the one that is now where it looked: show the new one. */
     private static void resync(ServerPlayer player, BackpackRef ref) {
+        // 065: a combined panel looks for its own backpack again (by identity), instead of falling to the one the B key opens
+        if (pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.recover(player)) {
+            RESYNCED.put(player.getUUID(), player.server.getTickCount());
+            return;
+        }
         pnnh.mcfloatingbackpack.diag.DiagLog.record(
                 player.getUUID(), "stale panel: it was opened on another backpack than " + pnnh.mcfloatingbackpack.diag.DiagLog.stack(ref.getStack(player))
                         + " at " + ref + "; the request is refused and the panel is re-synced to the one that is there");
@@ -120,6 +128,10 @@ public final class BackpackGate {
      * the new one without waiting for a click; if there is none any more, close the panel.
      */
     public static void tickOpenSession(ServerPlayer player) {
+        // 065: a combined panel checks its own table and backpack; false means there is none (or it just ended): the ordinary check follows
+        if (pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.tick(player)) {
+            return;
+        }
         if (!SESSIONS.has(player.getUUID())) {
             return;
         }

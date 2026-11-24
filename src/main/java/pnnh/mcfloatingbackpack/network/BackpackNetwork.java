@@ -45,7 +45,7 @@ public final class BackpackNetwork {
         versionCheck.playToClient(VersionHelloPayload.TYPE, VersionHelloPayload.STREAM_CODEC, VersionHelloPayload::handleClient);
         versionCheck.playToServer(VersionReportPayload.TYPE, VersionReportPayload.STREAM_CODEC, VersionReportPayload::handleServer);
 
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("22");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("23");
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(
                 CreativeCursorReportPayload.TYPE,
@@ -55,6 +55,15 @@ public final class BackpackNetwork {
                 CreativeCursorPushPayload.TYPE,
                 CreativeCursorPushPayload.STREAM_CODEC,
                 CreativeCursorPushPayload::handleClient);
+        // 065: the combined backpack: the client asks to open the panel or to switch tab, the server sends the table of backpacks it connects.
+        registrar.playToServer(
+                CombinedSelectPayload.TYPE,
+                CombinedSelectPayload.STREAM_CODEC,
+                CombinedSelectPayload::handleServer);
+        registrar.playToClient(
+                CombinedMembersPayload.TYPE,
+                CombinedMembersPayload.STREAM_CODEC,
+                CombinedMembersPayload::handleClient);
         registrar.playToClient(
                 BackpackFullSyncPayload.TYPE,
                 BackpackFullSyncPayload.STREAM_CODEC,

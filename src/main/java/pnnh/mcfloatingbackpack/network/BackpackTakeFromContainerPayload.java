@@ -20,6 +20,7 @@ import pnnh.mcfloatingbackpack.inventory.ContainerMenuAccess;
 import pnnh.mcfloatingbackpack.inventory.ContainerToBackpack;
 import pnnh.mcfloatingbackpack.inventory.ItemStackTransferOps;
 import pnnh.mcfloatingbackpack.inventory.QuickTransferRequest;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * Client request (012, reverse direction): move the stacks in these slots of the open container
@@ -64,7 +65,7 @@ public record BackpackTakeFromContainerPayload(int containerId, int[] menuSlots)
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

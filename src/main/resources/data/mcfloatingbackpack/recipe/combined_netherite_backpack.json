@@ -1,0 +1,24 @@
+{
+  "type": "mcfloatingbackpack:combined_crafting",
+  "category": "equipment",
+  "key": {
+    "E": {
+      "item": "minecraft:ender_eye"
+    },
+    "M": {
+      "item": "minecraft:netherite_ingot"
+    },
+    "B": {
+      "item": "mcfloatingbackpack:netherite_floating_backpack"
+    }
+  },
+  "pattern": [
+    "EME",
+    "MBM",
+    "EME"
+  ],
+  "result": {
+    "count": 1,
+    "id": "mcfloatingbackpack:netherite_combined_backpack"
+  }
+}

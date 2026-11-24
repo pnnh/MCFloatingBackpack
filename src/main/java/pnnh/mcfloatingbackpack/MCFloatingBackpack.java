@@ -135,7 +135,11 @@ public class MCFloatingBackpack {
             }
         });
         // 064: what the nesting rule remembers is per running world
-        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.clear());
+        NeoForge.EVENT_BUS.addListener((ServerStoppingEvent event) -> {
+            pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting.clear();
+            // 065: no combined panel survives the server
+            pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.clear();
+        });
         // 039: at login the server tells the player which version of this mod it runs (see VersionNetwork).
         NeoForge.EVENT_BUS.addListener((PlayerEvent.PlayerLoggedInEvent event) -> {
             if (event.getEntity() instanceof ServerPlayer player) {

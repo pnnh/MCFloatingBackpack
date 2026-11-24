@@ -41,6 +41,21 @@ public final class ModRecipes {
                 }
             });
 
+    /** 065: the combined backpack's crafting recipe, which only takes an empty floating backpack. */
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<CombinedCraftingRecipe>> COMBINED_CRAFTING =
+            SERIALIZERS.register("combined_crafting", () -> new RecipeSerializer<>() {
+                @Override
+                public com.mojang.serialization.MapCodec<CombinedCraftingRecipe> codec() {
+                    return CombinedCraftingRecipe.CODEC;
+                }
+
+                @Override
+                public net.minecraft.network.codec.StreamCodec<
+                        net.minecraft.network.RegistryFriendlyByteBuf, CombinedCraftingRecipe> streamCodec() {
+                    return CombinedCraftingRecipe.STREAM_CODEC;
+                }
+            });
+
     private ModRecipes() {
     }
 

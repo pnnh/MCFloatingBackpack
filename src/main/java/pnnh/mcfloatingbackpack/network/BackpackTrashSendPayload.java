@@ -37,6 +37,7 @@ import pnnh.mcfloatingbackpack.inventory.trash.TrashDeletePlan;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashSendRequest;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashSendRequest.Source;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashStacks;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 022: the client asks to move stacks into the trash can in bulk: a dump of the trash-tagged stacks of the main area,
@@ -94,7 +95,7 @@ public record BackpackTrashSendPayload(byte source, boolean confirmed, int conta
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;

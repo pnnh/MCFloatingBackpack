@@ -69,6 +69,15 @@ public record BackpackRef(Source source, int invIndex) {
         };
     }
 
+    /**
+     * 065: the same backpack as one reference, whichever way it is named. The main hand is the selected inventory slot, so a reference to
+     * {@code MAIN_HAND} and one to {@code INVENTORY(selected)} are the same backpack; the combined backpack's member table and its session
+     * only use the second kind.
+     */
+    public BackpackRef normalized(int selectedSlot) {
+        return source == Source.MAIN_HAND ? new BackpackRef(Source.INVENTORY, selectedSlot) : this;
+    }
+
     public ItemStack getStack(Player player) {
         if (source.isWorn()) {
             return WornBackpacks.get(player, source.ordinal(), invIndex);

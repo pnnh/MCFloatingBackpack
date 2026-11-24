@@ -5,6 +5,11 @@
     "mcfloatingbackpack:iron_floating_backpack",
     "mcfloatingbackpack:gold_floating_backpack",
     "mcfloatingbackpack:diamond_floating_backpack",
-    "mcfloatingbackpack:netherite_floating_backpack"
+    "mcfloatingbackpack:netherite_floating_backpack",
+    "mcfloatingbackpack:leather_combined_backpack",
+    "mcfloatingbackpack:iron_combined_backpack",
+    "mcfloatingbackpack:gold_combined_backpack",
+    "mcfloatingbackpack:diamond_combined_backpack",
+    "mcfloatingbackpack:netherite_combined_backpack"
   ]
 }

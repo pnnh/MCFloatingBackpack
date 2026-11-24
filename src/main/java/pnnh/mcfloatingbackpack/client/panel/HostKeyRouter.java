@@ -34,7 +34,17 @@ public final class HostKeyRouter {
 
     /** @param boundMappingNames the names of every key mapping bound to the pressed key */
     public static KeyRole classify(Collection<String> boundMappingNames, String toggleMappingName) {
-        if (boundMappingNames.contains(toggleMappingName)) {
+        return classify(boundMappingNames, toggleMappingName, null);
+    }
+
+    /**
+     * 065: the combined panel's key is the panel's own too: not consumed, its handler takes it.
+     *
+     * @param combinedMappingName the name of the combined key's mapping, or {@code null} for none
+     */
+    public static KeyRole classify(Collection<String> boundMappingNames, String toggleMappingName, String combinedMappingName) {
+        if (boundMappingNames.contains(toggleMappingName)
+                || (combinedMappingName != null && boundMappingNames.contains(combinedMappingName))) {
             return KeyRole.TOGGLE;
         }
         if (boundMappingNames.isEmpty()) {

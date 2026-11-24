@@ -67,6 +67,8 @@ public record BackpackOpenRequestPayload(boolean wantOpen, int sourceOrdinal, in
                 BackpackNetwork.sendSession(serverPlayer, false, null);
                 return;
             }
+            // 065: the B key opens the ordinary panel: a combined panel that was open is over
+            pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.endAndTell(serverPlayer);
             BackpackRef resolved = BackpackRef.resolve(serverPlayer);
             if (resolved == null) {
                 serverPlayer.displayClientMessage(

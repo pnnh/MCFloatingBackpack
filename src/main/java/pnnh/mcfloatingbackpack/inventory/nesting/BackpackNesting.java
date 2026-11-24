@@ -46,7 +46,8 @@ public final class BackpackNesting {
 
         @Override
         public boolean isBackpack(ItemStack stack) {
-            return FloatingBackpackItem.isBackpack(stack);
+            // 065: a combined backpack holds nothing, but it does not belong inside a backpack either
+            return FloatingBackpackItem.isBackpack(stack) || pnnh.mcfloatingbackpack.item.CombinedBackpackItem.isCombined(stack);
         }
 
         @Override
@@ -111,6 +112,7 @@ public final class BackpackNesting {
         List<String> ids = new ArrayList<>();
         for (BackpackTier tier : BackpackTier.values()) {
             ids.add(MCFloatingBackpack.MOD_ID + ":" + tier.id());
+            ids.add(MCFloatingBackpack.MOD_ID + ":" + pnnh.mcfloatingbackpack.item.CombinedBackpackItem.idOf(tier)); // 065
         }
         return List.copyOf(ids);
     }

@@ -19,6 +19,7 @@ import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.diag.DiagLog;
 import pnnh.mcfloatingbackpack.inventory.BackpackMenuBridge;
 import pnnh.mcfloatingbackpack.inventory.BackpackRef;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * Client notifies that a container screen opened; server merges leftover panel cursor
@@ -47,7 +48,7 @@ public record MergePanelCursorPayload() implements CustomPacketPayload {
             if (menu == null || !ServerCompatDenials.allows(serverPlayer, menu, Action.MERGE_CURSOR)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(serverPlayer);
+            BackpackRef ref = PanelTargets.resolve(serverPlayer);
             if (ref == null || !ref.stillValid(serverPlayer)) {
                 return;
             }

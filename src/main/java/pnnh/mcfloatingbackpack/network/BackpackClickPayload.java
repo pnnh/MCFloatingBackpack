@@ -31,6 +31,7 @@ import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 import pnnh.mcfloatingbackpack.item.ModItems;
 import pnnh.mcfloatingbackpack.item.TankItem;
 import pnnh.mcfloatingbackpack.tank.TankPlacement;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * {@code swapHand} is the old {@code shiftDown} bit (014): the click asks to swap the slot with the main-hand
@@ -105,10 +106,20 @@ public record BackpackClickPayload(
             }
 
             BackpackRef claimed = decodeRef(payload.sourceOrdinal(), payload.invIndex());
-            BackpackRef resolved = BackpackRef.resolve(serverPlayer);
+            BackpackRef resolved = PanelTargets.resolve(serverPlayer);
             if (resolved == null || !resolved.stillValid(serverPlayer)) {
                 DiagLog.record(serverPlayer.getUUID(), "click ignored: no backpack to resolve (claimed " + claimed + "); the panel is told to close");
                 BackpackNetwork.sendSession(serverPlayer, false, null);
+                return;
+            }
+            // 065: in a combined panel the click was meant for the tab it was drawn on. The one it names that is not the session's target
+            // (the tab was switched, or the backpack moved, after the client sent it) is refused and the client shown the current panel,
+            // instead of quietly changing another backpack.
+            if (pnnh.mcfloatingbackpack.inventory.combined.CombinedSessions.has(serverPlayer.getUUID())
+                    && claimed != null
+                    && !claimed.equals(resolved)) {
+                DiagLog.record(serverPlayer.getUUID(), "click refused: it names " + claimed + ", the combined panel is on " + resolved + "; the panel is re-synced");
+                BackpackNetwork.sendSession(serverPlayer, true, resolved);
                 return;
             }
             // Prefer live resolve; claimed must still be a backpack at that location if used.

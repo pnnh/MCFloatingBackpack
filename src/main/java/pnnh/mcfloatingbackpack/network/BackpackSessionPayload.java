@@ -99,6 +99,8 @@ public record BackpackSessionPayload(
                 state.setScrollRow(0);
                 ClientBackpackView.get().clear();
                 ClientBackpackView.get().clearActiveRef();
+                // 065: a closed session ends the combined panel too
+                pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().clear();
                 HostScreenManager.ensure();
                 return;
             }
@@ -107,8 +109,10 @@ public record BackpackSessionPayload(
             int ord = payload.sourceOrdinal();
             BackpackRef.Source source =
                     ord >= 0 && ord < sources.length ? sources[ord] : BackpackRef.Source.MAIN_HAND;
-            ClientBackpackView.get()
-                    .setActiveRef(new BackpackRef(source, payload.invIndex()));
+            BackpackRef opened = new BackpackRef(source, payload.invIndex());
+            ClientBackpackView.get().setActiveRef(opened);
+            // 065: the combined panel waits for the contents of the tab it asked for
+            pnnh.mcfloatingbackpack.client.panel.combined.ClientCombinedState.get().onSessionOpened(opened);
             state.setVisible(true);
             HostScreenManager.ensure();
         });

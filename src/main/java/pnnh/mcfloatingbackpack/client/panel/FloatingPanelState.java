@@ -26,6 +26,8 @@ public final class FloatingPanelState {
     private static final FloatingPanelState INSTANCE = new FloatingPanelState();
 
     private boolean visible;
+    /** 065: see {@link #setTopReserve}. */
+    private int topReserve;
     private int posX = DEFAULT_POS_X;
     private int posY = DEFAULT_POS_Y;
     private int width = DEFAULT_WIDTH;
@@ -313,9 +315,20 @@ public final class FloatingPanelState {
      */
     public static void clampToScreen(FloatingPanelState state, int screenWidth, int screenHeight) {
         int maxX = Math.max(0, screenWidth - state.width);
-        int maxY = Math.max(0, screenHeight - DRAG_BAR_HEIGHT);
+        // 065: with the combined bars hung above the panel the panel's top edge may not be higher than they are tall (0 otherwise)
+        int minY = Math.max(0, state.topReserve);
+        int maxY = Math.max(minY, screenHeight - DRAG_BAR_HEIGHT);
         state.posX = Math.min(Math.max(0, state.posX), maxX);
-        state.posY = Math.min(Math.max(0, state.posY), maxY);
+        state.posY = Math.min(Math.max(minY, state.posY), maxY);
+    }
+
+    /** 065: how far above the panel's top edge something hangs that must stay on screen (the combined bars); 0 for the plain panel. */
+    public int getTopReserve() {
+        return topReserve;
+    }
+
+    public void setTopReserve(int topReserve) {
+        this.topReserve = Math.max(0, topReserve);
     }
 
     public void clampToScreen(int screenWidth, int screenHeight) {

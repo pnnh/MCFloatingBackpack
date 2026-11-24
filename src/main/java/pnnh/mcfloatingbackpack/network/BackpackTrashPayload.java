@@ -28,6 +28,7 @@ import pnnh.mcfloatingbackpack.inventory.PanelCursor;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashBin;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
 import pnnh.mcfloatingbackpack.inventory.trash.TrashRequest;
+import pnnh.mcfloatingbackpack.inventory.combined.PanelTargets;
 
 /**
  * 021: the client asks to put the cursor stack into the trash can (ADD), take a group out onto the cursor (TAKE) or
@@ -77,7 +78,7 @@ public record BackpackTrashPayload(byte action, int[] slots, boolean screenOpen)
             if (!(context.player() instanceof ServerPlayer player)) {
                 return;
             }
-            BackpackRef ref = BackpackRef.resolve(player);
+            BackpackRef ref = PanelTargets.resolve(player);
             if (ref == null || !ref.stillValid(player)) {
                 BackpackNetwork.sendSession(player, false, null);
                 return;
