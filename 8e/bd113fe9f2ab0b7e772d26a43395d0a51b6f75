@@ -1,0 +1,253 @@
+docs/plan/README.md
+  s_1caeb40d291982::t_986e433fd203c2 17
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileFurnaceWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 33
+  s_1caeb40d291982::t_79da8979dd01f8 115
+specs/067-quick-access-grid/plan.md
+  s_1caeb40d291982::t_f239422b585f2e 1,3,5,9,11-15,17,19,21,23,25,27,29,31,33,35,41-51,58-67,73-106,109,111-112,114-115,117,119-123
+  s_1caeb40d291982::t_e000033e40dac0 2,4,6-8,10,16,18,20,22,24,26,28,30,32,34,36-40,52-57,68-72,107-108,110,113,116,118
+README.md
+  s_1caeb40d291982::t_0c8c38071d8670 35
+specs/067-quick-access-grid/data-model.md
+  s_1caeb40d291982::t_d9387cd0781146 58,64-67,70
+  s_1caeb40d291982::t_7de00a80e6686d 46
+  s_1caeb40d291982::t_2c32268d99c1da 1-45,47-57,59-63,68-69,71-81,83-86
+  s_1caeb40d291982::t_ee27d82746b1ea 82
+src/main/java/pnnh/mcfloatingbackpack/client/quick/QuickNotices.java
+  s_1caeb40d291982::t_fef89b3c0b9811 1-52
+src/main/resources/data/mcfloatingbackpack/recipe/quick_access.json
+  s_1caeb40d291982::t_57316c1a546ada 1-27
+src/main/java/pnnh/mcfloatingbackpack/item/QuickAccessItem.java
+  s_1caeb40d291982::t_8d06ad165b0a96 1-13
+specs/067-quick-access-grid/tasks.md
+  s_1caeb40d291982::t_5eeb3b640d2afa 147-150,155
+  s_1caeb40d291982::t_14428f823c069e 31,41-45,59-61,75-80,94-98,112-113,127-132,142-145
+  s_1caeb40d291982::t_c6a6f6b1bb5004 1-30,32-40,46-58,62-74,81-93,99-111,114-126,133-141,146,156-244
+  s_1caeb40d291982::t_2bf743e347313b 151-154
+src/test/java/pnnh/mcfloatingbackpack/resources/ServerCompatWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 154
+src/test/java/pnnh/mcfloatingbackpack/inventory/tags/PresetTagsTest.java
+  s_1caeb40d291982::t_e2a65931dd6b86 14,18
+src/main/java/pnnh/mcfloatingbackpack/client/panel/FloatingPanelInput.java
+  s_1caeb40d291982::t_aa13c52776b3f1 418-429
+specs/067-quick-access-grid/research.md
+  s_1caeb40d291982::t_2cc8c372637f37 1-98
+  s_1caeb40d291982::t_50fad2a68d08b9 99-112
+src/main/resources/assets/mcfloatingbackpack/models/item/quick_access.json
+  s_1caeb40d291982::t_9bbfb2f155da1b 1-6
+specs/067-quick-access-grid/checklists/requirements.md
+  s_1caeb40d291982::t_b7847e120d70fa 1-35
+src/test/java/pnnh/mcfloatingbackpack/resources/GreyCellWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 86
+src/main/resources/assets/mcfloatingbackpack/lang/en_us.json
+  s_1caeb40d291982::t_8777eb1afb567d 261-265,267
+  s_1caeb40d291982::t_ad7c2fe224b019 13
+  s_1caeb40d291982::t_ad717378c949de 266
+  s_1caeb40d291982::t_4d410e738a1225 42
+  s_1caeb40d291982::t_0111f517aded54 4
+src/test/java/pnnh/mcfloatingbackpack/search/SearchTermsContractTest.java
+  s_1caeb40d291982::t_e8a895058e568b 112
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackNetwork.java
+  s_1caeb40d291982::t_445ff0870e86d5 50-54
+src/test/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevisionTest.java
+  s_1caeb40d291982::t_d625beac7ad6f1 24-25
+  s_1caeb40d291982::t_0a4116d5de6857 11-12
+src/main/java/pnnh/mcfloatingbackpack/inventory/quick/QuickLists.java
+  s_1caeb40d291982::t_a74be360b38857 1-47
+src/main/java/pnnh/mcfloatingbackpack/inventory/revision/DataRevision.java
+  s_1caeb40d291982::t_be95e9548beacd 10
+  s_1caeb40d291982::t_439073664ad69f 15
+src/test/java/pnnh/mcfloatingbackpack/resources/SnapshotCapacityWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 55
+  s_1caeb40d291982::t_79da8979dd01f8 63
+src/test/java/pnnh/mcfloatingbackpack/resources/MobileCraftingWiringTest.java
+  s_1caeb40d291982::t_79da8979dd01f8 103
+  s_1caeb40d291982::t_f888e51e0c6a0a 31
+src/test/java/pnnh/mcfloatingbackpack/worldmarker/WorldMarkerWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 118
+README_CN.md
+  s_1caeb40d291982::t_509562fd07419d 35
+src/test/java/pnnh/mcfloatingbackpack/resources/JukeboxWiringTest.java
+  s_1caeb40d291982::t_79da8979dd01f8 113
+  s_1caeb40d291982::t_f888e51e0c6a0a 111
+src/main/resources/data/mcfloatingbackpack/tags/item/never_trash.json
+  s_1caeb40d291982::t_adf9735ccebd5d 10
+src/test/java/pnnh/mcfloatingbackpack/resources/PipeWiringTest.java
+  s_1caeb40d291982::t_79da8979dd01f8 239,249
+  s_1caeb40d291982::t_f888e51e0c6a0a 237,247
+src/test/java/pnnh/mcfloatingbackpack/inventory/quick/HandSwapPlaceTest.java
+  s_1caeb40d291982::t_b78f9952cc150e 1-32
+src/main/java/pnnh/mcfloatingbackpack/network/BackpackClickPayload.java
+  s_1caeb40d291982::t_f51640e658ee7e 416-418
+  s_1caeb40d291982::t_b17778d051e8cd 330-343
+  s_1caeb40d291982::t_088b2f63c41734 379-397
+  s_1caeb40d291982::t_a31011740b886f 348-351,354
+  s_1caeb40d291982::t_3ad65a318f9d32 216
+specs/067-quick-access-grid/contracts/swap.md
+  s_1caeb40d291982::t_bbd2b06fbeeb5c 11-12,14-16
+  s_1caeb40d291982::t_a61eff609212d5 1-10,13,17-18
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingPanelEvents.java
+  s_1caeb40d291982::t_a80514f595ba37 445-454
+  s_1caeb40d291982::t_7884d4dca5b737 433-444
+  s_1caeb40d291982::t_4ef31bba1d842e 500-504
+  s_1caeb40d291982::t_3bea80f8fbe542 455-457
+src/test/java/pnnh/mcfloatingbackpack/resources/CombinedWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 76
+src/main/java/pnnh/mcfloatingbackpack/item/ModItems.java
+  s_1caeb40d291982::t_ae72de3a20c3fc 99
+  s_1caeb40d291982::t_ed1b7b4d8999d9 46-49
+src/test/java/pnnh/mcfloatingbackpack/resources/DowngradeProtectionResourcesTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 132
+src/main/java/pnnh/mcfloatingbackpack/inventory/tags/PresetTags.java
+  s_1caeb40d291982::t_342d33140ff3e8 17-19
+src/main/java/pnnh/mcfloatingbackpack/inventory/quick/HandSwapSlots.java
+  s_1caeb40d291982::t_0e5f353c0a73c9 1-40
+specs/067-quick-access-grid/quickstart.md
+  s_1caeb40d291982::t_fc5cbfd336d0f6 1-13,16-25,28-29,31-36
+  s_1caeb40d291982::t_32a3a127dc8d86 14-15
+  s_1caeb40d291982::t_88825c2bc86990 26-27
+  s_1caeb40d291982::t_9f8312bba9066c 30
+src/main/java/pnnh/mcfloatingbackpack/inventory/quick/QuickViewport.java
+  s_1caeb40d291982::t_89a2bd42b7904d 9-12
+  s_1caeb40d291982::t_7b9a35a941012c 65
+  s_1caeb40d291982::t_be3239c2b59dbc 1-8,13-64,66-88
+src/main/java/pnnh/mcfloatingbackpack/client/quick/QuickAccessOpener.java
+  s_1caeb40d291982::t_d37142a944b0bf 1-56
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchPrefixResourcesTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 104
+src/main/java/pnnh/mcfloatingbackpack/inventory/BackpackInventory.java
+  s_1caeb40d291982::t_d5cfbfda5744a0 351-362
+  s_1caeb40d291982::t_9a2bc9068d43cb 350
+src/main/java/pnnh/mcfloatingbackpack/inventory/quick/QuickCandidates.java
+  s_1caeb40d291982::t_995cc7f3b6569c 1-45
+docs/plan/quick-access.md
+  s_1caeb40d291982::t_f62836ab28e53a 90
+  s_1caeb40d291982::t_5c97bddc445660 122
+  s_1caeb40d291982::t_3a48381324444d 106,108,110
+  s_1caeb40d291982::t_346cb3e4ae5c45 85
+  s_1caeb40d291982::t_f89f73d90ce0db 81
+  s_1caeb40d291982::t_171ba0ec04858c 13
+  s_1caeb40d291982::t_7c541b0b37863e 130
+  s_1caeb40d291982::t_f1677410988f80 1-2,4,6-12,14-80,82-84,86-89,91-105,107,109,111-121,123-129,131-147
+  s_1caeb40d291982::t_cdc48aab4a7fef 3
+  s_1caeb40d291982::t_6116c50f6e80ed 5
+src/test/java/pnnh/mcfloatingbackpack/resources/LightWiringTest.java
+  s_1caeb40d291982::t_79da8979dd01f8 107
+  s_1caeb40d291982::t_f888e51e0c6a0a 105
+src/main/java/pnnh/mcfloatingbackpack/client/FloatingBackpackKeys.java
+  s_1caeb40d291982::t_bba6ede4d48f08 80
+  s_1caeb40d291982::t_4cf8354f97296a 62-71
+src/test/java/pnnh/mcfloatingbackpack/resources/VersionCheckResourcesTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 70
+src/test/java/pnnh/mcfloatingbackpack/inventory/quick/QuickCandidatesTest.java
+  s_1caeb40d291982::t_35143aaabcd9c5 1-26,28-31,34-76,82-83
+  s_1caeb40d291982::t_69ca53bc8c21e5 77-81
+  s_1caeb40d291982::t_0b95e2909bdcfe 27,32-33
+src/main/java/pnnh/mcfloatingbackpack/network/QuickSwapPayload.java
+  s_1caeb40d291982::t_7ea2cb366d445c 1-73,75-89,93-95,102-113,117-139
+  s_1caeb40d291982::t_33df6f1d78d1ab 74
+  s_1caeb40d291982::t_59f61a7db640b7 90-92,96-101
+  s_1caeb40d291982::t_df94f54a21cb62 114-116
+src/main/resources/assets/mcfloatingbackpack/lang/zh_cn.json
+  s_1caeb40d291982::t_d51a63ad40cb05 266
+  s_1caeb40d291982::t_2258f3f28f52f8 4
+  s_1caeb40d291982::t_8b822f56b0d668 42
+  s_1caeb40d291982::t_ca423da5308c40 13
+  s_1caeb40d291982::t_af2ba0e91146a2 261-265,267
+src/test/java/pnnh/mcfloatingbackpack/resources/SearchResourcesTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 108
+src/test/java/pnnh/mcfloatingbackpack/resources/IntegratedTerminalsWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 98
+specs/067-quick-access-grid/spec.md
+  s_1caeb40d291982::t_92fbf7bf03205f 175
+  s_1caeb40d291982::t_65c54665e48bcd 90
+  s_1caeb40d291982::t_53c716ccede43f 215
+  s_1caeb40d291982::t_6f5ccc0ac14eb3 95
+  s_1caeb40d291982::t_992131dbdbbee0 1-72,74-89,91-94,96-112,114-158,160-164,166-172,174,176-196,198-199,201-206,208-214
+  s_1caeb40d291982::t_6d9fcb20d64ee8 159
+  s_1caeb40d291982::t_7be00b6fa276b2 73
+  s_1caeb40d291982::t_18b41bab5001dc 113
+  s_1caeb40d291982::t_0e05ab1a7a5ff2 173
+  s_1caeb40d291982::t_076bb5d0ad0223 165
+  s_1caeb40d291982::t_b44c105b6e7f07 197
+  s_1caeb40d291982::t_9bdc710ad6bdb9 200
+  s_1caeb40d291982::t_fa9408e2972e0d 207
+src/main/java/pnnh/mcfloatingbackpack/inventory/identity/BackpackGate.java
+  s_1caeb40d291982::t_39554a8a01b5a2 75-81
+src/test/java/pnnh/mcfloatingbackpack/resources/TankWiringTest.java
+  s_1caeb40d291982::t_79da8979dd01f8 65
+  s_1caeb40d291982::t_f888e51e0c6a0a 67
+src/main/java/pnnh/mcfloatingbackpack/inventory/quick/HandSwapPlace.java
+  s_1caeb40d291982::t_8f77b2b2c994e2 1-38
+src/test/java/pnnh/mcfloatingbackpack/resources/CategoryExtensionUiResourcesTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 125
+src/test/java/pnnh/mcfloatingbackpack/resources/ItemTooltipWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 87
+src/test/java/pnnh/mcfloatingbackpack/resources/QuickAccessWiringTest.java
+  s_1caeb40d291982::t_b8928db2d12b4c 63-64
+  s_1caeb40d291982::t_96d5ada2de73db 65
+  s_1caeb40d291982::t_008c21ec711e5f 45-46,48-49
+  s_1caeb40d291982::t_7ef8fdcd42cd3e 81
+  s_1caeb40d291982::t_fc3731370d9cba 31
+  s_1caeb40d291982::t_1b52a242ef72f3 140
+  s_1caeb40d291982::t_042182cae2811d 84,90-91,94-99
+  s_1caeb40d291982::t_0bc7846c8c2358 47,50-52
+  s_1caeb40d291982::t_2b4a3b7b2798aa 56,58-59
+  s_1caeb40d291982::t_828f080c084e81 1-30,32-44,53-55,57,60-62,66-80,82-83,85-89,92-93,100-139,141-146
+src/main/java/pnnh/mcfloatingbackpack/client/quick/QuickAccessScreen.java
+  s_1caeb40d291982::t_701c7b9cbb8ede 196
+  s_1caeb40d291982::t_4691aa814cea26 26-27
+  s_1caeb40d291982::t_2287d1264a25be 1-25,28-80,83-84,95-111,113-147,149-150,160-195,197-219
+  s_1caeb40d291982::t_6be1345f037b68 81-82,85-94
+  s_1caeb40d291982::t_febd1616451056 112
+  s_1caeb40d291982::t_89d39de37f02e4 148,151-159
+specs/067-quick-access-grid/contracts/grid.md
+  s_1caeb40d291982::t_3a40e580b44692 1-15,17-19,22-26
+  s_1caeb40d291982::t_55a48590489c4e 20-21
+  s_1caeb40d291982::t_04b0ce7eea6801 16
+.specify/feature.json
+  s_1caeb40d291982::t_a5242365f6cf3f 1-3
+src/test/java/pnnh/mcfloatingbackpack/resources/NetworkTakeWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 77
+specs/067-quick-access-grid/contracts/protocol.md
+  s_1caeb40d291982::t_31f3d83a27557b 1-30
+src/test/java/pnnh/mcfloatingbackpack/inventory/quick/QuickViewportTest.java
+  s_1caeb40d291982::t_afbf9d9e9ab41b 64
+  s_1caeb40d291982::t_9666ad64bb50e6 11-17
+  s_1caeb40d291982::t_a937e745734b25 1-10,18-63,65-101
+src/main/java/pnnh/mcfloatingbackpack/network/QuickSwapResultPayload.java
+  s_1caeb40d291982::t_da3e0a8ec51889 1-37
+src/test/java/pnnh/mcfloatingbackpack/resources/ExtensionTagsResourcesTest.java
+  s_1caeb40d291982::t_f15e1745469d77 151
+src/test/java/pnnh/mcfloatingbackpack/resources/AllWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 97
+src/test/java/pnnh/mcfloatingbackpack/resources/BackpackSortWiringTest.java
+  s_1caeb40d291982::t_f888e51e0c6a0a 28
+specs/067-quick-access-grid/DELIVERY.md
+  s_1caeb40d291982::t_4f14c4abdd7515 49
+  s_1caeb40d291982::t_3f79bb73dd064f 1-12,14,16-48,50-52,63-68,70-71
+  s_1caeb40d291982::t_11ade61fc190bb 13,15
+  s_1caeb40d291982::t_d66aba08307a9c 69
+  s_1caeb40d291982::t_08bc234cb36432 53-62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "8ebd113fe9f2ab0b7e772d26a43395d0a51b6f75",
+  "prompts": {},
+  "humans": {
+    "h_6465a203f88bd5": {
+      "author": "larry <xspanni@gmail.com>"
+    }
+  },
+  "sessions": {
+    "s_1caeb40d291982": {
+      "agent_id": {
+        "tool": "cursor",
+        "id": "68097caf-4617-4b3c-9350-0226aba4589f",
+        "model": "grok-4.7"
+      },
+      "human_author": "larry <xspanni@gmail.com>"
+    }
+  }
+}
