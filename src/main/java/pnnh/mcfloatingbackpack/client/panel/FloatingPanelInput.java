@@ -415,6 +415,18 @@ public final class FloatingPanelInput {
             FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.mobile_furnace"));
             return true;
         }
+        // 067: one quick access in the bottom area
+        if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                        PanelArea.BOTTOM,
+                        area,
+                        held,
+                        slotIndex,
+                        view.toolStacks(area),
+                        stack -> stack.is(ModItems.QUICK_ACCESS.get()))
+                != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.quick_access"));
+            return true;
+        }
         // 052: a light in the bottom area only shines through LambDynamicLights, which the player installs themselves: say so once.
         if (area == PanelArea.BOTTOM
                 && pnnh.mcfloatingbackpack.light.LightTags.isLight(held)

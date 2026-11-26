@@ -52,7 +52,7 @@ class SnapshotCapacityWiringTest {
 
     @Test
     void theProtocolIs21AndTheVersionListIsPaged() throws IOException {
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"25\")"));
         assertTrue(read("snapshot/SnapshotServer.java").contains("VersionPaging.page(all, request.kind(), SnapshotMeta::kind, request.page(), request.pageSize())"));
         assertTrue(read("snapshot/SnapshotRequestRules.java").contains("MAX_VERSIONS = 100"));
         assertTrue(read("snapshot/SnapshotCommands.java").contains("IntegerArgumentType.integer(1, SnapshotRequestRules.MAX_VERSIONS)"));
@@ -60,6 +60,6 @@ class SnapshotCapacityWiringTest {
 
     @Test
     void theBackpacksDataRevisionIsUnchanged() throws IOException {
-        assertTrue(read("inventory/revision/DataRevision.java").contains("CURRENT = 6;"));
+        assertTrue(read("inventory/revision/DataRevision.java").contains("CURRENT = 7;"));
     }
 }

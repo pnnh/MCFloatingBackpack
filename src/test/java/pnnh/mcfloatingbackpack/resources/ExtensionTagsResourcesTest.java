@@ -148,7 +148,7 @@ class ExtensionTagsResourcesTest {
             assertTrue(en.contains("\"" + PresetTags.langKey(id) + "\""), "en_us missing " + id);
             assertTrue(zh.contains("\"" + PresetTags.langKey(id) + "\""), "zh_cn missing " + id);
         }
-        assertEquals(21, PresetTags.ids().size());
+        assertEquals(22, PresetTags.ids().size(), "21 category presets plus quick (067), which is not a category");
         assertTrue(PresetTags.isPreset("plant"), "plant was a preset before it became a category (051)");
         assertTrue(ExtensionCategories.isKnown("plant"));
     }

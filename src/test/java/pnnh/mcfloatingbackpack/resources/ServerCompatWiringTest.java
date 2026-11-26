@@ -151,6 +151,6 @@ class ServerCompatWiringTest {
 
     @Test
     void theProtocolIsNotChanged() throws IOException {
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"25\")"));
     }
 }

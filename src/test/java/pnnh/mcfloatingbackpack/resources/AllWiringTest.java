@@ -94,7 +94,7 @@ class AllWiringTest {
     @Test
     void theProtocolIs24AndTheTwoNewPacketsAreRegistered() throws IOException {
         String network = read("network/BackpackNetwork.java");
-        assertTrue(network.contains("versioned(\"24\")"));
+        assertTrue(network.contains("versioned(\"25\")"));
         assertTrue(network.contains("CombinedMemberSyncPayload.TYPE") && network.contains("CombinedCellUpdatePayload.TYPE"));
         String sync = read("network/CombinedMemberSyncPayload.java");
         assertTrue(sync.contains("BackpackInventory.MAX_MAIN_SLOTS") && sync.contains("AllAddressing.MAX_MEMBERS"));

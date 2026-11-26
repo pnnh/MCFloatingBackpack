@@ -72,6 +72,13 @@ public final class BackpackGate {
         SESSIONS.opened(player.getUUID(), identityOf(stack));
     }
 
+    /**
+     * 067: whether the ordinary panel is open on this stack. A combined panel is separate ({@code CombinedSessions}).
+     */
+    public static boolean sessionOpenOn(ServerPlayer player, ItemStack stack) {
+        return SESSIONS.check(player.getUUID(), identityOf(stack)) == OpenSessions.Verdict.SAME;
+    }
+
     public static void noteClosed(UUID player) {
         SESSIONS.closed(player);
         // 065: a closed panel is a closed combined panel too

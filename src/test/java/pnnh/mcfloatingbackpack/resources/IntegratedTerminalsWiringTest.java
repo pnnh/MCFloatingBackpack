@@ -95,6 +95,6 @@ class IntegratedTerminalsWiringTest {
                 assertFalse(text.contains("import appeng."), file.toString());
             }
         }
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"25\")"));
     }
 }

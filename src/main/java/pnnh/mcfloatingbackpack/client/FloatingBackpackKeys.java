@@ -59,6 +59,16 @@ public final class FloatingBackpackKeys {
             InputConstants.UNKNOWN,
             CATEGORY);
 
+    /**
+     * 067: opens the quick-access grid. IN_GAME, so it is not live while a screen (including the grid itself) is open; the grid
+     * watches the bound key for the second press. Z is free of the vanilla off-hand swap (F).
+     */
+    public static final KeyMapping QUICK_ACCESS = new KeyMapping(
+            "key." + MCFloatingBackpack.MOD_ID + ".quick_access",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_Z),
+            CATEGORY);
+
     private FloatingBackpackKeys() {
     }
 
@@ -67,5 +77,6 @@ public final class FloatingBackpackKeys {
         event.register(COMBINED);
         event.register(DELETE_TO_TRASH);
         event.register(SNAPSHOTS);
+        event.register(QUICK_ACCESS);
     }
 }

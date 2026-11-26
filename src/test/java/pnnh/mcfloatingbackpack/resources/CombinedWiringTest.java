@@ -73,7 +73,7 @@ class CombinedWiringTest {
     @Test
     void theProtocolIs23AndBothPacketsAreRegistered() throws IOException {
         String network = read("network/BackpackNetwork.java");
-        assertTrue(network.contains("versioned(\"24\")"));
+        assertTrue(network.contains("versioned(\"25\")"));
         assertTrue(network.contains("CombinedSelectPayload.TYPE") && network.contains("CombinedMembersPayload.TYPE"));
         assertTrue(network.contains("CombinedSelectPayload::handleServer") && network.contains("CombinedMembersPayload::handleClient"));
     }

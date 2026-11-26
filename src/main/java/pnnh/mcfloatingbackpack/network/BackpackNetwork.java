@@ -47,7 +47,11 @@ public final class BackpackNetwork {
         versionCheck.playToClient(VersionHelloPayload.TYPE, VersionHelloPayload.STREAM_CODEC, VersionHelloPayload::handleClient);
         versionCheck.playToServer(VersionReportPayload.TYPE, VersionReportPayload.STREAM_CODEC, VersionReportPayload::handleServer);
 
-        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("24");
+        PayloadRegistrar registrar = event.registrar(MCFloatingBackpack.MOD_ID).versioned("25");
+        // 067: swap one quick-tagged stack with the main hand, and whether that write happened
+        registrar.playToServer(QuickSwapPayload.TYPE, QuickSwapPayload.STREAM_CODEC, QuickSwapPayload::handleServer);
+        registrar.playToClient(
+                QuickSwapResultPayload.TYPE, QuickSwapResultPayload.STREAM_CODEC, QuickSwapResultPayload::handleClient);
         // 027: the creative inventory's cursor, which only the client has, and the server's answer to a panel operation.
         registrar.playToServer(
                 CreativeCursorReportPayload.TYPE,

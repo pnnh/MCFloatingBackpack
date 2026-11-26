@@ -14,7 +14,9 @@ public final class PresetTags {
                     "stone", "wood", "food", "ore", "trash", "tool", "weapon", "armor", "plant", "redstone", "crop", "potion",
                     "disc",
                     // 051: the other category ids that were not presets yet ("plant" already was)
-                    "building", "natural", "decor", "mobdrop", "storage", "transport", "enchant", "meat");
+                    "building", "natural", "decor", "mobdrop", "storage", "transport", "enchant", "meat",
+                    // 067: not a category. A type carrying it is listed by the quick-access grid.
+                    "quick");
 
     private PresetTags() {
     }

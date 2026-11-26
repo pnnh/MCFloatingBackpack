@@ -213,6 +213,7 @@ public record BackpackClickPayload(
             ServerPlayer serverPlayer, BackpackClickPayload payload, BackpackRef ref, BackpackInventory inventory, PanelArea area, int slot, CursorLoan loan) {
         AbstractContainerMenu menu = serverPlayer.containerMenu;
         boolean viaMenu = payload.screenOpen() && menu != null;
+        int handSwapDest = -1;
         DiagLog.record(serverPlayer.getUUID(), "click " + area + "#" + slot + (payload.rightClick() ? " right" : " left")
                 + (payload.swapHand() ? " swapHand" : "") + (viaMenu ? " viaMenu(" + menu.getClass().getSimpleName() + ")" : "")
                 + " ref=" + ref + " | " + state(serverPlayer, menu, inventory, area, slot));
@@ -326,15 +327,31 @@ public record BackpackClickPayload(
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                     return;
                 }
+                // 067: one quick access in the bottom area
+                if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
+                                PanelArea.BOTTOM,
+                                area,
+                                held,
+                                slot,
+                                inventory.toolStacks(area),
+                                stack -> stack.is(ModItems.QUICK_ACCESS.get()))
+                        != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+                    serverPlayer.displayClientMessage(
+                            Component.translatable("message.mcfloatingbackpack.limit.quick_access"), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                    return;
+                }
             }
         }
 
         // 035: a cell of a category extension row only takes what fits its category (and a hidden row's or a missing cell takes
-        // nothing); taking out is always allowed. A refused click changes nothing.
-        if (!area.isTool()) {
+        // nothing); taking out is always allowed. A refused click changes nothing. 067: a whole-stack hand swap is not
+        // refused here. It puts the hand stack in the clicked cell when that cell accepts it, otherwise in the first
+        // empty cell that does, and refuses only when a non-empty hand has nowhere to go.
+        if (!area.isTool() && !payload.swapHand()) {
             ItemStack held = viaMenu
                     ? (menu.getCarried().isEmpty() ? inventory.getCursor() : menu.getCarried())
-                    : payload.swapHand() ? serverPlayer.getMainHandItem() : inventory.getCursor();
+                    : inventory.getCursor();
             if (!held.isEmpty() && !inventory.canPlaceMain(slot, held)) {
                 BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                 return;
@@ -359,10 +376,25 @@ public record BackpackClickPayload(
                 BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                 return;
             }
-            ItemStack handCopy = hand.copy();
-            ItemStack inSlot = inventory.getStackInSlot(area, slot).copy();
-            inventory.setStackInSlot(area, slot, handCopy);
-            serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, inSlot);
+            int dest = slot;
+            if (!area.isTool()) {
+                dest = pnnh.mcfloatingbackpack.inventory.quick.HandSwapSlots.destination(inventory, slot, hand);
+                if (!hand.isEmpty() && dest < 0) {
+                    serverPlayer.displayClientMessage(
+                            Component.translatable("message.mcfloatingbackpack.quick.no_room"), true);
+                    BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+                    return;
+                }
+            }
+            ItemStack taken = inventory.getStackInSlot(area, slot).copy();
+            if (hand.isEmpty() || dest == slot) {
+                inventory.setStackInSlot(area, slot, hand.copy());
+            } else {
+                inventory.setStackInSlot(area, slot, ItemStack.EMPTY);
+                inventory.setStackInSlot(area, dest, hand.copy());
+                handSwapDest = dest;
+            }
+            serverPlayer.setItemInHand(InteractionHand.MAIN_HAND, taken);
             serverPlayer.getInventory().setChanged();
         } else {
             BackpackClickLogic.applyTo(inventory, area, slot, payload.rightClick());
@@ -381,6 +413,9 @@ public record BackpackClickPayload(
         ref.saveInventory(serverPlayer, inventory);
         DiagLog.record(serverPlayer.getUUID(), "  -> saved | " + state(serverPlayer, menu, inventory, area, slot));
         BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
+        if (handSwapDest >= 0) {
+            BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, handSwapDest);
+        }
     }
 
     /** The things a click moves, in a few words: the slot, the panel's cursor, the menu's carried stack and the hand. */

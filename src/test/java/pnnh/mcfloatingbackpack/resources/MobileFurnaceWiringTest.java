@@ -30,7 +30,7 @@ class MobileFurnaceWiringTest {
     @Test
     void noPacketWasAddedAndTheProtocolIsStillTwenty() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("versioned(\"24\")"));
+        assertTrue(network.contains("versioned(\"25\")"));
         assertEquals(1, Pattern.compile("OpenToolPayload\\.TYPE").matcher(network).results().count());
         try (Stream<Path> files = Files.list(SRC.resolve("network"))) {
             assertFalse(files.anyMatch(f -> f.getFileName().toString().toLowerCase().contains("furnace")), "the furnace has no packet of its own");
@@ -112,7 +112,7 @@ class MobileFurnaceWiringTest {
         String components = read(SRC.resolve("inventory/ModDataComponents.java"));
         assertTrue(components.contains("\"mobile_furnace_state\""));
         assertTrue(components.contains("FurnaceState.CODEC") && components.contains("FurnaceState.STREAM_CODEC"));
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;"));
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 7;"));
         assertTrue(read(SRC.resolve("inventory/BackpackContents.java")).contains("ItemStack.OPTIONAL_CODEC"), "the tool stacks carry their components in the backpack's own encoding");
     }
 

@@ -43,6 +43,10 @@ public final class ModItems {
     public static final DeferredHolder<Item, TagManagerItem> TAG_MANAGER =
             ITEMS.register("tag_manager", () -> new TagManagerItem(new Item.Properties()));
 
+    /** 067: lives in the panel's function area; see {@link QuickAccessItem}. */
+    public static final DeferredHolder<Item, QuickAccessItem> QUICK_ACCESS =
+            ITEMS.register("quick_access", () -> new QuickAccessItem(new Item.Properties()));
+
     /** 021: lives in the panel's right area; see {@link TrashCanItem}. */
     public static final DeferredHolder<Item, TrashCanItem> TRASH_CAN =
             ITEMS.register("trash_can", () -> new TrashCanItem(new Item.Properties()));
@@ -92,6 +96,7 @@ public final class ModItems {
                                     output.accept(combined.get());
                                 }
                                 output.accept(TAG_MANAGER.get());
+                                output.accept(QUICK_ACCESS.get());
                                 output.accept(TRASH_CAN.get());
                                 output.accept(AUTO_PICKUP.get());
                                 output.accept(MOBILE_JUKEBOX.get());

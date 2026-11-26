@@ -28,7 +28,7 @@ class MobileCraftingWiringTest {
     @Test
     void theRequestIsRegisteredToTheServerOnTheProtocol20() throws IOException {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
-        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"24\")"));
+        assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"25\")"));
         assertTrue(network.contains("registrar.playToServer(OpenToolPayload.TYPE, OpenToolPayload.STREAM_CODEC, OpenToolPayload::handleServer)"));
     }
 
@@ -100,7 +100,7 @@ class MobileCraftingWiringTest {
             }
         }
         assertFalse(Files.exists(Path.of("src/main/resources/mcfloatingbackpack.mixins.json")));
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 6;"));
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 7;"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count());
     }
 

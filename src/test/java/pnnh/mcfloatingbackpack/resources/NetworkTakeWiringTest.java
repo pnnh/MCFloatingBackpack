@@ -74,7 +74,7 @@ class NetworkTakeWiringTest {
         assertTrue(payload.contains("ByteBufCodecs.VAR_LONG") && payload.contains("ByteBufCodecs.VAR_INT, BackpackNetworkTakePayload::amount"));
         assertFalse(payload.contains("org.cyclops") || payload.contains("appeng."));
         assertTrue(read("network/BackpackNetwork.java").contains("BackpackNetworkTakePayload::handleServer"));
-        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"24\")"));
+        assertTrue(read("network/BackpackNetwork.java").contains("versioned(\"25\")"));
     }
 
     @Test

@@ -348,6 +348,19 @@ public final class BackpackInventory {
     }
 
     /**
+     * 067: whether the bottom (function) area holds a quick access, which is what lets the quick-access key open the grid.
+     * Looks at the whole stored list, not at the cells the panel currently shows. The first one is enough.
+     */
+    public boolean hasQuickAccess() {
+        for (int i = 0; i < size(PanelArea.BOTTOM); i++) {
+            if (getStackInSlot(PanelArea.BOTTOM, i).is(ModItems.QUICK_ACCESS.get())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * 024: whether the left area holds an auto pickup, which is what makes the pickup blacklist editable. Looks at the
      * whole stored list, not at the cells the panel currently shows.
      */

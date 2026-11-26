@@ -426,11 +426,33 @@ public final class FloatingPanelEvents {
 
     @SubscribeEvent
     public static void onKey(InputEvent.Key event) {
-        if (event.getAction() != GLFW.GLFW_PRESS) {
-            return;
-        }
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft == null || minecraft.player == null || minecraft.level == null) {
+            return;
+        }
+        // 067: hold the key to show the grid, release it to hide. Repeats must not toggle. InputEvent.Key cannot be cancelled
+        // on this NeoForge, so a rebind onto swap-offhand is stopped by draining that binding after the click is recorded.
+        if (isQuickAccessKey(event.getKey(), event.getScanCode())) {
+            if (event.getAction() == GLFW.GLFW_RELEASE) {
+                if (minecraft.screen instanceof pnnh.mcfloatingbackpack.client.quick.QuickAccessScreen screen) {
+                    screen.dismiss();
+                }
+                return;
+            }
+            if (event.getAction() != GLFW.GLFW_PRESS) {
+                return;
+            }
+            if (minecraft.getOverlay() == null && minecraft.screen == null && !FloatingPanelState.get().isVisible()) {
+                pnnh.mcfloatingbackpack.client.quick.QuickAccessOpener.tryOpen(minecraft);
+            }
+            if (minecraft.options.keySwapOffhand.matches(event.getKey(), event.getScanCode())) {
+                while (minecraft.options.keySwapOffhand.consumeClick()) {
+                    // drain the vanilla binding so this press cannot also swap the off hand
+                }
+            }
+            return;
+        }
+        if (event.getAction() != GLFW.GLFW_PRESS) {
             return;
         }
         if (minecraft.getOverlay() != null) {
@@ -473,6 +495,11 @@ public final class FloatingPanelEvents {
             return;
         }
         PacketDistributor.sendToServer(BackpackOpenRequestPayload.open(ref));
+    }
+
+    /** The bound quick-access key, ignoring conflict context so a release still matches while its screen is open. */
+    private static boolean isQuickAccessKey(int key, int scanCode) {
+        return FloatingBackpackKeys.QUICK_ACCESS.getKey().equals(InputConstants.getKey(key, scanCode));
     }
 
     /**
