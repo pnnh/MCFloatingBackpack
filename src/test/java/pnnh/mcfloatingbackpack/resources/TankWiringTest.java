@@ -62,7 +62,7 @@ class TankWiringTest {
 
     @Test
     void theDataRevisionIsFiveSince054AndTheProtocolIs20() throws IOException {
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 7;")); // 051 raised it from 2 (048 introduced 2)
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 8;")); // 051 raised it from 2 (048 introduced 2)
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
         assertTrue(network.contains("event.registrar(MCFloatingBackpack.MOD_ID).versioned(\"25\")"));
         assertTrue(network.contains("registrar.playToClient(\n                BackpackFluidsPayload.TYPE,"), "a server-to-client packet");

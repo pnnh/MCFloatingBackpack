@@ -1,6 +1,7 @@
 package pnnh.mcfloatingbackpack.client.quick;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -11,6 +12,8 @@ import pnnh.mcfloatingbackpack.inventory.BackpackRef;
 import pnnh.mcfloatingbackpack.inventory.ModDataComponents;
 import pnnh.mcfloatingbackpack.inventory.quick.QuickLists;
 import pnnh.mcfloatingbackpack.inventory.revision.DataRevision;
+import pnnh.mcfloatingbackpack.item.BackpackTier;
+import pnnh.mcfloatingbackpack.item.ModItems;
 
 /**
  * 067: decides whether the quick-access key may open the grid. The caller has already checked that this is the game view
@@ -44,7 +47,7 @@ public final class QuickAccessOpener {
         }
         BackpackInventory inventory = BackpackInventory.fromItem(stack);
         if (!inventory.hasQuickAccess()) {
-            QuickNotices.actionBar(minecraft, "message.mcfloatingbackpack.quick.need_tool");
+            QuickNotices.actionBar(minecraft, "message.mcfloatingbackpack.quick.need_tool", toolName(inventory.tier()));
             return;
         }
         if (QuickLists.candidates(inventory).isEmpty()) {
@@ -52,5 +55,12 @@ public final class QuickAccessOpener {
             return;
         }
         minecraft.setScreen(new QuickAccessScreen());
+    }
+
+    private static Component toolName(BackpackTier tier) {
+        if (tier == null) {
+            return Component.translatable("item.mcfloatingbackpack.quick_access");
+        }
+        return Component.translatable(ModItems.quickAccess(tier).getDescriptionId());
     }
 }

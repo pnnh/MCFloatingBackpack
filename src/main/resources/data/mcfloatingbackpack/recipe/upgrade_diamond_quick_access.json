@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "minecraft:eye_armor_trim_smithing_template" },
+  "base": { "item": "mcfloatingbackpack:gold_quick_access" },
+  "addition": { "item": "minecraft:diamond_block" },
+  "result": { "count": 1, "id": "mcfloatingbackpack:diamond_quick_access" }
+}

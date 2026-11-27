@@ -24,7 +24,9 @@ import pnnh.mcfloatingbackpack.inventory.identity.BackpackGate;
 import pnnh.mcfloatingbackpack.inventory.nesting.BackpackNesting;
 import pnnh.mcfloatingbackpack.inventory.nesting.NestingRules;
 import pnnh.mcfloatingbackpack.inventory.quick.QuickLists;
+import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
+import pnnh.mcfloatingbackpack.item.ModItems;
 
 /**
  * 067: the client asks to swap one listed stack with the main hand. The server recomputes the list and does not trust the
@@ -78,7 +80,7 @@ public record QuickSwapPayload(int sourceOrdinal, int invIndex, int slot) implem
         }
         BackpackInventory inventory = got.get();
         if (!inventory.hasQuickAccess()) {
-            return refuse(player, "message.mcfloatingbackpack.quick.need_tool");
+            return refuse(player, "message.mcfloatingbackpack.quick.need_tool", toolName(inventory.tier()));
         }
         if (!QuickLists.candidates(inventory).contains(payload.slot())) {
             return refuse(player, "message.mcfloatingbackpack.quick.refused");
@@ -119,14 +121,26 @@ public record QuickSwapPayload(int sourceOrdinal, int invIndex, int slot) implem
     }
 
     private static boolean refuse(ServerPlayer player, String key) {
+        return refuse(player, key, null);
+    }
+
+    private static boolean refuse(ServerPlayer player, String key, Component arg) {
         int now = player.tickCount;
         String id = player.getUUID() + "\0" + key;
         Integer previous = NOTICED.get(id);
         if (previous == null || now - previous >= NOTICE_TICKS || now < previous) {
             NOTICED.put(id, now);
-            player.displayClientMessage(Component.translatable(key), true);
+            Component line = arg == null ? Component.translatable(key) : Component.translatable(key, arg);
+            player.displayClientMessage(line, true);
         }
         return false;
+    }
+
+    private static Component toolName(BackpackTier tier) {
+        if (tier == null) {
+            return Component.translatable("item.mcfloatingbackpack.quick_access");
+        }
+        return Component.translatable(ModItems.quickAccess(tier).getDescriptionId());
     }
 
     private static BackpackRef decode(int sourceOrdinal, int invIndex) {

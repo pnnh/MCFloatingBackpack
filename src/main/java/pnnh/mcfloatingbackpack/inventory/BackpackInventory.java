@@ -23,6 +23,7 @@ import pnnh.mcfloatingbackpack.inventory.trash.TrashContents;
 import pnnh.mcfloatingbackpack.item.BackpackTier;
 import pnnh.mcfloatingbackpack.item.FloatingBackpackItem;
 import pnnh.mcfloatingbackpack.item.ModItems;
+import pnnh.mcfloatingbackpack.item.QuickAccessItem;
 import pnnh.mcfloatingbackpack.item.TankItem;
 import pnnh.mcfloatingbackpack.tank.FluidKind;
 import pnnh.mcfloatingbackpack.tank.FluidStore;
@@ -348,12 +349,16 @@ public final class BackpackInventory {
     }
 
     /**
-     * 067: whether the bottom (function) area holds a quick access, which is what lets the quick-access key open the grid.
-     * Looks at the whole stored list, not at the cells the panel currently shows. The first one is enough.
+     * 068: whether the bottom area holds a quick access of this backpack's own tier. A leather one left in a higher backpack
+     * does not count. Looks at the whole stored list, not at the cells the panel currently shows.
      */
     public boolean hasQuickAccess() {
+        BackpackTier tier = tier();
+        if (tier == null) {
+            return false;
+        }
         for (int i = 0; i < size(PanelArea.BOTTOM); i++) {
-            if (getStackInSlot(PanelArea.BOTTOM, i).is(ModItems.QUICK_ACCESS.get())) {
+            if (QuickAccessItem.tierOf(getStackInSlot(PanelArea.BOTTOM, i)) == tier) {
                 return true;
             }
         }

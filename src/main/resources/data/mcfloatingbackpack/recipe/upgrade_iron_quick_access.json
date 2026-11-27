@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "minecraft:sentry_armor_trim_smithing_template" },
+  "base": { "item": "mcfloatingbackpack:quick_access" },
+  "addition": { "item": "minecraft:iron_block" },
+  "result": { "count": 1, "id": "mcfloatingbackpack:iron_quick_access" }
+}

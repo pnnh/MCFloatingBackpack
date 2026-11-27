@@ -22,9 +22,10 @@ import pnnh.mcfloatingbackpack.inventory.quick.QuickViewport;
 import pnnh.mcfloatingbackpack.network.QuickSwapPayload;
 
 /**
- * 067: the quick-access grid. Its own screen, not the panel host: no pause, no dim, no window. Items are read from the
- * backpack the B key would open. Holding the key keeps the grid up; releasing it closes the grid. A click waits for
- * {@code quick_swap_result} before the grid closes or accepts another.
+ * 067: the quick-access grid. Its own screen, not the panel host: no pause, no dim, no title. A light gray translucent
+ * sheet of slots sits behind the items, including the empty cells that finish a short row. Those cells are paint
+ * only. Items are read from the backpack the B key would open. Holding the key keeps the grid up; releasing it
+ * closes the grid. A click waits for {@code quick_swap_result} before the grid closes or accepts another.
  */
 @OnlyIn(Dist.CLIENT)
 public final class QuickAccessScreen extends Screen {
@@ -33,6 +34,12 @@ public final class QuickAccessScreen extends Screen {
     private static final int COLOR_ARROW_OUTLINE = 0xFFF2F2F2;
     /** Same translucent white the panel paints over a hovered slot. */
     private static final int COLOR_HOVER = 0x80FFFFFF;
+    /** Lighter and more see-through than a container window, so the world stays visible. */
+    private static final int COLOR_PANEL = 0x55D6D6D6;
+    private static final int COLOR_SLOT = 0x66C2C2C2;
+    private static final int COLOR_SLOT_SHADE = 0x668A8A8A;
+    private static final int COLOR_SLOT_LIGHT = 0x88F4F4F4;
+    private static final int PANEL_PAD = 3;
 
     private int scroll;
     private boolean awaiting;
@@ -68,6 +75,7 @@ public final class QuickAccessScreen extends Screen {
         if (inventory == null || fit.columns() <= 0) {
             return;
         }
+        drawBackdrop(graphics, fit);
         ItemStack hovered = ItemStack.EMPTY;
         for (int row = 0; row < fit.rows(); row++) {
             for (int column = 0; column < fit.columns(); column++) {
@@ -76,16 +84,17 @@ public final class QuickAccessScreen extends Screen {
                     continue;
                 }
                 ItemStack stack = inventory.getStackInSlot(candidates.get(index));
-                int x = fit.originX() + column * QuickViewport.SLOT;
-                int y = fit.originY() + row * QuickViewport.SLOT;
-                boolean underMouse = mouseX >= x && mouseY >= y && mouseX < x + QuickViewport.SLOT && mouseY < y + QuickViewport.SLOT;
+                int slot = fit.slot();
+                int x = fit.originX() + column * slot;
+                int y = fit.originY() + row * slot;
+                boolean underMouse = mouseX >= x && mouseY >= y && mouseX < x + slot && mouseY < y + slot;
                 if (underMouse) {
-                    graphics.fill(x, y, x + QuickViewport.SLOT, y + QuickViewport.SLOT, COLOR_HOVER);
+                    graphics.fill(x, y, x + slot, y + slot, COLOR_HOVER);
                     hovered = stack;
                 }
                 if (!stack.isEmpty()) {
-                    int pad = (QuickViewport.SLOT - QuickViewport.ITEM) / 2;
-                    float scale = QuickViewport.ITEM / 16.0F;
+                    int pad = (slot - fit.item()) / 2;
+                    float scale = fit.item() / 16.0F;
                     graphics.pose().pushPose();
                     graphics.pose().translate(x + pad, y + pad, 0);
                     graphics.pose().scale(scale, scale, 1.0F);
@@ -95,12 +104,12 @@ public final class QuickAccessScreen extends Screen {
                 }
             }
         }
-        int centerX = fit.originX() + fit.columns() * QuickViewport.SLOT / 2;
+        int centerX = fit.originX() + fit.columns() * fit.slot() / 2;
         if (fit.moreAbove()) {
             drawArrow(graphics, centerX, fit.originY(), 0, -1);
         }
         if (fit.moreBelow()) {
-            drawArrow(graphics, centerX, fit.originY() + fit.rows() * QuickViewport.SLOT - 1, 0, 1);
+            drawArrow(graphics, centerX, fit.originY() + fit.rows() * fit.slot() - 1, 0, 1);
         }
         if (!hovered.isEmpty()) {
             graphics.renderTooltip(font, hovered, mouseX, mouseY);
@@ -197,6 +206,33 @@ public final class QuickAccessScreen extends Screen {
         if (minecraft != null && minecraft.screen == this) {
             minecraft.setScreen(null);
         }
+    }
+
+    /** The sheet and one well per cell, including cells past the last item. Hit testing ignores those. */
+    private static void drawBackdrop(GuiGraphics graphics, QuickViewport.Fit fit) {
+        int slot = fit.slot();
+        int x0 = fit.originX();
+        int y0 = fit.originY();
+        int x1 = x0 + fit.columns() * slot;
+        int y1 = y0 + fit.rows() * slot;
+        graphics.fill(x0 - PANEL_PAD, y0 - PANEL_PAD, x1 + PANEL_PAD, y1 + PANEL_PAD, COLOR_PANEL);
+        for (int row = 0; row < fit.rows(); row++) {
+            for (int column = 0; column < fit.columns(); column++) {
+                drawSlot(graphics, x0 + column * slot, y0 + row * slot, slot);
+            }
+        }
+    }
+
+    private static void drawSlot(GuiGraphics graphics, int x, int y, int size) {
+        int x0 = x + 1;
+        int y0 = y + 1;
+        int x1 = x + size - 1;
+        int y1 = y + size - 1;
+        graphics.fill(x0, y0, x1, y1, COLOR_SLOT);
+        graphics.fill(x0, y0, x1, y0 + 1, COLOR_SLOT_SHADE);
+        graphics.fill(x0, y0, x0 + 1, y1, COLOR_SLOT_SHADE);
+        graphics.fill(x0, y1 - 1, x1, y1, COLOR_SLOT_LIGHT);
+        graphics.fill(x1 - 1, y0, x1, y1, COLOR_SLOT_LIGHT);
     }
 
     /** Copied from the panel's scroll arrow: the tip sits on the edge and points outward. */

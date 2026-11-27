@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 class DataRevisionTest {
     @Test
-    void theCurrentRevisionIsSevenSince067AddedTheQuickAccessItem() {
-        assertEquals(7, DataRevision.CURRENT);
+    void theCurrentRevisionIsEightSince068AddedTheHigherQuickAccessItems() {
+        assertEquals(8, DataRevision.CURRENT);
     }
 
     @Test
@@ -22,7 +22,8 @@ class DataRevisionTest {
         assertFalse(DataRevision.isNewer(5));
         assertFalse(DataRevision.isNewer(6));
         assertFalse(DataRevision.isNewer(7));
-        assertTrue(DataRevision.isNewer(8));
+        assertFalse(DataRevision.isNewer(8));
+        assertTrue(DataRevision.isNewer(9));
         assertTrue(DataRevision.isNewer(99));
     }
 

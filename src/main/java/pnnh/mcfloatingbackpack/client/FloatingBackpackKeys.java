@@ -6,6 +6,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -68,6 +69,11 @@ public final class FloatingBackpackKeys {
             KeyConflictContext.IN_GAME,
             InputConstants.Type.KEYSYM.getOrCreate(GLFW.GLFW_KEY_Z),
             CATEGORY);
+
+    /** The key the player currently has bound to quick access. Item tooltips use this instead of a fixed letter. */
+    public static Component quickAccessKey() {
+        return QUICK_ACCESS.getTranslatedKeyMessage();
+    }
 
     private FloatingBackpackKeys() {
     }

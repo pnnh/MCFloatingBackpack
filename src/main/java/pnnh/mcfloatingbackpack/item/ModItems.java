@@ -43,9 +43,12 @@ public final class ModItems {
     public static final DeferredHolder<Item, TagManagerItem> TAG_MANAGER =
             ITEMS.register("tag_manager", () -> new TagManagerItem(new Item.Properties()));
 
-    /** 067: lives in the panel's function area; see {@link QuickAccessItem}. */
+    /** 067, 068: the leather quick access. The other tiers are {@link #QUICK_ACCESS_ITEMS}. */
     public static final DeferredHolder<Item, QuickAccessItem> QUICK_ACCESS =
-            ITEMS.register("quick_access", () -> new QuickAccessItem(new Item.Properties()));
+            ITEMS.register("quick_access", () -> new QuickAccessItem(BackpackTier.LEATHER, new Item.Properties()));
+
+    /** 068: one quick access per backpack tier, leather first. Leather is {@link #QUICK_ACCESS}. */
+    public static final Map<BackpackTier, DeferredHolder<Item, QuickAccessItem>> QUICK_ACCESS_ITEMS = registerQuickAccess();
 
     /** 021: lives in the panel's right area; see {@link TrashCanItem}. */
     public static final DeferredHolder<Item, TrashCanItem> TRASH_CAN =
@@ -96,7 +99,9 @@ public final class ModItems {
                                     output.accept(combined.get());
                                 }
                                 output.accept(TAG_MANAGER.get());
-                                output.accept(QUICK_ACCESS.get());
+                                for (DeferredHolder<Item, QuickAccessItem> quick : QUICK_ACCESS_ITEMS.values()) {
+                                    output.accept(quick.get());
+                                }
                                 output.accept(TRASH_CAN.get());
                                 output.accept(AUTO_PICKUP.get());
                                 output.accept(MOBILE_JUKEBOX.get());
@@ -156,9 +161,28 @@ public final class ModItems {
         return PIPES.get(kind).get();
     }
 
+    /** 068: the quick-access item of a backpack tier. */
+    public static QuickAccessItem quickAccess(BackpackTier tier) {
+        return QUICK_ACCESS_ITEMS.get(tier).get();
+    }
+
     /** 048: the tank item of a liquid and a tier. */
     public static TankItem tank(FluidKind kind, BackpackTier tier) {
         return TANKS.get(new TankCatalog.Tank(kind, tier)).get();
+    }
+
+    private static Map<BackpackTier, DeferredHolder<Item, QuickAccessItem>> registerQuickAccess() {
+        Map<BackpackTier, DeferredHolder<Item, QuickAccessItem>> items = new LinkedHashMap<>();
+        items.put(BackpackTier.LEATHER, QUICK_ACCESS);
+        for (BackpackTier tier : BackpackTier.values()) {
+            if (tier == BackpackTier.LEATHER) {
+                continue;
+            }
+            items.put(
+                    tier,
+                    ITEMS.register(QuickAccessItem.idOf(tier), () -> new QuickAccessItem(tier, new Item.Properties())));
+        }
+        return Collections.unmodifiableMap(items);
     }
 
     private static Map<BackpackTier, DeferredHolder<Item, UniversalExtensionItem>> registerUniversalExtensions() {

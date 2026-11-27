@@ -31,14 +31,16 @@ class QuickAccessWiringTest {
         assertFalse(network.contains("versioned(\"24\")"));
         assertTrue(network.indexOf("QuickSwapPayload::handleServer") < network.indexOf("QuickSwapResultPayload::handleClient"));
         String revision = read(SRC.resolve("inventory/revision/DataRevision.java"));
-        assertTrue(revision.contains("CURRENT = 7;"));
+        assertTrue(revision.contains("CURRENT = 8;"));
         assertTrue(revision.contains("7 added the quick access item"));
+        assertTrue(revision.contains("8 added the iron, gold, diamond and netherite quick access items"));
     }
 
     @Test
     void theKeyOpensOnlyInTheGameViewAndTheScreenIsNotThePanelHost() throws IOException {
         String keys = read(SRC.resolve("client/FloatingBackpackKeys.java"));
         assertTrue(keys.contains("GLFW.GLFW_KEY_Z"));
+        assertTrue(keys.contains("getTranslatedKeyMessage()"));
         assertTrue(keys.contains("KeyConflictContext.IN_GAME"));
         assertTrue(keys.contains("event.register(QUICK_ACCESS)"));
         String events = read(SRC.resolve("client/FloatingPanelEvents.java"));
@@ -61,7 +63,11 @@ class QuickAccessWiringTest {
         assertTrue(screen.contains("scrollY > 0"));
         assertTrue(screen.contains("if (ok)"));
         assertTrue(screen.contains("keyReleased"));
-        assertTrue(screen.contains("QuickViewport.ITEM"));
+        assertTrue(screen.contains("fit.item()"));
+        assertTrue(screen.contains("fit.slot()"));
+        assertTrue(screen.contains("drawBackdrop"));
+        assertTrue(screen.contains("COLOR_PANEL"));
+        assertFalse(read(SRC.resolve("inventory/quick/QuickViewport.java")).contains("totalRows <= 1"));
         assertTrue(events.contains("keySwapOffhand.consumeClick()"));
         String opener = read(SRC.resolve("client/quick/QuickAccessOpener.java"));
         assertTrue(opener.contains("need_backpack"));
@@ -103,15 +109,24 @@ class QuickAccessWiringTest {
     void theItemIsLimitedToOneInTheBottomAndListedAfterTheTagManager() throws IOException {
         String items = read(SRC.resolve("item/ModItems.java"));
         int tag = items.indexOf("output.accept(TAG_MANAGER.get());");
-        int quick = items.indexOf("output.accept(QUICK_ACCESS.get());");
+        int quick = items.indexOf("QUICK_ACCESS_ITEMS.values()");
         assertTrue(tag >= 0 && quick > tag);
         assertFalse(items.substring(tag + "output.accept(TAG_MANAGER.get());".length(), quick).contains("output.accept("));
-        assertTrue(read(SRC.resolve("inventory/BackpackInventory.java")).contains("boolean hasQuickAccess()"));
+        assertTrue(items.contains("quickAccess(BackpackTier"));
+        String inventory = read(SRC.resolve("inventory/BackpackInventory.java"));
+        assertTrue(inventory.contains("boolean hasQuickAccess()"));
+        assertTrue(inventory.contains("QuickAccessItem.tierOf"));
+        assertFalse(inventory.contains("QUICK_ACCESS.get()"));
         assertTrue(read(SRC.resolve("inventory/tags/PresetTags.java")).contains("\"quick\""));
         String input = read(SRC.resolve("client/panel/FloatingPanelInput.java"));
-        assertTrue(input.contains("ModItems.QUICK_ACCESS.get()"));
+        assertTrue(input.contains("QuickAccessPlace"));
+        assertTrue(input.contains("quick.wrong_tier"));
         assertTrue(input.contains("limit.quick_access"));
-        assertTrue(read(SRC.resolve("network/BackpackClickPayload.java")).contains("limit.quick_access"));
+        assertFalse(input.contains("ModItems.QUICK_ACCESS.get()"));
+        String click = read(SRC.resolve("network/BackpackClickPayload.java"));
+        assertTrue(click.contains("QuickAccessPlace"));
+        assertTrue(click.contains("quick.wrong_tier"));
+        assertTrue(click.contains("limit.quick_access"));
     }
 
     @Test
@@ -125,15 +140,35 @@ class QuickAccessWiringTest {
         byte[] png = Files.readAllBytes(ROOT.resolve("assets/mcfloatingbackpack/textures/item/quick_access.png"));
         assertEquals((byte) 0x89, png[0]);
         assertEquals((byte) 0x50, png[1]);
-        assertTrue(read(ROOT.resolve("data/mcfloatingbackpack/tags/item/never_trash.json")).contains("\"mcfloatingbackpack:quick_access\""));
+        String trash = read(ROOT.resolve("data/mcfloatingbackpack/tags/item/never_trash.json"));
+        for (String id : new String[] {
+                "quick_access", "iron_quick_access", "gold_quick_access", "diamond_quick_access", "netherite_quick_access"}) {
+            assertTrue(trash.contains("\"mcfloatingbackpack:" + id + "\""), id);
+            String upgrade = id.equals("quick_access") ? null : "upgrade_" + id + ".json";
+            if (upgrade != null) {
+                String smithing = read(ROOT.resolve("data/mcfloatingbackpack/recipe").resolve(upgrade)).replaceAll("\\s+", "");
+                assertTrue(smithing.contains("\"type\":\"minecraft:smithing_transform\""));
+                assertTrue(smithing.contains("\"id\":\"mcfloatingbackpack:" + id + "\""));
+            }
+        }
+        assertFalse(read(SRC.resolve("network/BackpackNetwork.java")).contains("quick_access_tier"));
         for (String lang : new String[] {"zh_cn.json", "en_us.json"}) {
             String text = read(ROOT.resolve("assets/mcfloatingbackpack/lang").resolve(lang));
             for (String key : new String[] {
                     "item.mcfloatingbackpack.quick_access",
+                    "item.mcfloatingbackpack.quick_access.tooltip",
+                    "item.mcfloatingbackpack.tag_manager.tooltip",
+                    "item.mcfloatingbackpack.trash_can.tooltip",
+                    "item.mcfloatingbackpack.auto_pickup.tooltip",
+                    "item.mcfloatingbackpack.iron_quick_access",
+                    "item.mcfloatingbackpack.gold_quick_access",
+                    "item.mcfloatingbackpack.diamond_quick_access",
+                    "item.mcfloatingbackpack.netherite_quick_access",
                     "key.mcfloatingbackpack.quick_access",
                     "tag.mcfloatingbackpack.preset.quick",
                     "message.mcfloatingbackpack.limit.quick_access",
                     "message.mcfloatingbackpack.quick.need_tool",
+                    "message.mcfloatingbackpack.quick.wrong_tier",
                     "message.mcfloatingbackpack.quick.in_hand",
                     "message.mcfloatingbackpack.quick.none",
                     "message.mcfloatingbackpack.quick.wrong_row",
@@ -141,6 +176,10 @@ class QuickAccessWiringTest {
                     "message.mcfloatingbackpack.quick.refused"}) {
                 assertTrue(text.contains("\"" + key + "\""), lang + " missing " + key);
             }
+            assertFalse(text.contains("按住 Z"), lang);
+            assertFalse(text.contains("Hold Z"), lang);
         }
+        String item = read(SRC.resolve("item/QuickAccessItem.java"));
+        assertTrue(item.contains("FloatingBackpackKeys.quickAccessKey()"));
     }
 }

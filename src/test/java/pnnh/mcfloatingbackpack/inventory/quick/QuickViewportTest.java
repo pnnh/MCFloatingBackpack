@@ -8,64 +8,84 @@ import org.junit.jupiter.api.Test;
 
 class QuickViewportTest {
     @Test
-    void iconsAreTwiceVanillaSizeWithAGapBetweenCells() {
+    void bothSizesKeepAnEightPixelGap() {
         assertEquals(32, QuickViewport.ITEM);
         assertEquals(40, QuickViewport.SLOT);
-        assertTrue(QuickViewport.SLOT > QuickViewport.ITEM);
+        assertEquals(24, QuickViewport.SMALL_ITEM);
+        assertEquals(32, QuickViewport.SMALL_SLOT);
+        assertEquals(8, QuickViewport.SLOT - QuickViewport.ITEM);
+        assertEquals(8, QuickViewport.SMALL_SLOT - QuickViewport.SMALL_ITEM);
+        assertEquals(6, QuickViewport.PREFERRED_ROWS);
     }
 
     @Test
-    void aLargeWindowShowsNineByFourAndATriangleBelow() {
+    void aTallWindowShowsAllSixLargeRows() {
         QuickViewport.Fit fit = QuickViewport.layout(400, 300, 54, 0);
+        assertEquals(32, fit.item());
+        assertEquals(40, fit.slot());
         assertEquals(9, fit.columns());
-        assertEquals(4, fit.rows());
+        assertEquals(6, fit.rows());
         assertEquals(6, fit.totalRows());
         assertEquals(0, fit.scroll());
         assertFalse(fit.moreAbove());
-        assertTrue(fit.moreBelow());
-        assertEquals((400 - 9 * QuickViewport.SLOT) / 2, fit.originX());
-        assertEquals((300 - 4 * QuickViewport.SLOT) / 2, fit.originY());
+        assertFalse(fit.moreBelow());
+        assertEquals((400 - 9 * fit.slot()) / 2, fit.originX());
+        assertEquals((300 - 6 * fit.slot()) / 2, fit.originY());
     }
 
     @Test
-    void scrollingClampsAndTheTrianglesFollowTheDirectionLeft() {
-        QuickViewport.Fit middle = QuickViewport.layout(400, 300, 54, 1);
-        assertEquals(1, middle.scroll());
-        assertTrue(middle.moreAbove());
-        assertTrue(middle.moreBelow());
+    void aNormalWindowUsesTheSmallerCellsAndStillShowsSixRows() {
+        for (int height : new int[] {270, 240}) {
+            QuickViewport.Fit fit = QuickViewport.layout(400, height, 54, 1);
+            String label = Integer.toString(height);
+            assertEquals(24, fit.item(), label);
+            assertEquals(32, fit.slot(), label);
+            assertEquals(9, fit.columns(), label);
+            assertEquals(6, fit.rows(), label);
+            assertEquals(0, fit.scroll(), label);
+            assertFalse(fit.moreAbove(), label);
+            assertFalse(fit.moreBelow(), label);
+        }
+    }
 
-        QuickViewport.Fit end = QuickViewport.layout(400, 300, 54, 99);
-        assertEquals(2, end.scroll());
+    @Test
+    void aVeryShortWindowScrolls() {
+        QuickViewport.Fit top = QuickViewport.layout(400, 220, 54, 0);
+        assertEquals(24, top.item());
+        assertEquals(32, top.slot());
+        assertTrue(top.rows() < top.totalRows());
+        assertTrue(top.moreBelow());
+        assertFalse(top.moreAbove());
+
+        QuickViewport.Fit end = QuickViewport.layout(400, 220, 54, 99);
+        assertTrue(end.scroll() > 0);
         assertTrue(end.moreAbove());
         assertFalse(end.moreBelow());
-
-        QuickViewport.Fit start = QuickViewport.layout(400, 300, 54, -3);
-        assertEquals(0, start.scroll());
-        assertFalse(start.moreAbove());
     }
 
     @Test
-    void fewerItemsShrinkTheGrid() {
+    void aNarrowWindowDropsColumns() {
+        QuickViewport.Fit fit = QuickViewport.layout(323, 240, 54, 0);
+        assertTrue(fit.columns() < 9);
+        assertTrue(fit.totalRows() > fit.rows());
+        assertTrue(fit.moreBelow());
+    }
+
+    @Test
+    void fewerItemsKeepAFullRowAndDoNotAddEmptyRows() {
         QuickViewport.Fit three = QuickViewport.layout(400, 300, 3, 0);
-        assertEquals(3, three.columns());
+        assertEquals(9, three.columns());
         assertEquals(1, three.rows());
         assertEquals(1, three.totalRows());
         assertFalse(three.moreAbove());
         assertFalse(three.moreBelow());
+        assertEquals(0, QuickViewport.hit(three, three.originX() + 1, three.originY() + 1));
+        assertEquals(-1, QuickViewport.hit(three, three.originX() + 3 * three.slot() + 1, three.originY() + 1));
 
         QuickViewport.Fit ten = QuickViewport.layout(400, 300, 10, 0);
         assertEquals(9, ten.columns());
         assertEquals(2, ten.rows());
         assertFalse(ten.moreBelow());
-    }
-
-    @Test
-    void aNarrowWindowDropsColumnsBeforeItScrollsSideways() {
-        int width = 8 * QuickViewport.SLOT + 2 * QuickViewport.MARGIN;
-        QuickViewport.Fit fit = QuickViewport.layout(width, 300, 54, 0);
-        assertEquals(8, fit.columns());
-        assertTrue(fit.totalRows() > fit.rows());
-        assertTrue(fit.moreBelow());
     }
 
     @Test
@@ -75,8 +95,8 @@ class QuickViewportTest {
         assertEquals(1, fit.rows());
         assertTrue(fit.originX() >= 0);
         assertTrue(fit.originY() >= 0);
-        assertTrue(fit.originX() + QuickViewport.SLOT <= 40);
-        assertTrue(fit.originY() + QuickViewport.SLOT <= 40);
+        assertTrue(fit.originX() + fit.slot() <= 40);
+        assertTrue(fit.originY() + fit.slot() <= 40);
         assertTrue(fit.moreBelow());
         assertFalse(fit.moreAbove());
     }
@@ -85,8 +105,8 @@ class QuickViewportTest {
     void theLastRowIsLeftAlignedAndItsEmptyPartIsAMiss() {
         QuickViewport.Fit fit = QuickViewport.layout(400, 300, 10, 0);
         assertEquals(0, QuickViewport.hit(fit, fit.originX() + 1, fit.originY() + 1));
-        assertEquals(9, QuickViewport.hit(fit, fit.originX() + 1, fit.originY() + QuickViewport.SLOT + 1));
-        assertEquals(-1, QuickViewport.hit(fit, fit.originX() + QuickViewport.SLOT + 1, fit.originY() + QuickViewport.SLOT + 1));
+        assertEquals(9, QuickViewport.hit(fit, fit.originX() + 1, fit.originY() + fit.slot() + 1));
+        assertEquals(-1, QuickViewport.hit(fit, fit.originX() + fit.slot() + 1, fit.originY() + fit.slot() + 1));
         assertEquals(-1, QuickViewport.hit(fit, fit.originX() - 1, fit.originY() + 1));
         assertEquals(-1, QuickViewport.hit(null, 0, 0));
     }

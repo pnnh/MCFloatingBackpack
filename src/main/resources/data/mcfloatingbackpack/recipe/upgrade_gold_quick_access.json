@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:smithing_transform",
+  "template": { "item": "minecraft:dune_armor_trim_smithing_template" },
+  "base": { "item": "mcfloatingbackpack:iron_quick_access" },
+  "addition": { "item": "minecraft:gold_block" },
+  "result": { "count": 1, "id": "mcfloatingbackpack:gold_quick_access" }
+}

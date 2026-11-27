@@ -327,17 +327,15 @@ public record BackpackClickPayload(
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                     return;
                 }
-                // 067: one quick access in the bottom area
-                if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
-                                PanelArea.BOTTOM,
-                                area,
-                                held,
-                                slot,
-                                inventory.toolStacks(area),
-                                stack -> stack.is(ModItems.QUICK_ACCESS.get()))
-                        != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
-                    serverPlayer.displayClientMessage(
-                            Component.translatable("message.mcfloatingbackpack.limit.quick_access"), true);
+                // 068: the bottom area takes one quick access, and only the backpack's own tier
+                pnnh.mcfloatingbackpack.inventory.quick.QuickAccessPlace.Verdict quick =
+                        pnnh.mcfloatingbackpack.item.QuickAccessItem.placement(
+                                area == PanelArea.BOTTOM, inventory.tier(), held, slot, inventory.toolStacks(area));
+                if (quick != pnnh.mcfloatingbackpack.inventory.quick.QuickAccessPlace.Verdict.OK) {
+                    String key = quick == pnnh.mcfloatingbackpack.inventory.quick.QuickAccessPlace.Verdict.WRONG_TIER
+                            ? "message.mcfloatingbackpack.quick.wrong_tier"
+                            : "message.mcfloatingbackpack.limit.quick_access";
+                    serverPlayer.displayClientMessage(Component.translatable(key), true);
                     BackpackNetwork.sendSlotUpdate(serverPlayer, ref, area, slot);
                     return;
                 }

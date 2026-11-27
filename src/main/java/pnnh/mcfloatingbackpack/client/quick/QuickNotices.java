@@ -25,10 +25,16 @@ public final class QuickNotices {
     }
 
     public static void actionBar(Minecraft minecraft, String key) {
+        actionBar(minecraft, key, null);
+    }
+
+    /** {@code arg} is inserted as {@code %s}. The one-second gap is still per translation key. */
+    public static void actionBar(Minecraft minecraft, String key, Component arg) {
         if (minecraft == null || minecraft.player == null || !allow(minecraft, key)) {
             return;
         }
-        minecraft.player.displayClientMessage(Component.translatable(key), true);
+        Component line = arg == null ? Component.translatable(key) : Component.translatable(key, arg);
+        minecraft.player.displayClientMessage(line, true);
     }
 
     public static void revisionProtected(Minecraft minecraft, int stored) {

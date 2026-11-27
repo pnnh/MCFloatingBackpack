@@ -415,15 +415,15 @@ public final class FloatingPanelInput {
             FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.mobile_furnace"));
             return true;
         }
-        // 067: one quick access in the bottom area
-        if (pnnh.mcfloatingbackpack.inventory.ToolSingleRules.check(
-                        PanelArea.BOTTOM,
-                        area,
-                        held,
-                        slotIndex,
-                        view.toolStacks(area),
-                        stack -> stack.is(ModItems.QUICK_ACCESS.get()))
-                != pnnh.mcfloatingbackpack.inventory.ToolSingleRules.Verdict.OK) {
+        // 068: the bottom area takes one quick access, and only the backpack's own tier
+        pnnh.mcfloatingbackpack.inventory.quick.QuickAccessPlace.Verdict quick =
+                pnnh.mcfloatingbackpack.item.QuickAccessItem.placement(
+                        area == PanelArea.BOTTOM, view.backpackTier(), held, slotIndex, view.toolStacks(area));
+        if (quick == pnnh.mcfloatingbackpack.inventory.quick.QuickAccessPlace.Verdict.WRONG_TIER) {
+            FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.quick.wrong_tier"));
+            return true;
+        }
+        if (quick == pnnh.mcfloatingbackpack.inventory.quick.QuickAccessPlace.Verdict.DUPLICATE) {
             FloatingPanelEvents.chat(minecraft, Component.translatable("message.mcfloatingbackpack.limit.quick_access"));
             return true;
         }

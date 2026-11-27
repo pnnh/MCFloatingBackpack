@@ -110,7 +110,7 @@ class JukeboxWiringTest {
         String network = read(SRC.resolve("network/BackpackNetwork.java"));
         assertTrue(network.contains("versioned(\"25\")"), "the protocol is 25 since 067");
         assertFalse(network.contains("Jukebox"), "no packet for the player");
-        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 7;"));
+        assertTrue(read(SRC.resolve("inventory/revision/DataRevision.java")).contains("CURRENT = 8;"));
         assertEquals(1, Pattern.compile("defineListAllowEmpty").matcher(read(SRC.resolve("compat/CompatConfig.java"))).results().count());
         for (String dir : new String[] {"jukebox", "client/jukebox", "client/panel/jukebox"}) {
             try (Stream<Path> files = Files.walk(SRC.resolve(dir))) {

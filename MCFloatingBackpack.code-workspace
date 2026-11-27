@@ -1,0 +1,53 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"git.openRepositoryInParentFolders": "never",
+		"files.exclude": {
+			"**/.git": true
+		},
+		"chat.tools.terminal.autoApprove": {
+			"rtk": true,
+			"otool": true,
+			"plutil": true,
+			"cmake": true,
+			"nm": true,
+			"mkdir": true,
+			"tar": true,
+			"where.exe": true,
+			"Test-Path": true,
+			"ForEach-Object": true,
+			"Get-Item": true
+		},
+		"search.useIgnoreFiles": false,
+		"search.exclude": {
+			"**/node_modules/**": true,
+			"**/.dolt/**": true,
+			"**/_build/**": true,
+			"**/dist/**": true,
+			"**/build/**": true,
+			"packages/**": true,
+			"**/obj/**": true,
+			"**/bin/**": true,
+			"**/lib/**": true,
+			".pnpm-store/**": true,
+			"**/Generated/**": true,
+			"**/gen/**": true,
+			".entire/**": true,
+			".agents/**": true,
+			".claude/**": true,
+			".qoder/**": true,
+			".github/**": true,
+			".kilo/**": true,
+			".vscode/**": true,
+			".qtcreator/**": true,
+			".specify/**": true,
+			"**/.idea/**": true,
+			"**/packages/**": true,
+			"specs/**": true
+		}
+	}
+}

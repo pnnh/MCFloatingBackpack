@@ -60,6 +60,6 @@ class SnapshotCapacityWiringTest {
 
     @Test
     void theBackpacksDataRevisionIsUnchanged() throws IOException {
-        assertTrue(read("inventory/revision/DataRevision.java").contains("CURRENT = 7;"));
+        assertTrue(read("inventory/revision/DataRevision.java").contains("CURRENT = 8;"));
     }
 }
